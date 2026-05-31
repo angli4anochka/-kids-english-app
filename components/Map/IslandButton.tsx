@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import type { Island } from '../../types';
 
 interface IslandButtonProps {
@@ -25,6 +26,13 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
       case 'island-9': return '/img/9.png';
       default: return '/img/1.png';
     }
+  };
+
+  // Размер острова на карте (он же intrinsic-размер для next/image)
+  const getIslandSize = (id: string) => {
+    if (id === 'island-8') return 768;
+    if (id === 'island-1' || id === 'island-2') return 512;
+    return 384;
   };
 
   // Функция для получения флажка в зависимости от статуса
@@ -74,15 +82,17 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
           ${isCompleted ? 'brightness-110' : ''}
         `}
       >
-        <img
+        <Image
           src={getIslandImagePath(island.id)}
           alt={island.title}
+          width={getIslandSize(island.id)}
+          height={getIslandSize(island.id)}
           loading="lazy"
-          className={
-            island.id === 'island-8' ? 'w-[768px] h-[768px] object-contain' :
-            island.id === 'island-1' || island.id === 'island-2' ? 'w-[512px] h-[512px] object-contain' :
-            'w-96 h-96 object-contain'
-          }
+          className="object-contain"
+          style={{
+            width: getIslandSize(island.id),
+            height: getIslandSize(island.id),
+          }}
         />
 
         {/* Флажок или замок */}
