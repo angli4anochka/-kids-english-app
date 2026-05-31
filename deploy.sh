@@ -20,6 +20,8 @@ $SSH "$SERVER" '
     echo "📦 package-lock изменился — npm install..."
     npm install
   fi
+  echo "🧹 чистим .next (инкрементальная сборка ломает client manifest)..."
+  rm -rf .next
   echo "🏗️  next build..."
   npm run build
   echo "♻️  перезапуск PM2..."
