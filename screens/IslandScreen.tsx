@@ -227,7 +227,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
 
   if (!island) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.png)' }}>
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.webp)' }}>
         <div className="text-white text-2xl">Остров не найден</div>
       </div>
     );
@@ -236,7 +236,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
   // Show lesson plan component on stage 3 and beyond
   if (currentStageIndex >= 2) {
     return (
-      <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4" style={{ backgroundImage: 'url(/img/background.png)' }}>
+      <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4" style={{ backgroundImage: 'url(/img/background.webp)' }}>
         <div className="h-full flex gap-4">
           {/* Left panel - Lesson Plan (30%) */}
           <div className="w-[30%] h-full">
@@ -358,7 +358,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     window.location.href = path;
   };
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.png)' }}>
+    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.webp)' }}>
       {/* Navigation buttons - top left */}
       <div className="absolute top-8 left-8 z-30 flex gap-3">
         <button
