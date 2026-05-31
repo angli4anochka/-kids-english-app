@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import type { Island } from '../../types';
 
 interface IslandButtonProps {
@@ -12,23 +11,14 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
   const isLocked = island.status === 'locked';
   const isAvailable = island.status === 'available';
 
-  // Получаем путь к изображению острова из public/img/
+  // Путь к оптимизированному WebP острова (статика, без on-the-fly оптимизации)
   const getIslandImagePath = (id: string) => {
-    switch(id) {
-      case 'island-1': return '/img/1.png';
-      case 'island-2': return '/img/2.png';
-      case 'island-3': return '/img/3.png';
-      case 'island-4': return '/img/4.png';
-      case 'island-5': return '/img/5.png';
-      case 'island-6': return '/img/6.png';
-      case 'island-7': return '/img/7.png';
-      case 'island-8': return '/img/8.png';
-      case 'island-9': return '/img/9.png';
-      default: return '/img/1.png';
-    }
+    const n = id.replace('island-', '');
+    const valid = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    return `/img/island-${valid.includes(n) ? n : '1'}.webp`;
   };
 
-  // Размер острова на карте (он же intrinsic-размер для next/image)
+  // Размер острова на карте (он же width/height для <img>)
   const getIslandSize = (id: string) => {
     if (id === 'island-8') return 768;
     if (id === 'island-1' || id === 'island-2') return 512;
@@ -82,12 +72,13 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
           ${isCompleted ? 'brightness-110' : ''}
         `}
       >
-        <Image
+        <img
           src={getIslandImagePath(island.id)}
           alt={island.title}
           width={getIslandSize(island.id)}
           height={getIslandSize(island.id)}
           loading="lazy"
+          decoding="async"
           className="object-contain"
           style={{
             width: getIslandSize(island.id),
