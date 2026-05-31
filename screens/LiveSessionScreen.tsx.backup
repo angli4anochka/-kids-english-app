@@ -1,0 +1,176 @@
+import React, { useEffect, useState } from 'react';
+import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSession } from '../hooks/useSession';
+import { useUserRole } from '../hooks/useUserRole';
+
+const LiveSessionScreen: React.FC = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { role } = useUserRole();
+  
+  const lessonId = searchParams.get('lessonId');
+  const groupId = searchParams.get('groupId');
+  const title = searchParams.get('title') || 'Урок';
+  
+  const {
+    sessionId,
+    sessionCode,
+    students,
+    isJoined,
+    isLoading,
+    error,
+    createSession,
+    endSession,
+  } = useSession();
+
+  const [sessionStarted, setSessionStarted] = useState(false);
+
+  // Auto-start session on mount
+  useEffect(() => {
+    if (role === 'teacher' && lessonId && groupId && !sessionStarted && !isJoined) {
+      console.log('[LiveSessionScreen] Auto-starting session for lesson:', lessonId, 'group:', groupId);
+      setSessionStarted(true);
+      createSession(lessonId, Number(groupId), 'Teacher');
+    }
+  }, [role, lessonId, groupId, sessionStarted, isJoined, createSession]);
+
+  const handleEndSession = async () => {
+    if (!window.confirm('Вы уверены, что хотите закончить урок?')) {
+      return;
+    }
+    
+    console.log('[LiveSessionScreen] Ending session');
+    await endSession();
+    navigate('/teacher/lessons');
+  };
+
+  if (role !== 'teacher') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-100 to-red-200">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-800 mb-4">Доступ запрещен</h1>
+          <p className="text-red-600">Эта страница доступна только для учителей</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!lessonId || !groupId) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 to-orange-100">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-orange-800 mb-4">Ошибка</h1>
+          <p className="text-orange-600">Не указан урок или группа</p>
+          <button
+            onClick={() => navigate('/teacher/lessons')}
+            className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            Вернуться к урокам
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-blue-100 to-teal-100 p-4">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">{title}</h1>
+              <p className="text-gray-600 mt-2">
+                {isJoined ? (
+                  <span className="text-green-600 font-semibold">
+                    ✅ Сессия активна | Код: {sessionCode}
+                  </span>
+                ) : isLoading ? (
+                  <span className="text-blue-600">
+                    ⏳ Запуск сессии...
+                  </span>
+                ) : (
+                  <span className="text-gray-500">
+                    Подготовка к запуску...
+                  </span>
+                )}
+              </p>
+            </div>
+            
+            {isJoined && (
+              <button
+                onClick={handleEndSession}
+                className="px-6 py-3 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition"
+              >
+                Закончить урок
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mb-6">
+            <strong>Ошибка:</strong> {error}
+          </div>
+        )}
+
+        {/* Students section */}
+        <div className="bg-white rounded-2xl shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Ученики в сессии ({students.length})
+          </h2>
+          
+          {students.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">
+                Ожидание подключения учеников...
+              </p>
+              <p className="text-sm text-gray-400 mt-2">
+                Ученики смогут присоединиться используя код: <strong>{sessionCode}</strong>
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {students.map((student) => (
+                <div
+                  key={student.studentId}
+                  className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 border border-purple-200"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                      style={{ backgroundColor: student.avatarColor || '#6B7280' }}
+                    >
+                      {student.displayName.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="font-semibold text-gray-800">
+                        {student.displayName}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {student.isReady ? '✅ Готов' : '⏳ Подключается...'}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Instructions */}
+        <div className="mt-6 bg-blue-50 rounded-lg p-4">
+          <h3 className="font-semibold text-blue-900 mb-2">Инструкция:</h3>
+          <ul className="text-sm text-blue-700 space-y-1">
+            <li>• Сессия будет активна пока вы не нажмете "Закончить урок"</li>
+            <li>• Ученики могут присоединиться в любой момент</li>
+            <li>• После завершения сессии будет записана посещаемость</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LiveSessionScreen;

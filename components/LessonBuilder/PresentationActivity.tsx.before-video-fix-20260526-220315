@@ -1,0 +1,601 @@
+import { useState, useRef, useEffect } from 'react';
+import TVFrame from '../Shared/TVFrame';
+import { useSocket } from '../../hooks/useSocket';
+
+interface PresentationActivityProps {
+  activity: {
+    presentationType?: 'google-slides' | 'screen-share' | 'upload';
+    presentationUrl?: string;
+    currentSlide?: number;
+  };
+  isViewMode: boolean;
+  onUpdate: (data: any) => void;
+  lessonId?: string;
+  groupId?: number;
+  isTeacher?: boolean;
+}
+
+const PresentationActivity = ({
+  activity,
+  isViewMode,
+  onUpdate,
+  lessonId,
+  groupId,
+  isTeacher = false
+}: PresentationActivityProps) => {
+  const [presentationType, setPresentationType] = useState(activity.presentationType || 'google-slides');
+  const [presentationUrl, setPresentationUrl] = useState(activity.presentationUrl || '');
+  const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const peerConnectionsRef = useRef<Map<string, RTCPeerConnection>>(new Map());
+  const { socket, isConnected } = useSocket();
+
+  // STUN servers for WebRTC NAT traversal
+  const iceServers = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+    ]
+  };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      stopScreenShare();
+    };
+  }, []);
+
+  // ========== TEACHER: WebRTC Broadcasting ==========
+  const startScreenShare = async () => {
+    // Check HTTPS
+    if (window.location.protocol !== 'https:' && window.location.hostname !== 'localhost') {
+      alert(`⚠️ Демонстрация экрана требует безопасного соединения (HTTPS)!\n\n` +
+            `Вы сейчас на: ${window.location.protocol}//${window.location.host}\n\n` +
+            `✅ Решения:\n` +
+            `1. Откройте сайт по адресу https://uniplay-kids.ru/\n` +
+            `2. Или используйте Google Slides вместо демонстрации экрана`);
+      return;
+    }
+
+    // Check browser support
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+      alert('Демонстрация экрана не поддерживается в вашем браузере. Попробуйте использовать Chrome, Edge или Firefox.');
+      return;
+    }
+
+    if (!socket || !isConnected) {
+      alert('WebSocket не подключен. Подождите немного и попробуйте снова.');
+      return;
+    }
+
+    try {
+      // Capture screen with audio
+      const stream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: true  // ✅ Включаем захват звука с экрана (для YouTube и др.)
+      } as any);
+
+      streamRef.current = stream;
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.muted = false;  // ✅ Включаем звук на видео элементе
+        videoRef.current.volume = 1.0;   // ✅ Максимальная громкость
+      }
+
+      setIsScreenSharing(true);
+
+      console.log('[WebRTC] Screen sharing started, setting up broadcast...');
+
+      // Track when sharing stops
+      stream.getVideoTracks()[0].onended = () => {
+        stopScreenShare();
+      };
+
+    } catch (err: any) {
+      console.error('Error sharing screen:', err);
+      if (err?.name === 'NotAllowedError') {
+        alert('Вы отменили демонстрацию экрана или браузер заблокировал доступ');
+      } else {
+        alert('Не удалось поделиться экраном. Убедитесь, что вы используете современный браузер и безопасное соединение (HTTPS)');
+      }
+    }
+  };
+
+  const stopScreenShare = () => {
+    // Stop local stream
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
+    // Close all peer connections
+    peerConnectionsRef.current.forEach(pc => pc.close());
+    peerConnectionsRef.current.clear();
+
+    // Notify students
+    if (socket && isConnected && lessonId && groupId) {
+      socket.emit('screen-share-stop', { lessonId, groupId });
+    }
+
+    setIsScreenSharing(false);
+  };
+
+  // ========== TEACHER: Handle student answers ==========
+  useEffect(() => {
+    if (!socket || !isTeacher || !isScreenSharing || !streamRef.current) return;
+
+    const handleAnswer = async ({ studentId, answer }: { studentId: string; answer: RTCSessionDescriptionInit }) => {
+      console.log('[WebRTC] Received answer from student:', studentId);
+
+      try {
+        // Create a new peer connection for this student
+        const pc = new RTCPeerConnection(iceServers);
+
+        // Add all tracks from screen share
+        streamRef.current!.getTracks().forEach(track => {
+          pc.addTrack(track, streamRef.current!);
+        });
+
+        // Handle ICE candidates for this specific student
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            console.log('[WebRTC] Sending ICE candidate to student:', studentId);
+            socket.emit('screen-share-ice-candidate', {
+              peerId: studentId,
+              candidate: event.candidate
+            });
+          }
+        };
+
+        // Set remote description (student's answer)
+        await pc.setRemoteDescription(new RTCSessionDescription(answer));
+        console.log('[WebRTC] Set remote description for student:', studentId);
+
+        // Store the peer connection
+        peerConnectionsRef.current.set(studentId, pc);
+      } catch (err) {
+        console.error('[WebRTC] Error setting remote description:', err);
+      }
+    };
+
+    const handleIceCandidate = async ({ peerId, candidate }: { peerId: string; candidate: RTCIceCandidateInit }) => {
+      console.log('[WebRTC] Received ICE candidate from:', peerId);
+
+      try {
+        const pc = peerConnectionsRef.current.get(peerId);
+        if (pc && candidate) {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      } catch (err) {
+        console.error('[WebRTC] Error adding ICE candidate:', err);
+      }
+    };
+
+    socket.on('screen-share-answer', handleAnswer);
+    socket.on('screen-share-ice-candidate', handleIceCandidate);
+
+    return () => {
+      socket.off('screen-share-answer', handleAnswer);
+      socket.off('screen-share-ice-candidate', handleIceCandidate);
+    };
+  }, [socket, isTeacher, isScreenSharing]);
+
+  // ========== TEACHER: Wait for offers from students ==========
+  useEffect(() => {
+    if (!socket || !isTeacher || !isScreenSharing || !streamRef.current) return;
+
+    const handleStudentOffer = async ({ studentId, offer }: { studentId: string; offer: RTCSessionDescriptionInit }) => {
+      console.log('[WebRTC] Teacher received offer from student:', studentId);
+
+      try {
+        // Create peer connection for this student
+        const pc = new RTCPeerConnection(iceServers);
+
+        // Add all tracks from screen share
+        streamRef.current!.getTracks().forEach(track => {
+          pc.addTrack(track, streamRef.current!);
+          console.log('[WebRTC] Added track to peer connection for student:', studentId);
+        });
+
+        // Handle ICE candidates for this student
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            console.log('[WebRTC] Sending ICE candidate to student:', studentId);
+            socket.emit('screen-share-ice-candidate', {
+              peerId: studentId,
+              candidate: event.candidate
+            });
+          }
+        };
+
+        // Set remote description (student's offer)
+        await pc.setRemoteDescription(new RTCSessionDescription(offer));
+
+        // Create answer
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+
+        console.log('[WebRTC] Sending answer to student:', studentId);
+        socket.emit('screen-share-answer', {
+          studentId,
+          answer: pc.localDescription
+        });
+
+        // Store peer connection
+        peerConnectionsRef.current.set(studentId, pc);
+      } catch (err) {
+        console.error('[WebRTC] Error handling student offer:', err);
+      }
+    };
+
+    socket.on('screen-share-offer', handleStudentOffer);
+
+    // Notify students that teacher is ready to receive offers
+    if (lessonId && groupId) {
+      console.log('[WebRTC] Teacher ready to receive offers from students');
+      socket.emit('screen-share-ready', { lessonId, groupId });
+    }
+
+    return () => {
+      socket.off('screen-share-offer', handleStudentOffer);
+    };
+  }, [socket, isTeacher, isScreenSharing, lessonId, groupId]);
+
+  // ========== STUDENT: Create offer when teacher is ready ==========
+  useEffect(() => {
+    if (!socket || isTeacher || !isViewMode || presentationType !== 'screen-share') return;
+
+    const handleTeacherReady = async ({ lessonId: readyLessonId, groupId: readyGroupId }: { lessonId: string; groupId: number }) => {
+      console.log('[WebRTC] Student received teacher ready signal');
+
+      try {
+        // Create peer connection
+        const pc = new RTCPeerConnection(iceServers);
+
+        // Handle incoming tracks from teacher
+        pc.ontrack = (event) => {
+          console.log('[WebRTC] Student received track:', event.track.kind);
+
+          if (videoRef.current) {
+            videoRef.current.srcObject = event.streams[0];
+            videoRef.current.muted = false;
+            videoRef.current.volume = 1.0;
+          }
+
+          setIsScreenSharing(true);
+        };
+
+        // Handle ICE candidates
+        pc.onicecandidate = (event) => {
+          if (event.candidate) {
+            console.log('[WebRTC] Student sending ICE candidate');
+            socket.emit('screen-share-ice-candidate', {
+              peerId: socket.id,  // Send to teacher
+              candidate: event.candidate
+            });
+          }
+        };
+
+        // Create offer
+        const offer = await pc.createOffer({
+          offerToReceiveAudio: true,
+          offerToReceiveVideo: true
+        });
+        await pc.setLocalDescription(offer);
+
+        console.log('[WebRTC] Student sending offer to teacher');
+        socket.emit('screen-share-offer', {
+          studentId: socket.id,
+          offer: pc.localDescription
+        });
+
+        peerConnectionsRef.current.set('teacher', pc);
+      } catch (err) {
+        console.error('[WebRTC] Error creating offer:', err);
+      }
+    };
+
+    const handleAnswer = async ({ studentId, answer }: { studentId: string; answer: RTCSessionDescriptionInit }) => {
+      console.log('[WebRTC] Student received answer from teacher');
+
+      try {
+        const pc = peerConnectionsRef.current.get('teacher');
+        if (pc) {
+          await pc.setRemoteDescription(new RTCSessionDescription(answer));
+          console.log('[WebRTC] Student set remote description');
+        }
+      } catch (err) {
+        console.error('[WebRTC] Error setting remote description:', err);
+      }
+    };
+
+    const handleStop = () => {
+      console.log('[WebRTC] Teacher stopped screen sharing');
+
+      // Close all connections
+      peerConnectionsRef.current.forEach(pc => pc.close());
+      peerConnectionsRef.current.clear();
+
+      setIsScreenSharing(false);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = null;
+      }
+    };
+
+    const handleIceCandidate = async ({ peerId, candidate }: { peerId: string; candidate: RTCIceCandidateInit }) => {
+      console.log('[WebRTC] Student received ICE candidate from:', peerId);
+
+      try {
+        const pc = peerConnectionsRef.current.get('teacher');
+        if (pc && candidate) {
+          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      } catch (err) {
+        console.error('[WebRTC] Error adding ICE candidate:', err);
+      }
+    };
+
+    socket.on('screen-share-ready', handleTeacherReady);
+    socket.on('screen-share-answer', handleAnswer);
+    socket.on('screen-share-stop', handleStop);
+    socket.on('screen-share-ice-candidate', handleIceCandidate);
+
+    return () => {
+      socket.off('screen-share-ready', handleTeacherReady);
+      socket.off('screen-share-answer', handleAnswer);
+      socket.off('screen-share-stop', handleStop);
+      socket.off('screen-share-ice-candidate', handleIceCandidate);
+    };
+  }, [socket, isTeacher, isViewMode, presentationType]);
+
+  const extractGoogleSlidesId = (url: string): string => {
+    const patterns = [
+      /presentation\/d\/([a-zA-Z0-9-_]+)/,
+      /presentation\/d\/e\/([a-zA-Z0-9-_]+)/,
+      /presentation\/d\/e\/(2PACX-[a-zA-Z0-9-_]+)/,
+    ];
+
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+
+    if (url.includes('/pub?') || url.includes('/embed')) {
+      return 'USE_FULL_URL';
+    }
+
+    return '';
+  };
+
+  const handleUrlChange = (url: string) => {
+    setPresentationUrl(url);
+    onUpdate({
+      ...activity,
+      presentationType,
+      presentationUrl: url
+    });
+  };
+
+  const handleTypeChange = (type: 'google-slides' | 'screen-share' | 'upload') => {
+    setPresentationType(type);
+    onUpdate({
+      ...activity,
+      presentationType: type,
+      presentationUrl
+    });
+  };
+
+  if (!isViewMode) {
+    // Edit mode
+    return (
+      <div className="w-full">
+        <div className="mb-6">
+          <label className="block text-sm font-semibold text-gray-700 mb-3">
+            Выберите способ показа презентации:
+          </label>
+          <div className="grid grid-cols-3 gap-3">
+            <button
+              onClick={() => handleTypeChange('google-slides')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                presentationType === 'google-slides'
+                  ? 'border-purple-500 bg-purple-50'
+                  : 'border-gray-300 hover:border-purple-300'
+              }`}
+            >
+              <div className="text-2xl mb-2">📊</div>
+              <div className="font-semibold">Google Slides</div>
+              <div className="text-xs text-gray-600 mt-1">Вставить из Google</div>
+            </button>
+
+            <button
+              onClick={() => handleTypeChange('screen-share')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                presentationType === 'screen-share'
+                  ? 'border-purple-500 bg-purple-50'
+                  : 'border-gray-300 hover:border-purple-300'
+              }`}
+            >
+              <div className="text-2xl mb-2">🖥️</div>
+              <div className="font-semibold">Демонстрация экрана</div>
+              <div className="text-xs text-gray-600 mt-1">Показать с компьютера</div>
+            </button>
+
+            <button
+              onClick={() => handleTypeChange('upload')}
+              className={`p-4 rounded-lg border-2 transition-all ${
+                presentationType === 'upload'
+                  ? 'border-purple-500 bg-purple-50'
+                  : 'border-gray-300 hover:border-purple-300'
+              }`}
+            >
+              <div className="text-2xl mb-2">📤</div>
+              <div className="font-semibold">Загрузить файл</div>
+              <div className="text-xs text-gray-600 mt-1">PDF или изображения</div>
+            </button>
+          </div>
+        </div>
+
+        {presentationType === 'google-slides' && (
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Ссылка на Google Slides презентацию:
+            </label>
+            <input
+              type="text"
+              placeholder="https://docs.google.com/presentation/d/..."
+              value={presentationUrl}
+              onChange={(e) => handleUrlChange(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none mb-3"
+            />
+            <div className="text-sm text-gray-600">
+              <p>💡 Совет: Откройте презентацию в Google Slides → Файл → Опубликовать в интернете → Встроить</p>
+            </div>
+
+            {presentationUrl && extractGoogleSlidesId(presentationUrl) && (
+              <div className="mt-4 border-2 border-gray-200 rounded-lg overflow-hidden h-[600px]">
+                <iframe
+                  src={
+                    extractGoogleSlidesId(presentationUrl) === 'USE_FULL_URL'
+                      ? presentationUrl
+                      : `https://docs.google.com/presentation/d/e/${extractGoogleSlidesId(presentationUrl)}/embed?start=false&loop=false&delayms=3000`
+                  }
+                  className="w-full h-full"
+                  allowFullScreen
+                />
+              </div>
+            )}
+          </div>
+        )}
+
+        {presentationType === 'screen-share' && (
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">🖥️</div>
+            <h3 className="text-xl font-semibold mb-2">Демонстрация экрана с трансляцией</h3>
+            <p className="text-gray-600 mb-4">
+              В режиме просмотра вы сможете поделиться экраном<br />
+              и ученики увидят его в реальном времени (как в Zoom)
+            </p>
+
+            {window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && (
+              <div className="bg-red-50 border border-red-300 rounded-lg p-4 max-w-md mx-auto mb-4">
+                <p className="text-sm text-red-800">
+                  <strong>⚠️ Внимание!</strong><br />
+                  Демонстрация экрана требует безопасного соединения (HTTPS).<br />
+                  Текущий адрес: {window.location.protocol}//{window.location.host}
+                </p>
+              </div>
+            )}
+
+            <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm text-blue-800">
+                <strong>Как это работает:</strong><br />
+                1. Переключитесь в режим просмотра<br />
+                2. Нажмите "Поделиться экраном"<br />
+                3. Выберите окно с презентацией<br />
+                4. Ученики увидят ваш экран с видео и аудио
+              </p>
+            </div>
+          </div>
+        )}
+
+        {presentationType === 'upload' && (
+          <div className="text-center py-8">
+            <div className="text-6xl mb-4">📤</div>
+            <h3 className="text-xl font-semibold mb-2">Загрузка презентации</h3>
+            <p className="text-gray-600 mb-4">
+              Конвертируйте вашу презентацию в PDF или изображения<br />
+              для быстрой загрузки
+            </p>
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 max-w-md mx-auto">
+              <p className="text-sm text-yellow-800">
+                <strong>Рекомендация:</strong><br />
+                Используйте Google Slides или демонстрацию экрана<br />
+                для лучшей производительности
+              </p>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // View mode (for showing to students)
+  return (
+    <div className="w-full h-full">
+      {presentationType === 'google-slides' && presentationUrl && extractGoogleSlidesId(presentationUrl) ? (
+        <TVFrame>
+          <iframe
+            src={
+              extractGoogleSlidesId(presentationUrl) === 'USE_FULL_URL'
+                ? presentationUrl
+                : `https://docs.google.com/presentation/d/e/${extractGoogleSlidesId(presentationUrl)}/embed?start=false&loop=false&delayms=3000`
+            }
+            className="w-full h-full"
+            allowFullScreen
+          />
+        </TVFrame>
+      ) : presentationType === 'screen-share' ? (
+        <div className="h-full">
+          {!isScreenSharing && isTeacher ? (
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="text-6xl mb-4">🖥️</div>
+              <h3 className="text-2xl font-semibold mb-4">Демонстрация экрана</h3>
+              <button
+                onClick={startScreenShare}
+                className="px-8 py-4 bg-blue-600 text-white rounded-xl font-semibold hover:bg-blue-700 transition-colors text-lg"
+              >
+                Поделиться экраном
+              </button>
+              <p className="text-gray-600 mt-4">
+                Откройте презентацию на компьютере и нажмите кнопку выше
+              </p>
+            </div>
+          ) : isScreenSharing ? (
+            <div className="relative h-full bg-black">
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                className="w-full h-full object-contain"
+              />
+              {isTeacher && (
+                <button
+                  onClick={stopScreenShare}
+                  className="absolute top-4 right-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors shadow-lg"
+                >
+                  Остановить демонстрацию
+                </button>
+              )}
+              {!isTeacher && (
+                <div className="absolute top-4 left-4 px-4 py-2 bg-green-600 text-white rounded-lg shadow-lg">
+                  🟢 Учитель демонстрирует экран
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center">
+                <div className="text-6xl mb-4 text-gray-400">🖥️</div>
+                <p className="text-xl text-gray-500">Ожидание демонстрации экрана...</p>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <div className="text-6xl mb-4 text-gray-400">📊</div>
+            <p className="text-xl text-gray-500">Презентация не настроена</p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default PresentationActivity;

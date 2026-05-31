@@ -1,0 +1,9 @@
+import StudentLiveSession from '../../../../screens/StudentLiveSession';
+
+export default function StudentLiveSessionPage({
+  params,
+}: {
+  params: { sessionId: string };
+}) {
+  return <StudentLiveSession sessionId={params.sessionId} />;
+}

@@ -1,0 +1,302 @@
+import { useEffect, useState, useCallback } from 'react';
+import { useSocket } from './useSocket';
+import { useUserRole } from './useUserRole';
+import { API_CONFIG } from '../config/api';
+import type { UserRole } from '../types';
+
+interface SessionStudent {
+  studentId: string;
+  displayName: string;
+  avatarColor: string;
+  isReady: boolean;
+}
+
+interface UseSessionReturn {
+  sessionId: string | null;
+  sessionCode: string | null;
+  currentActivity: string | null;
+  students: SessionStudent[];
+  isJoined: boolean;
+  isLoading: boolean;
+  error: string | null;
+  createSession: (lessonId: string, groupId: number, teacherName: string) => Promise<void>;
+  joinSession: (lessonId: string, groupId: number, studentName: string) => Promise<void>;
+  changeActivity: (activityIndex: number) => void;
+  updateProgress: (activityId: string, score: number, data?: any) => void;
+  leaveSession: () => void;
+  endSession: () => Promise<void>;
+}
+
+export const useSession = (): UseSessionReturn => {
+  const { socket, isConnected } = useSocket();
+  const { role } = useUserRole();
+
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [sessionCode, setSessionCode] = useState<string | null>(null);
+  const [currentActivity, setCurrentActivity] = useState<string | null>(null);
+  const [students, setStudents] = useState<SessionStudent[]>([]);
+  const [isJoined, setIsJoined] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Store last session info for reconnection
+  const [lastSessionInfo, setLastSessionInfo] = useState<{
+    lessonId: string;
+    groupId: number;
+    displayName: string;
+    role: UserRole;
+  } | null>(null);
+
+  // Create new session (teacher only)
+  const createSession = useCallback(async (lessonId: string, groupId: number, teacherName: string) => {
+    if (!socket || !isConnected) {
+      console.warn('[useSession] Cannot create session: not connected to server');
+      setError('Not connected to server');
+      return;
+    }
+
+    console.log('[useSession] Creating session for lesson:', lessonId, 'group:', groupId);
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const sessionData = {
+        lessonId,
+        groupId,
+        role: 'teacher' as UserRole,
+        displayName: teacherName,
+      };
+
+      // Store for reconnection
+      setLastSessionInfo(sessionData);
+
+      socket.emit(API_CONFIG.socketEvents.joinSession, sessionData, (response: any) => {
+        setIsLoading(false);
+
+        console.log('[useSession] Create session response:', response);
+
+        if (response.success) {
+          setSessionId(lessonId);
+          setSessionCode(`${lessonId}-${groupId}`);
+          setIsJoined(true);
+          setCurrentActivity(response.session?.currentActivityIndex?.toString() || '0');
+
+          if (response.session?.students) {
+            setStudents(response.session.students);
+          }
+
+          console.log('[useSession] Session created successfully. Current activity:', response.session?.currentActivityIndex);
+        } else {
+          console.error('[useSession] Failed to create session:', response.error);
+          setError(response.error || 'Failed to create session');
+        }
+      });
+    } catch (err) {
+      console.error('[useSession] Error creating session:', err);
+      setError(err instanceof Error ? err.message : 'Unknown error');
+      setIsLoading(false);
+    }
+  }, [isConnected, socket]);
+
+  // Join existing session (student)
+  const joinSession = useCallback(async (lessonId: string, groupId: number, studentName: string) => {
+    if (!socket || !isConnected) {
+      console.warn('[useSession] Cannot join session: not connected to server');
+      setError('Not connected to server');
+      return;
+    }
+
+    console.log('[useSession] Joining session for lesson:', lessonId, 'group:', groupId, 'as:', studentName);
+    setIsLoading(true);
+    setError(null);
+
+    const sessionData = {
+      lessonId,
+      groupId,
+      displayName: studentName,
+      role: role,
+    };
+
+    // Store for reconnection
+    setLastSessionInfo(sessionData);
+
+    socket.emit(API_CONFIG.socketEvents.joinSession, sessionData, (response: any) => {
+      setIsLoading(false);
+
+      console.log('[useSession] Join session response:', response);
+
+      if (response.success) {
+        setSessionId(lessonId);
+        setSessionCode(`${lessonId}-${groupId}`);
+        setIsJoined(true);
+        setCurrentActivity(response.session?.currentActivityIndex?.toString() || '0');
+
+        console.log('[useSession] Joined session successfully. Current activity:', response.session?.currentActivityIndex);
+      } else {
+        console.error('[useSession] Failed to join session:', response.error);
+        setError(response.error || 'Failed to join session');
+      }
+    });
+  }, [socket, isConnected, role]);
+
+  // Change activity (teacher only)
+  const changeActivity = useCallback((activityIndex: number) => {
+    if (!socket || !isJoined || role !== 'teacher') {
+      console.warn('[useSession] Cannot change activity: socket=', !!socket, 'isJoined=', isJoined, 'role=', role);
+      return;
+    }
+
+    console.log('[useSession] Changing activity to index:', activityIndex);
+
+    // Optimistically update local state
+    setCurrentActivity(activityIndex.toString());
+
+    socket.emit(API_CONFIG.socketEvents.changeActivity, { activityIndex }, (response: any) => {
+      console.log('[useSession] Change activity response:', response);
+
+      if (!response.success) {
+        console.error('[useSession] Failed to change activity:', response.error);
+        setError(response.error || 'Failed to change activity');
+        // Revert optimistic update on failure
+        setCurrentActivity(null);
+      }
+    });
+  }, [socket, isJoined, role]);
+
+  // Update progress (student)
+  const updateProgress = useCallback((activityId: string, score: number, data?: any) => {
+    if (!socket || !isJoined || role !== 'student') {
+      console.warn('[useSession] Cannot update progress: not a student or not joined');
+      return;
+    }
+
+    console.log('[useSession] Updating progress for activity:', activityId, 'score:', score);
+
+    socket.emit(API_CONFIG.socketEvents.updateProgress, {
+      activityId,
+      score,
+      data,
+    });
+  }, [socket, isJoined, role]);
+
+  // Leave session
+// End session (teacher only)  const endSession = useCallback(async () => {    if (!sessionId || role !== 'teacher') {      console.warn('[useSession] Cannot end session: no active session or not a teacher');      return;    }    console.log('[useSession] Ending session:', sessionId);    setIsLoading(true);    try {      // Call API to end session      const response = await fetch(`/kids-api/sessions/${sessionId}`, {        method: 'DELETE',      });      const data = await response.json();      if (data.success) {        console.log('[useSession] Session ended successfully');                // Disconnect socket        if (socket) {          socket.emit(API_CONFIG.socketEvents.leaveSession);          socket.disconnect();        }        // Reset state        setSessionId(null);        setSessionCode(null);        setIsJoined(false);        setStudents([]);        setCurrentActivity(null);        setLastSessionInfo(null);      } else {        console.error('[useSession] Failed to end session:', data.error);        setError(data.error || 'Failed to end session');      }    } catch (err) {      console.error('[useSession] Error ending session:', err);      setError(err instanceof Error ? err.message : 'Unknown error');    } finally {      setIsLoading(false);    }  }, [sessionId, role, socket]);
+  const leaveSession = useCallback(() => {
+    console.log('[useSession] Leaving session');
+
+    if (socket) {
+      socket.disconnect();
+    }
+
+    setSessionId(null);
+    setSessionCode(null);
+    setIsJoined(false);
+    setStudents([]);
+    setCurrentActivity(null);
+    setLastSessionInfo(null);
+  }, [socket]);
+
+  // Auto-reconnect: Check for active session on mount and on reconnection
+  useEffect(() => {
+    if (!socket || !isConnected || !lastSessionInfo) return;
+
+    // If we were in a session but lost connection, try to rejoin
+    if (!isJoined && lastSessionInfo) {
+      console.log('[useSession] Auto-reconnecting to session...', lastSessionInfo);
+
+      const { lessonId, groupId, displayName, role: userRole } = lastSessionInfo;
+
+      socket.emit(API_CONFIG.socketEvents.joinSession, {
+        lessonId,
+        groupId,
+        displayName,
+        role: userRole,
+      }, (response: any) => {
+        console.log('[useSession] Auto-reconnect response:', response);
+
+        if (response.success) {
+          setSessionId(lessonId);
+          setSessionCode(`${lessonId}-${groupId}`);
+          setIsJoined(true);
+          setCurrentActivity(response.session?.currentActivityIndex?.toString() || '0');
+
+          if (response.session?.students) {
+            setStudents(response.session.students);
+          }
+
+          console.log('[useSession] Auto-reconnected successfully');
+        } else {
+          console.error('[useSession] Auto-reconnect failed:', response.error);
+          // Clear session info if reconnect failed (session might be closed)
+          setLastSessionInfo(null);
+        }
+      });
+    }
+  }, [socket, isConnected, isJoined, lastSessionInfo]);
+
+  // Listen to WebSocket events
+  useEffect(() => {
+    if (!socket) return;
+
+    console.log('[useSession] Setting up WebSocket event listeners');
+
+    // Activity changed
+    const handleActivityChanged = ({ activityIndex }: { activityIndex: number }) => {
+      console.log('[useSession] Activity changed to:', activityIndex);
+      setCurrentActivity(activityIndex.toString());
+    };
+
+    // Participant joined
+    const handleParticipantJoined = ({ displayName, role: participantRole, totalStudents }: any) => {
+      console.log(`[useSession] ${displayName} (${participantRole}) joined. Total students: ${totalStudents}`);
+    };
+
+    // Participant left
+    const handleParticipantLeft = ({ displayName, totalStudents }: any) => {
+      console.log(`[useSession] ${displayName} left. Total students: ${totalStudents}`);
+    };
+
+    // Student progress update
+    const handleStudentProgress = (progress: any) => {
+      console.log('[useSession] Student progress:', progress);
+    };
+
+    // Teacher left
+    const handleTeacherLeft = () => {
+      console.log('[useSession] Teacher left the session');
+      setError('Teacher left the session');
+      setIsJoined(false);
+    };
+
+    socket.on(API_CONFIG.socketEvents.activityChanged, handleActivityChanged);
+    socket.on(API_CONFIG.socketEvents.participantJoined, handleParticipantJoined);
+    socket.on(API_CONFIG.socketEvents.participantLeft, handleParticipantLeft);
+    socket.on(API_CONFIG.socketEvents.studentProgress, handleStudentProgress);
+    socket.on(API_CONFIG.socketEvents.teacherLeft, handleTeacherLeft);
+
+    return () => {
+      console.log('[useSession] Cleaning up WebSocket event listeners');
+      socket.off(API_CONFIG.socketEvents.activityChanged, handleActivityChanged);
+      socket.off(API_CONFIG.socketEvents.participantJoined, handleParticipantJoined);
+      socket.off(API_CONFIG.socketEvents.participantLeft, handleParticipantLeft);
+      socket.off(API_CONFIG.socketEvents.studentProgress, handleStudentProgress);
+      socket.off(API_CONFIG.socketEvents.teacherLeft, handleTeacherLeft);
+    };
+  }, [socket]);
+
+  return {
+    sessionId,
+    sessionCode,
+    currentActivity,
+    students,
+    isJoined,
+    isLoading,
+    error,
+    createSession,
+    joinSession,
+    changeActivity,
+    updateProgress,
+    leaveSession,
+    endSession,
+  };
+};

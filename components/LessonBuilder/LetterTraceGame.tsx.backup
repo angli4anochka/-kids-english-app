@@ -1,0 +1,749 @@
+import { useEffect, useRef, useState } from 'react';
+import TVFrame from '../Shared/TVFrame';
+
+// Letter trace configuration
+export interface LetterRow {
+  icon: string;
+  label: string;
+  text: string;
+  translation: string;
+  desiredRepeats?: number;
+  minRepeats?: number;
+  scale?: number;
+}
+
+export interface LetterTraceConfig {
+  title: string;
+  subtitle: string;
+  rows: LetterRow[];
+}
+
+interface Props {
+  config: LetterTraceConfig;
+}
+
+interface Point {
+  x: number;
+  y: number;
+}
+
+interface TraceItem {
+  id: string;
+  text: string;
+  x: number;
+  yTop: number;
+  yBase: number;
+  width: number;
+  strokes: Point[][];
+  samples: (Point & { strokeIndex: number; pointIndex: number })[];
+  userPoints: Point[];
+  attempts: Point[][];
+  done: boolean;
+  lastAccuracy: number;
+  lastCoverage: number;
+}
+
+const LetterTraceGame: React.FC<Props> = ({ config }) => {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const boardRef = useRef<HTMLDivElement>(null);
+  const [items, setItems] = useState<TraceItem[]>([]);
+  const [isDrawing, setIsDrawing] = useState(false);
+  const [activeItem, setActiveItem] = useState<TraceItem | null>(null);
+  const [activeStrokePoints, setActiveStrokePoints] = useState<Point[]>([]);
+  const [statusMessage, setStatusMessage] = useState('Пиши по пунктиру. Чем ближе линия к образцу, тем выше точность.');
+  const [statusClass, setStatusClass] = useState('');
+  const [doneCount, setDoneCount] = useState(0);
+
+  const writingArea = { x: 175, right: 1185, gap: 70 };
+  const tolerance = 23;
+  const passAccuracy = 74;
+  const passCoverage = 0.92;
+
+  // Glyph definitions for letters
+  const glyph = (letter: string): { strokes: Point[][]; width: number } => {
+    const strokes: Point[][] = [];
+    let width = 70;
+
+    const sampleLine = (p0: Point, p1: Point, steps = 20): Point[] => {
+      const points: Point[] = [];
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        points.push({ x: p0.x + (p1.x - p0.x) * t, y: p0.y + (p1.y - p0.y) * t });
+      }
+      return points;
+    };
+
+    const sampleCubic = (p0: Point, p1: Point, p2: Point, p3: Point, steps = 28): Point[] => {
+      const points: Point[] = [];
+      for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const mt = 1 - t;
+        points.push({
+          x: mt ** 3 * p0.x + 3 * mt ** 2 * t * p1.x + 3 * mt * t ** 2 * p2.x + t ** 3 * p3.x,
+          y: mt ** 3 * p0.y + 3 * mt ** 2 * t * p1.y + 3 * mt * t ** 2 * p2.y + t ** 3 * p3.y,
+        });
+      }
+      return points;
+    };
+
+    // Uppercase letters
+    if (letter === 'A') {
+      strokes.push(sampleLine({ x: 36, y: -98 }, { x: 8, y: 0 }, 22));
+      strokes.push(sampleLine({ x: 36, y: -98 }, { x: 72, y: 0 }, 22));
+      strokes.push(sampleLine({ x: 22, y: -42 }, { x: 57, y: -42 }, 12));
+      width = 88;
+    } else if (letter === 'B') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -98 }, { x: 55, y: -98 }, { x: 65, y: -75 }, { x: 50, y: -49 }, 14), ...sampleLine({ x: 50, y: -49 }, { x: 15, y: -49 }, 8)]);
+      strokes.push([...sampleCubic({ x: 15, y: -49 }, { x: 60, y: -49 }, { x: 72, y: -25 }, { x: 58, y: 0 }, 14), ...sampleLine({ x: 58, y: 0 }, { x: 15, y: 0 }, 10)]);
+      width = 80;
+    } else if (letter === 'C') {
+      strokes.push([...sampleCubic({ x: 70, y: -80 }, { x: 50, y: -100 }, { x: 20, y: -90 }, { x: 12, y: -50 }, 18), ...sampleCubic({ x: 12, y: -50 }, { x: 5, y: -10 }, { x: 25, y: 8 }, { x: 70, y: -15 }, 22)]);
+      width = 78;
+    } else if (letter === 'D') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -98 }, { x: 60, y: -98 }, { x: 78, y: -70 }, { x: 78, y: -49 }, 16), ...sampleCubic({ x: 78, y: -49 }, { x: 78, y: -28 }, { x: 60, y: 0 }, { x: 15, y: 0 }, 16)]);
+      width = 85;
+    } else if (letter === 'E') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 65, y: -98 }, 12));
+      strokes.push(sampleLine({ x: 15, y: -49 }, { x: 60, y: -49 }, 10));
+      strokes.push(sampleLine({ x: 15, y: 0 }, { x: 68, y: 0 }, 12));
+      width = 75;
+    } else if (letter === 'F') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 65, y: -98 }, 12));
+      strokes.push(sampleLine({ x: 15, y: -49 }, { x: 60, y: -49 }, 10));
+      width = 70;
+    } else if (letter === 'G') {
+      strokes.push([...sampleCubic({ x: 70, y: -80 }, { x: 50, y: -100 }, { x: 20, y: -90 }, { x: 12, y: -50 }, 18), ...sampleCubic({ x: 12, y: -50 }, { x: 5, y: -10 }, { x: 25, y: 8 }, { x: 55, y: 0 }, 22)]);
+      strokes.push(sampleLine({ x: 55, y: 0 }, { x: 72, y: 0 }, 8));
+      strokes.push(sampleLine({ x: 72, y: 0 }, { x: 72, y: -40 }, 10));
+      strokes.push(sampleLine({ x: 72, y: -40 }, { x: 50, y: -40 }, 6));
+      width = 82;
+    } else if (letter === 'H') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 70, y: -98 }, { x: 70, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 15, y: -49 }, { x: 70, y: -49 }, 12));
+      width = 85;
+    } else if (letter === 'I') {
+      strokes.push(sampleLine({ x: 28, y: -98 }, { x: 28, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 10, y: -98 }, { x: 46, y: -98 }, 10));
+      strokes.push(sampleLine({ x: 10, y: 0 }, { x: 46, y: 0 }, 10));
+      width = 56;
+    } else if (letter === 'J') {
+      strokes.push([...sampleLine({ x: 50, y: -98 }, { x: 50, y: -15 }, 22), ...sampleCubic({ x: 50, y: -15 }, { x: 50, y: 8 }, { x: 30, y: 10 }, { x: 15, y: -5 }, 12)]);
+      width = 65;
+    } else if (letter === 'K') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 65, y: -98 }, { x: 15, y: -40 }, 16));
+      strokes.push(sampleLine({ x: 28, y: -60 }, { x: 68, y: 0 }, 18));
+      width = 75;
+    } else if (letter === 'L') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 15, y: 0 }, { x: 65, y: 0 }, 12));
+      width = 70;
+    } else if (letter === 'M') {
+      strokes.push(sampleLine({ x: 12, y: 0 }, { x: 12, y: -98 }, 26));
+      strokes.push(sampleLine({ x: 12, y: -98 }, { x: 45, y: -50 }, 14));
+      strokes.push(sampleLine({ x: 45, y: -50 }, { x: 78, y: -98 }, 14));
+      strokes.push(sampleLine({ x: 78, y: -98 }, { x: 78, y: 0 }, 26));
+      width = 90;
+    } else if (letter === 'N') {
+      strokes.push(sampleLine({ x: 15, y: 0 }, { x: 15, y: -98 }, 26));
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 70, y: 0 }, 28));
+      strokes.push(sampleLine({ x: 70, y: 0 }, { x: 70, y: -98 }, 26));
+      width = 85;
+    } else if (letter === 'O') {
+      strokes.push([...sampleCubic({ x: 42, y: -100 }, { x: 12, y: -95 }, { x: 5, y: -70 }, { x: 5, y: -49 }, 16), ...sampleCubic({ x: 5, y: -49 }, { x: 5, y: -28 }, { x: 12, y: 2 }, { x: 42, y: 2 }, 16), ...sampleCubic({ x: 42, y: 2 }, { x: 72, y: -3 }, { x: 79, y: -28 }, { x: 79, y: -49 }, 16), ...sampleCubic({ x: 79, y: -49 }, { x: 79, y: -70 }, { x: 72, y: -95 }, { x: 42, y: -100 }, 16)]);
+      width = 84;
+    } else if (letter === 'P') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -98 }, { x: 58, y: -98 }, { x: 72, y: -80 }, { x: 68, y: -60 }, 14), ...sampleCubic({ x: 68, y: -60 }, { x: 64, y: -40 }, { x: 48, y: -35 }, { x: 15, y: -35 }, 14)]);
+      width = 75;
+    } else if (letter === 'Q') {
+      strokes.push([...sampleCubic({ x: 42, y: -100 }, { x: 12, y: -95 }, { x: 5, y: -70 }, { x: 5, y: -49 }, 16), ...sampleCubic({ x: 5, y: -49 }, { x: 5, y: -28 }, { x: 12, y: 2 }, { x: 42, y: 2 }, 16), ...sampleCubic({ x: 42, y: 2 }, { x: 72, y: -3 }, { x: 79, y: -28 }, { x: 79, y: -49 }, 16), ...sampleCubic({ x: 79, y: -49 }, { x: 79, y: -70 }, { x: 72, y: -95 }, { x: 42, y: -100 }, 16)]);
+      strokes.push(sampleLine({ x: 55, y: -20 }, { x: 85, y: 15 }, 10));
+      width = 90;
+    } else if (letter === 'R') {
+      strokes.push(sampleLine({ x: 15, y: -98 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -98 }, { x: 58, y: -98 }, { x: 72, y: -80 }, { x: 68, y: -60 }, 14), ...sampleCubic({ x: 68, y: -60 }, { x: 64, y: -40 }, { x: 48, y: -35 }, { x: 15, y: -35 }, 14)]);
+      strokes.push(sampleLine({ x: 40, y: -40 }, { x: 72, y: 0 }, 12));
+      width = 78;
+    } else if (letter === 'S') {
+      strokes.push([...sampleCubic({ x: 65, y: -75 }, { x: 50, y: -100 }, { x: 18, y: -95 }, { x: 12, y: -70 }, 16), ...sampleCubic({ x: 12, y: -70 }, { x: 8, y: -50 }, { x: 25, y: -45 }, { x: 42, y: -47 }, 14), ...sampleCubic({ x: 42, y: -47 }, { x: 60, y: -50 }, { x: 70, y: -35 }, { x: 65, y: -20 }, 14), ...sampleCubic({ x: 65, y: -20 }, { x: 58, y: 5 }, { x: 25, y: 5 }, { x: 10, y: -20 }, 16)]);
+      width = 75;
+    } else if (letter === 'T') {
+      strokes.push(sampleLine({ x: 10, y: -98 }, { x: 70, y: -98 }, 16));
+      strokes.push(sampleLine({ x: 40, y: -98 }, { x: 40, y: 0 }, 26));
+      width = 80;
+    } else if (letter === 'U') {
+      strokes.push([...sampleLine({ x: 15, y: -98 }, { x: 15, y: -20 }, 22), ...sampleCubic({ x: 15, y: -20 }, { x: 15, y: 5 }, { x: 30, y: 8 }, { x: 42, y: 0 }, 12), ...sampleCubic({ x: 42, y: 0 }, { x: 54, y: -8 }, { x: 70, y: 5 }, { x: 70, y: -20 }, 12), ...sampleLine({ x: 70, y: -20 }, { x: 70, y: -98 }, 22)]);
+      width = 85;
+    } else if (letter === 'V') {
+      strokes.push(sampleLine({ x: 10, y: -98 }, { x: 42, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 42, y: 0 }, { x: 74, y: -98 }, 26));
+      width = 84;
+    } else if (letter === 'W') {
+      strokes.push(sampleLine({ x: 8, y: -98 }, { x: 22, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 22, y: 0 }, { x: 42, y: -65 }, 18));
+      strokes.push(sampleLine({ x: 42, y: -65 }, { x: 62, y: 0 }, 18));
+      strokes.push(sampleLine({ x: 62, y: 0 }, { x: 76, y: -98 }, 26));
+      width = 84;
+    } else if (letter === 'X') {
+      strokes.push(sampleLine({ x: 12, y: -98 }, { x: 68, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 68, y: -98 }, { x: 12, y: 0 }, 26));
+      width = 80;
+    } else if (letter === 'Y') {
+      strokes.push(sampleLine({ x: 10, y: -98 }, { x: 42, y: -45 }, 16));
+      strokes.push(sampleLine({ x: 74, y: -98 }, { x: 42, y: -45 }, 16));
+      strokes.push(sampleLine({ x: 42, y: -45 }, { x: 42, y: 0 }, 12));
+      width = 84;
+    } else if (letter === 'Z') {
+      strokes.push(sampleLine({ x: 12, y: -98 }, { x: 68, y: -98 }, 16));
+      strokes.push(sampleLine({ x: 68, y: -98 }, { x: 12, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 12, y: 0 }, { x: 68, y: 0 }, 16));
+      width = 80;
+    }
+    // Lowercase letters
+    else if (letter === 'a') {
+      strokes.push([
+        ...sampleCubic({ x: 58, y: -42 }, { x: 56, y: -72 }, { x: 30, y: -78 }, { x: 17, y: -58 }, 16),
+        ...sampleCubic({ x: 17, y: -58 }, { x: -2, y: -28 }, { x: 13, y: 5 }, { x: 42, y: -2 }, 18),
+        ...sampleCubic({ x: 42, y: -2 }, { x: 59, y: -6 }, { x: 66, y: -25 }, { x: 58, y: -42 }, 16),
+      ]);
+      strokes.push([...sampleCubic({ x: 63, y: -72 }, { x: 59, y: -46 }, { x: 60, y: -21 }, { x: 64, y: 0 }, 18)]);
+      width = 78;
+    } else if (letter === 'b') {
+      strokes.push(sampleLine({ x: 15, y: -96 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -10 }, { x: 52, y: -76 }, { x: 72, y: -42 }, { x: 58, y: -8 }, 18), ...sampleCubic({ x: 58, y: -8 }, { x: 48, y: 10 }, { x: 20, y: 8 }, { x: 15, y: -20 }, 16)]);
+      width = 75;
+    } else if (letter === 'c') {
+      strokes.push([...sampleCubic({ x: 60, y: -52 }, { x: 48, y: -72 }, { x: 20, y: -68 }, { x: 12, y: -36 }, 16), ...sampleCubic({ x: 12, y: -36 }, { x: 5, y: -5 }, { x: 25, y: 8 }, { x: 58, y: -8 }, 20)]);
+      width = 68;
+    } else if (letter === 'd') {
+      strokes.push(sampleLine({ x: 70, y: -96 }, { x: 70, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 70, y: -10 }, { x: 30, y: -76 }, { x: 12, y: -42 }, { x: 25, y: -8 }, 18), ...sampleCubic({ x: 25, y: -8 }, { x: 35, y: 10 }, { x: 62, y: 8 }, { x: 70, y: -20 }, 16)]);
+      width = 80;
+    } else if (letter === 'f') {
+      strokes.push([...sampleCubic({ x: 48, y: -96 }, { x: 42, y: -102 }, { x: 28, y: -100 }, { x: 24, y: -90 }, 10), ...sampleLine({ x: 24, y: -90 }, { x: 24, y: 0 }, 24)]);
+      strokes.push(sampleLine({ x: 8, y: -60 }, { x: 48, y: -60 }, 10));
+      width = 56;
+    } else if (letter === 'g') {
+      strokes.push([...sampleCubic({ x: 58, y: -42 }, { x: 56, y: -72 }, { x: 30, y: -78 }, { x: 17, y: -58 }, 16), ...sampleCubic({ x: 17, y: -58 }, { x: -2, y: -28 }, { x: 13, y: 5 }, { x: 42, y: -2 }, 18), ...sampleCubic({ x: 42, y: -2 }, { x: 59, y: -6 }, { x: 66, y: -25 }, { x: 58, y: -42 }, 16)]);
+      strokes.push([...sampleCubic({ x: 63, y: -72 }, { x: 59, y: -46 }, { x: 60, y: -10 }, { x: 60, y: 20 }, 18), ...sampleCubic({ x: 60, y: 20 }, { x: 58, y: 38 }, { x: 35, y: 42 }, { x: 18, y: 28 }, 12)]);
+      width = 78;
+    } else if (letter === 'h') {
+      strokes.push(sampleLine({ x: 15, y: -96 }, { x: 15, y: 0 }, 26));
+      strokes.push([...sampleCubic({ x: 15, y: -48 }, { x: 32, y: -76 }, { x: 62, y: -62 }, { x: 62, y: 0 }, 24)]);
+      width = 75;
+    } else if (letter === 'i') {
+      strokes.push(sampleLine({ x: 18, y: -72 }, { x: 18, y: 0 }, 20));
+      strokes.push([...sampleCubic({ x: 18, y: -86 }, { x: 18, y: -92 }, { x: 22, y: -96 }, { x: 28, y: -92 }, 6), ...sampleCubic({ x: 28, y: -92 }, { x: 32, y: -88 }, { x: 28, y: -82 }, { x: 18, y: -86 }, 6)]);
+      width = 36;
+    } else if (letter === 'j') {
+      strokes.push([...sampleLine({ x: 28, y: -72 }, { x: 28, y: 20 }, 24), ...sampleCubic({ x: 28, y: 20 }, { x: 26, y: 40 }, { x: 10, y: 42 }, { x: 2, y: 28 }, 12)]);
+      strokes.push([...sampleCubic({ x: 28, y: -86 }, { x: 28, y: -92 }, { x: 32, y: -96 }, { x: 38, y: -92 }, 6), ...sampleCubic({ x: 38, y: -92 }, { x: 42, y: -88 }, { x: 38, y: -82 }, { x: 28, y: -86 }, 6)]);
+      width = 42;
+    } else if (letter === 'k') {
+      strokes.push(sampleLine({ x: 15, y: -96 }, { x: 15, y: 0 }, 26));
+      strokes.push(sampleLine({ x: 52, y: -72 }, { x: 15, y: -32 }, 12));
+      strokes.push(sampleLine({ x: 28, y: -48 }, { x: 58, y: 0 }, 14));
+      width = 62;
+    } else if (letter === 'm') {
+      strokes.push(sampleLine({ x: 12, y: -72 }, { x: 12, y: 0 }, 20));
+      strokes.push([...sampleCubic({ x: 12, y: -56 }, { x: 25, y: -78 }, { x: 42, y: -68 }, { x: 42, y: 0 }, 20)]);
+      strokes.push([...sampleCubic({ x: 42, y: -56 }, { x: 55, y: -78 }, { x: 72, y: -68 }, { x: 72, y: 0 }, 20)]);
+      width = 85;
+    } else if (letter === 'o') {
+      strokes.push([...sampleCubic({ x: 40, y: -74 }, { x: 15, y: -70 }, { x: 8, y: -50 }, { x: 8, y: -36 }, 14), ...sampleCubic({ x: 8, y: -36 }, { x: 8, y: -22 }, { x: 15, y: 2 }, { x: 40, y: 2 }, 14), ...sampleCubic({ x: 40, y: 2 }, { x: 65, y: -2 }, { x: 72, y: -22 }, { x: 72, y: -36 }, 14), ...sampleCubic({ x: 72, y: -36 }, { x: 72, y: -50 }, { x: 65, y: -70 }, { x: 40, y: -74 }, 14)]);
+      width = 80;
+    } else if (letter === 'p') {
+      strokes.push(sampleLine({ x: 18, y: -72 }, { x: 18, y: 32 }, 26));
+      strokes.push([
+        ...sampleCubic({ x: 18, y: -66 }, { x: 52, y: -82 }, { x: 78, y: -56 }, { x: 70, y: -31 }, 18),
+        ...sampleCubic({ x: 70, y: -31 }, { x: 61, y: -5 }, { x: 29, y: -9 }, { x: 18, y: -31 }, 18),
+      ]);
+      width = 82;
+    } else if (letter === 'q') {
+      strokes.push([...sampleCubic({ x: 58, y: -42 }, { x: 56, y: -72 }, { x: 30, y: -78 }, { x: 17, y: -58 }, 16), ...sampleCubic({ x: 17, y: -58 }, { x: -2, y: -28 }, { x: 13, y: 5 }, { x: 42, y: -2 }, 18), ...sampleCubic({ x: 42, y: -2 }, { x: 59, y: -6 }, { x: 66, y: -25 }, { x: 58, y: -42 }, 16)]);
+      strokes.push([...sampleCubic({ x: 63, y: -72 }, { x: 59, y: -46 }, { x: 60, y: -10 }, { x: 64, y: 32 }, 26)]);
+      width = 78;
+    } else if (letter === 'r') {
+      strokes.push(sampleLine({ x: 15, y: -72 }, { x: 15, y: 0 }, 20));
+      strokes.push([...sampleCubic({ x: 15, y: -58 }, { x: 28, y: -78 }, { x: 52, y: -72 }, { x: 58, y: -52 }, 12)]);
+      width = 62;
+    } else if (letter === 's') {
+      strokes.push([...sampleCubic({ x: 58, y: -56 }, { x: 45, y: -75 }, { x: 18, y: -70 }, { x: 12, y: -50 }, 14), ...sampleCubic({ x: 12, y: -50 }, { x: 8, y: -35 }, { x: 22, y: -32 }, { x: 35, y: -34 }, 12), ...sampleCubic({ x: 35, y: -34 }, { x: 52, y: -36 }, { x: 62, y: -22 }, { x: 58, y: -12 }, 12), ...sampleCubic({ x: 58, y: -12 }, { x: 52, y: 5 }, { x: 22, y: 5 }, { x: 8, y: -15 }, 14)]);
+      width = 66;
+    } else if (letter === 'u') {
+      strokes.push([...sampleLine({ x: 15, y: -72 }, { x: 15, y: -20 }, 16), ...sampleCubic({ x: 15, y: -20 }, { x: 15, y: 5 }, { x: 28, y: 8 }, { x: 40, y: 0 }, 12), ...sampleCubic({ x: 40, y: 0 }, { x: 50, y: -8 }, { x: 62, y: 5 }, { x: 62, y: -20 }, 12), ...sampleLine({ x: 62, y: -20 }, { x: 62, y: 0 }, 6)]);
+      width = 77;
+    } else if (letter === 'v') {
+      strokes.push(sampleLine({ x: 12, y: -72 }, { x: 35, y: 0 }, 20));
+      strokes.push(sampleLine({ x: 35, y: 0 }, { x: 58, y: -72 }, 20));
+      width = 70;
+    } else if (letter === 'w') {
+      strokes.push(sampleLine({ x: 8, y: -72 }, { x: 20, y: 0 }, 20));
+      strokes.push(sampleLine({ x: 20, y: 0 }, { x: 35, y: -50 }, 14));
+      strokes.push(sampleLine({ x: 35, y: -50 }, { x: 50, y: 0 }, 14));
+      strokes.push(sampleLine({ x: 50, y: 0 }, { x: 62, y: -72 }, 20));
+      width = 70;
+    } else if (letter === 'y') {
+      strokes.push(sampleLine({ x: 12, y: -72 }, { x: 35, y: 0 }, 20));
+      strokes.push([...sampleLine({ x: 58, y: -72 }, { x: 35, y: 0 }, 20), ...sampleLine({ x: 35, y: 0 }, { x: 25, y: 25 }, 8), ...sampleCubic({ x: 25, y: 25 }, { x: 18, y: 40 }, { x: 5, y: 42 }, { x: -2, y: 30 }, 10)]);
+      width = 70;
+    } else if (letter === 'z') {
+      strokes.push(sampleLine({ x: 12, y: -72 }, { x: 58, y: -72 }, 14));
+      strokes.push(sampleLine({ x: 58, y: -72 }, { x: 12, y: 0 }, 20));
+      strokes.push(sampleLine({ x: 12, y: 0 }, { x: 58, y: 0 }, 14));
+      width = 70;
+    } else if (letter === 'l') {
+      strokes.push([
+        ...sampleCubic({ x: 28, y: -96 }, { x: 16, y: -70 }, { x: 18, y: -27 }, { x: 25, y: -3 }, 28),
+        ...sampleCubic({ x: 25, y: -3 }, { x: 34, y: 5 }, { x: 47, y: -2 }, { x: 50, y: -9 }, 10),
+      ]);
+      width = 54;
+    } else if (letter === 'e') {
+      strokes.push([
+        ...sampleCubic({ x: 60, y: -38 }, { x: 52, y: -65 }, { x: 19, y: -66 }, { x: 12, y: -42 }, 18),
+        ...sampleCubic({ x: 12, y: -42 }, { x: 3, y: -10 }, { x: 44, y: 10 }, { x: 69, y: -18 }, 24),
+        ...sampleLine({ x: 14, y: -39 }, { x: 59, y: -39 }, 10),
+      ]);
+      width = 78;
+    } else if (letter === 'x') {
+      strokes.push(sampleLine({ x: 14, y: -66 }, { x: 61, y: 0 }, 20));
+      strokes.push(sampleLine({ x: 60, y: -66 }, { x: 13, y: 0 }, 20));
+      width = 78;
+    } else if (letter === 'n') {
+      strokes.push([
+        ...sampleLine({ x: 15, y: 0 }, { x: 15, y: -62 }, 16),
+        ...sampleCubic({ x: 15, y: -62 }, { x: 34, y: -84 }, { x: 72, y: -67 }, { x: 70, y: 0 }, 28),
+      ]);
+      width = 82;
+    } else if (letter === 't') {
+      strokes.push(sampleLine({ x: 34, y: -86 }, { x: 34, y: 0 }, 22));
+      strokes.push(sampleLine({ x: 12, y: -55 }, { x: 59, y: -55 }, 12));
+      strokes.push(sampleCubic({ x: 34, y: 0 }, { x: 45, y: 6 }, { x: 58, y: 1 }, { x: 64, y: -8 }, 10));
+      width = 70;
+    } else if (letter === ' ') {
+      width = 32;
+    }
+
+    return { strokes, width };
+  };
+
+  const transformPoints = (points: Point[], scale: number, dx: number, dy: number): Point[] => {
+    return points.map((p) => ({ x: p.x * scale + dx, y: p.y * scale + dy }));
+  };
+
+  const makeWord = (word: string, x: number, baseline: number, scale = 1) => {
+    const strokes: Point[][] = [];
+    let cursor = x;
+
+    for (const ch of word) {
+      if (ch === ' ') {
+        cursor += 32 * scale;
+        continue;
+      }
+      const g = glyph(ch);
+      g.strokes.forEach((stroke) => strokes.push(transformPoints(stroke, scale, cursor, baseline)));
+      cursor += g.width * scale + 5 * scale;
+    }
+
+    return { strokes, width: cursor - x };
+  };
+
+  const measureWordWidth = (text: string, scale: number) => {
+    return makeWord(text, 0, 0, scale).width;
+  };
+
+  const getRepeatCount = (row: LetterRow) => {
+    const available = writingArea.right - writingArea.x;
+    const wordWidth = measureWordWidth(row.text, row.scale || 1);
+    const desiredRepeats = row.desiredRepeats || 3;
+    const minRepeats = row.minRepeats || 1;
+
+    for (let count = desiredRepeats; count >= minRepeats; count--) {
+      const total = wordWidth * count + writingArea.gap * (count - 1);
+      if (total <= available) return count;
+    }
+
+    return 1;
+  };
+
+  const pathFromPoints = (points: Point[]): string => {
+    if (!points.length) return '';
+    return 'M ' + points.map((p) => `${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' L ');
+  };
+
+  const distance = (a: Point, b: Point): number => {
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  };
+
+  const nearestDistanceToSamples = (point: Point, samples: Point[]): number => {
+    let min = Infinity;
+    for (const sample of samples) {
+      const d = distance(point, sample);
+      if (d < min) min = d;
+    }
+    return min;
+  };
+
+  const calculateItemScore = (item: TraceItem) => {
+    const points = item.userPoints;
+    if (points.length < 5) return { accuracy: 0, coverage: 0, minStrokeCoverage: 0 };
+
+    let closeCount = 0;
+    let veryFarCount = 0;
+
+    for (const p of points) {
+      const d = nearestDistanceToSamples(p, item.samples);
+      if (d <= tolerance) closeCount++;
+      if (d > tolerance * 2.2) veryFarCount++;
+    }
+
+    let covered = 0;
+    const strokeStats = new Map<number, { total: number; covered: number }>();
+
+    for (const sample of item.samples) {
+      if (!strokeStats.has(sample.strokeIndex)) {
+        strokeStats.set(sample.strokeIndex, { total: 0, covered: 0 });
+      }
+      strokeStats.get(sample.strokeIndex)!.total++;
+
+      let isCovered = false;
+      for (const p of points) {
+        if (distance(sample, p) <= tolerance * 1.05) {
+          isCovered = true;
+          break;
+        }
+      }
+
+      if (isCovered) {
+        covered++;
+        strokeStats.get(sample.strokeIndex)!.covered++;
+      }
+    }
+
+    const strokeCoverages = [...strokeStats.values()].map((stat) => stat.covered / stat.total);
+    const minStrokeCoverage = strokeCoverages.length ? Math.min(...strokeCoverages) : 0;
+
+    const closeness = closeCount / points.length;
+    const coverage = covered / item.samples.length;
+    const farPenalty = Math.min(0.25, (veryFarCount / points.length) * 0.35);
+    const score = Math.round(Math.max(0, Math.min(1, closeness * 0.62 + coverage * 0.48 - farPenalty)) * 100);
+
+    return { accuracy: score, coverage, minStrokeCoverage };
+  };
+
+  const clientToSvg = (clientX: number, clientY: number): Point => {
+    if (!svgRef.current) return { x: 0, y: 0 };
+    const pt = svgRef.current.createSVGPoint();
+    pt.x = clientX;
+    pt.y = clientY;
+    return pt.matrixTransform(svgRef.current.getScreenCTM()!.inverse());
+  };
+
+  const findNearestItem = (point: Point): TraceItem | null => {
+    let best: TraceItem | null = null;
+    let bestDistance = Infinity;
+
+    for (const item of items) {
+      if (item.done) continue;
+      const nearBox =
+        point.x >= item.x - 38 &&
+        point.x <= item.x + item.width + 58 &&
+        point.y >= item.yTop - 34 &&
+        point.y <= item.yBase + 48;
+      if (!nearBox) continue;
+
+      const d = nearestDistanceToSamples(point, item.samples);
+      if (d < bestDistance) {
+        bestDistance = d;
+        best = item;
+      }
+    }
+
+    return bestDistance <= 60 ? best : null;
+  };
+
+  const handlePointerDown = (e: React.PointerEvent) => {
+    e.preventDefault();
+    const p = clientToSvg(e.clientX, e.clientY);
+    const item = findNearestItem(p);
+
+    if (!item) {
+      setStatusClass('bad');
+      setStatusMessage('Начни ближе к пунктиру.');
+      return;
+    }
+
+    setActiveItem(item);
+    setActiveStrokePoints([p]);
+    setIsDrawing(true);
+    setStatusClass('');
+    setStatusMessage(`Пишем "${item.text}". Веди по пунктиру.`);
+
+    // Add initial point
+    item.userPoints.push(p);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDrawing || !activeItem) return;
+    e.preventDefault();
+
+    const p = clientToSvg(e.clientX, e.clientY);
+    setActiveStrokePoints((prev) => [...prev, p]);
+    activeItem.userPoints.push(p);
+
+    const result = calculateItemScore(activeItem);
+    setStatusMessage(
+      `Точность: ${result.accuracy}% · покрытие: ${Math.round(result.coverage * 100)}%`
+    );
+  };
+
+  const handlePointerUp = () => {
+    if (!isDrawing || !activeItem) {
+      setIsDrawing(false);
+      return;
+    }
+
+    activeItem.attempts.push([...activeStrokePoints]);
+    const result = calculateItemScore(activeItem);
+
+    if (result.accuracy < 48) {
+      setStatusClass('bad');
+      setStatusMessage(`Слишком далеко: ${result.accuracy}%. Попробуй ближе.`);
+    } else if (result.accuracy >= passAccuracy && result.coverage >= passCoverage && result.minStrokeCoverage >= 0.72) {
+      // Mark as done
+      activeItem.done = true;
+      setStatusClass('good');
+      setStatusMessage(`Зачёт: "${activeItem.text}" написано. Точность ${result.accuracy}%!`);
+      setDoneCount((prev) => prev + 1);
+    } else {
+      setStatusClass('');
+      setStatusMessage(
+        `Пока не зачёт: ${result.accuracy}%, покрытие ${Math.round(result.coverage * 100)}%. Допиши до конца.`
+      );
+    }
+
+    setItems([...items]); // Trigger re-render
+    setActiveItem(null);
+    setActiveStrokePoints([]);
+    setIsDrawing(false);
+  };
+
+  // Build worksheet on mount or config change
+  useEffect(() => {
+    const newItems: TraceItem[] = [];
+    let globalRowIndex = 0;
+
+    config.rows.forEach((row) => {
+      // Split text by "+" to create multiple lines
+      const words = row.text.split('+').map(w => w.trim()).filter(w => w.length > 0);
+
+      words.forEach((wordText, wordIdx) => {
+        // Each word gets its own line, no repeats
+        const scale = row.scale || 1;
+        const wordWidth = measureWordWidth(wordText, scale);
+        const startX = writingArea.x + Math.max(0, (writingArea.right - writingArea.x - wordWidth) / 2);
+
+        const yTop = 225 + globalRowIndex * 125;
+        const yBase = yTop + 80;
+        const baseline = yBase; // baseline должна совпадать с нижней линией
+
+        const x = startX;
+        const word = makeWord(wordText, x, baseline, scale);
+
+        const samples: (Point & { strokeIndex: number; pointIndex: number })[] = [];
+        word.strokes.forEach((stroke, strokeIndex) => {
+          stroke.forEach((p, pointIndex) => samples.push({ ...p, strokeIndex, pointIndex }));
+        });
+
+        newItems.push({
+          id: `${globalRowIndex}-0`,
+          text: wordText,
+          x,
+          yTop,
+          yBase,
+          width: word.width,
+          strokes: word.strokes,
+          samples,
+          userPoints: [],
+          attempts: [],
+          done: false,
+          lastAccuracy: 0,
+          lastCoverage: 0,
+        });
+
+        globalRowIndex++;
+      });
+    });
+
+    setItems(newItems);
+    setDoneCount(0);
+  }, [config]);
+
+  return (
+    <TVFrame>
+      <div className="w-full h-full flex flex-col overflow-hidden" style={{
+        background: 'radial-gradient(circle at top left, rgba(255, 205, 118, 0.34), transparent 30%), radial-gradient(circle at bottom right, rgba(108, 176, 255, 0.28), transparent 32%), linear-gradient(135deg, #fff8ec 0%, #eef6ff 100%)'
+      }}>
+        {/* Header */}
+        <div className="px-3 py-2 flex justify-between items-center">
+          <div>
+            <h2 className="text-xl font-bold text-gray-800">{config.title}</h2>
+            <p className="text-xs text-gray-600">{config.subtitle}</p>
+          </div>
+          <div className="px-3 py-1 bg-blue-100 rounded-full font-bold text-blue-800 text-sm">
+            Готово: {doneCount} из {items.length}
+          </div>
+        </div>
+
+        {/* Board */}
+        <div className="flex-1 px-3 pb-3 overflow-hidden">
+          <div
+            ref={boardRef}
+            className="relative w-full h-full bg-white rounded-3xl border-2 border-blue-100 shadow-xl overflow-hidden"
+            style={{ touchAction: 'none', userSelect: 'none' }}
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+          >
+            <svg ref={svgRef} viewBox="0 0 1240 720" className="w-full h-full">
+              <defs>
+                <linearGradient id="greenHeader" x1="0" x2="1" y1="0" y2="1">
+                  <stop offset="0" stopColor="#8bcf55" />
+                  <stop offset="1" stopColor="#2f8e3f" />
+                </linearGradient>
+              </defs>
+
+              {/* Header */}
+              <rect x="26" y="20" width="1188" height="150" rx="30" fill="url(#greenHeader)" stroke="#378c32" strokeWidth="3" />
+              <text x="620" y="77" fontSize="30" fontWeight="950" fill="#fff" textAnchor="middle" paintOrder="stroke" stroke="rgba(39, 99, 32, 0.55)" strokeWidth="5" strokeLinejoin="round">
+                ✏️ {config.title}
+              </text>
+              <text x="620" y="120" fontSize="26" fontWeight="900" fill="rgba(255,255,255,0.9)" textAnchor="middle">
+                {config.subtitle}
+              </text>
+
+              {/* Row lines and icons */}
+              {(() => {
+                const lines: React.ReactElement[] = [];
+                let globalRowIdx = 0;
+
+                config.rows.forEach((row, rowIdx) => {
+                  const words = row.text.split('+').map(w => w.trim()).filter(w => w.length > 0);
+
+                  words.forEach((wordText, wordIdx) => {
+                    const yTop = 225 + globalRowIdx * 125;
+                    const yMid = yTop + 40;
+                    const yBase = yTop + 80;
+
+                    lines.push(
+                      <g key={`row-${rowIdx}-${wordIdx}`}>
+                        <line x1="155" y1={yTop} x2="1190" y2={yTop} stroke="#b9d8ff" strokeWidth="2" />
+                        <line x1="155" y1={yMid} x2="1190" y2={yMid} stroke="#b9d8ff" strokeWidth="1.5" strokeDasharray="8 9" opacity="0.9" />
+                        <line x1="155" y1={yBase} x2="1190" y2={yBase} stroke="#8fc2ff" strokeWidth="2.7" />
+
+                        <rect x="45" y={yTop - 12} width="78" height="92" rx="18" fill="#fbfff8" stroke="#b9d9aa" strokeWidth="2.5" />
+                        <text x="84" y={yTop + 32} fontSize="44" textAnchor="middle" dominantBaseline="middle">{row.icon}</text>
+                        <text x="84" y={yTop + 70} fontSize="16" fontWeight="900" fill="#5b734c" textAnchor="middle">{row.label}</text>
+                      </g>
+                    );
+
+                    globalRowIdx++;
+                  });
+                });
+
+                return lines;
+              })()}
+
+              {/* Guide paths and user paths */}
+              {items.map((item) => (
+                <g key={item.id}>
+                  {/* Guide (dotted template) */}
+                  {item.strokes.map((stroke, strokeIdx) => (
+                    <path
+                      key={`guide-${strokeIdx}`}
+                      d={pathFromPoints(stroke)}
+                      fill="none"
+                      stroke="rgba(80, 95, 118, 0.58)"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeDasharray="1 17"
+                      opacity={item.done ? 0.14 : 0.92}
+                    />
+                  ))}
+
+                  {/* Start dot */}
+                  {!item.done && item.samples[0] && (
+                    <>
+                      <circle
+                        cx={item.samples[0].x}
+                        cy={item.samples[0].y}
+                        r="7"
+                        fill="#20bf55"
+                        stroke="#fff"
+                        strokeWidth="3.5"
+                      />
+                      <path
+                        d={`M ${item.samples[0].x + 14} ${item.samples[0].y} L ${item.samples[0].x + 42} ${item.samples[0].y}`}
+                        stroke="#2f80ed"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        fill="none"
+                        opacity="0.7"
+                      />
+                    </>
+                  )}
+
+                  {/* User drawn paths */}
+                  {item.attempts.map((attempt, attemptIdx) => (
+                    <polyline
+                      key={`user-${attemptIdx}`}
+                      points={attempt.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+                      fill="none"
+                      stroke="#2f80ed"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.95"
+                    />
+                  ))}
+
+                  {/* Current active stroke */}
+                  {activeItem?.id === item.id && activeStrokePoints.length > 0 && (
+                    <polyline
+                      points={activeStrokePoints.map((p) => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ')}
+                      fill="none"
+                      stroke="#2f80ed"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      opacity="0.95"
+                    />
+                  )}
+                </g>
+              ))}
+            </svg>
+          </div>
+        </div>
+
+        {/* Status bar */}
+        <div className={`mx-6 mb-6 px-4 py-3 rounded-2xl font-bold ${
+          statusClass === 'good' ? 'bg-green-100 text-green-800' :
+          statusClass === 'bad' ? 'bg-red-100 text-red-800' :
+          'bg-yellow-100 text-yellow-800'
+        }`}>
+          {statusMessage}
+        </div>
+      </div>
+    </TVFrame>
+  );
+};
+
+export default LetterTraceGame;
