@@ -326,7 +326,7 @@ const LetterRaceGame: React.FC<Props> = ({ config, onComplete }) => {
         {/* Left Panel */}
         <aside className="bg-white/90 backdrop-blur-sm rounded-[20px] p-3 shadow-2xl border-[3px] border-white/98 flex flex-col gap-[6px] overflow-hidden">
           <div>
-            <h1 className="text-[20px] font-bold text-gray-900 leading-tight">{config.title}</h1>
+            <h1 className="text-[20px] font-bold text-gray-900 leading-tight">Гонки {config.letterA} / {config.letterB}</h1>
             <p className="text-xs text-gray-600 leading-snug mt-0.5">{config.subtitle}</p>
           </div>
 
@@ -486,8 +486,8 @@ const LetterRaceGame: React.FC<Props> = ({ config, onComplete }) => {
                 <div
                   key={letter.id}
                   id={`letter-${letter.id}`}
-                  className={`absolute z-[8] w-[58px] h-[58px] rounded-full flex items-center justify-center text-[36px] font-black text-gray-900 border-4 shadow-lg transition-all ${
-                    letter.hit ? 'opacity-0 scale-[1.65] rotate-[16deg]' : ''
+                  className={`absolute z-[8] w-[58px] h-[58px] rounded-full flex items-center justify-center text-[36px] font-black text-gray-900 border-4 shadow-lg transition-opacity duration-150 ${
+                    letter.hit ? 'opacity-0' : ''
                   } ${
                     isGood
                       ? 'border-green-500 bg-gradient-to-br from-green-100 to-green-300'
