@@ -11,6 +11,7 @@ import InteractiveActivityRenderer from './ActivityRenderers/InteractiveActivity
 import GeniallyActivityRenderer from './ActivityRenderers/GeniallyActivityRenderer';
 import CompleteActivityRenderer from './ActivityRenderers/CompleteActivityRenderer';
 import DragWordsActivityRenderer from './ActivityRenderers/DragWordsActivityRenderer';
+import SecretKeyQuestActivityRenderer from './ActivityRenderers/SecretKeyQuestActivityRenderer';
 
 interface ActivityRendererProps {
   activity: Activity;
@@ -216,6 +217,21 @@ const ActivityRenderer = ({
         isTeacher={isTeacher}
         lessonId={lessonId}
         groupId={groupId}
+        onEdit={onEdit}
+      />
+    );
+  }
+
+  // Secret Key quest (мини-квест: буквы + приветствия → золотой ключ)
+  if (activity.type === 'secret-key-quest') {
+    return (
+      <SecretKeyQuestActivityRenderer
+        activity={activity}
+        isViewMode={isViewMode}
+        isTeacher={isTeacher}
+        lessonId={lessonId}
+        groupId={groupId}
+        sessionId={sessionId}
         onEdit={onEdit}
       />
     );
