@@ -1,0 +1,42 @@
+name: Deploy
+
+# Деплой через self-hosted runner на самой VM.
+# Runner опрашивает GitHub ИСХОДЯЩИМ соединением, поэтому бан входящих по иностранному IP не мешает.
+# На push в main: checkout в рабочей папке runner'а -> rsync в боевую папку -> build -> pm2 restart.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}   # позволяет запустить деплой вручную из вкладки Actions
+
+concurrency:
+  group: deploy-kids-app
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: [self-hosted, kids-app]   # job поедет на runner с этим label
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync to live dir, build & restart
+        run: |
+          set -euo pipefail
+          APP_DIR="/var/www/kids-app"        # боевая папка (PM2: kids-app-frontend)
+
+          # Синхронизируем код. БЕЗ --delete, чтобы не трогать runtime-данные на сервере.
+          # node_modules/.next/.env остаются серверными.
+          rsync -a \
+            --exclude '.git' \
+            --exclude '.github' \
+            --exclude 'node_modules' \
+            --exclude '.next' \
+            --exclude '.env' --exclude '.env.*' \
+            ./ "$APP_DIR/"
+
+          cd "$APP_DIR"
+          npm install
+          rm -rf .next                       # инкрементальная сборка ломает client manifest
+          npm run build
+          pm2 restart kids-app-frontend --update-env
+          echo "✅ kids-english-app deployed -> https://uniplay-kids.ru"
