@@ -1,15 +1,15 @@
 // Get island image path from public directory
 export const getIslandImage = (islandId: string): Promise<string> => {
   const imageMap: Record<string, string> = {
-    'island-1': '/img/1.png',
-    'island-2': '/img/2.png',
-    'island-3': '/img/3.png',
-    'island-4': '/img/4.png',
-    'island-5': '/img/5.png',
-    'island-6': '/img/6.png',
-    'island-7': '/img/7.png',
-    'island-8': '/img/8.png',
-    'island-9': '/img/9.png',
+    'island-1': '/img/island-1.webp',
+    'island-2': '/img/island-2.webp',
+    'island-3': '/img/island-3.webp',
+    'island-4': '/img/island-4.webp',
+    'island-5': '/img/island-5.webp',
+    'island-6': '/img/island-6.webp',
+    'island-7': '/img/island-7.webp',
+    'island-8': '/img/island-8.webp',
+    'island-9': '/img/island-9.webp',
   };
 
   const imagePath = imageMap[islandId] || imageMap['island-1'];
