@@ -34,7 +34,7 @@ export const useLessonData = ({
 }: UseLessonDataParams): UseLessonDataReturn => {
   const [currentLessonId, setCurrentLessonId] = useState<string | null>(null);
   const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
-  const [unitTitle, setUnitTitle] = useState(`Unit ${lessonNumber}: Hello!`);
+  const [unitTitle, setUnitTitle] = useState(lessonNumber ? `Unit ${lessonNumber}: Hello!` : 'Новый урок');
   const [activities, setActivities] = useState<Activity[]>([]);
 
   // Load current lesson and groupId

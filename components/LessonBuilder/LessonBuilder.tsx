@@ -29,9 +29,12 @@ const ACTIVITY_TYPES = [
 
 const LessonBuilder = () => {
   const navigate = useNavigate();
-  const { islandId, lessonNumber } = useParams<{ islandId: string; lessonNumber: string }>();
+  const { islandId: islandIdFromParams, lessonNumber } = useParams<{ islandId: string; lessonNumber: string }>();
   const [searchParams] = useSearchParams();
   const lessonIdFromUrl = searchParams.get('lessonId');
+  const islandIdFromSearch = searchParams.get('islandId') || undefined;
+  const courseIdFromUrl = searchParams.get('courseId') || undefined;
+  const islandId = islandIdFromParams || islandIdFromSearch;
   const { user } = useAuth();
 
   // WebSocket session for live lesson
@@ -78,6 +81,7 @@ const LessonBuilder = () => {
   const lessonActions = useLessonActions({
     islandId,
     lessonNumber,
+    courseId: courseIdFromUrl,
     unitTitle,
     currentLessonId,
     currentGroupId,

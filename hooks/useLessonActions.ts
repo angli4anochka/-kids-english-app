@@ -4,6 +4,7 @@ import type { Activity } from '../types';
 interface UseLessonActionsParams {
   islandId?: string;
   lessonNumber?: string;
+  courseId?: string;
   unitTitle: string;
   currentLessonId: string | null;
   currentGroupId: number | null;
@@ -28,6 +29,7 @@ interface UseLessonActionsReturn {
 export const useLessonActions = ({
   islandId,
   lessonNumber,
+  courseId,
   unitTitle,
   currentLessonId,
   currentGroupId,
@@ -247,7 +249,8 @@ export const useLessonActions = ({
             description: `Урок ${lessonNumber}`,
             islandId: islandNumber,
             emoji: '📚',
-            groupId: currentGroupId
+            groupId: currentGroupId,
+            courseId: courseId || null,
           }),
         });
 
