@@ -60,7 +60,7 @@ export const useLessonData = ({
 
     // Only search by island if no lessonId in URL
     const loadCurrentLesson = async () => {
-      if (!islandId) return;
+      if (!islandId || !lessonNumber) return;
 
       try {
         const islandNumber = parseInt(islandId.replace('island-', ''));
