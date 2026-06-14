@@ -79,20 +79,27 @@ const PresentationActivity = ({
   // Attach stream to <video> after it mounts (it only renders when isScreenSharing === true)
   useEffect(() => {
     if (isScreenSharing && videoRef.current && streamRef.current) {
-      videoRef.current.srcObject = streamRef.current;
-      videoRef.current.muted = !isTeacher;
-      videoRef.current.volume = 1.0;
-      pushDebug('▶ attaching stream, paused=' + videoRef.current.paused + ' muted=' + videoRef.current.muted);
-      const playPromise = videoRef.current.play?.();
-      if (playPromise && typeof playPromise.catch === 'function') {
-        playPromise
-          .then(() => pushDebug('▶ play() resolved'))
+      const vid = videoRef.current;
+      vid.srcObject = streamRef.current;
+      // Students are always muted — sound comes from teacher's audio (Zoom/mic)
+      vid.muted = true;
+      pushDebug('▶ attaching stream, paused=' + vid.paused + ' muted=' + vid.muted);
+
+      const tryPlay = (attempt: number) => {
+        vid.play?.()
+          .then(() => { pushDebug('▶ play() resolved (attempt ' + attempt + ')'); setNeedsTapToPlay(false); })
           .catch((err) => {
-            console.warn('[WebRTC] video.play() failed:', err);
+            console.warn('[WebRTC] video.play() failed (attempt ' + attempt + '):', err);
             pushDebug('❌ play() failed: ' + (err?.name || err?.message));
-            setNeedsTapToPlay(true);
+            if (attempt < 3) {
+              setTimeout(() => tryPlay(attempt + 1), 300 * attempt);
+            } else {
+              setNeedsTapToPlay(true);
+            }
           });
-      }
+      };
+
+      tryPlay(1);
     }
   }, [isScreenSharing, isTeacher]);
 
