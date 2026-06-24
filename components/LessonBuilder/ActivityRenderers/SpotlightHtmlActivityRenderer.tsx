@@ -38,6 +38,7 @@ import SpotlightEx35 from './SpotlightEx35';
 import SpotlightEx36 from './SpotlightEx36';
 import SpotlightEx37 from './SpotlightEx37';
 import SpotlightEx38 from './SpotlightEx38';
+import SpotlightEx39 from './SpotlightEx39';
 
 interface Props {
   activity: Activity;
@@ -95,6 +96,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'mod1b-ex16': SpotlightEx36,
   'mod1b-ex17': SpotlightEx37,
   'mod1b-ex18': SpotlightEx38,
+  'have-ex1': SpotlightEx39,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
