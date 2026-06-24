@@ -12,6 +12,7 @@ import GeniallyActivityRenderer from './ActivityRenderers/GeniallyActivityRender
 import CompleteActivityRenderer from './ActivityRenderers/CompleteActivityRenderer';
 import DragWordsActivityRenderer from './ActivityRenderers/DragWordsActivityRenderer';
 import SecretKeyQuestActivityRenderer from './ActivityRenderers/SecretKeyQuestActivityRenderer';
+import SpotlightHtmlActivityRenderer from './ActivityRenderers/SpotlightHtmlActivityRenderer';
 
 interface ActivityRendererProps {
   activity: Activity;
@@ -231,6 +232,20 @@ const ActivityRenderer = ({
         isTeacher={isTeacher}
         lessonId={lessonId}
         groupId={groupId}
+        sessionId={sessionId}
+        onEdit={onEdit}
+      />
+    );
+  }
+
+  // Spotlight HTML page (embedded static rule/task pages)
+  if (activity.type === 'spotlight-html') {
+    return (
+      <SpotlightHtmlActivityRenderer
+        activity={activity}
+        isViewMode={isViewMode}
+        isTeacher={isTeacher}
+        lessonId={lessonId}
         sessionId={sessionId}
         onEdit={onEdit}
       />

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Have - common expressions</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 1600px; height: 1000px; overflow: hidden; background: #fff; font-family: "Trebuchet MS","Segoe UI",Arial,sans-serif; color: #0a0a0a; cursor: pointer; }
+    .page { width: 1600px; height: 1000px; padding: 30px 58px 40px; position: relative; overflow: hidden; background: #fff; }
+    .rule-box { width: calc(100% - 60px); margin: 0 auto 18px; border: 4px solid #df9a59; padding: 28px 34px 30px; text-align: center; font-size: 52px; line-height: 1.15; letter-spacing: .2px; font-weight: 500; }
+    .red { color: #ed0000; font-weight: 800; }
+    .bold { font-weight: 900; }
+    .content { position: relative; margin-top: 18px; max-width: 1500px; }
+    ul { margin: 0; padding-left: 55px; max-width: 1080px; list-style-position: outside; font-size: 50px; line-height: 1.55; }
+    li { padding-left: 28px; margin: 4px 0 12px; }
+    li::marker { font-size: .68em; }
+    .plane { position: absolute; right: 70px; bottom: 30px; width: 720px; border-radius: 2px; display: block; }
+    .step { opacity: 0; visibility: hidden; transform: translateY(16px); transition: opacity 420ms ease, transform 420ms ease, visibility 420ms ease; }
+    .step.show { opacity: 1; visibility: visible; transform: translateY(0); }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="rule-box">
+      We use <span class="red">have</span> in a lot of common expressions to talk about actions.
+    </section>
+    <section class="content">
+      <ul>
+        <li class="step">I usually <span class="bold">have breakfast</span> at seven o'clock.</li>
+        <li class="step">I'm going to <span class="bold">have a shower</span>.</li>
+        <li class="step">Would you like to <span class="bold">have something to eat</span>?</li>
+        <li class="step">If Bill comes this weekend we'll <span class="bold">have a party</span>.</li>
+        <li class="step">Teresa <span class="bold">had a baby</span> in June.</li>
+        <li class="step">Are you <span class="bold">having a good time</span>?</li>
+        <li class="step">'<span class="bold">Have a good flight</span>.' 'Thanks.'</li>
+      </ul>
+    </section>
+    <img class="plane step" src="/spotlight/ex13-plane.png" alt="" draggable="false" />
+  </main>
+  <script>
+    const steps = Array.from(document.querySelectorAll('.step'));
+    let cur = 0;
+    function next() { if (cur < steps.length) { steps[cur].classList.add('show'); cur++; } }
+    document.addEventListener('click', next);
+    document.addEventListener('keydown', e => {
+      if (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowRight') { e.preventDefault(); next(); }
+    });
+  </script>
+</body>
+</html>

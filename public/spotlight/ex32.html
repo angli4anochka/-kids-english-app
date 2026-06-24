@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Translate: Russian to English</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #eeeeee;
+      font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #fit {
+      position: relative;
+      width: 1600px;
+      height: 900px;
+      transform-origin: center center;
+      flex: 0 0 auto;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      width: 1600px;
+      height: 900px;
+      background: #ffffff;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .left {
+      position: absolute;
+      left: 20px;
+      top: 14px;
+      width: 650px;
+      height: 872px;
+    }
+
+    .instruction {
+      margin: 0;
+      font-size: 43px;
+      line-height: 1.14;
+      font-weight: 900;
+      color: #101010;
+    }
+
+    .characters-wrap {
+      position: absolute;
+      left: 0;
+      top: 170px;
+      width: 640px;
+      height: 520px;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .characters {
+      width: 640px;
+      height: 520px;
+      object-fit: contain;
+      object-position: center center;
+      display: block;
+      pointer-events: none;
+    }
+
+    .word-bank {
+      position: absolute;
+      left: 34px;
+      bottom: 14px;
+      width: 590px;
+      min-height: 116px;
+      background: #f8943b;
+      border: 4px solid #bd6f27;
+      color: #ffffff;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      justify-content: center;
+      gap: 10px 20px;
+      padding: 18px 22px;
+      font-size: 39px;
+      line-height: 1.06;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .right {
+      position: absolute;
+      left: 700px;
+      top: 0;
+      width: 872px;
+      height: 900px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 56px;
+      line-height: 1;
+      font-weight: 900;
+      color: #111111;
+    }
+
+    .subtitle {
+      margin: 10px 0 12px;
+      font-size: 21px;
+      line-height: 1.1;
+      color: #555555;
+      font-weight: 700;
+    }
+
+    .groups {
+      width: 100%;
+      height: 810px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .group {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      column-gap: 8px;
+      align-items: stretch;
+      width: 100%;
+    }
+
+    .label {
+      width: 52px;
+      height: 42px;
+      border: 2px solid #bdbdbd;
+      background: #ffffff;
+      color: #202020;
+      font-size: 32px;
+      line-height: 38px;
+      padding-left: 8px;
+      box-shadow: 0 0 3px rgba(0,0,0,.1);
+    }
+
+    .sentences {
+      position: relative;
+      width: 100%;
+      min-height: 58px;
+      background: #eff5c7;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 7px;
+      padding: 8px 48px 8px 10px;
+      filter: drop-shadow(0 2px 3px rgba(0,0,0,.06));
+    }
+
+    .sentences::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      width: 44px;
+      height: 44px;
+      background: #dce879;
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+      pointer-events: none;
+    }
+
+    .group-a .sentences { min-height: 120px; }
+    .group-b .sentences { min-height: 76px; }
+    .group-c .sentences { min-height: 76px; }
+    .group-d .sentences { min-height: 178px; }
+    .group-e .sentences { min-height: 170px; }
+
+    .card {
+      min-height: 48px;
+      border: 2px solid #f28a2e;
+      background: linear-gradient(#ffe8d0, #ffc891);
+      color: #0a0a0a;
+      padding: 7px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 3px 7px rgba(0,0,0,.18);
+      transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+      text-align: center;
+      font-size: 25px;
+      line-height: 1.08;
+      font-weight: 900;
+      white-space: normal;
+      font-family: inherit;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,.24);
+    }
+
+    .card.open {
+      background: linear-gradient(#fff9f1, #ffd6ad);
+    }
+
+    .w-180 { width: 180px; }
+    .w-200 { width: 200px; }
+    .w-240 { width: 240px; }
+    .w-260 { width: 260px; }
+    .w-280 { width: 280px; }
+    .w-390 { width: 390px; }
+    .w-430 { width: 430px; }
+
+    .small-text {
+      font-size: 22px;
+      line-height: 1.05;
+    }
+
+    .hint {
+      position: absolute;
+      right: 14px;
+      bottom: 5px;
+      font-size: 14px;
+      color: #777777;
+    }
+  </style>
+</head>
+<body>
+  <div id="fit">
+    <main class="page">
+      <section class="left">
+        <h1 class="instruction">Look at the drawings.<br>Translate the sentences.</h1>
+
+        <div class="characters-wrap">
+          <img class="characters" src="/spotlight/img/ex32_img0.webp" alt="Tony, Bill and Mark" />
+        </div>
+
+        <div class="word-bank">
+          <span>*age</span>
+          <span>*hair</span>
+          <span>*height</span>
+          <span>*weight</span>
+          <span>*facial features</span>
+        </div>
+      </section>
+
+      <section class="right">
+        <h2 class="title">Translate.</h2>
+        <p class="subtitle">Click a square to change Russian into English.</p>
+
+        <div class="groups">
+          <section class="group group-a">
+            <div class="label">A</div>
+            <div class="sentences">
+              <button class="card w-180" data-ru="Тони старый" data-en="Tony’s old.">Тони старый</button>
+              <button class="card w-200" data-ru="Марк молодой" data-en="Mark’s young.">Марк молодой</button>
+              <button class="card w-240" data-ru="Билл средних лет" data-en="Bill’s middle aged.">Билл средних лет</button>
+            </div>
+          </section>
+
+          <section class="group group-b">
+            <div class="label">B</div>
+            <div class="sentences">
+              <button class="card w-200" data-ru="Марк высокий" data-en="Mark’s tall.">Марк высокий</button>
+              <button class="card w-180" data-ru="Билл низкий" data-en="Bill’s short.">Билл низкий</button>
+            </div>
+          </section>
+
+          <section class="group group-c">
+            <div class="label">C</div>
+            <div class="sentences">
+              <button class="card w-200" data-ru="Тони толстый" data-en="Tony’s fat.">Тони толстый</button>
+              <button class="card w-180" data-ru="Марк худой" data-en="Mark’s slim.">Марк худой</button>
+            </div>
+          </section>
+
+          <section class="group group-d">
+            <div class="label">D</div>
+            <div class="sentences">
+              <button class="card w-260 small-text" data-ru="Уши Тони большие" data-en="Tony’s ears are big.">Уши Тони большие</button>
+              <button class="card w-280 small-text" data-ru="Нос Билла маленький" data-en="Bill’s nose is small.">Нос Билла маленький</button>
+              <button class="card w-280 small-text" data-ru="Голова Тони большая" data-en="Tony’s head is big.">Голова Тони большая</button>
+              <button class="card w-280 small-text" data-ru="Глаза Марка большие" data-en="Mark’s eyes are big.">Глаза Марка большие</button>
+              <button class="card w-260 small-text" data-ru="Рот Билла маленький" data-en="Bill’s mouth is small.">Рот Билла маленький</button>
+            </div>
+          </section>
+
+          <section class="group group-e">
+            <div class="label">E</div>
+            <div class="sentences">
+              <button class="card w-390" data-ru="Волосы Билла короткие и светлые" data-en="Bill’s hair is short and fair.">Волосы Билла короткие и светлые</button>
+              <button class="card w-390" data-ru="Волосы Тони прямые и седые" data-en="Tony’s hair is straight and grey.">Волосы Тони прямые и седые</button>
+              <button class="card w-430" data-ru="Волосы Марка длинные и волнистые" data-en="Mark’s hair is long and wavy.">Волосы Марка длинные и волнистые</button>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <div class="hint">Space: next • R: reset</div>
+    </main>
+  </div>
+
+  <script>
+    const BASE_W = 1600;
+    const BASE_H = 900;
+    const fit = document.getElementById('fit');
+    const cards = [...document.querySelectorAll('.card')];
+
+    function fitPage() {
+      const scale = Math.min(window.innerWidth / BASE_W, window.innerHeight / BASE_H);
+      fit.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+
+    function toggleCard(card) {
+      const opened = card.classList.toggle('open');
+      card.textContent = opened ? card.dataset.en : card.dataset.ru;
+    }
+
+    cards.forEach(card => {
+      card.addEventListener('click', () => toggleCard(card));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' || event.code === 'ArrowRight') {
+        event.preventDefault();
+        const next = cards.find(card => !card.classList.contains('open'));
+        if (next) toggleCard(next);
+      }
+
+      if (event.code === 'KeyR') {
+        cards.forEach(card => {
+          card.classList.remove('open');
+          card.textContent = card.dataset.ru;
+        });
+      }
+    });
+  </script>
+</body>
+</html>

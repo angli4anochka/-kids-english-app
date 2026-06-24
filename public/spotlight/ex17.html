@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questions with have got</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --orange: #dc9a52;
+      --red: #ff1d12;
+      --green: #18b85a;
+      --blue: #a8dfff;
+      --deep-blue: #1c62bf;
+      --yellow: #ffd51f;
+      --icon-red: #e70031;
+      --icon-blue: #004ba6;
+      --black: #060606;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #eeeeee;
+      font-family: "Comic Sans MS", "Trebuchet MS", Arial, sans-serif;
+      color: var(--black);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #stage {
+      position: relative;
+      width: 1536px;
+      height: 864px;
+    }
+
+    .slide {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1536px;
+      height: 864px;
+      background: var(--bg);
+      overflow: hidden;
+      transform-origin: top left;
+      cursor: pointer;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .38s ease, transform .38s ease;
+      pointer-events: none;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .rule-box {
+      position: absolute;
+      left: 42px;
+      top: 20px;
+      width: 1452px;
+      height: 124px;
+      border: 3px solid var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 10px 34px;
+    }
+
+    .rule-text {
+      font-size: 44px;
+      line-height: 1.12;
+      font-weight: 600;
+      letter-spacing: .2px;
+    }
+
+    .red {
+      color: var(--red);
+      font-weight: 800;
+      text-shadow: 0 2px 0 rgba(0,0,0,.12);
+    }
+
+    .green {
+      color: var(--green);
+      font-weight: 800;
+      text-shadow: 0 2px 0 rgba(0,0,0,.12);
+    }
+
+    .examples {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1536px;
+      height: 864px;
+    }
+
+    .icon {
+      position: absolute;
+      width: 74px;
+      height: 74px;
+      border-radius: 18px;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 78px;
+      font-weight: 900;
+      line-height: 68px;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .icon::before {
+      content: "";
+      position: absolute;
+      left: -7px;
+      top: -4px;
+      width: 74px;
+      height: 74px;
+      border-radius: 18px;
+      background: var(--yellow);
+      transform: rotate(-9deg);
+      z-index: -1;
+    }
+
+    .icon.plus {
+      left: 31px;
+      top: 172px;
+      background: var(--icon-red);
+    }
+
+    .icon.plus::after {
+      content: "+";
+      position: relative;
+      top: 0;
+    }
+
+    .icon.question {
+      left: 31px;
+      top: 324px;
+      background: var(--yellow);
+      color: #111;
+      font-size: 62px;
+      line-height: 73px;
+      transform: rotate(-7deg);
+    }
+
+    .icon.question::before {
+      background: #ff9f00;
+      transform: rotate(12deg);
+    }
+
+    .icon.question::after {
+      content: "?";
+      position: relative;
+      top: -2px;
+      transform: rotate(7deg);
+      display: block;
+    }
+
+    .example-text {
+      position: absolute;
+      font-size: 44px;
+      line-height: 1.14;
+      font-weight: 600;
+      letter-spacing: .2px;
+      white-space: normal;
+    }
+
+    .u {
+      text-decoration-line: underline;
+      text-decoration-style: double;
+      text-decoration-color: var(--red);
+      text-decoration-thickness: 3px;
+      text-underline-offset: 8px;
+    }
+
+    .pos-1 { left: 155px; top: 190px; width: 370px; }
+    .pos-2 { left: 600px; top: 190px; width: 390px; }
+    .pos-3 { left: 1118px; top: 190px; width: 390px; }
+
+    .q-1 { left: 155px; top: 338px; width: 360px; }
+    .q-2 { left: 600px; top: 338px; width: 410px; }
+    .q-3 { left: 1118px; top: 338px; width: 390px; }
+
+    .mini-box {
+      position: absolute;
+      left: 54px;
+      top: 542px;
+      width: 590px;
+      height: 312px;
+      background: #fff;
+      border: 2px solid #d8f2ff;
+      box-shadow: 0 0 16px 8px rgba(88, 190, 255, .55);
+      padding: 32px 30px 24px 145px;
+    }
+
+    .mini-icon {
+      position: absolute;
+      left: 20px;
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      text-align: center;
+      z-index: 2;
+    }
+
+    .mini-icon::before {
+      content: "";
+      position: absolute;
+      left: -6px;
+      top: -4px;
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
+      background: var(--yellow);
+      transform: rotate(-8deg);
+      z-index: -1;
+    }
+
+    .mini-icon.plus {
+      top: 19px;
+      background: var(--icon-red);
+      font-size: 67px;
+      line-height: 58px;
+    }
+
+    .mini-icon.plus::after {
+      content: "+";
+      position: relative;
+    }
+
+    .mini-icon.minus {
+      top: 122px;
+      background: var(--icon-blue);
+      font-size: 60px;
+      line-height: 54px;
+    }
+
+    .mini-icon.minus::before {
+      background: #2b6ed0;
+      transform: rotate(9deg);
+    }
+
+    .mini-icon.minus::after {
+      content: "−";
+      position: relative;
+      top: 1px;
+    }
+
+    .mini-icon.question {
+      top: 224px;
+      background: var(--yellow);
+      color: #111;
+      font-size: 53px;
+      line-height: 63px;
+      transform: rotate(-6deg);
+    }
+
+    .mini-icon.question::before {
+      background: #ff9f00;
+      transform: rotate(12deg);
+    }
+
+    .mini-icon.question::after {
+      content: "?";
+      position: relative;
+      top: -1px;
+      transform: rotate(6deg);
+      display: block;
+    }
+
+    .mini-text {
+      font-size: 40px;
+      line-height: 1.2;
+      font-weight: 600;
+      margin-bottom: 51px;
+      white-space: nowrap;
+    }
+
+    .bird-wrap {
+      position: absolute;
+      left: 944px;
+      top: 501px;
+      width: 445px;
+      height: 360px;
+    }
+
+    .bird-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .bird-line {
+      stroke: #111;
+      stroke-width: 5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <main class="slide" id="slide">
+      <section class="rule-box reveal visible" data-step="0">
+        <div class="rule-text">
+          To make questions with <span class="red">have got</span>, we put <span class="red">have/has</span> before the<br>
+          <span class="green">subject.</span>
+        </div>
+      </section>
+
+      <section class="examples">
+        <div class="icon plus reveal" data-step="1"></div>
+
+        <div class="example-text pos-1 reveal" data-step="1">
+          <span class="u">I</span> <span class="u">have got</span> a cold.
+        </div>
+
+        <div class="example-text pos-2 reveal" data-step="2">
+          <span class="u">Harry’s got</span> a fast<br>
+          car.
+        </div>
+
+        <div class="example-text pos-3 reveal" data-step="3">
+          <span class="u">Amy and Juan</span> <span class="u">have</span><br>
+          <span class="u">got</span> tickets.
+        </div>
+
+        <div class="icon question reveal" data-step="4"></div>
+
+        <div class="example-text q-1 reveal" data-step="4">
+          <span class="u">Have</span> <span class="u">you</span> <span class="u">got</span> <span class="u">a</span><br>
+          cold?
+        </div>
+
+        <div class="example-text q-2 reveal" data-step="5">
+          <span class="u">Has</span> <span class="u">Harry</span> <span class="u">got</span> a fast<br>
+          car?
+        </div>
+
+        <div class="example-text q-3 reveal" data-step="6">
+          <span class="u">Have</span> <span class="u">Amy and Juan</span><br>
+          <span class="u">got</span> tickets?
+        </div>
+      </section>
+
+      <section class="mini-box reveal" data-step="7">
+        <div class="mini-icon plus"></div>
+        <div class="mini-icon minus"></div>
+        <div class="mini-icon question"></div>
+
+        <div class="mini-text">
+          <span class="u">I</span> <span class="u">have got</span> the keys.
+        </div>
+
+        <div class="mini-text">
+          <span class="u">I</span> <span class="u">haven’t got</span> the keys.
+        </div>
+
+        <div class="mini-text" style="margin-bottom:0;">
+          <span class="u">Have</span> <span class="u">you</span> <span class="u">got</span> the keys?
+        </div>
+      </section>
+
+      <section class="bird-wrap reveal" data-step="8" aria-hidden="true">
+        <svg class="bird-svg" viewBox="0 0 445 360">
+          <ellipse cx="221" cy="198" rx="128" ry="142" fill="#98a5b2" stroke="#111" stroke-width="4"/>
+          <path d="M119 111 C145 145 160 170 209 170 C257 170 298 135 315 92 C279 72 235 61 194 72 C157 82 135 94 119 111Z" fill="#3c5975" stroke="#111" stroke-width="4"/>
+          <path d="M153 179 C183 220 230 218 268 176 C275 205 312 216 339 180 C344 225 329 269 292 291 C258 313 194 319 150 292 C110 267 104 217 119 178 C131 199 142 202 153 179Z" fill="#b9c2cb" opacity=".75"/>
+          <path d="M99 154 C69 110 50 77 28 61" class="bird-line"/>
+          <path d="M62 89 C45 55 36 33 29 14" class="bird-line"/>
+          <path d="M58 88 C42 82 27 74 10 61" class="bird-line"/>
+          <path d="M95 151 C82 118 79 93 86 70" class="bird-line"/>
+          <ellipse cx="180" cy="112" rx="20" ry="25" fill="#fff" stroke="#111" stroke-width="4"/>
+          <ellipse cx="273" cy="112" rx="20" ry="25" fill="#fff" stroke="#111" stroke-width="4"/>
+          <circle cx="182" cy="113" r="7" fill="#111"/>
+          <circle cx="270" cy="113" r="7" fill="#111"/>
+          <path d="M200 111 H116 M252 111 H335 M201 111 H252" class="bird-line"/>
+          <path d="M221 132 C201 135 193 152 202 165 C215 183 246 181 256 160 C262 145 245 132 221 132Z" fill="#1d2935" stroke="#111" stroke-width="4"/>
+          <path d="M250 195 C293 204 331 236 373 210" class="bird-line"/>
+          <path d="M368 210 C358 235 356 257 372 274" class="bird-line"/>
+          <path d="M345 306 L334 350 M345 306 L322 342 M345 306 L359 349" class="bird-line"/>
+          <path d="M226 318 L219 357 M226 318 L201 346 M226 318 L245 354" class="bird-line"/>
+          <ellipse cx="250" cy="345" rx="112" ry="14" fill="#d9d9d9"/>
+          <path d="M70 105 C104 129 126 161 143 198" stroke="#d9a15c" stroke-width="9" stroke-linecap="round" fill="none"/>
+        </svg>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const DESIGN_W = 1536;
+    const DESIGN_H = 864;
+
+    const stage = document.getElementById('stage');
+    const slide = document.getElementById('slide');
+
+    function fitSlide() {
+      const scale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      stage.style.width = `${DESIGN_W * scale}px`;
+      stage.style.height = `${DESIGN_H * scale}px`;
+      slide.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitSlide);
+    fitSlide();
+
+    const items = [...document.querySelectorAll('.reveal')]
+      .sort((a, b) => Number(a.dataset.step) - Number(b.dataset.step));
+
+    let currentStep = 0;
+
+    function showStep(step) {
+      items.forEach(el => {
+        const s = Number(el.dataset.step);
+        el.classList.toggle('visible', s <= step);
+      });
+      currentStep = step;
+    }
+
+    function nextStep() {
+      if (currentStep < items.length - 1) {
+        showStep(currentStep + 1);
+      }
+    }
+
+    function restart() {
+      showStep(0);
+    }
+
+    document.body.addEventListener('click', nextStep);
+
+    document.addEventListener('keydown', (event) => {
+      if ([' ', 'Enter', 'ArrowRight'].includes(event.key)) {
+        event.preventDefault();
+        nextStep();
+      }
+
+      if (event.key === 'Home' || event.key.toLowerCase() === 'r') {
+        restart();
+      }
+    });
+
+    showStep(0);
+  </script>
+</body>
+</html>

@@ -417,6 +417,15 @@ export default function LessonsListScreen() {
                 </select>
               </div>
 
+              {selectedCourse && (
+                <button
+                  onClick={() => navigate(`/course/${selectedCourse}`)}
+                  className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition font-semibold"
+                >
+                  📚 Книги
+                </button>
+              )}
+
               <button
                 onClick={() => setShowCreateCourseModal(true)}
                 className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition font-semibold"

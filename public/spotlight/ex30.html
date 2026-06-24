@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Appearance Vocabulary</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ececec;
+      font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #fit {
+      position: relative;
+      width: 1600px;
+      height: 900px;
+      flex: 0 0 auto;
+    }
+
+    .page {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1600px;
+      height: 900px;
+      background: radial-gradient(circle at center, #ffffff 0%, #f4f4f4 55%, #eeeeee 100%);
+      overflow: hidden;
+      user-select: none;
+    }
+
+    .title {
+      position: absolute;
+      margin: 0;
+      color: #050505;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: 1px;
+      text-align: center;
+      white-space: nowrap;
+      -webkit-text-stroke: 6px #ffffff;
+      text-shadow:
+        4px 4px 0 #ffffff,
+        -4px 4px 0 #ffffff,
+        4px -4px 0 #ffffff,
+        -4px -4px 0 #ffffff,
+        0 10px 14px rgba(0, 0, 0, 0.55);
+    }
+
+    .small-title {
+      font-size: 112px;
+    }
+
+    .facial-title {
+      font-size: 94px;
+    }
+
+    .age-title { left: 86px; top: 33px; width: 300px; }
+    .weight-title { left: 590px; top: 33px; width: 420px; }
+    .height-title { left: 1095px; top: 33px; width: 430px; }
+    .hair-title { left: 112px; top: 468px; width: 300px; }
+    .face-title { left: 590px; top: 470px; width: 860px; }
+
+    .group {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .age-boxes { left: 55px; top: 180px; width: 400px; }
+    .weight-boxes { left: 560px; top: 180px; width: 400px; }
+    .height-boxes { left: 1080px; top: 180px; width: 400px; }
+    .hair-boxes { left: 55px; top: 606px; width: 400px; }
+
+    .tile {
+      width: 100%;
+      height: 82px;
+      border: 4px solid #070707;
+      background: #ffffff;
+      color: #050505;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 0 18px;
+      font-size: 43px;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background 0.16s ease, box-shadow 0.16s ease, transform 0.12s ease;
+    }
+
+    .tile:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 10px rgba(0,0,0,.20);
+    }
+
+    .tile.open {
+      background: linear-gradient(#eeeeee, #cfcfcf);
+      box-shadow: 0 4px 7px rgba(0,0,0,.25);
+    }
+
+    .tile.long {
+      font-size: 39px;
+      line-height: 1.05;
+    }
+
+    .tile.xlong {
+      font-size: 34px;
+      line-height: 1.08;
+      white-space: normal;
+    }
+
+    .tile.open.xlong {
+      font-size: 32px;
+      line-height: 1.08;
+    }
+
+    .features-line {
+      position: absolute;
+      left: 590px;
+      top: 630px;
+      width: 870px;
+      height: 82px;
+      color: #050505;
+      font-size: 58px;
+      font-weight: 800;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      white-space: nowrap;
+    }
+
+    .feature-word {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 80px;
+      height: 72px;
+      padding: 0 4px;
+      transition: transform .12s ease;
+    }
+
+    .feature-word:hover {
+      transform: translateY(-2px);
+    }
+
+    .feature-word.open {
+      background: linear-gradient(#eeeeee, #cfcfcf);
+      border: 3px solid #070707;
+      box-shadow: 0 4px 7px rgba(0,0,0,.18);
+      font-size: 48px;
+      padding: 0 14px;
+    }
+
+    .small-box {
+      position: absolute;
+      left: 800px;
+      top: 735px;
+      width: 400px;
+      height: 82px;
+      font-size: 43px;
+    }
+
+    @media (max-width: 900px) {
+      .feature-word.open {
+        font-size: 44px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="fit">
+    <main class="page" aria-label="Appearance vocabulary page">
+      <h1 class="title small-title age-title">Age</h1>
+      <section class="group age-boxes">
+        <div class="tile" data-en="old" data-ru="старый">old</div>
+        <div class="tile long" data-en="middle aged" data-ru="средних лет">middle aged</div>
+        <div class="tile" data-en="young" data-ru="молодой">young</div>
+      </section>
+
+      <h1 class="title small-title weight-title">Weight</h1>
+      <section class="group weight-boxes">
+        <div class="tile" data-en="fat" data-ru="толстый">fat</div>
+        <div class="tile" data-en="slim" data-ru="худой">slim</div>
+      </section>
+
+      <h1 class="title small-title height-title">Height</h1>
+      <section class="group height-boxes">
+        <div class="tile" data-en="tall" data-ru="высокий">tall</div>
+        <div class="tile" data-en="short" data-ru="низкий">short</div>
+      </section>
+
+      <h1 class="title small-title hair-title">Hair</h1>
+      <section class="group hair-boxes">
+        <div class="tile xlong" data-en="short / long" data-ru="короткие / длинные">short / long</div>
+        <div class="tile xlong" data-en="fair / dark / grey" data-ru="светлые / тёмные<br>седые">fair / dark / grey</div>
+        <div class="tile xlong" data-en="straight / wavy" data-ru="прямые / волнистые">straight / wavy</div>
+      </section>
+
+      <h1 class="title facial-title face-title">Facial features</h1>
+
+      <div class="features-line">
+        <span class="feature-word" data-en="nose" data-ru="нос">nose</span><span>,</span>
+        <span class="feature-word" data-en="ears" data-ru="уши">ears</span><span>,</span>
+        <span class="feature-word" data-en="head" data-ru="голова">head</span><span>,</span>
+        <span class="feature-word" data-en="eyes" data-ru="глаза">eyes</span><span>,</span>
+        <span class="feature-word" data-en="mouth" data-ru="рот">mouth</span>
+      </div>
+
+      <div class="tile small-box xlong" data-en="big / small" data-ru="большой /<br>маленький">big / small</div>
+    </main>
+  </div>
+
+  <script>
+    const BASE_W = 1600;
+    const BASE_H = 900;
+    const fit = document.getElementById('fit');
+
+    function fitPage() {
+      const scale = Math.min(window.innerWidth / BASE_W, window.innerHeight / BASE_H);
+      fit.style.transform = `scale(${scale})`;
+      fit.style.width = `${BASE_W}px`;
+      fit.style.height = `${BASE_H}px`;
+      document.body.style.width = '100vw';
+      document.body.style.height = '100vh';
+    }
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+
+    function toggleItem(el) {
+      const isOpen = el.classList.toggle('open');
+      el.innerHTML = isOpen ? el.dataset.ru : el.dataset.en;
+    }
+
+    document.querySelectorAll('.tile, .feature-word').forEach((el) => {
+      el.addEventListener('click', () => toggleItem(el));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.code === 'Space' || event.code === 'ArrowRight') {
+        event.preventDefault();
+        const next = document.querySelector('.tile:not(.open), .feature-word:not(.open)');
+        if (next) toggleItem(next);
+      }
+
+      if (event.code === 'KeyR') {
+        document.querySelectorAll('.tile.open, .feature-word.open').forEach((el) => {
+          el.classList.remove('open');
+          el.innerHTML = el.dataset.en;
+        });
+      }
+    });
+  </script>
+</body>
+</html>

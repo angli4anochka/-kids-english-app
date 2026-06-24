@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ex.11</title>
+  <style>
+    :root {
+      --red: #ed1018;
+      --blue: #08bfe3;
+      --text: #4b4b4b;
+      --green: #2faa47;
+      --wrong: #f8d5d5;
+      --right: #dff4df;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 1600px; height: 960px; overflow: hidden; background: #fff; font-family: "Trebuchet MS",Arial,sans-serif; color: var(--text); }
+    .page { width: 1600px; height: 960px; background: #fff; position: relative; overflow: hidden; }
+    .top-bar { height: 78px; background: var(--red); display: flex; align-items: center; padding: 0 22px; box-shadow: 0 2px 0 rgba(0,0,0,.15); position: relative; z-index: 5; }
+    .exercise-number { color: #000; font-size: 42px; font-weight: 700; margin-right: 16px; letter-spacing: .5px; white-space: nowrap; }
+    .title { color: #fff; font-size: 48px; font-weight: 800; letter-spacing: .5px; line-height: 1; white-space: nowrap; }
+    .help-btn { margin-left: auto; min-width: 170px; height: 76px; border: 3px solid #7d7d95; background: linear-gradient(145deg,#fff8f2,#ffd9cd 44%,#ffffff 78%); box-shadow: inset 5px 5px 8px rgba(255,255,255,.95), inset -5px -5px 8px rgba(135,88,80,.35), 0 2px 2px rgba(0,0,0,.35); font-size: 58px; font-family: "Trebuchet MS",Arial,sans-serif; color: #000; cursor: pointer; line-height: 1; border-radius: 2px; }
+    .help-btn:active { transform: translateY(2px); }
+    .content { padding: 20px 42px 100px 30px; max-width: 1520px; }
+    .example-row, .task-row { display: grid; grid-template-columns: 34px minmax(270px,420px) minmax(0,1fr); align-items: center; column-gap: 18px; row-gap: 8px; min-height: 62px; margin-bottom: 2px; }
+    .task-row { grid-template-columns: 34px minmax(540px,620px) minmax(0,1fr); min-height: 68px; }
+    .arrow { width: 0; height: 0; border-top: 12px solid transparent; border-bottom: 12px solid transparent; border-left: 21px solid var(--blue); filter: drop-shadow(0 0 1px rgba(0,0,0,.25)); margin-left: 8px; }
+    .number { font-size: 36px; color: #666; text-align: right; padding-right: 8px; font-weight: 500; }
+    .prompt { font-size: 39px; color: #555; display: flex; align-items: center; gap: 10px; white-space: nowrap; min-width: 0; }
+    .badge { width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; font-size: 25px; font-weight: 900; color: white; background: linear-gradient(145deg,#eeeeee,#a4a4a4 55%,#f3f3f3); box-shadow: inset 2px 2px 5px rgba(255,255,255,.8), inset -2px -2px 5px rgba(0,0,0,.18); border-radius: 2px; flex: 0 0 auto; text-shadow: 0 1px 1px rgba(0,0,0,.35); }
+    .answer-line { min-height: 54px; display: flex; align-items: center; position: relative; padding-left: 4px; }
+    .example-answer { font-size: 42px; color: #25c6df; background: rgba(255,255,255,.94); padding: 0 10px; z-index: 1; font-weight: 700; letter-spacing: .2px; white-space: nowrap; }
+    .prefix { font-size: 38px; color: #464646; background: #fff; z-index: 1; padding-right: 10px; white-space: nowrap; }
+    .write-input { width: 100%; height: 52px; border: none; outline: none; background: rgba(255,255,255,.92); border-radius: 8px; font-size: 37px; font-family: "Trebuchet MS",Arial,sans-serif; color: #222; z-index: 1; padding: 0 8px 2px; caret-color: var(--red); }
+    .write-input:focus { background: rgba(255,250,215,.75); border-radius: 8px; }
+    .write-input.correct { background: var(--right); box-shadow: inset 0 0 0 3px rgba(47,170,71,.45); }
+    .write-input.wrong { background: var(--wrong); box-shadow: inset 0 0 0 3px rgba(220,34,34,.45); }
+    .mark { width: 42px; min-width: 42px; height: 42px; margin-left: 10px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 900; opacity: 0; transform: scale(.75); transition: opacity .16s ease, transform .16s ease; }
+    .mark.show { opacity: 1; transform: scale(1); }
+    .mark.correct { color: #fff; background: var(--green); }
+    .mark.wrong { color: #fff; background: #dc2222; }
+    .check-panel { position: absolute; right: 30px; bottom: 16px; z-index: 12; display: flex; align-items: center; justify-content: center; gap: 18px; }
+    .check-btn { border: none; border-radius: 18px; background: var(--red); color: #fff; font-family: "Trebuchet MS",Arial,sans-serif; font-size: 40px; font-weight: 900; padding: 14px 36px 16px; cursor: pointer; box-shadow: 0 7px 0 #a6060b, 0 10px 20px rgba(0,0,0,.18); }
+    .check-btn:active { transform: translateY(5px); box-shadow: 0 2px 0 #a6060b; }
+    .result { min-width: 140px; font-size: 32px; font-weight: 800; color: #333; text-shadow: 0 1px 0 rgba(255,255,255,.9); }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.35); display: none; align-items: center; justify-content: center; z-index: 20; padding: 24px; }
+    .modal-backdrop.show { display: flex; }
+    .modal { width: min(760px,94%); background: #fffdfa; border: 6px solid #ed1018; border-radius: 28px; box-shadow: 0 18px 50px rgba(0,0,0,.34); padding: 34px 42px 30px; text-align: center; animation: pop .18s ease-out; }
+    @keyframes pop { from{transform:scale(.94);opacity:.25} to{transform:scale(1);opacity:1} }
+    .modal h2 { margin: 0 0 20px; font-size: 54px; color: #ed1018; }
+    .rules { font-size: 31px; line-height: 1.55; text-align: left; color: #333; max-width: 620px; margin: 0 auto 26px; }
+    .rules b { color: #000; }
+    .close-help { min-width: 180px; border: none; border-radius: 16px; background: #ed1018; color: #fff; padding: 14px 28px; font-size: 28px; font-weight: 800; cursor: pointer; font-family: "Trebuchet MS",Arial,sans-serif; box-shadow: 0 5px 0 #a6060b; }
+    .close-help:active { transform: translateY(4px); box-shadow: 0 1px 0 #a6060b; }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top-bar">
+      <div class="exercise-number">(Ex.11)</div>
+      <div class="title">Make questions or negatives with have.</div>
+      <button class="help-btn" type="button" id="helpButton">Help</button>
+    </header>
+
+    <section class="content">
+      <div class="example-row">
+        <div class="arrow"></div>
+        <div class="prompt">you / a cat <span class="badge">?</span></div>
+        <div class="answer-line"><span class="example-answer">Do you have a cat?</span></div>
+      </div>
+      <div class="example-row">
+        <div class="arrow"></div>
+        <div class="prompt">Eric / many friends <span class="badge">−</span></div>
+        <div class="answer-line"><span class="example-answer">Eric doesn't have many friends.</span></div>
+      </div>
+
+      <div class="task-row">
+        <div class="number">1</div>
+        <div class="prompt">we / a garden <span class="badge">−</span></div>
+        <label class="answer-line"><span class="prefix">We don't</span><input class="write-input" type="text" autocomplete="off" data-answer="have a garden|we dont have a garden|we don't have a garden" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">2</div>
+        <div class="prompt">they / any children <span class="badge">?</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="do they have any children" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">3</div>
+        <div class="prompt">Peter / a cold <span class="badge">?</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="does peter have a cold" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">4</div>
+        <div class="prompt">my aunt / a dog <span class="badge">−</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="my aunt doesnt have a dog|my aunt doesn't have a dog" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">5</div>
+        <div class="prompt">Monica / any brothers or sisters <span class="badge">?</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="does monica have any brothers or sisters" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">6</div>
+        <div class="prompt">I / enough money <span class="badge">−</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="i dont have enough money|i don't have enough money" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">7</div>
+        <div class="prompt">Laura / a boyfriend <span class="badge">?</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="does laura have a boyfriend" /><span class="mark"></span></label>
+      </div>
+      <div class="task-row">
+        <div class="number">8</div>
+        <div class="prompt">Why / you / two cars <span class="badge">?</span></div>
+        <label class="answer-line"><input class="write-input" type="text" autocomplete="off" data-answer="why do you have two cars" /><span class="mark"></span></label>
+      </div>
+
+      <div class="check-panel">
+        <button class="check-btn" type="button" id="checkButton">Check</button>
+        <div class="result" id="resultText"></div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal-backdrop" id="helpModal">
+    <div class="modal">
+      <h2>How to use have</h2>
+      <div class="rules">
+        <p><b>Questions:</b> Do / Does + subject + have + noun?</p>
+        <p><b>Negatives:</b> subject + don't / doesn't + have + noun.</p>
+        <p><b>I, you, we, they</b> → do / don't</p>
+        <p><b>he, she, it, names</b> → does / doesn't</p>
+      </div>
+      <button class="close-help" type="button" id="closeHelp">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const helpModal = document.getElementById('helpModal');
+    const resultText = document.getElementById('resultText');
+    const inputs = Array.from(document.querySelectorAll('.write-input'));
+
+    document.getElementById('helpButton').addEventListener('click', () => helpModal.classList.add('show'));
+    document.getElementById('closeHelp').addEventListener('click', () => helpModal.classList.remove('show'));
+    helpModal.addEventListener('click', e => { if (e.target === helpModal) helpModal.classList.remove('show'); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') helpModal.classList.remove('show'); });
+
+    function normalize(v) {
+      return v.toLowerCase().replace(/[''`´]/g,"'").replace(/doesn't/g,'doesnt').replace(/don't/g,'dont').replace(/[?.!]/g,'').replace(/\s+/g,' ').trim();
+    }
+
+    document.getElementById('checkButton').addEventListener('click', () => {
+      let correct = 0;
+      inputs.forEach(input => {
+        const mark = input.parentElement.querySelector('.mark');
+        const user = normalize(input.value);
+        const ok = input.dataset.answer.split('|').map(normalize).includes(user);
+        input.classList.remove('correct','wrong');
+        mark.classList.remove('show','correct','wrong');
+        if (ok) {
+          correct++;
+          input.classList.add('correct');
+          mark.textContent = '✓'; mark.classList.add('correct','show');
+        } else {
+          input.classList.add('wrong');
+          mark.textContent = '×'; mark.classList.add('wrong','show');
+        }
+      });
+      resultText.textContent = correct + ' / ' + inputs.length;
+      window.parent.postMessage({ type: 'ex12-done', score: correct, total: inputs.length }, '*');
+    });
+
+    inputs.forEach(input => {
+      input.addEventListener('input', () => {
+        input.classList.remove('correct','wrong');
+        const mark = input.parentElement.querySelector('.mark');
+        mark.classList.remove('show','correct','wrong');
+        mark.textContent = '';
+        resultText.textContent = '';
+      });
+    });
+  </script>
+</body>
+</html>

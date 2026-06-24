@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Family tree again</title>
+  <style>
+    :root {
+      --slide-w: 1908;
+      --slide-h: 1042;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    .stage-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      transform-origin: center center;
+      background: #ffffff;
+    }
+
+    .slide {
+      position: relative;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .base-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .step {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .28s ease, transform .28s ease;
+      pointer-events: none;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    .twins-outline {
+      left: 310px;
+      top: 575px;
+      width: 250px;
+      height: 250px;
+      z-index: 30;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+    .parents-bubble {
+      left: 1260px;
+      top: 320px;
+      width: 570px;
+      height: 205px;
+      z-index: 31;
+    }
+
+    .parents-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .parents-outline-sue {
+      left: 45px;
+      top: 325px;
+      width: 245px;
+      height: 245px;
+      z-index: 32;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .parents-outline-sam {
+      left: 325px;
+      top: 325px;
+      width: 245px;
+      height: 245px;
+      z-index: 32;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+    .grandparents-bubble {
+      left: 1210px;
+      top: 740px;
+      width: 610px;
+      height: 205px;
+      z-index: 35;
+    }
+
+    .grandparents-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .grandparents-highlight {
+      left: 0;
+      top: 0;
+      width: 1908px;
+      height: 1042px;
+      z-index: 36;
+    }
+
+    .grandparents-highlight .gp-circle {
+      position: absolute;
+      width: 235px;
+      height: 235px;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .grandparents-highlight .grandpa-circle { left: 370px; top: 35px; }
+
+    .grandparents-highlight .grandma-circle { left: 610px; top: 35px; }
+
+
+    .mikes-son-bubble { left: 1030px; top: 525px; width: 390px; height: 128px; z-index: 37; }
+    .sams-wife-bubble { left: 1450px; top: 525px; width: 390px; height: 128px; z-index: 39; }
+    .janets-husband-bubble { left: 1030px; top: 665px; width: 390px; height: 138px; z-index: 41; }
+    .sues-daughters-bubble { left: 1450px; top: 665px; width: 390px; height: 138px; z-index: 43; }
+    .late-thirties-bubble { left: 1030px; top: 905px; width: 390px; height: 138px; z-index: 45; }
+    .mid-forties-bubble { left: 1450px; top: 905px; width: 390px; height: 138px; z-index: 47; }
+
+    .mikes-son-bubble img,
+    .sams-wife-bubble img,
+    .janets-husband-bubble img,
+    .sues-daughters-bubble img,
+    .late-thirties-bubble img,
+    .mid-forties-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .cousins-son-outline, .sue-repeat-outline, .mike-repeat-outline,
+    .daughters-repeat-outline, .sam-repeat-outline {
+      left: 325px;
+      top: 325px;
+      width: 245px;
+      height: 245px;
+      z-index: 48;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .cousins-son-outline {
+      left: 745px;
+      top: 590px;
+      width: 255px;
+      height: 255px;
+      z-index: 38;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+    .sue-repeat-outline {
+      left: 45px;
+      top: 325px;
+      width: 245px;
+      height: 245px;
+      z-index: 40;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+    .mike-repeat-outline {
+      left: 605px;
+      top: 325px;
+      width: 245px;
+      height: 245px;
+      z-index: 42;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+    .daughters-repeat-outline {
+      left: 310px;
+      top: 575px;
+      width: 250px;
+      height: 250px;
+      z-index: 44;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+    .sam-repeat-outline { left: 318px; top: 320px; width: 255px; height: 255px; z-index: 48; }
+
+    .late-thirties-highlight {
+      left: 0; top: 0; width: 1908px; height: 1042px; z-index: 46;
+    }
+    .late-thirties-highlight .lt-circle {
+      position: absolute;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+      width: 245px;
+      height: 245px;
+    }
+    .late-thirties-highlight .lt-mike { left: 605px; top: 325px; }
+    .late-thirties-highlight .lt-janet { left: 870px; top: 325px; }
+
+    .click-layer {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: transparent;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap" id="stageWrap">
+    <main class="slide" id="slide">
+      <img
+        class="base-image"
+        src="/spotlight/img/ex24_img0.webp"
+        alt="Look at the family tree again and answer. Who are twins?"
+        draggable="false"
+      />
+
+      <!-- Следующие элементы добавляем сюда как .step -->
+
+
+      <div class="step twins-outline" aria-hidden="true"></div>
+
+
+      <div class="step parents-bubble">
+        <img src="/spotlight/img/ex24_img1.webp" alt="Who are Bill's parents?" draggable="false" />
+      </div>
+
+      <div class="step parents-outline-sue" aria-hidden="true"></div>
+      <div class="step parents-outline-sam" aria-hidden="true"></div>
+
+      
+      <div class="step grandparents-bubble">
+        <img src="/spotlight/img/ex24_img2.webp" alt="Who are Bill's grandparents?" draggable="false" />
+      </div>
+
+      <div class="step grandparents-highlight" aria-hidden="true">
+        <div class="gp-circle grandpa-circle"></div>
+        <div class="gp-circle grandma-circle"></div>
+      </div>
+
+
+      <div class="step mikes-son-bubble">
+        <img src="/spotlight/img/ex24_img3.webp" alt="Who is Mike's son?" draggable="false" />
+      </div>
+
+      <div class="step cousins-son-outline" aria-hidden="true"></div>
+
+      <div class="step sams-wife-bubble">
+        <img src="/spotlight/img/ex24_img4.webp" alt="Who is Sam's wife?" draggable="false" />
+      </div>
+
+      <div class="step sue-repeat-outline" aria-hidden="true"></div>
+
+      <div class="step janets-husband-bubble">
+        <img src="/spotlight/img/ex24_img5.webp" alt="Who is Janet's husband?" draggable="false" />
+      </div>
+
+      <div class="step mike-repeat-outline" aria-hidden="true"></div>
+
+      <div class="step sues-daughters-bubble">
+        <img src="/spotlight/img/ex24_img6.webp" alt="Who are Sue's daughters?" draggable="false" />
+      </div>
+
+      <div class="step daughters-repeat-outline" aria-hidden="true"></div>
+
+      <div class="step late-thirties-bubble">
+        <img src="/spotlight/img/ex24_img7.webp" alt="Who are in their late thirties?" draggable="false" />
+      </div>
+
+      <div class="step late-thirties-highlight" aria-hidden="true">
+        <div class="lt-circle lt-mike"></div>
+        <div class="lt-circle lt-janet"></div>
+      </div>
+
+      <div class="step mid-forties-bubble">
+        <img src="/spotlight/img/ex24_img8.webp" alt="Who is in his mid-forties?" draggable="false" />
+      </div>
+
+      <div class="step sam-repeat-outline" aria-hidden="true"></div>
+
+      <div class="click-layer" id="clickLayer" aria-label="Next step"></div>
+    </main>
+  </div>
+
+  <script>
+    const stageWrap = document.getElementById("stageWrap");
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const clickLayer = document.getElementById("clickLayer");
+    let currentStep = -1;
+
+    function fitStage() {
+      const slideW = 1908;
+      const slideH = 1042;
+      const scale = Math.min(window.innerWidth / slideW, window.innerHeight / slideH);
+      stageWrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    function showNextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        steps[currentStep].classList.add("visible");
+      }
+    }
+
+    function showPreviousStep() {
+      if (currentStep >= 0) {
+        steps[currentStep].classList.remove("visible");
+        currentStep -= 1;
+      }
+    }
+
+    clickLayer.addEventListener("click", showNextStep);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "ArrowRight" || event.key === "Enter") {
+        event.preventDefault();
+        showNextStep();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "Backspace") {
+        event.preventDefault();
+        showPreviousStep();
+      }
+    });
+
+    window.addEventListener("resize", fitStage);
+    fitStage();
+  </script>
+</body>
+</html>

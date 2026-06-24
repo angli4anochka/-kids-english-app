@@ -652,7 +652,7 @@ const LessonBuilder = () => {
               </h2>
 
               {/* Content Area */}
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl p-8 min-h-[400px]">
+              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl overflow-hidden" style={{ height: '65vh' }}>
                 {renderActivityContent(selectedActivity)}
               </div>
             </div>

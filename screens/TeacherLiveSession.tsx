@@ -33,6 +33,15 @@ interface ActivityResult {
   updated_at?: string;
 }
 
+interface SpotlightResult {
+  id: string;
+  activity_id: string | null;
+  student_name: string;
+  score: number;
+  total: number;
+  submitted_at: string;
+}
+
 export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProps) {
   const router = useRouter();
   const { socket, isConnected } = useSocket();
@@ -43,6 +52,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
   const [error, setError] = useState('');
   const [isInteractive, setIsInteractive] = useState(false);
   const [results, setResults] = useState<ActivityResult[]>([]);
+  const [spotlightResults, setSpotlightResults] = useState<SpotlightResult[]>([]);
   const [isSessionEnded, setIsSessionEnded] = useState(false);
 
   useEffect(() => {
@@ -70,6 +80,20 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       .then((d) => { if (d?.success) setResults(d.data || []); })
       .catch(() => {});
   }, [sessionId]);
+
+  // Poll spotlight results every 8 seconds
+  useEffect(() => {
+    if (!sessionId || !session?.lesson_id) return;
+    const fetchSpotlight = () => {
+      fetch(`/kids-api/spotlight/results/${session.lesson_id}?sessionId=${sessionId}`)
+        .then(r => r.json())
+        .then(d => { if (d?.success) setSpotlightResults(d.data || []); })
+        .catch(() => {});
+    };
+    fetchSpotlight();
+    const timer = setInterval(fetchSpotlight, 8000);
+    return () => clearInterval(timer);
+  }, [sessionId, session?.lesson_id]);
 
   useEffect(() => {
     if (!socket || !isConnected) return;
@@ -389,11 +413,11 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
 
       <div className="max-w-7xl mx-auto px-6 py-8">
         <div className="grid grid-cols-12 gap-6">
-          {/* Left Sidebar - Activities List */}
-          <div className="col-span-3">
+          {/* Left Sidebar - Activities List + Who finished */}
+          <div className="col-span-3 flex flex-col gap-4">
             <div className="bg-white rounded-2xl shadow-xl p-4 sticky top-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Этапы урока</h2>
-              <div className="space-y-2 max-h-[calc(100vh-200px)] overflow-y-auto">
+              <div className="space-y-2 max-h-[40vh] overflow-y-auto">
                 {activities.map((activity, index) => (
                   <button
                     key={activity.id}
@@ -413,6 +437,43 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
                   </button>
                 ))}
               </div>
+            </div>
+
+            {/* Who finished panel */}
+            <div className="bg-white rounded-2xl shadow-xl p-4">
+              <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                Кто завершил
+                {spotlightResults.length > 0 && (
+                  <span className="text-xs font-normal bg-green-100 text-green-700 rounded-full px-2 py-0.5">
+                    {spotlightResults.length}
+                  </span>
+                )}
+              </h2>
+              {spotlightResults.length === 0 ? (
+                <p className="text-xs text-gray-400">Пока никто не сдал задание</p>
+              ) : (
+                <div className="space-y-1.5 max-h-[calc(100vh-520px)] overflow-y-auto">
+                  {[...spotlightResults]
+                    .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
+                    .map(r => {
+                      const actTitle = activities.find(a => a.id === r.activity_id)?.title || '—';
+                      const time = new Date(r.submitted_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                      const perfect = r.score === r.total;
+                      return (
+                        <div key={r.id} className="flex items-start gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100">
+                          <span className="text-xs text-gray-400 shrink-0 mt-0.5 font-mono">{time}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-sm text-gray-800 truncate">{r.student_name}</div>
+                            <div className="text-xs text-gray-500 truncate">{actTitle}</div>
+                          </div>
+                          <span className={`text-xs font-bold shrink-0 ${perfect ? 'text-green-600' : 'text-orange-500'}`}>
+                            {r.score}/{r.total}
+                          </span>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
             </div>
           </div>
 

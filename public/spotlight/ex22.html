@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bill's family tree</title>
+  <style>
+    :root {
+      --slide-w: 1899;
+      --slide-h: 1071;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    .stage-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      transform-origin: center center;
+      background: #ffffff;
+    }
+
+    .slide {
+      position: relative;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .base-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .step {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .28s ease, transform .28s ease;
+      pointer-events: none;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    .where-bill-bubble {
+      left: 1276px;
+      top: 120px;
+      width: 592px;
+      height: 301px;
+      z-index: 20;
+    }
+
+    .where-bill-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .bill-outline {
+      left: 42px;
+      top: 705px;
+      width: 274px;
+      height: 274px;
+      z-index: 30;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .bill-grandfather-bubble {
+      left: 1337px;
+      top: 255px;
+      width: 520px;
+      height: 265px;
+      z-index: 31;
+    }
+
+    .bill-grandfather-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .tom-outline {
+      left: 388px;
+      top: 35px;
+      width: 272px;
+      height: 272px;
+      z-index: 32;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+
+    .bill-grandmother-bubble {
+      left: 1328px;
+      top: 520px;
+      width: 520px;
+      height: 250px;
+      z-index: 34;
+    }
+
+    .bill-grandmother-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .beth-outline {
+      left: 712px;
+      top: 35px;
+      width: 272px;
+      height: 272px;
+      z-index: 35;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+    .bill-father-bubble {
+      left: 1328px;
+      top: 760px;
+      width: 520px;
+      height: 215px;
+      z-index: 36;
+    }
+
+    .bill-father-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .sam-outline {
+      left: 317px;
+      top: 354px;
+      width: 272px;
+      height: 272px;
+      z-index: 37;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+    .mother-bubble {
+      left: 1235px;
+      top: 360px;
+      width: 460px;
+      height: 180px;
+      z-index: 38;
+    }
+
+    .mother-bubble img,
+    .uncle-bubble img,
+    .aunt-bubble img,
+    .sisters-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .sue-outline {
+      left: 8px;
+      top: 336px;
+      width: 272px;
+      height: 272px;
+      z-index: 39;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .uncle-bubble {
+      left: 1230px;
+      top: 520px;
+      width: 450px;
+      height: 180px;
+      z-index: 40;
+    }
+
+    .mike-outline {
+      left: 667px;
+      top: 352px;
+      width: 272px;
+      height: 272px;
+      z-index: 41;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .aunt-bubble {
+      left: 1230px;
+      top: 680px;
+      width: 440px;
+      height: 180px;
+      z-index: 42;
+    }
+
+    .janet-outline {
+      left: 957px;
+      top: 352px;
+      width: 272px;
+      height: 272px;
+      z-index: 43;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .sisters-bubble {
+      left: 1230px;
+      top: 850px;
+      width: 450px;
+      height: 195px;
+      z-index: 44;
+    }
+
+    .sisters-outline {
+      left: 294px;
+      top: 665px;
+      width: 320px;
+      height: 320px;
+      z-index: 45;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+
+    .cousins-bubble {
+      left: 1030px;
+      top: 900px;
+      width: 420px;
+      height: 175px;
+      z-index: 46;
+    }
+
+    .cousins-bubble img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .cousins-outline {
+      left: 770px;
+      top: 666px;
+      width: 300px;
+      height: 300px;
+      z-index: 47;
+      border: 11px dotted #ff0000;
+      border-radius: 50%;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .click-layer {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: transparent;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap" id="stageWrap">
+    <main class="slide" id="slide">
+      <img
+        class="base-image"
+        src="/spotlight/img/ex22_img0.webp"
+        alt="Bill's family tree"
+        draggable="false"
+      />
+
+      <!-- Следующие элементы можно будет добавлять сюда как .step -->
+
+
+      <div class="step where-bill-bubble">
+        <img
+          src="/spotlight/img/ex22_img1.webp"
+          alt="Where is Bill?"
+          draggable="false"
+        />
+      </div>
+
+
+      <div class="step bill-outline" aria-hidden="true"></div>
+
+
+      <div class="step bill-grandfather-bubble">
+        <img src="/spotlight/img/ex22_img2.webp" alt="Who is Bill's grandfather?" draggable="false" />
+      </div>
+
+
+      <div class="step tom-outline" aria-hidden="true"></div>
+      <div class="step bill-grandmother-bubble">
+        <img src="/spotlight/img/ex22_img3.webp" alt="Who is Bill's grandmother?" draggable="false" />
+      </div>
+
+
+      <div class="step beth-outline" aria-hidden="true"></div>
+
+
+      <div class="step bill-father-bubble">
+        <img src="/spotlight/img/ex22_img4.webp" alt="Who is Bill's father?" draggable="false" />
+      </div>
+
+
+      <div class="step sam-outline" aria-hidden="true"></div>
+
+
+      <div class="step mother-bubble">
+        <img src="/spotlight/img/ex22_img5.webp" alt="Who is Bill's mother?" draggable="false" />
+      </div>
+
+      <div class="step sue-outline" aria-hidden="true"></div>
+
+      <div class="step uncle-bubble">
+        <img src="/spotlight/img/ex22_img6.webp" alt="Who is Bill's uncle?" draggable="false" />
+      </div>
+
+      <div class="step mike-outline" aria-hidden="true"></div>
+
+      <div class="step aunt-bubble">
+        <img src="/spotlight/img/ex22_img7.webp" alt="Who is Bill's aunt?" draggable="false" />
+      </div>
+
+      <div class="step janet-outline" aria-hidden="true"></div>
+
+      <div class="step sisters-bubble">
+        <img src="/spotlight/img/ex22_img8.webp" alt="Who are Bill's sisters?" draggable="false" />
+      </div>
+
+      <div class="step sisters-outline" aria-hidden="true"></div>
+
+
+      <div class="step cousins-bubble">
+        <img src="/spotlight/img/ex22_img9.webp" alt="Who are Bill's cousins?" draggable="false" />
+      </div>
+
+      <div class="step cousins-outline" aria-hidden="true"></div>
+
+<div class="click-layer" id="clickLayer" aria-label="Next step"></div>
+    </main>
+  </div>
+
+  <script>
+    const stageWrap = document.getElementById("stageWrap");
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const clickLayer = document.getElementById("clickLayer");
+    let currentStep = -1;
+
+    function fitStage() {
+      const slideW = 1899;
+      const slideH = 1071;
+      const scale = Math.min(window.innerWidth / slideW, window.innerHeight / slideH);
+      stageWrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    function showNextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        steps[currentStep].classList.add("visible");
+      }
+    }
+
+    function showPreviousStep() {
+      if (currentStep >= 0) {
+        steps[currentStep].classList.remove("visible");
+        currentStep -= 1;
+      }
+    }
+
+    clickLayer.addEventListener("click", showNextStep);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "ArrowRight" || event.key === "Enter") {
+        event.preventDefault();
+        showNextStep();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "Backspace") {
+        event.preventDefault();
+        showPreviousStep();
+      }
+    });
+
+    window.addEventListener("resize", fitStage);
+    fitStage();
+  </script>
+</body>
+</html>

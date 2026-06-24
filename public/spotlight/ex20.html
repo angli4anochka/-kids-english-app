@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ex.14 Rewrite these sentences</title>
+<style>
+  :root{
+    --w:1092;
+    --h:665;
+  }
+  html, body{
+    margin:0;
+    padding:0;
+    width:100%;
+    height:100%;
+    background:#ffffff;
+    overflow:hidden;
+    font-family:"Comic Sans MS","Comic Sans", "Trebuchet MS", Arial, sans-serif;
+  }
+  #stage{
+    position:absolute;
+    left:0;
+    top:0;
+    width:1092px;
+    height:665px;
+    transform-origin:top left;
+    background:#fff;
+    overflow:hidden;
+  }
+  .top-strip{
+    position:absolute;
+    left:0;
+    top:16px;
+    width:1092px;
+    height:46px;
+    background:#f20f18;
+    box-sizing:border-box;
+    overflow:hidden;
+    white-space:nowrap;
+  }
+  .title{
+    position:absolute;
+    left:22px;
+    top:19px;
+    font-size:29px;
+    line-height:39px;
+    letter-spacing:.2px;
+    font-weight:700;
+  }
+  .ex{ color:#000; font-weight:400; }
+  .white{ color:#fff; }
+  .row{
+    position:absolute;
+    left:0;
+    width:1092px;
+    height:50px;
+  }
+  .num{
+    position:absolute;
+    left:36px;
+    top:0;
+    width:50px;
+    font-size:31px;
+    line-height:45px;
+    color:#000;
+    font-weight:400;
+  }
+  .sentence{
+    position:absolute;
+    left:91px;
+    top:0;
+    font-size:31px;
+    line-height:45px;
+    color:#000;
+    white-space:nowrap;
+    font-weight:400;
+  }
+  .answer{
+    position:absolute;
+    top:1px;
+    height:41px;
+    border:0;
+    border-bottom:3px solid #111;
+    outline:none;
+    background:transparent;
+    font-family:inherit;
+    font-size:30px;
+    line-height:39px;
+    color:#111;
+    padding:0 8px 0 29px;
+    box-sizing:border-box;
+    font-weight:400;
+    caret-color:#222;
+  }
+  .answer:focus{
+    background:rgba(255, 239, 180, .16);
+  }
+  .answer.correct{
+    color:#108c31;
+    border-bottom-color:#108c31;
+  }
+  .answer.wrong{
+    color:#d71920;
+    border-bottom-color:#d71920;
+  }
+  .answer.show{
+    color:#f20f18;
+    border-bottom-color:#111;
+    text-shadow:1px 1px 0 rgba(0,0,0,.18);
+  }
+  .toolbar{
+    position:fixed;
+    right:18px;
+    bottom:12px;
+    z-index:50;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    transform-origin:right bottom;
+  }
+  .toolbar button{
+    border:0;
+    border-radius:13px;
+    padding:10px 16px;
+    background:#111;
+    color:#fff;
+    font-family:Arial, sans-serif;
+    font-size:16px;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);
+  }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div class="top-strip"></div>
+    <div class="title"><span class="ex">(Ex.14)</span> <span class="white">Rewrite these sentences with/without contractions.</span></div>
+
+    <div class="row" style="top:75px;">
+      <div class="num">1.</div><div class="sentence">John is tired.</div>
+      <input class="answer" data-answer="John's tired." style="left:293px;width:505px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:130px;">
+      <div class="num">2.</div><div class="sentence">We are all here.</div>
+      <input class="answer" data-answer="We're all here." style="left:331px;width:503px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:185px;">
+      <div class="num">3.</div><div class="sentence">I am not a student.</div>
+      <input class="answer" data-answer="I'm not a student." style="left:383px;width:494px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:240px;">
+      <div class="num">4.</div><div class="sentence">Where is your house?</div>
+      <input class="answer" data-answer="Where's your house?" style="left:410px;width:504px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:295px;">
+      <div class="num">5.</div><div class="sentence">You have got my keys.</div>
+      <input class="answer" data-answer="You've got my keys." style="left:414px;width:501px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:350px;">
+      <div class="num">6.</div><div class="sentence">I have not got much time.</div>
+      <input class="answer" data-answer="I haven't got much time." style="left:467px;width:503px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:405px;">
+      <div class="num">7.</div><div class="sentence">Tom's late.</div>
+      <input class="answer" data-answer="Tom is late." style="left:255px;width:502px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:460px;">
+      <div class="num">8.</div><div class="sentence">Anna's hungry.</div>
+      <input class="answer" data-answer="Anna is hungry." style="left:320px;width:489px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:515px;">
+      <div class="num">9.</div><div class="sentence">She's got two sisters.</div>
+      <input class="answer" data-answer="She has got two sisters." style="left:405px;width:509px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:570px;">
+      <div class="num">10.</div><div class="sentence">She's right.</div>
+      <input class="answer" data-answer="She is right." style="left:265px;width:499px;" autocomplete="off" spellcheck="false">
+    </div>
+    <div class="row" style="top:625px;">
+      <div class="num">11.</div><div class="sentence">Emma's got beautiful eyes.</div>
+      <input class="answer" data-answer="Emma has got beautiful eyes." style="left:484px;width:448px;" autocomplete="off" spellcheck="false">
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button type="button" onclick="checkAnswers()">Проверить</button>
+  </div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const inputs = [...document.querySelectorAll('.answer')];
+
+  function fit(){
+    const controlsSpace = 62;
+    const scale = Math.min(window.innerWidth / 1092, (window.innerHeight - controlsSpace) / 665);
+    stage.style.transform = `scale(${scale})`;
+    document.querySelector('.toolbar').style.transform = `scale(${Math.max(.78, Math.min(1, scale))})`;
+  }
+  window.addEventListener('resize', fit);
+  fit();
+
+  function norm(s){
+    return (s || '')
+      .toLowerCase()
+      .replace(/[''`´]/g, "'")
+      .replace(/[.!?]+$/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  function checkAnswers(){
+    let good = 0;
+    inputs.forEach(input => {
+      input.classList.remove('correct','wrong','show');
+      if(!input.value.trim()) return;
+      if(norm(input.value) === norm(input.dataset.answer)){
+        input.classList.add('correct');
+        good++;
+      } else {
+        input.classList.add('wrong');
+      }
+    });
+    window.parent.postMessage({ type: 'ex20-done', score: good, total: inputs.length }, '*');
+  }
+  inputs.forEach((input, idx) => {
+    input.addEventListener('input', () => {
+      input.classList.remove('correct','wrong','show');
+    });
+    input.addEventListener('keydown', e => {
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        (inputs[idx+1] || inputs[0]).focus();
+      }
+    });
+  });
+</script>
+</body>
+</html>

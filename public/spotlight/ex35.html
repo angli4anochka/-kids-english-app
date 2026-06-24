@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar — Possessive adjectives/case</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: "Comic Sans MS", "Comic Neue", "Trebuchet MS", Arial, sans-serif;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .page {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1881px;
+      height: 1066px;
+      transform-origin: top left;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .title-grammar {
+      position: absolute;
+      left: 6px;
+      top: 5px;
+      margin: 0;
+      font-size: 96px;
+      line-height: 1;
+      font-weight: 700;
+      color: #6d96d8;
+      letter-spacing: 1px;
+      text-shadow:
+        -2px -2px 0 #ffffff,
+         2px -2px 0 #ffffff,
+        -2px  2px 0 #ffffff,
+         2px  2px 0 #ffffff,
+         0px  6px 8px rgba(0,0,0,0.20);
+      z-index: 5;
+    }
+
+    .title-main {
+      position: absolute;
+      left: 501px;
+      top: 19px;
+      margin: 0;
+      font-size: 69px;
+      line-height: 1;
+      font-weight: 400;
+      color: #000000;
+      letter-spacing: 0.3px;
+      z-index: 5;
+    }
+
+    .row {
+      position: absolute;
+      display: grid;
+      grid-template-columns: 145px 225px 190px;
+      align-items: center;
+      column-gap: 28px;
+      font-size: 62px;
+      line-height: 1;
+      color: #000000;
+      font-weight: 400;
+      z-index: 6;
+    }
+
+    .pronoun,
+    .possessive {
+      white-space: nowrap;
+    }
+
+    .arrow-svg {
+      width: 225px;
+      height: 54px;
+      display: block;
+      overflow: visible;
+    }
+
+    .grammar-box {
+      position: absolute;
+      width: 955px;
+      height: 100px;
+      background: linear-gradient(to bottom, #c7eef8 0%, #aee0ee 100%);
+      border: 2px solid #35a4c9;
+      box-shadow: 0 8px 10px rgba(0,0,0,0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 76px;
+      line-height: 1;
+      color: #000000;
+      font-weight: 400;
+      z-index: 4;
+    }
+
+    .sentence {
+      position: absolute;
+      font-size: 72px;
+      line-height: 1.12;
+      color: #000000;
+      font-weight: 400;
+      white-space: nowrap;
+      z-index: 4;
+    }
+
+    .red {
+      color: #ff1d14;
+      font-weight: 700;
+    }
+
+    .note {
+      position: absolute;
+      min-width: 350px;
+      height: 72px;
+      padding: 0 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, #dce8ff 0%, #bad0f6 100%);
+      border: 2px solid #5f8ed0;
+      box-shadow: 0 6px 10px rgba(0,0,0,0.18);
+      font-size: 43px;
+      line-height: 1;
+      color: #000000;
+      font-weight: 400;
+      z-index: 6;
+      white-space: nowrap;
+    }
+
+    .hidden {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.14s ease;
+    }
+
+    .show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #r1 { left: 34px;  top: 171px; }
+    #r2 { left: 34px;  top: 296px; }
+    #r3 { left: 34px;  top: 421px; }
+    #r4 { left: 34px;  top: 548px; }
+    #r5 { left: 34px;  top: 674px; }
+    #r6 { left: 34px;  top: 800px; }
+    #r7 { left: 34px;  top: 926px; }
+
+    #g1 { left: 686px; top: 126px; }
+    #s1 { left: 711px; top: 253px; }
+    #n1 { left: 1436px; top: 323px; }
+
+    #g2 { left: 686px; top: 421px; }
+    #s2 { left: 707px; top: 549px; }
+    #n2 { left: 1312px; top: 634px; }
+
+    #g3 { left: 686px; top: 717px; }
+    #s3 { left: 709px; top: 845px; }
+    #n3 { left: 1402px; top: 930px; }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <div class="page" id="page">
+      <h1 class="title-grammar">Grammar</h1>
+      <h2 class="title-main">Possessive adjectives/case</h2>
+
+      <div class="row hidden" id="r1">
+        <div class="pronoun">I</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <defs>
+            <linearGradient id="arrowGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#dbe8ff"/>
+              <stop offset="48%" stop-color="#bcd3f8"/>
+              <stop offset="100%" stop-color="#8fb3ea"/>
+            </linearGradient>
+            <filter id="arrowShadow" x="-15%" y="-30%" width="130%" height="170%">
+              <feDropShadow dx="3" dy="4" stdDeviation="2" flood-color="#000000" flood-opacity="0.22"/>
+            </filter>
+          </defs>
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z"
+                fill="url(#arrowGrad)"
+                stroke="#4f82c8"
+                stroke-width="3"
+                stroke-linejoin="round"
+                filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z"
+                fill="none"
+                stroke="#ffffff"
+                stroke-width="2"
+                opacity="0.85"
+                stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">my</div>
+      </div>
+
+      <div class="row hidden" id="r2">
+        <div class="pronoun">He</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <use href="#arrowShape"></use>
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">his</div>
+      </div>
+
+      <div class="row hidden" id="r3">
+        <div class="pronoun">She</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">her</div>
+      </div>
+
+      <div class="row hidden" id="r4">
+        <div class="pronoun">It</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">its</div>
+      </div>
+
+      <div class="row hidden" id="r5">
+        <div class="pronoun">We</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">our</div>
+      </div>
+
+      <div class="row hidden" id="r6">
+        <div class="pronoun">You</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">your</div>
+      </div>
+
+      <div class="row hidden" id="r7">
+        <div class="pronoun">They</div>
+        <svg class="arrow-svg" viewBox="0 0 225 54" aria-hidden="true">
+          <path d="M6 17 H174 V5 L217 27 L174 49 V37 H6 Z" fill="url(#arrowGrad)" stroke="#4f82c8" stroke-width="3" stroke-linejoin="round" filter="url(#arrowShadow)" />
+          <path d="M15 22 H174 V14 L202 27 L174 40 V32 H15 Z" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85" stroke-linejoin="round" />
+        </svg>
+        <div class="possessive">their</div>
+      </div>
+
+      <div class="grammar-box hidden" id="g1">singular noun + &nbsp;'s</div>
+      <div class="sentence hidden" id="s1">Johnny is Janet<span class="red">'s</span>&nbsp; son.</div>
+      <div class="note hidden" id="n1">He's her son.</div>
+
+      <div class="grammar-box hidden" id="g2">Plural noun + &nbsp;'</div>
+      <div class="sentence hidden" id="s2">Bill is the twins<span class="red">'</span>&nbsp; brother.</div>
+      <div class="note hidden" id="n2">He's their brother.</div>
+
+      <div class="grammar-box hidden" id="g3">Last noun of a phrase + &nbsp;'s</div>
+      <div class="sentence hidden" id="s3">This is Johnny and Gill<span class="red">'s</span>&nbsp; dad.</div>
+      <div class="note hidden" id="n3">He's their dad.</div>
+    </div>
+  </div>
+
+  <script>
+    const page = document.getElementById('page');
+
+    const steps = [
+      document.getElementById('r1'),
+      document.getElementById('r2'),
+      document.getElementById('r3'),
+      document.getElementById('r4'),
+      document.getElementById('r5'),
+      document.getElementById('r6'),
+      document.getElementById('r7'),
+      document.getElementById('g1'),
+      document.getElementById('s1'),
+      document.getElementById('n1'),
+      document.getElementById('g2'),
+      document.getElementById('s2'),
+      document.getElementById('n2'),
+      document.getElementById('g3'),
+      document.getElementById('s3'),
+      document.getElementById('n3')
+    ];
+
+    let current = 0;
+
+    function fitPage() {
+      const baseWidth = 1881;
+      const baseHeight = 1066;
+      const scale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
+      page.style.transform = `scale(${scale})`;
+    }
+
+    document.addEventListener('click', () => {
+      if (current < steps.length) {
+        steps[current].classList.remove('hidden');
+        steps[current].classList.add('show');
+        current += 1;
+      }
+    });
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+  </script>
+</body>
+</html>

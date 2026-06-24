@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ex.13 - Have got questions</title>
+  <style>
+    :root {
+      --red: #ed111b;
+      --yellow: #fff200;
+      --blue: #20b9d5;
+      --arrow: #19aee0;
+      --ink: #555;
+      --green-bg: #dff7df;
+      --green-border: #34a853;
+      --pink-bg: #ffe5e5;
+      --pink-border: #e13025;
+      --gray-btn: #8b8f96;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #eeeeee;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #stage {
+      position: relative;
+      width: 1590px;
+      height: 900px;
+    }
+
+    .page {
+      width: 1590px;
+      height: 900px;
+      background: white;
+      overflow: hidden;
+      transform-origin: top left;
+      position: absolute;
+      left: 0;
+      top: 0;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.12);
+    }
+
+    .header {
+      height: 80px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      padding: 0 34px;
+      color: white;
+      font-size: 41px;
+      font-weight: 700;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+
+    .ex {
+      color: #000;
+      font-weight: 700;
+      margin-right: 14px;
+      font-size: 38px;
+    }
+
+    .have-got {
+      color: var(--yellow);
+      font-style: italic;
+      font-weight: 800;
+      margin-left: 8px;
+    }
+
+    .content {
+      padding: 54px 38px 32px;
+    }
+
+    .worksheet {
+      width: 1460px;
+      max-width: 100%;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 36px 330px 1fr 42px;
+      align-items: center;
+      column-gap: 18px;
+      min-height: 78px;
+      font-size: 39px;
+    }
+
+    .row.example {
+      min-height: 76px;
+    }
+
+    .arrow {
+      width: 0;
+      height: 0;
+      border-top: 13px solid transparent;
+      border-bottom: 13px solid transparent;
+      border-left: 22px solid var(--arrow);
+      justify-self: center;
+    }
+
+    .number {
+      font-size: 36px;
+      color: #555;
+      justify-self: center;
+    }
+
+    .prompt {
+      white-space: nowrap;
+    }
+
+    .example-answer {
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 38px;
+      padding-left: 8px;
+      white-space: nowrap;
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      height: 54px;
+      border: 2px solid #d0d0d0;
+      border-radius: 12px;
+      padding: 0 18px;
+      font-size: 31px;
+      color: #333;
+      outline: none;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff;
+      transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+    input:focus {
+      border-color: var(--arrow);
+      box-shadow: 0 0 0 4px rgba(25,174,224,.14);
+    }
+
+    .tick {
+      font-size: 34px;
+      font-weight: 700;
+      width: 34px;
+      text-align: center;
+    }
+
+    .correct input {
+      background: var(--green-bg);
+      border-color: var(--green-border);
+    }
+
+    .correct .tick {
+      color: var(--green-border);
+    }
+
+    .wrong input {
+      background: var(--pink-bg);
+      border-color: var(--pink-border);
+    }
+
+    .wrong .tick {
+      color: var(--pink-border);
+    }
+
+    .controls {
+      position: absolute;
+      left: 38px;
+      bottom: 36px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      color: white;
+      padding: 13px 28px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(0,0,0,.18);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .check-btn {
+      background: var(--arrow);
+    }
+
+    .answers-btn {
+      background: var(--gray-btn);
+    }
+
+    .result {
+      min-width: 220px;
+      font-size: 22px;
+      font-weight: 700;
+      color: #555;
+    }
+
+    .shake {
+      animation: shake .22s linear 1;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <main class="page" id="page">
+      <header class="header">
+        <span class="ex">(Ex.13)</span>
+        <span>Beth and Tom have got a lot of money. Ask questions with</span>
+        <span class="have-got">have got.</span>
+      </header>
+
+      <section class="content">
+        <div class="worksheet">
+          <div class="row example">
+            <div class="arrow"></div>
+            <div class="prompt">they / big house</div>
+            <div class="example-answer">Have they got a big house?</div>
+            <div></div>
+          </div>
+
+          <div class="row task-row" data-answer="have they got a big garden" data-correct="Have they got a big garden?">
+            <div class="number">1</div>
+            <div class="prompt">they / big garden</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="they big garden">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="has beth got a good job" data-correct="Has Beth got a good job?">
+            <div class="number">2</div>
+            <div class="prompt">Beth / good job</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="Beth good job">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="has tom got a big car" data-correct="Has Tom got a big car?">
+            <div class="number">3</div>
+            <div class="prompt">Tom / big car</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="Tom big car">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="have they got a plane" data-correct="Have they got a plane?">
+            <div class="number">4</div>
+            <div class="prompt">they / plane</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="they plane">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="have they got any horses" data-correct="Have they got any horses?">
+            <div class="number">5</div>
+            <div class="prompt">they / any horses</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="they any horses">
+            </div>
+            <div class="tick"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button class="check-btn" id="checkBtn">Check</button>
+        <button class="answers-btn" id="answersBtn">Correct answers</button>
+        <div class="result" id="result"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const DESIGN_W = 1590;
+    const DESIGN_H = 900;
+
+    const stage = document.getElementById('stage');
+    const page = document.getElementById('page');
+
+    function fitPage() {
+      const scale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      stage.style.width = `${DESIGN_W * scale}px`;
+      stage.style.height = `${DESIGN_H * scale}px`;
+      page.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+
+    const rows = [...document.querySelectorAll('.task-row')];
+    const result = document.getElementById('result');
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .trim()
+        .replace(/[’‘]/g, "'")
+        .replace(/[.,!?]/g, "")
+        .replace(/\s+/g, " ");
+    }
+
+    function checkAnswers() {
+      let score = 0;
+
+      rows.forEach(row => {
+        row.classList.remove('correct', 'wrong', 'shake');
+
+        const input = row.querySelector('input');
+        const tick = row.querySelector('.tick');
+
+        if (normalize(input.value) === normalize(row.dataset.answer)) {
+          row.classList.add('correct');
+          tick.textContent = '✓';
+          score++;
+        } else {
+          row.classList.add('wrong', 'shake');
+          tick.textContent = '✕';
+        }
+      });
+
+      result.textContent = `Correct answers: ${score} / ${rows.length}`;
+      window.parent.postMessage({ type: 'ex18-done', score: score, total: rows.length }, '*');
+    }
+
+    function showCorrectAnswers() {
+      rows.forEach(row => {
+        row.classList.remove('wrong', 'shake');
+        row.classList.add('correct');
+
+        const input = row.querySelector('input');
+        const tick = row.querySelector('.tick');
+
+        input.value = row.dataset.correct;
+        tick.textContent = '✓';
+      });
+
+      result.textContent = `Correct answers: ${rows.length} / ${rows.length}`;
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', checkAnswers);
+    document.getElementById('answersBtn').addEventListener('click', showCorrectAnswers);
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Enter') checkAnswers();
+    });
+  </script>
+</body>
+</html>

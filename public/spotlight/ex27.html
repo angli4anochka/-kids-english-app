@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bill's Family Letter - True / False</title>
+<style>
+  :root {
+    --w: 1914;
+    --h: 1076;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #f6f6f6;
+    overflow: hidden;
+  }
+
+  body {
+    display: grid;
+    place-items: center;
+  }
+
+  .stage {
+    position: relative;
+    width: min(100vw, calc(100vh * 1914 / 1076));
+    aspect-ratio: 1914 / 1076;
+    background-image: url("/spotlight/img/ex27_img0.webp");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: 0 0 18px rgba(0,0,0,.12);
+    user-select: none;
+  }
+
+  .hotspot, .speaker {
+    position: absolute;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .hotspot {
+    left: calc(var(--x) / var(--w) * 100%);
+    top: calc(var(--y) / var(--h) * 100%);
+    width: calc(var(--bw) / var(--w) * 100%);
+    height: calc(var(--bh) / var(--h) * 100%);
+    border-radius: 8px;
+  }
+
+  .hotspot:hover {
+    outline: clamp(2px, .15vw, 4px) solid rgba(194,58,58,.2);
+    outline-offset: clamp(2px, .18vw, 5px);
+  }
+
+  .speaker {
+    left: 84.4%;
+    top: 3.2%;
+    width: 12.5%;
+    height: 15.2%;
+    border-radius: 50%;
+  }
+
+  .speaker.speaking {
+    animation: softPulse 1s infinite alternate ease-in-out;
+  }
+
+  @keyframes softPulse {
+    from { filter: drop-shadow(0 0 0 rgba(189, 51, 51, 0)); }
+    to { filter: drop-shadow(0 0 16px rgba(189, 51, 51, .55)); }
+  }
+
+  .stamp {
+    position: absolute;
+    left: calc(var(--sx) / var(--w) * 100%);
+    top: calc(var(--sy) / var(--h) * 100%);
+    width: calc(var(--sw) / var(--w) * 100%);
+    height: auto;
+    opacity: 0;
+    transform: scale(.98);
+    transform-origin: center;
+    transition: opacity .16s ease, transform .16s ease;
+    pointer-events: none;
+  }
+
+  .stamp.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+</style>
+</head>
+<body>
+  <main class="stage" aria-label="Listen and read the letter and mark the sentences True or False.">
+    <button class="speaker" aria-label="Listen to the letter" title="Listen to the letter"></button>
+
+    <button class="hotspot" data-target="stamp1" style="--x: 932; --y: 263; --bw: 706; --bh: 111;" aria-label="Show answer for sentence 1"></button>
+    <button class="hotspot" data-target="stamp2" style="--x: 932; --y: 399; --bw: 706; --bh: 111;" aria-label="Show answer for sentence 2"></button>
+    <button class="hotspot" data-target="stamp3" style="--x: 932; --y: 535; --bw: 706; --bh: 111;" aria-label="Show answer for sentence 3"></button>
+    <button class="hotspot" data-target="stamp4" style="--x: 932; --y: 671; --bw: 706; --bh: 111;" aria-label="Show answer for sentence 4"></button>
+
+    <img id="stamp1" class="stamp" src="/spotlight/img/ex27_img1.webp" style="--sx: 1652; --sy: 274; --sw: 236;" alt="False">
+    <img id="stamp2" class="stamp" src="/spotlight/img/ex27_img2.webp" style="--sx: 1652; --sy: 410; --sw: 236;" alt="False">
+    <img id="stamp3" class="stamp" src="/spotlight/img/ex27_img3.webp" style="--sx: 1652; --sy: 542; --sw: 236;" alt="True">
+    <img id="stamp4" class="stamp" src="/spotlight/img/ex27_img4.webp" style="--sx: 1652; --sy: 666; --sw: 236;" alt="True">
+
+    <audio id="audioEl" src="https://storage.yandexcloud.net/kids-app/02.mp3" preload="auto"></audio>
+    <div id="audioBar" style="position:absolute;left:82%;top:19.5%;width:15%;height:1.5%;background:rgba(200,200,200,0.7);border-radius:9999px;cursor:pointer;z-index:10;">
+      <div id="audioFill" style="width:0%;height:100%;background:#e55;border-radius:9999px;pointer-events:none;transition:width 0.1s linear;"></div>
+    </div>
+  </main>
+
+<script>
+  const hotspots = [...document.querySelectorAll('.hotspot')];
+  const stamps = [...document.querySelectorAll('.stamp')];
+  const speaker = document.querySelector('.speaker');
+
+  hotspots.forEach(button => {
+    button.addEventListener('click', event => {
+      event.stopPropagation();
+      const stamp = document.getElementById(button.dataset.target);
+      stamp.classList.toggle('visible');
+    });
+  });
+
+  const audioEl = document.getElementById('audioEl');
+  const audioFill = document.getElementById('audioFill');
+
+  speaker.addEventListener('click', event => {
+    event.stopPropagation();
+    if (audioEl.paused) {
+      audioEl.currentTime = 0;
+      audioEl.play();
+      speaker.classList.add('speaking');
+    } else {
+      audioEl.pause();
+      speaker.classList.remove('speaking');
+    }
+  });
+
+  audioEl.addEventListener('timeupdate', () => {
+    if (audioEl.duration) audioFill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+  });
+  audioEl.addEventListener('ended', () => {
+    speaker.classList.remove('speaking');
+    audioFill.style.width = '0%';
+  });
+
+  document.getElementById('audioBar').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const rect = this.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    if (audioEl.duration) {
+      audioEl.currentTime = pct * audioEl.duration;
+      if (audioEl.paused) { audioEl.play(); speaker.classList.add('speaking'); }
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    const key = event.key.toLowerCase();
+    if (key === 'r') {
+      stamps.forEach(stamp => stamp.classList.remove('visible'));
+      audioEl.pause();
+      audioEl.currentTime = 0;
+      speaker.classList.remove('speaking');
+    }
+    if (event.key === ' ' || event.key === 'Enter') {
+      const next = stamps.find(stamp => !stamp.classList.contains('visible'));
+      if (next) next.classList.add('visible');
+      event.preventDefault();
+    }
+  });
+</script>
+</body>
+</html>

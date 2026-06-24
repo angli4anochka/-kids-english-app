@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Writing - Exact Page</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .screen {
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      overflow: hidden;
+    }
+
+    .page {
+      width: 1865px;
+      height: 1079px;
+      transform-origin: top left;
+      background-image: url("/spotlight/img/ex37_img0.webp");
+      background-size: 1865px 1079px;
+      background-repeat: no-repeat;
+      background-position: top left;
+      flex: 0 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="screen">
+    <div class="page" id="page"></div>
+  </div>
+
+  <script>
+    const page = document.getElementById("page");
+
+    function fitPage() {
+      const baseWidth = 1865;
+      const baseHeight = 1079;
+      const scale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
+      page.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener("resize", fitPage);
+    fitPage();
+  </script>
+</body>
+</html>

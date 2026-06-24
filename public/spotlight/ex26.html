@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Say True or False</title>
+  <style>
+    :root {
+      --slide-w: 1915;
+      --slide-h: 1076;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    .stage-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      transform-origin: center center;
+      background: #ffffff;
+    }
+
+    .slide {
+      position: relative;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .base-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .step {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .28s ease, transform .28s ease;
+      pointer-events: none;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+.answer-false-1 {
+      left: 1161px;
+      top: 201px;
+      width: 355px;
+      height: 105px;
+      z-index: 20;
+    }
+
+    .answer-false-1 img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .answer-false-2 {
+      left: 1161px;
+      top: 391px;
+      width: 355px;
+      height: 105px;
+      z-index: 20;
+    }
+
+    .answer-false-2 img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .answer-true-3 {
+      left: 1065px;
+      top: 580px;
+      width: 312px;
+      height: 105px;
+      z-index: 20;
+    }
+
+    .answer-true-3 img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .answer-true-4 {
+      left: 760px;
+      top: 844px;
+      width: 312px;
+      height: 105px;
+      z-index: 20;
+    }
+
+    .answer-true-4 img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+        .click-layer {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: transparent;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap" id="stageWrap">
+    <main class="slide" id="slide">
+      <img
+        class="base-image"
+        src="/spotlight/img/ex26_img0.webp"
+        alt="Say True or False"
+        draggable="false"
+      />
+
+      <!-- Следующие элементы добавляем сюда как .step -->
+
+            <audio id="audioEl" src="https://storage.yandexcloud.net/kids-app/02.mp3" preload="auto"></audio>
+      <!-- Следующие элементы добавляем сюда как .step -->
+
+
+      <div class="step answer-false-1">
+        <img src="/spotlight/img/ex26_img1.webp" alt="answer false 1" draggable="false" />
+      </div>
+
+      <div class="step answer-false-2">
+        <img src="/spotlight/img/ex26_img2.webp" alt="answer false 2" draggable="false" />
+      </div>
+
+      <div class="step answer-true-3">
+        <img src="/spotlight/img/ex26_img3.webp" alt="answer true 3" draggable="false" />
+      </div>
+
+      <div class="step answer-true-4">
+        <img src="/spotlight/img/ex26_img4.webp" alt="answer true 4" draggable="false" />
+      </div>
+
+            <div id="audioBar" style="position:absolute;left:1580px;top:372px;width:310px;height:16px;background:rgba(200,200,200,0.7);border-radius:8px;cursor:pointer;z-index:1002;">
+        <div id="audioFill" style="width:0%;height:100%;background:#e55;border-radius:8px;pointer-events:none;transition:width 0.1s linear;"></div>
+      </div>
+      <div class="click-layer" id="clickLayer" aria-label="Next step"></div>
+    </main>
+  </div>
+
+  <script>
+    const stageWrap = document.getElementById("stageWrap");
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const clickLayer = document.getElementById("clickLayer");
+    let currentStep = -1;
+
+    function fitStage() {
+      const slideW = 1915;
+      const slideH = 1076;
+      const scale = Math.min(window.innerWidth / slideW, window.innerHeight / slideH);
+      stageWrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    function showNextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        steps[currentStep].classList.add("visible");
+      }
+    }
+
+    function showPreviousStep() {
+      if (currentStep >= 0) {
+        steps[currentStep].classList.remove("visible");
+        currentStep -= 1;
+      }
+    }
+
+    var audioEl = document.getElementById('audioEl');
+
+    // Audio icon position in slide coordinates (1915x1076)
+    var AUDIO_X1 = 1660, AUDIO_Y1 = 185, AUDIO_X2 = 1900, AUDIO_Y2 = 365;
+
+    clickLayer.addEventListener("click", function(e) {
+      var slide = document.getElementById('slide');
+      var rect = slide.getBoundingClientRect();
+      var sx = (e.clientX - rect.left) * (1915 / rect.width);
+      var sy = (e.clientY - rect.top)  * (1076 / rect.height);
+      if (sx >= AUDIO_X1 && sx <= AUDIO_X2 && sy >= AUDIO_Y1 && sy <= AUDIO_Y2) {
+        if (audioEl.paused) {
+          audioEl.currentTime = 0;
+          audioEl.play();
+        } else {
+          audioEl.pause();
+        }
+      } else {
+        showNextStep();
+      }
+    });
+
+    // Progress bar: update fill
+    var audioFill = document.getElementById('audioFill');
+    audioEl.addEventListener('timeupdate', function() {
+      if (audioEl.duration) {
+        audioFill.style.width = (audioEl.currentTime / audioEl.duration * 100) + '%';
+      }
+    });
+    audioEl.addEventListener('ended', function() {
+      audioFill.style.width = '0%';
+    });
+
+    // Progress bar: click to seek
+    document.getElementById('audioBar').addEventListener('click', function(e) {
+      e.stopPropagation();
+      var rect = this.getBoundingClientRect();
+      var pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+      if (audioEl.duration) {
+        audioEl.currentTime = pct * audioEl.duration;
+        if (audioEl.paused) audioEl.play();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "ArrowRight" || event.key === "Enter") {
+        event.preventDefault();
+        showNextStep();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "Backspace") {
+        event.preventDefault();
+        showPreviousStep();
+      }
+    });
+
+    window.addEventListener("resize", fitStage);
+    fitStage();
+  </script>
+</body>
+</html>

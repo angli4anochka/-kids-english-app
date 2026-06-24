@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Appearance - Guess the Word</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    overflow: hidden;
+  }
+  body {
+    display: grid;
+    place-items: center;
+    font-family: Arial, sans-serif;
+  }
+  .slide {
+    position: relative;
+    width: min(100vw, calc(100vh * 1919 / 1079));
+    aspect-ratio: 1919 / 1079;
+    background: #fff;
+    overflow: hidden;
+  }
+  .frame {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    object-position: center;
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+  .click-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <main class="slide" aria-label="Appearance guessing activity">
+    <img class="frame" id="frame" alt="Appearance vocabulary guessing activity" />
+    <div class="click-layer" id="clickLayer" aria-label="Click to show the next step"></div>
+  </main>
+
+<script>
+  const frames = [
+    "/spotlight/img/ex29_img0.webp","/spotlight/img/ex29_img1.webp","/spotlight/img/ex29_img2.webp","/spotlight/img/ex29_img3.webp","/spotlight/img/ex29_img4.webp","/spotlight/img/ex29_img5.webp","/spotlight/img/ex29_img6.webp","/spotlight/img/ex29_img7.webp","/spotlight/img/ex29_img8.webp","/spotlight/img/ex29_img9.webp"
+  ];
+
+  const frame = document.getElementById("frame");
+  const clickLayer = document.getElementById("clickLayer");
+  let step = 0;
+
+  function render() {
+    frame.src = frames[step];
+  }
+
+  function nextStep() {
+    if (step < frames.length - 1) {
+      step += 1;
+      render();
+    }
+  }
+
+  clickLayer.addEventListener("click", nextStep);
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === " " || event.key === "Enter") {
+      event.preventDefault();
+      nextStep();
+    }
+    if (event.key.toLowerCase() === "r") {
+      step = 0;
+      render();
+    }
+  });
+
+  render();
+</script>
+</body>
+</html>

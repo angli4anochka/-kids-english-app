@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Have: questions and negatives</title>
+  <style>
+    :root {
+      --orange: #dd9850;
+      --red: #e60000;
+      --blue: #00489a;
+      --yellow: #ffd518;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 1600px; height: 900px; overflow: hidden; background: #fff; font-family: "Comic Sans MS","Trebuchet MS",Arial,sans-serif; color: #050505; cursor: pointer; user-select: none; }
+    .slide { position: relative; width: 1600px; height: 900px; padding: 26px 54px; background: #fff; }
+    .rule-box { position: relative; width: calc(100% - 60px); min-height: 170px; margin: 0 auto; border: 4px solid var(--orange); background: #fffaf4; display: flex; align-items: center; justify-content: center; text-align: center; padding: 30px 54px; font-size: 52px; line-height: 1.22; letter-spacing: .2px; }
+    .rule-line-2 { display: block; margin-top: 10px; }
+    .u-black { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: 7px; }
+    .grammar { font-weight: 800; font-style: italic; }
+    .examples { position: absolute; left: 50px; right: 70px; top: 270px; bottom: 40px; display: grid; grid-template-columns: 110px minmax(470px,1fr) minmax(560px,1fr); grid-template-rows: repeat(3,1fr); column-gap: 42px; row-gap: 54px; align-items: center; }
+    .icon-wrap { display: flex; align-items: center; justify-content: center; width: 94px; height: 94px; }
+    .icon { position: relative; width: 82px; height: 82px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-family: Arial,sans-serif; font-weight: 900; line-height: 1; box-shadow: 0 2px 3px rgba(0,0,0,.1); }
+    .icon::before, .icon::after { content: ""; position: absolute; inset: 0; border-radius: 18px; z-index: -1; }
+    .plus { background: #d80635; color: white; font-size: 78px; }
+    .plus::before { transform: translate(7px,-5px) rotate(-10deg); background: #ffd70c; }
+    .plus::after  { transform: translate(8px,7px) rotate(8deg); background: #ff1e42; }
+    .minus { background: #004a9f; color: white; font-size: 80px; }
+    .minus::before { transform: translate(7px,-5px) rotate(-10deg); background: #0056ba; }
+    .minus::after  { transform: translate(8px,7px) rotate(8deg); background: #ff2b50; }
+    .question { background: #ffd51d; color: #030303; font-size: 72px; }
+    .question::before { transform: translate(7px,-5px) rotate(-10deg); background: #ff2d35; }
+    .question::after  { transform: translate(8px,7px) rotate(8deg); background: #ffb600; }
+    .sentence { font-size: 52px; line-height: 1.15; white-space: nowrap; text-shadow: 2px 3px 2px rgba(0,0,0,.15); }
+    .red-u { display: inline-block; padding: 0 1px 8px 1px; background-image: linear-gradient(var(--red),var(--red)), linear-gradient(var(--red),var(--red)); background-repeat: no-repeat; background-size: 100% 4px, 100% 4px; background-position: left calc(100% - 7px), left 100%; }
+    .reveal { opacity: 0; transform: translateY(10px); transition: opacity .28s ease, transform .28s ease; pointer-events: none; }
+    .reveal.visible { opacity: 1; transform: translateY(0); pointer-events: auto; }
+    .help-btn { position: absolute; right: 72px; bottom: 28px; min-width: 150px; padding: 10px 22px 12px; border: 3px solid #233f77; background: linear-gradient(135deg,#fff8f2 0%,#ffd9cf 32%,#fff7f1 62%,#eac8bf 100%); box-shadow: inset 4px 4px 0 rgba(255,255,255,.85), inset -5px -5px 0 rgba(120,85,80,.28), 2px 2px 0 rgba(0,0,0,.18); color: #050505; font-family: "Comic Sans MS","Trebuchet MS",Arial,sans-serif; font-size: 58px; line-height: 1; cursor: pointer; }
+    .help-btn:active { transform: translate(1px,1px); }
+    .help-overlay { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; background: rgba(255,255,255,.62); backdrop-filter: blur(2px); z-index: 30; cursor: default; }
+    .help-overlay.open { display: flex; }
+    .help-card { position: relative; width: min(760px,82vw); min-height: 610px; padding: 34px 46px 42px; border: 4px solid var(--orange); border-radius: 24px; background: #fffdf9; box-shadow: 0 22px 48px rgba(0,0,0,.22); text-align: center; font-family: "Trebuchet MS",Arial,sans-serif; animation: helpPop .22s ease-out; }
+    @keyframes helpPop { from{opacity:0;transform:scale(.94) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+    .help-close { position: absolute; top: 14px; right: 18px; width: 44px; height: 44px; border: 2px solid #233f77; border-radius: 50%; background: #fff2ec; font-size: 28px; line-height: 1; cursor: pointer; font-family: Arial,sans-serif; }
+    .help-title { margin: 0 0 28px; font-size: 62px; font-weight: 700; letter-spacing: .5px; }
+    .help-grid { display: grid; grid-template-columns: 92px 1fr; row-gap: 36px; column-gap: 28px; align-items: center; text-align: left; margin-top: 10px; }
+    .help-icon-mini { width: 70px; height: 70px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-family: Arial,sans-serif; font-weight: 900; line-height: 1; margin: 0 auto; position: relative; }
+    .help-icon-mini::before, .help-icon-mini::after { content: ""; position: absolute; inset: 0; border-radius: 16px; z-index: -1; }
+    .help-plus { background: #d80635; color: white; font-size: 66px; }
+    .help-plus::before { transform: translate(6px,-5px) rotate(-10deg); background: #ffd70c; }
+    .help-plus::after  { transform: translate(7px,6px) rotate(8deg); background: #ff1e42; }
+    .help-minus { background: #004a9f; color: white; font-size: 68px; }
+    .help-minus::before { transform: translate(6px,-5px) rotate(-10deg); background: #0056ba; }
+    .help-minus::after  { transform: translate(7px,6px) rotate(8deg); background: #ff2b50; }
+    .help-question { background: #ffd51d; color: #030303; font-size: 62px; }
+    .help-question::before { transform: translate(6px,-5px) rotate(-10deg); background: #ff2d35; }
+    .help-question::after  { transform: translate(7px,6px) rotate(8deg); background: #ffb600; }
+    .formula-line { font-size: 54px; line-height: 1.25; white-space: nowrap; color: #050505; }
+    .formula-answers { grid-column: 2; margin-top: -14px; display: grid; row-gap: 18px; font-size: 46px; line-height: 1.2; }
+    .blank { display: inline-block; width: 138px; margin: 0 8px; border-bottom: 4px solid var(--red); transform: translateY(-6px); }
+    .blank.short { width: 96px; }
+    .blank.long  { width: 180px; }
+    .red-double { display: inline-block; padding: 0 2px 8px; background-image: linear-gradient(var(--red),var(--red)), linear-gradient(var(--red),var(--red)); background-repeat: no-repeat; background-size: 100% 4px, 100% 4px; background-position: left calc(100% - 6px), left 100%; }
+    .v-symbol { font-size: 1.25em; font-weight: 800; }
+    .sub-one { font-size: .45em; vertical-align: -.15em; margin-left: 1px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main class="slide">
+    <section class="rule-box reveal visible" data-step="0">
+      <div>
+        We can make <span class="u-black">questions</span> and <span class="u-black">negatives</span> with
+        <span class="grammar">do/does/did + infinitive</span>
+        <span class="rule-line-2">(without to)</span>
+      </div>
+    </section>
+
+    <section class="examples">
+      <div class="icon-wrap reveal" data-step="1"><div class="icon plus">+</div></div>
+      <div class="sentence reveal" data-step="1"><span class="red-u">I</span> <span class="red-u">have</span> the keys.</div>
+      <div class="sentence reveal" data-step="1"><span class="red-u">Joe</span> <span class="red-u">has</span> a car.</div>
+
+      <div class="icon-wrap reveal" data-step="2"><div class="icon minus">−</div></div>
+      <div class="sentence reveal" data-step="2"><span class="red-u">I</span> <span class="red-u">don't have</span> the keys.</div>
+      <div class="sentence reveal" data-step="2"><span class="red-u">Joe</span> <span class="red-u">doesn't have</span> a car.</div>
+
+      <div class="icon-wrap reveal" data-step="3"><div class="icon question">?</div></div>
+      <div class="sentence reveal" data-step="3"><span class="red-u">Do</span> <span class="red-u">I</span> <span class="red-u">have</span> the keys?</div>
+      <div class="sentence reveal" data-step="3"><span class="red-u">Does</span> <span class="red-u">Joe</span> <span class="red-u">have</span> a car?</div>
+    </section>
+
+    <button class="help-btn" type="button">Help</button>
+
+    <div class="help-overlay" id="helpOverlay">
+      <div class="help-card">
+        <button class="help-close" type="button">×</button>
+        <h2 class="help-title">Present Simple</h2>
+        <div class="help-grid">
+          <div class="help-icon-mini help-plus">+</div>
+          <div class="formula-line"><span class="blank short"></span><span class="red-double"><span class="v-symbol">V</span><span class="sub-one">1</span> / -s / -es</span> .</div>
+          <div class="help-icon-mini help-minus">−</div>
+          <div class="formula-line"><span class="blank short"></span><span class="red-double">don't / doesn't <span class="v-symbol">V</span><span class="sub-one">1</span></span> .</div>
+          <div class="help-icon-mini help-question">?</div>
+          <div class="formula-line"><span class="red-double">Do / Does</span> <span class="blank"></span> <span class="red-double"><span class="v-symbol">V</span><span class="sub-one">1</span></span> ?</div>
+          <div class="formula-answers">
+            <div>Yes, <span class="blank"></span> <span class="red-double">do / does</span> .</div>
+            <div>No, <span class="blank"></span> <span class="red-double">don't / doesn't</span> .</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let step = 0;
+    const maxStep = 3;
+    const reveal = () => {
+      document.querySelectorAll('.reveal').forEach(el => {
+        if (Number(el.dataset.step || 0) <= step) el.classList.add('visible');
+      });
+    };
+    const next = () => { if (step < maxStep) { step++; reveal(); } };
+
+    const helpOverlay = document.getElementById('helpOverlay');
+    const openHelp  = () => helpOverlay.classList.add('open');
+    const closeHelp = () => helpOverlay.classList.remove('open');
+
+    document.body.addEventListener('click', () => { if (!helpOverlay.classList.contains('open')) next(); });
+    document.querySelector('.help-btn').addEventListener('click', e => { e.stopPropagation(); openHelp(); });
+    document.querySelector('.help-close').addEventListener('click', e => { e.stopPropagation(); closeHelp(); });
+    helpOverlay.addEventListener('click', e => { e.stopPropagation(); if (e.target === helpOverlay) closeHelp(); });
+    document.querySelector('.help-card').addEventListener('click', e => e.stopPropagation());
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && helpOverlay.classList.contains('open')) { closeHelp(); return; }
+      if (helpOverlay.classList.contains('open')) return;
+      if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'Enter') { e.preventDefault(); next(); }
+    });
+    reveal();
+  </script>
+</body>
+</html>

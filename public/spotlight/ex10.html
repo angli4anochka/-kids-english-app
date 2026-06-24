@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ex.10</title>
+  <style>
+    :root {
+      --red: #f20d16;
+      --orange: #de9853;
+      --orange-soft: #fff9f1;
+      --blue: #21bff1;
+      --green: #23b26d;
+      --green-soft: #e9fff3;
+      --bad: #e23b3b;
+      --bad-soft: #ffe9e9;
+      --text: #151515;
+      --paper: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; width: 1600px; height: 900px; overflow: hidden; background: #fff; font-family: "Trebuchet MS","Arial Rounded MT Bold",Arial,sans-serif; color: var(--text); }
+    .page { width: 1600px; height: 900px; background: var(--paper); overflow: hidden; position: relative; display: flex; flex-direction: column; }
+    .top-bar { height: 68px; flex-shrink: 0; background: var(--red); display: flex; align-items: center; padding: 0 34px; border-bottom: 2px solid #101010; color: #fff; letter-spacing: 0.2px; white-space: nowrap; }
+    .exercise-number { color: #111; font-size: 36px; margin-right: 14px; font-weight: 600; }
+    .title { font-size: 39px; font-weight: 800; line-height: 1; }
+    .content { flex: 1; display: grid; grid-template-columns: 59fr 41fr; column-gap: 26px; padding: 38px 28px 28px 58px; overflow: hidden; }
+    .exercise-card { width: 100%; max-width: 900px; padding-top: 0; overflow: hidden; }
+    .row { display: grid; grid-template-columns: 46px 1fr; align-items: center; gap: 12px; min-height: 72px; font-size: 37px; line-height: 1.18; color: #444; }
+    .example-row { min-height: 74px; font-size: 37px; }
+    .speaker { width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-left: 24px solid var(--blue); filter: drop-shadow(0 0 3px rgba(33,191,241,.2)); justify-self: center; opacity: .95; }
+    .num { font-size: 34px; color: #656565; justify-self: end; padding-right: 4px; font-weight: 500; }
+    .sentence { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px; }
+    .option { display: inline-flex; align-items: center; justify-content: center; padding: 3px 9px 5px; border: 3px solid transparent; border-radius: 14px; color: #2e2e2e; font-style: italic; cursor: pointer; transition: transform .13s ease, background .13s ease, border-color .13s ease, color .13s ease; user-select: none; }
+    .option:hover { transform: translateY(-1px); background: #f3f7ff; border-color: #d7e8ff; }
+    .option.correct { border-color: var(--green); background: var(--green-soft); color: #117342; font-weight: 800; }
+    .option.wrong { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); animation: shake .2s ease-in-out; }
+    .option.locked { cursor: default; pointer-events: none; }
+    .slash { color: #8a8a8a; padding: 0 1px; font-weight: 500; }
+    .word { color: #383838; }
+    .examples .option.correct { border-color: #69c7cf; background: #effcff; color: #333; font-weight: 700; }
+    .side { display: flex; flex-direction: column; align-items: center; padding-right: 2px; }
+    .rule-box { width: min(625px,100%); border: 4px solid var(--orange); background: var(--orange-soft); padding: 10px 20px 13px 34px; font-size: 39px; line-height: 1.17; min-height: 128px; display: flex; justify-content: center; align-items: center; }
+    .rule-line { display: grid; grid-template-columns: 34px auto; gap: 18px; align-items: baseline; white-space: nowrap; }
+    .bullet { font-size: 38px; line-height: 1; color: #111; justify-self: center; }
+    .rule-subject { font-style: italic; letter-spacing: .2px; }
+    .rule-verb { font-weight: 900; font-style: normal; }
+    .score-card { margin-top: 26px; width: min(625px,100%); border: 2px dashed #d9d9d9; border-radius: 18px; padding: 20px 26px; font-size: 26px; color: #555; line-height: 1.35; background: #fff; }
+    .score-title { font-weight: 800; color: #222; margin-bottom: 8px; }
+    .score { font-size: 30px; font-weight: 900; color: var(--green); }
+    .buttons { margin-top: 20px; width: min(625px,100%); display: flex; gap: 14px; justify-content: flex-start; }
+    button { border: none; border-radius: 14px; padding: 13px 22px; font-size: 22px; font-weight: 800; cursor: pointer; background: #111; color: #fff; font-family: inherit; transition: transform .15s ease, opacity .15s ease; }
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(1px); opacity: .9; }
+    .reset { background: #f0f0f0; color: #222; border: 2px solid #d4d4d4; }
+    .done-message { margin-top: 17px; width: min(625px,100%); font-size: 28px; font-weight: 900; color: var(--green); min-height: 36px; }
+    @keyframes shake { 0%{transform:translateX(0)} 33%{transform:translateX(-4px)} 66%{transform:translateX(4px)} 100%{transform:translateX(0)} }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="top-bar">
+      <span class="exercise-number">(Ex.10)</span>
+      <span class="title">Click the correct form.</span>
+    </header>
+    <section class="content">
+      <div class="exercise-card">
+        <div class="examples">
+          <div class="row example-row">
+            <div class="speaker"></div>
+            <div class="sentence">
+              <span class="option wrong locked">John</span>
+              <span class="slash">/</span>
+              <span class="option correct locked">I</span>
+              <span class="word">have two brothers.</span>
+            </div>
+          </div>
+          <div class="row example-row">
+            <div class="speaker"></div>
+            <div class="sentence">
+              <span class="word">Grace</span>
+              <span class="option correct locked">has</span>
+              <span class="slash">/</span>
+              <span class="option wrong locked">have</span>
+              <span class="word">a cold.</span>
+            </div>
+          </div>
+        </div>
+        <div class="row task-row" data-row="1">
+          <div class="num">1</div>
+          <div class="sentence">
+            <span class="option" data-correct="true">My father</span>
+            <span class="slash">/</span>
+            <span class="option">My parents</span>
+            <span class="word">has two cars.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="2">
+          <div class="num">2</div>
+          <div class="sentence">
+            <span class="option" data-correct="true">We all</span>
+            <span class="slash">/</span>
+            <span class="option">Sally</span>
+            <span class="word">have blue eyes.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="3">
+          <div class="num">3</div>
+          <div class="sentence">
+            <span class="word">I</span>
+            <span class="option" data-correct="true">have</span>
+            <span class="slash">/</span>
+            <span class="option">has</span>
+            <span class="word">a headache.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="4">
+          <div class="num">4</div>
+          <div class="sentence">
+            <span class="word">I see that your brother</span>
+            <span class="option">have</span>
+            <span class="slash">/</span>
+            <span class="option" data-correct="true">has</span>
+            <span class="word">a new girlfriend.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="5">
+          <div class="num">5</div>
+          <div class="sentence">
+            <span class="option">You</span>
+            <span class="slash">/</span>
+            <span class="option" data-correct="true">Paul</span>
+            <span class="word">has very long hair.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="6">
+          <div class="num">6</div>
+          <div class="sentence">
+            <span class="word">These houses</span>
+            <span class="option" data-correct="true">have</span>
+            <span class="slash">/</span>
+            <span class="option">has</span>
+            <span class="word">big rooms.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="7">
+          <div class="num">7</div>
+          <div class="sentence">
+            <span class="word">I can't read this book – it</span>
+            <span class="option" data-correct="true">has</span>
+            <span class="slash">/</span>
+            <span class="option">have</span>
+            <span class="word">800 pages.</span>
+          </div>
+        </div>
+        <div class="row task-row" data-row="8">
+          <div class="num">8</div>
+          <div class="sentence">
+            <span class="option">Susie</span>
+            <span class="slash">/</span>
+            <span class="option" data-correct="true">Susie and Mick</span>
+            <span class="word">have a really nice flat.</span>
+          </div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="rule-box">
+          <div>
+            <div class="rule-line">
+              <span class="bullet">•</span>
+              <span><span class="rule-subject">I / we / you / they</span> <span class="rule-verb">have</span></span>
+            </div>
+            <div class="rule-line">
+              <span class="bullet">•</span>
+              <span><span class="rule-subject">it / he / she</span> <span class="rule-verb">has</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="score-card">
+          <div class="score-title">Result</div>
+          Correct answers: <span class="score" id="score">0 / 8</span><br/>
+          Click the right option in each sentence.
+        </div>
+        <div class="buttons">
+          <button id="showAnswers" type="button">Show answers</button>
+          <button class="reset" id="reset" type="button">Reset</button>
+        </div>
+        <div class="done-message" id="doneMessage"></div>
+      </aside>
+    </section>
+  </main>
+  <script>
+    const taskRows = Array.from(document.querySelectorAll(".task-row"));
+    const scoreEl = document.getElementById("score");
+    const doneMessage = document.getElementById("doneMessage");
+
+    function updateScore() {
+      const n = taskRows.filter(r => r.dataset.done === "true").length;
+      scoreEl.textContent = n + " / " + taskRows.length;
+      doneMessage.textContent = n === taskRows.length ? "Excellent! All answers are correct." : "";
+      if (n === taskRows.length) {
+        window.parent.postMessage({ type: "ex10-done", score: n, total: taskRows.length }, "*");
+      }
+    }
+
+    function lockRow(row) {
+      row.querySelectorAll(".option").forEach(o => o.classList.add("locked"));
+      row.dataset.done = "true";
+      updateScore();
+    }
+
+    document.querySelectorAll(".task-row .option").forEach(option => {
+      option.addEventListener("click", () => {
+        const row = option.closest(".task-row");
+        if (row.dataset.done === "true") return;
+        row.querySelectorAll(".option").forEach(o => o.classList.remove("wrong"));
+        if (option.dataset.correct === "true") {
+          option.classList.add("correct");
+          lockRow(row);
+        } else {
+          option.classList.add("wrong");
+          setTimeout(() => option.classList.remove("wrong"), 650);
+        }
+      });
+    });
+
+    document.getElementById("showAnswers").addEventListener("click", () => {
+      taskRows.forEach(row => {
+        row.querySelector('[data-correct="true"]').classList.add("correct");
+        lockRow(row);
+      });
+    });
+
+    document.getElementById("reset").addEventListener("click", () => {
+      taskRows.forEach(row => {
+        row.dataset.done = "false";
+        row.querySelectorAll(".option").forEach(o => o.classList.remove("correct","wrong","locked"));
+      });
+      updateScore();
+    });
+
+    updateScore();
+  </script>
+</body>
+</html>

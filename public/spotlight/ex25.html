@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Look at the text</title>
+  <style>
+    :root {
+      --slide-w: 1918;
+      --slide-h: 1079;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      user-select: none;
+    }
+
+    .stage-wrap {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      transform-origin: center center;
+      background: #ffffff;
+    }
+
+    .slide {
+      position: relative;
+      width: calc(var(--slide-w) * 1px);
+      height: calc(var(--slide-h) * 1px);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .base-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .step {
+      position: absolute;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .28s ease, transform .28s ease;
+      pointer-events: none;
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    .step-what_is_it {
+      left: 936px;
+      top: 106px;
+      width: 307px;
+      height: 71px;
+      z-index: 20;
+    }
+
+    .step-what_is_it img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-advertisement {
+      left: 916px;
+      top: 198px;
+      width: 468px;
+      height: 367px;
+      z-index: 20;
+    }
+
+    .step-advertisement img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-or_word {
+      left: 1399px;
+      top: 328px;
+      width: 96px;
+      height: 91px;
+      z-index: 20;
+    }
+
+    .step-or_word img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-letter_choice {
+      left: 1474px;
+      top: 8px;
+      width: 418px;
+      height: 410px;
+      z-index: 20;
+    }
+
+    .step-letter_choice img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-how_know {
+      left: 926px;
+      top: 565px;
+      width: 478px;
+      height: 192px;
+      z-index: 20;
+    }
+
+    .step-how_know img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-quote_box {
+      left: 1409px;
+      top: 580px;
+      width: 468px;
+      height: 166px;
+      z-index: 20;
+    }
+
+    .step-quote_box img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-who_from {
+      left: 931px;
+      top: 807px;
+      width: 594px;
+      height: 86px;
+      z-index: 20;
+    }
+
+    .step-who_from img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+
+    .step-bottom-red,
+    .step-top-red {
+      left: 0;
+      top: 0;
+      width: 1918px;
+      height: 1079px;
+      z-index: 30;
+    }
+
+    .step-bottom-red svg,
+    .step-top-red svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .click-layer {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background: transparent;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+  <div class="stage-wrap" id="stageWrap">
+    <main class="slide" id="slide">
+      <img
+        class="base-image"
+        src="/spotlight/img/ex25_img0.webp"
+        alt="Look at the text"
+        draggable="false"
+      />
+
+      <!-- Следующие элементы добавляем сюда как .step -->
+
+      <div class="step step-what_is_it">
+        <img src="/spotlight/img/ex25_img1.webp" alt="what is it" draggable="false" />
+      </div>
+
+      <div class="step step-advertisement">
+        <img src="/spotlight/img/ex25_img2.webp" alt="advertisement" draggable="false" />
+      </div>
+
+      <div class="step step-or_word">
+        <img src="/spotlight/img/ex25_img3.webp" alt="or word" draggable="false" />
+      </div>
+
+      <div class="step step-letter_choice">
+        <img src="/spotlight/img/ex25_img4.webp" alt="letter choice" draggable="false" />
+      </div>
+
+      <div class="step step-how_know">
+        <img src="/spotlight/img/ex25_img5.webp" alt="how know" draggable="false" />
+      </div>
+
+      <div class="step step-quote_box">
+        <img src="/spotlight/img/ex25_img6.webp" alt="quote box" draggable="false" />
+      </div>
+
+      <div class="step step-who_from">
+        <img src="/spotlight/img/ex25_img7.webp" alt="who from" draggable="false" />
+      </div>
+
+
+      <div class="step step-bottom-red" aria-hidden="true">
+        <svg viewBox="0 0 1918 1079" xmlns="http://www.w3.org/2000/svg">
+          <!-- long bottom line -->
+          <line x1="1003" y1="928" x2="122" y2="912" stroke="#ff0000" stroke-width="7" stroke-linecap="round"/>
+          <!-- arrow head pointing to Bill -->
+          <line x1="122" y1="912" x2="150" y2="892" stroke="#ff0000" stroke-width="7" stroke-linecap="round"/>
+          <line x1="122" y1="912" x2="150" y2="932" stroke="#ff0000" stroke-width="7" stroke-linecap="round"/>
+          <!-- oval around Bill -->
+          <ellipse cx="78" cy="910" rx="78" ry="40" fill="none" stroke="#ff0000" stroke-width="7"/>
+        </svg>
+      </div>
+
+      <div class="step step-top-red" aria-hidden="true">
+        <svg viewBox="0 0 1918 1079" xmlns="http://www.w3.org/2000/svg">
+          <!-- underline 1 -->
+          <line x1="228" y1="191" x2="741" y2="191" stroke="#ff0000" stroke-width="8" stroke-linecap="round"/>
+          <!-- underline 2 -->
+          <line x1="55" y1="247" x2="399" y2="247" stroke="#ff0000" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <div class="click-layer" id="clickLayer" aria-label="Next step"></div>
+    </main>
+  </div>
+
+  <script>
+    const stageWrap = document.getElementById("stageWrap");
+    const steps = Array.from(document.querySelectorAll(".step"));
+    const clickLayer = document.getElementById("clickLayer");
+    let currentStep = -1;
+
+    function fitStage() {
+      const slideW = 1918;
+      const slideH = 1079;
+      const scale = Math.min(window.innerWidth / slideW, window.innerHeight / slideH);
+      stageWrap.style.transform = `translate(-50%, -50%) scale(${scale})`;
+    }
+
+    function showNextStep() {
+      if (currentStep < steps.length - 1) {
+        currentStep += 1;
+        steps[currentStep].classList.add("visible");
+      }
+    }
+
+    function showPreviousStep() {
+      if (currentStep >= 0) {
+        steps[currentStep].classList.remove("visible");
+        currentStep -= 1;
+      }
+    }
+
+    clickLayer.addEventListener("click", showNextStep);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === " " || event.key === "ArrowRight" || event.key === "Enter") {
+        event.preventDefault();
+        showNextStep();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "Backspace") {
+        event.preventDefault();
+        showPreviousStep();
+      }
+    });
+
+    window.addEventListener("resize", fitStage);
+    fitStage();
+  </script>
+</body>
+</html>

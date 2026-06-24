@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bill's Family Tree</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+      font-family: "Comic Sans MS", "Comic Neue", "Trebuchet MS", Arial, sans-serif;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .page {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1910px;
+      height: 1068px;
+      transform-origin: top left;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .title {
+      position: absolute;
+      left: 33px;
+      top: 25px;
+      margin: 0;
+      color: #000;
+      font-size: 50px;
+      line-height: 1.05;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+      white-space: nowrap;
+      z-index: 5;
+    }
+
+    .tree {
+      position: absolute;
+      left: 27px;
+      top: 104px;
+      width: 930px;
+      height: 724px;
+      object-fit: contain;
+      display: block;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .box {
+      position: absolute;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0 24px;
+      color: #000;
+      background: linear-gradient(to bottom, #dce9ff 0%, #bad0f5 100%);
+      border: 2px solid #467ec7;
+      box-shadow: 0 6px 10px rgba(0,0,0,0.22);
+      font-size: 49px;
+      line-height: 1;
+      font-weight: 400;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(3px);
+      transition: opacity 130ms ease, transform 130ms ease, visibility 130ms ease;
+      pointer-events: none;
+    }
+
+    .box.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .q-left {
+      left: 13px;
+      top: 833px;
+      width: 940px;
+      height: 106px;
+    }
+
+    .a-left {
+      left: 13px;
+      top: 939px;
+      width: 766px;
+      height: 106px;
+    }
+
+    .q1 {
+      left: 991px;
+      top: 91px;
+      width: 902px;
+      height: 106px;
+    }
+
+    .a1 {
+      left: 991px;
+      top: 197px;
+      width: 821px;
+      height: 106px;
+    }
+
+    .q2 {
+      left: 991px;
+      top: 319px;
+      width: 902px;
+      height: 106px;
+    }
+
+    .a2 {
+      left: 991px;
+      top: 425px;
+      width: 297px;
+      height: 106px;
+    }
+
+    .q3 {
+      left: 991px;
+      top: 553px;
+      width: 902px;
+      height: 106px;
+    }
+
+    .a3 {
+      left: 991px;
+      top: 659px;
+      width: 873px;
+      height: 106px;
+    }
+
+    .q4 {
+      left: 991px;
+      top: 781px;
+      width: 902px;
+      height: 106px;
+    }
+
+    .a4 {
+      left: 991px;
+      top: 887px;
+      width: 297px;
+      height: 106px;
+    }
+  </style>
+</head>
+<body>
+  <div class="viewport">
+    <main class="page" id="page">
+      <h1 class="title">Look at Bill’s family tree on p. 2. Ask and answer questions, as in the example.</h1>
+
+      <img class="tree" src="/spotlight/img/ex36_img0.webp" alt="Bill's family tree">
+
+      <div class="box q-left step">Is Sam Sue’s brother?</div>
+      <div class="box a-left step">No, he isn’t. He is her husband.</div>
+
+      <div class="box q1 step">Is Tom Kim’s father?</div>
+      <div class="box a1 step">No, he isn’t. he is her grandfather.</div>
+
+      <div class="box q2 step">Is Gill Johnny’s sister?</div>
+      <div class="box a2 step">Yes, she is.</div>
+
+      <div class="box q3 step">Are Kim and Kate Bill’s cousins?</div>
+      <div class="box a3 step">No, they aren’t. They are his sisters.</div>
+
+      <div class="box q4 step">Is Sam Sue’s husband?</div>
+      <div class="box a4 step">Yes, he is.</div>
+    </main>
+  </div>
+
+  <script>
+    const page = document.getElementById('page');
+    const steps = Array.from(document.querySelectorAll('.step'));
+    let current = 0;
+
+    function fitPage() {
+      const baseWidth = 1910;
+      const baseHeight = 1068;
+      const scale = Math.min(window.innerWidth / baseWidth, window.innerHeight / baseHeight);
+      page.style.transform = `scale(${scale})`;
+    }
+
+    document.addEventListener('click', () => {
+      if (current < steps.length) {
+        steps[current].classList.add('show');
+        current += 1;
+      }
+    });
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+  </script>
+</body>
+</html>

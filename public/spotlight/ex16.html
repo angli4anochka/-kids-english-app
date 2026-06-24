@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ex.12 - John's possessions</title>
+  <style>
+    :root {
+      --red: #ed111b;
+      --blue: #1aaee0;
+      --ink: #4f4f4f;
+      --soft-blue: #e9f7ff;
+      --green: #dff7df;
+      --green-border: #34a853;
+      --pink: #ffe7e7;
+      --pink-border: #d93025;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: #eeeeee;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--ink);
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #stage {
+      position: relative;
+      width: 1572px;
+      height: 960px;
+    }
+
+    .page {
+      width: 1572px;
+      height: 960px;
+      background: white;
+      overflow: hidden;
+      transform-origin: top left;
+      position: absolute;
+      left: 0;
+      top: 0;
+      box-shadow: 0 0 0 1px rgba(0,0,0,.12);
+    }
+
+    .header {
+      height: 78px;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      padding: 0 34px;
+      color: white;
+      font-weight: 700;
+      font-size: 38px;
+      letter-spacing: .2px;
+    }
+
+    .ex {
+      color: #000;
+      font-size: 36px;
+      margin-right: 12px;
+      font-weight: 700;
+    }
+
+    .content {
+      padding: 34px 64px 30px;
+    }
+
+    .worksheet {
+      width: 1240px;
+      max-width: 100%;
+      padding-top: 4px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 44px 210px 1fr 42px;
+      align-items: center;
+      min-height: 70px;
+      column-gap: 16px;
+      font-size: 33px;
+    }
+
+    .row.example-row {
+      color: #6b6b6b;
+    }
+
+    .arrow {
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-left: 21px solid var(--blue);
+      justify-self: center;
+    }
+
+    .number {
+      font-size: 32px;
+      color: #666;
+      justify-self: center;
+    }
+
+    .prompt {
+      white-space: nowrap;
+    }
+
+    .answer-text {
+      color: #29bdd9;
+      font-size: 31px;
+      font-weight: 600;
+      padding-left: 6px;
+      white-space: nowrap;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    input {
+      width: 100%;
+      height: 52px;
+      border: 2px solid #d1d1d1;
+      border-radius: 12px;
+      padding: 0 18px;
+      font-size: 29px;
+      color: #333;
+      outline: none;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #fff;
+      transition: background .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(26, 174, 224, .14);
+    }
+
+    .tick {
+      font-size: 31px;
+      font-weight: 700;
+      width: 32px;
+      text-align: center;
+    }
+
+    .correct input {
+      background: var(--green);
+      border-color: var(--green-border);
+    }
+
+    .correct .tick {
+      color: var(--green-border);
+    }
+
+    .wrong input {
+      background: var(--pink);
+      border-color: var(--pink-border);
+    }
+
+    .wrong .tick {
+      color: var(--pink-border);
+    }
+
+    .controls {
+      position: absolute;
+      left: 64px;
+      bottom: 34px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .check-btn,
+    .answers-btn {
+      border: none;
+      border-radius: 999px;
+      color: white;
+      padding: 13px 28px;
+      font-size: 20px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 5px 14px rgba(0, 0, 0, .18);
+    }
+
+    .check-btn {
+      background: var(--blue);
+    }
+
+    .answers-btn {
+      background: #8b8f96;
+    }
+
+    .check-btn:active,
+    .answers-btn:active {
+      transform: translateY(1px);
+    }
+
+    .result {
+      min-width: 240px;
+      font-size: 22px;
+      color: #555;
+      font-weight: 700;
+    }
+
+    .shake {
+      animation: shake .22s linear 1;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <main class="page" id="page">
+      <header class="header">
+        <span class="ex">(Ex.12)</span>
+        <span>Write about John’s possessions etc.</span>
+      </header>
+
+      <section class="content">
+        <div class="worksheet">
+          <div class="row example-row">
+            <div class="arrow"></div>
+            <div class="prompt">a bicycle: ✓</div>
+            <div class="answer-text">John’s got a bicycle.</div>
+            <div></div>
+          </div>
+
+          <div class="row example-row">
+            <div class="arrow"></div>
+            <div class="prompt">suits: 2</div>
+            <div class="answer-text">He’s got two suits.</div>
+            <div></div>
+          </div>
+
+          <div class="row example-row">
+            <div class="arrow"></div>
+            <div class="prompt">a horse: x</div>
+            <div class="answer-text">He hasn’t got a horse.</div>
+            <div></div>
+          </div>
+
+          <div class="row example-row">
+            <div class="arrow"></div>
+            <div class="prompt">any children: x</div>
+            <div class="answer-text">He hasn’t got any children.</div>
+            <div></div>
+          </div>
+
+          <div class="row task-row" data-answer="he's got two brothers|he has got two brothers|john's got two brothers|john has got two brothers|he's got 2 brothers|he has got 2 brothers|john's got 2 brothers|john has got 2 brothers" data-correct="He’s got two brothers.">
+            <div class="number">1</div>
+            <div class="prompt">brothers: 2</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="brothers">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="he hasn't got a car|he has not got a car|john hasn't got a car|john has not got a car" data-correct="He hasn’t got a car.">
+            <div class="number">2</div>
+            <div class="prompt">a car: x</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="car">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="he's got three dogs|he has got three dogs|john's got three dogs|john has got three dogs|he's got 3 dogs|he has got 3 dogs|john's got 3 dogs|john has got 3 dogs" data-correct="He’s got three dogs.">
+            <div class="number">3</div>
+            <div class="prompt">dogs: 3</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="dogs">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="he's got a dictionary|he has got a dictionary|john's got a dictionary|john has got a dictionary" data-correct="He’s got a dictionary.">
+            <div class="number">4</div>
+            <div class="prompt">a dictionary: ✓</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="dictionary">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="he hasn't got long hair|he has not got long hair|john hasn't got long hair|john has not got long hair" data-correct="He hasn’t got long hair.">
+            <div class="number">5</div>
+            <div class="prompt">long hair: x</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="long hair">
+            </div>
+            <div class="tick"></div>
+          </div>
+
+          <div class="row task-row" data-answer="he hasn't got any sisters|he has not got any sisters|john hasn't got any sisters|john has not got any sisters" data-correct="He hasn’t got any sisters.">
+            <div class="number">6</div>
+            <div class="prompt">any sisters: x</div>
+            <div class="input-wrap">
+              <input type="text" autocomplete="off" spellcheck="false" aria-label="sisters">
+            </div>
+            <div class="tick"></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button class="check-btn" id="checkBtn">Check</button>
+        <button class="answers-btn" id="answersBtn">Correct answers</button>
+        <div class="result" id="result"></div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const DESIGN_W = 1572;
+    const DESIGN_H = 960;
+    const stage = document.getElementById('stage');
+    const page = document.getElementById('page');
+
+    function fitPage() {
+      const scale = Math.min(window.innerWidth / DESIGN_W, window.innerHeight / DESIGN_H);
+      stage.style.width = DESIGN_W * scale + 'px';
+      stage.style.height = DESIGN_H * scale + 'px';
+      page.style.transform = `scale(${scale})`;
+    }
+
+    window.addEventListener('resize', fitPage);
+    fitPage();
+
+    const rows = [...document.querySelectorAll('.task-row')];
+    const result = document.getElementById('result');
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .trim()
+        .replace(/[’‘]/g, "'")
+        .replace(/[.,!?]/g, "")
+        .replace(/\s+/g, " ");
+    }
+
+    function checkAnswers() {
+      let score = 0;
+
+      rows.forEach(row => {
+        row.classList.remove('correct', 'wrong', 'shake');
+
+        const input = row.querySelector('input');
+        const tick = row.querySelector('.tick');
+        const userAnswer = normalize(input.value);
+        const accepted = row.dataset.answer.split('|').map(normalize);
+
+        if (accepted.includes(userAnswer)) {
+          row.classList.add('correct');
+          tick.textContent = '✓';
+          score += 1;
+        } else {
+          row.classList.add('wrong', 'shake');
+          tick.textContent = '✕';
+        }
+      });
+
+      result.textContent = `Correct answers: ${score} / ${rows.length}`;
+      window.parent.postMessage({ type: 'ex16-done', score: score, total: rows.length }, '*');
+    }
+
+    function showCorrectAnswers() {
+      rows.forEach(row => {
+        row.classList.remove('wrong', 'shake');
+        row.classList.add('correct');
+
+        const input = row.querySelector('input');
+        const tick = row.querySelector('.tick');
+
+        input.value = row.dataset.correct;
+        tick.textContent = '✓';
+      });
+
+      result.textContent = `Correct answers: ${rows.length} / ${rows.length}`;
+    }
+
+    document.getElementById('checkBtn').addEventListener('click', checkAnswers);
+    document.getElementById('answersBtn').addEventListener('click', showCorrectAnswers);
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        checkAnswers();
+      }
+    });
+  </script>
+</body>
+</html>
