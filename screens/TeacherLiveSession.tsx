@@ -18,6 +18,7 @@ interface SessionData {
   current_activity_index: number;
   is_interactive: boolean;
   created_at: string;
+  course_name?: string;
 }
 
 interface ActivityResult {
@@ -251,8 +252,13 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
         });
       }
 
+      const cn = (session?.course_name || '').toLowerCase();
+      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
+      const teacherRedirect = isSpotlight
+        ? `/teacher/lesson-results?sessionId=${sessionId}`
+        : `/teacher/lessons`;
       setIsSessionEnded(true);
-      setTimeout(() => router.push(`/teacher/lesson-results?sessionId=${sessionId}`), 3000);
+      setTimeout(() => router.push(teacherRedirect), 3000);
     } catch (err) {
       alert('Failed to end session');
     }
@@ -363,7 +369,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
           <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Урок завершен!</h2>
-            <p className="text-gray-600">Переход к разбору ошибок...</p>
+            <p className="text-gray-600">{((session?.course_name || '').toLowerCase().includes('spotlight') || (session?.course_name || '').toLowerCase().includes('спотлайт')) ? 'Переход к разбору ошибок...' : 'Возврат к урокам...'}</p>
           </div>
         </div>
       )}
