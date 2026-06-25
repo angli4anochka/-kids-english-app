@@ -73,16 +73,28 @@ const MapScreen = () => {
       {/* Navigation buttons - bottom right */}
       <div className="absolute bottom-8 right-8 z-20 flex gap-4">
         {user?.role === 'student' && (
-          <button
-            onClick={() => {
-              soundManager.playClick();
-              navigate('/student/profile');
-            }}
-            className="px-8 py-4 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-110 active:scale-95 transform transition-all border-4 border-indigo-600 flex items-center gap-3"
-          >
-            <span className="text-3xl">🧑‍🎓</span>
-            <span>Мой кабинет</span>
-          </button>
+          <>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                navigate('/student/courses');
+              }}
+              className="px-8 py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-110 active:scale-95 transform transition-all border-4 border-teal-600 flex items-center gap-3"
+            >
+              <span className="text-3xl">📚</span>
+              <span>Мои курсы</span>
+            </button>
+            <button
+              onClick={() => {
+                soundManager.playClick();
+                navigate('/student/profile');
+              }}
+              className="px-8 py-4 bg-gradient-to-r from-purple-500 via-indigo-500 to-blue-500 text-white font-bold text-xl rounded-2xl shadow-2xl hover:shadow-3xl hover:scale-110 active:scale-95 transform transition-all border-4 border-indigo-600 flex items-center gap-3"
+            >
+              <span className="text-3xl">🧑‍🎓</span>
+              <span>Мой кабинет</span>
+            </button>
+          </>
         )}
         <button
           onClick={() => {

@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useNavigate } from '@/utils/routing-adapter';
+import { useAuth } from '../contexts/AuthContext';
 
 interface CourseBook {
   id: string;
@@ -35,6 +36,7 @@ const LEVEL_COLORS = [
 
 export default function CourseScreen({ courseId }: CourseScreenProps) {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [course, setCourse] = useState<Course | null>(null);
   const [books, setBooks] = useState<CourseBook[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -76,7 +78,7 @@ export default function CourseScreen({ courseId }: CourseScreenProps) {
       <div className="bg-white shadow-lg">
         <div className="container mx-auto px-4 py-4 flex items-center gap-4">
           <button
-            onClick={() => navigate('/teacher/lessons')}
+            onClick={() => navigate(user?.role === 'teacher' ? '/teacher/lessons' : '/student/courses')}
             className="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg transition"
           >
             ← Назад
