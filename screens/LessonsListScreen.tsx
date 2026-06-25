@@ -146,7 +146,7 @@ export default function LessonsListScreen() {
 
   const loadCourseGroups = async (courseId: string) => {
     try {
-      const response = await fetch(`/kids-api/courses/${courseId}/groups`);
+      const response = await fetch(`/kids-api/courses/${courseId}/groups?teacherId=${user?.id}`);
       const data = await response.json();
       if (data.success) {
         setCourseGroups(data.data);

@@ -511,48 +511,6 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
                   </div>
                 </div>
 
-                {/* Student results for current activity */}
-                {currentActivity && (() => {
-                  const activityResults = results
-                    .filter(r => r.activity_id === currentActivity.id)
-                    .sort((a, b) => (b.score || 0) - (a.score || 0));
-                  return (
-                    <div className="mt-6 bg-white rounded-3xl shadow-xl p-6">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        🏆 Результаты учеников
-                        <span className="text-sm font-normal text-gray-500">({activityResults.length})</span>
-                      </h3>
-                      {activityResults.length === 0 ? (
-                        <p className="text-gray-500 text-sm">Пока никто не завершил эту активити</p>
-                      ) : (
-                        <div className="space-y-2">
-                          {activityResults.map((r, i) => (
-                            <div
-                              key={(r.student_id || 'anon') + '-' + i}
-                              className="flex items-center justify-between gap-3 px-4 py-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl border border-purple-100"
-                            >
-                              <div className="flex items-center gap-3">
-                                <span className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-white ${i === 0 ? 'bg-yellow-500' : i === 1 ? 'bg-gray-400' : i === 2 ? 'bg-orange-400' : 'bg-gray-300'}`}>
-                                  {i + 1}
-                                </span>
-                                <span className="font-semibold text-gray-800">{r.student_name || 'Аноним'}</span>
-                                <span className={`text-xs px-2 py-0.5 rounded-full ${r.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                                  {r.status === 'completed' ? '✓ прошёл' : '✗ не прошёл'}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-4 text-sm">
-                                <span className="font-bold text-purple-700">{r.score} баллов</span>
-                                {r.time_seconds != null && (
-                                  <span className="text-gray-500">⏱ {r.time_seconds}с</span>
-                                )}
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })()}
               </div>
             ) : null}
           </div>
