@@ -30,7 +30,7 @@ interface Group {
 }
 
 export default function TeacherGroups() {
-  const { user } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -46,8 +46,10 @@ export default function TeacherGroups() {
   const [selectedGroupForAddStudent, setSelectedGroupForAddStudent] = useState<number | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
+    setGroups([]);
     fetchGroups();
-  }, [user?.id]);
+  }, [user?.id, authLoading]);
 
   const fetchGroups = async () => {
     if (!user?.id) return;
@@ -362,7 +364,12 @@ export default function TeacherGroups() {
               >
                 ← Назад
               </button>
-              <h1 className="text-3xl font-bold text-gray-800">Мои группы</h1>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">Мои группы</h1>
+                {user?.displayName && (
+                  <p className="text-sm text-gray-500 mt-0.5">{user.displayName}</p>
+                )}
+              </div>
             </div>
             <div className="flex gap-3">
               <button
@@ -826,7 +833,7 @@ export default function TeacherGroups() {
                       <h3 className="text-sm font-semibold text-indigo-700">Ученик {index + 1}</h3>
                       {students.length > 1 && (
                         <button
-                          onClick={() => removeStudentField(index)}
+                          onClick={() => removeStudent(index)}
                           className="text-red-500 hover:text-red-700 text-sm"
                         >
                           ✕
