@@ -62,9 +62,6 @@ export default function LessonsListScreen() {
       const coursesData = await coursesResponse.json();
       if (coursesData.success) {
         setCourses(coursesData.data);
-        if (coursesData.data.length > 0) {
-          setSelectedCourse(coursesData.data[0].id);
-        }
       }
 
       // Load groups for teacher
@@ -400,32 +397,25 @@ export default function LessonsListScreen() {
             </div>
 
             <div className="flex items-center gap-4">
-              {/* Course selector */}
-              <div className="flex items-center gap-2">
-                <label className="text-sm font-semibold text-gray-700">Курс:</label>
-                <select
-                  value={selectedCourse || ''}
-                  onChange={(e) => setSelectedCourse(e.target.value)}
-                  className="px-4 py-2 border-2 border-gray-200 rounded-lg focus:border-purple-500 focus:outline-none font-semibold"
-                >
-                  <option value="">Выберите курс</option>
-                  {courses.map(course => (
-                    <option key={course.id} value={course.id}>
-                      {course.emoji} {course.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
               {selectedCourse && (
-                <button
-                  onClick={() => navigate(`/course/${selectedCourse}`)}
-                  className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition font-semibold"
-                >
-                  📚 Книги
-                </button>
+                <>
+                  <button
+                    onClick={() => setSelectedCourse(null)}
+                    className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition font-semibold"
+                  >
+                    ← Все курсы
+                  </button>
+                  <span className="text-lg font-bold text-gray-700">
+                    {courses.find(c => c.id === selectedCourse)?.emoji} {courses.find(c => c.id === selectedCourse)?.name}
+                  </span>
+                  <button
+                    onClick={() => navigate(`/course/${selectedCourse}`)}
+                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition font-semibold"
+                  >
+                    📚 Книги
+                  </button>
+                </>
               )}
-
               <button
                 onClick={() => setShowCreateCourseModal(true)}
                 className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition font-semibold"
@@ -448,18 +438,29 @@ export default function LessonsListScreen() {
       {/* Main content */}
       <div className="container mx-auto px-4 py-6">
         {!selectedCourse ? (
-          <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
-            <div className="text-6xl mb-4">📚</div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              {courses.length === 0 ? 'Создайте свой первый курс' : 'Выберите курс'}
-            </h2>
-            <p className="text-gray-600">
-              {courses.length === 0
-                ? 'Курс — это набор уроков по определенной теме (например, KidsBox, Phonics)'
-                : 'Выберите курс из списка выше, чтобы увидеть его уроки'
-              }
-            </p>
-          </div>
+          courses.length === 0 ? (
+            <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
+              <div className="text-6xl mb-4">📚</div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Создайте свой первый курс</h2>
+              <p className="text-gray-600">Курс — это набор уроков по определенной теме (например, KidsBox, Phonics)</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {courses.map(course => (
+                <button
+                  key={course.id}
+                  onClick={() => setSelectedCourse(course.id)}
+                  className="bg-white rounded-2xl shadow-lg p-8 text-left hover:shadow-xl hover:scale-105 transition-all border-2 border-transparent hover:border-purple-300"
+                >
+                  <div className="text-5xl mb-3">{course.emoji}</div>
+                  <div className="text-xl font-bold text-gray-800">{course.name}</div>
+                  {course.description && (
+                    <div className="text-sm text-gray-500 mt-1">{course.description}</div>
+                  )}
+                </button>
+              ))}
+            </div>
+          )
         ) : filteredLessons.length === 0 ? (
           <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
             <div className="text-6xl mb-4">📚</div>
@@ -538,13 +539,6 @@ export default function LessonsListScreen() {
                                         </div>
                                       </div>
                                       <div className="flex gap-2">
-                                        <button
-                                          onClick={() => navigate(`/teacher/lessons/create?lessonId=${lesson.id}`)}
-                                          className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg text-xs font-semibold transition-all hover:scale-105"
-                                          title="Редактировать этапы урока"
-                                        >
-                                          Редактировать
-                                        </button>
                                         <button
                                           onClick={() => {
                                             setSelectedLessonToStart(lesson);
