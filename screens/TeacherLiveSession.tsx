@@ -436,41 +436,76 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
             </div>
 
             {/* Who finished panel */}
-            <div className="bg-white rounded-2xl shadow-xl p-4">
-              <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
-                Кто завершил
-                {spotlightResults.length > 0 && (
-                  <span className="text-xs font-normal bg-green-100 text-green-700 rounded-full px-2 py-0.5">
-                    {spotlightResults.length}
-                  </span>
-                )}
-              </h2>
-              {spotlightResults.length === 0 ? (
-                <p className="text-xs text-gray-400">Пока никто не сдал задание</p>
-              ) : (
-                <div className="space-y-1.5 max-h-[calc(100vh-520px)] overflow-y-auto">
-                  {[...spotlightResults]
-                    .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
-                    .map(r => {
-                      const actTitle = activities.find(a => a.id === r.activity_id)?.title || '—';
-                      const time = new Date(r.submitted_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-                      const perfect = r.score === r.total;
-                      return (
-                        <div key={r.id} className="flex items-start gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100">
-                          <span className="text-xs text-gray-400 shrink-0 mt-0.5 font-mono">{time}</span>
-                          <div className="flex-1 min-w-0">
-                            <div className="font-semibold text-sm text-gray-800 truncate">{r.student_name}</div>
-                            <div className="text-xs text-gray-500 truncate">{actTitle}</div>
-                          </div>
-                          <span className={`text-xs font-bold shrink-0 ${perfect ? 'text-green-600' : 'text-orange-500'}`}>
-                            {r.score}/{r.total}
-                          </span>
-                        </div>
-                      );
-                    })}
+            {(() => {
+              const GAME_LABELS: Record<string, string> = {
+                'snake-word': '🐍 Змейка',
+                'letter-race': '🏎️ Гонки',
+                'letter-trace': '✏️ Прописи',
+              };
+              const gameResults = results.filter(r => {
+                const act = activities.find(a => a.id === r.activity_id);
+                return act && GAME_LABELS[act.type];
+              });
+              const totalCount = spotlightResults.length + gameResults.length;
+              return (
+                <div className="bg-white rounded-2xl shadow-xl p-4">
+                  <h2 className="text-base font-bold text-gray-900 mb-3 flex items-center gap-2">
+                    Кто завершил
+                    {totalCount > 0 && (
+                      <span className="text-xs font-normal bg-green-100 text-green-700 rounded-full px-2 py-0.5">
+                        {totalCount}
+                      </span>
+                    )}
+                  </h2>
+                  {totalCount === 0 ? (
+                    <p className="text-xs text-gray-400">Пока никто не завершил</p>
+                  ) : (
+                    <div className="space-y-1.5 max-h-[calc(100vh-520px)] overflow-y-auto">
+                      {[...spotlightResults]
+                        .sort((a, b) => new Date(b.submitted_at).getTime() - new Date(a.submitted_at).getTime())
+                        .map(r => {
+                          const actTitle = activities.find(a => a.id === r.activity_id)?.title || '—';
+                          const time = new Date(r.submitted_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+                          const perfect = r.score === r.total;
+                          return (
+                            <div key={r.id} className="flex items-start gap-2 px-3 py-2 rounded-xl bg-gray-50 border border-gray-100">
+                              <span className="text-xs text-gray-400 shrink-0 mt-0.5 font-mono">{time}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-sm text-gray-800 truncate">{r.student_name}</div>
+                                <div className="text-xs text-gray-500 truncate">{actTitle}</div>
+                              </div>
+                              <span className={`text-xs font-bold shrink-0 ${perfect ? 'text-green-600' : 'text-orange-500'}`}>
+                                {r.score}/{r.total}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      {[...gameResults]
+                        .sort((a, b) => new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime())
+                        .map((r, i) => {
+                          const act = activities.find(a => a.id === r.activity_id);
+                          const label = act ? (GAME_LABELS[act.type] || act.title || '—') : '—';
+                          const time = r.created_at
+                            ? new Date(r.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })
+                            : '';
+                          return (
+                            <div key={`game-${r.activity_id}-${r.student_id}-${i}`} className="flex items-start gap-2 px-3 py-2 rounded-xl bg-blue-50 border border-blue-100">
+                              <span className="text-xs text-gray-400 shrink-0 mt-0.5 font-mono">{time}</span>
+                              <div className="flex-1 min-w-0">
+                                <div className="font-semibold text-sm text-gray-800 truncate">{r.student_name || '—'}</div>
+                                <div className="text-xs text-blue-600 truncate">{label}</div>
+                              </div>
+                              <span className="text-xs font-bold shrink-0 text-green-600">
+                                {r.score > 0 ? `${r.score} ★` : '✓'}
+                              </span>
+                            </div>
+                          );
+                        })}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              );
+            })()}
           </div>
 
           {/* Main Content - Current Activity */}
