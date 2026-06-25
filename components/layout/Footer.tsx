@@ -42,6 +42,10 @@ export default function Footer() {
           © {new Date().getFullYear()} UniPlay Kids. Все права защищены.
           База данных размещена на серверах в Российской Федерации.
         </p>
+        <p className="text-center text-xs text-gray-400 mt-1">
+          Оператор ПДн: Малахова Альбина Сергеевна (ИНН 312824955688), г. Москва ·{' '}
+          <a href="mailto:angli4anochka@gmail.com" className="hover:underline">angli4anochka@gmail.com</a>
+        </p>
       </div>
     </footer>
   );
