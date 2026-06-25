@@ -232,6 +232,14 @@ export default function TeacherDashboard() {
                   <span>Нет подписки</span>
                 </div>
               )}
+              {user?.email === 'angli4anochka@gmail.com' && (
+                <button
+                  onClick={() => navigate('/admin')}
+                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition font-semibold text-sm"
+                >
+                  ⚙️ Админ
+                </button>
+              )}
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
