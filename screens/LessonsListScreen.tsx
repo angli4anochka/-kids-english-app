@@ -524,8 +524,21 @@ export default function LessonsListScreen() {
                 ) : (
                   <div className="space-y-2">
                     {books.map((book: any) => {
+                      const useAccordion = books.length === 1;
                       const isOpen = expandedBookId === book.id;
                       const bLessons = bookLessons[book.id] || [];
+                      if (!useAccordion) {
+                        return (
+                          <button
+                            key={book.id}
+                            onClick={() => navigate(`/course/${selectedCourse}/book/${book.id}`)}
+                            className="w-full text-left px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition flex items-center gap-3"
+                          >
+                            <span className="text-2xl">{book.emoji || '📖'}</span>
+                            <span className="font-semibold text-gray-800">{book.title}</span>
+                          </button>
+                        );
+                      }
                       return (
                         <div key={book.id} className="border-2 rounded-xl overflow-hidden transition-all"
                           style={{ borderColor: isOpen ? '#a78bfa' : '#e5e7eb' }}>
