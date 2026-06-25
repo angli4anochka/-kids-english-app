@@ -395,16 +395,6 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
                 <div className={`w-3 h-3 rounded-full ${isConnected ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div>
                 <span className="text-sm text-gray-600">{isConnected ? 'Подключено' : 'Отключено'}</span>
               </div>
-              <button
-                onClick={toggleInteractive}
-                className={`px-6 py-2 rounded-xl font-semibold transition ${
-                  isInteractive
-                    ? 'bg-green-500 hover:bg-green-600 text-white'
-                    : 'bg-gray-300 hover:bg-gray-400 text-gray-700'
-                }`}
-              >
-                {isInteractive ? '🟢 Интерактив' : '⚪ Интерактив'}
-              </button>
 
               <button
                 onClick={endSession}
