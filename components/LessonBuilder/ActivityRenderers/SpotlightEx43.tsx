@@ -7,10 +7,10 @@ interface Props {
   sessionId?: string;
 }
 
-export default function SpotlightEx40({ }: Props) {
+export default function SpotlightEx43({ }: Props) {
   return (
     <div style={{ width: '100%', height: '100%', overflow: 'hidden' }}>
-      <iframe src="/spotlight/ex40.html" style={{ width: '100%', height: '100%', border: 'none', display: 'block' }} scrolling="no" />
+      <iframe src="/spotlight/ex43.html" style={{ width: '100%', height: '100%', border: 'none', display: 'block' }} scrolling="no" />
     </div>
   );
 }

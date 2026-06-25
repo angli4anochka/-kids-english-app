@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Do / Does Interactive Exercise</title>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+  }
+
+  body {
+    color: #101820;
+  }
+
+  #viewport {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #ffffff;
+    position: relative;
+  }
+
+  #page {
+    width: 1536px;
+    height: 864px;
+    transform-origin: top left;
+    background: #ffffff;
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
+  .header {
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 1536px;
+    height: 114px;
+    background: #ed111d;
+    color: #ffffff;
+    padding: 7px 28px 0 28px;
+    font-size: 41px;
+    line-height: 1.23;
+    font-weight: 500;
+    letter-spacing: 0.4px;
+  }
+
+  .ex {
+    color: #000000;
+    margin-right: 10px;
+  }
+
+  .yellow {
+    color: #efff00;
+    font-style: italic;
+  }
+
+  .content {
+    position: absolute;
+    left: 0;
+    top: 122px;
+    width: 1536px;
+    height: 742px;
+  }
+
+  .left-list {
+    position: absolute;
+    left: 75px;
+    top: 44px;
+    width: 690px;
+  }
+
+  .left-row {
+    display: grid;
+    grid-template-columns: 46px 1fr;
+    align-items: baseline;
+    height: 72px;
+    font-size: 36px;
+    line-height: 1;
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    white-space: nowrap;
+  }
+
+  .num {
+    text-align: left;
+    padding-right: 4px;
+  }
+
+  .sentence {
+    padding-left: 0;
+  }
+
+  .right-list {
+    position: absolute;
+    left: 764px;
+    top: 34px;
+    width: 700px;
+  }
+
+  .answer-row {
+    position: relative;
+    height: 72px;
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+  }
+
+  .fixed-word {
+    font-size: 39px;
+    line-height: 1;
+    font-weight: 400;
+    color: #101820;
+    padding-bottom: 10px;
+  }
+
+  .answer-input {
+    width: 100%;
+    height: 59px;
+    border: none;
+    border-bottom: 3px dotted #b9b9b9;
+    background: transparent;
+    font-family: "Trebuchet MS", "Arial Rounded MT Bold", Arial, sans-serif;
+    font-size: 41px;
+    line-height: 1;
+    color: #111111;
+    padding: 0 8px 5px 8px;
+    outline: none;
+    transition: color 0.18s ease, border-color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+  }
+
+  .answer-input::placeholder {
+    color: transparent;
+  }
+
+  .answer-input.correct {
+    color: #12933b;
+    border-bottom-color: #16a34a;
+    background: rgba(32, 190, 86, 0.08);
+    box-shadow: 0 5px 0 -3px rgba(32, 190, 86, 0.38);
+  }
+
+  .answer-input:focus {
+    background: rgba(255, 245, 160, 0.16);
+  }
+
+  .answer-input.correct:focus {
+    background: rgba(32, 190, 86, 0.10);
+  }
+
+  .row-1 .answer-input { width: 690px; }
+  .row-2 .answer-input { width: 690px; }
+  .row-3 .answer-input { width: 690px; }
+  .row-4 .answer-input { width: 690px; }
+  .row-5 .answer-input { width: 690px; }
+  .row-6 .answer-input { width: 690px; }
+
+  .tiny-note {
+    position: absolute;
+    left: 768px;
+    top: 486px;
+    font-size: 20px;
+    color: #9a9a9a;
+    opacity: 0;
+    user-select: none;
+  }
+
+  #submitPanel {
+    position: fixed;
+    bottom: 12px;
+    right: 12px;
+    z-index: 200;
+    background: rgba(255,255,255,0.96);
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: none;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.15);
+    font-family: Arial, sans-serif;
+  }
+  #submitPanel input[type=text] {
+    padding: 4px 8px; border-radius: 6px; border: 1px solid #bbb;
+    font-size: 20px; width: 140px;
+  }
+  #submitPanel button {
+    padding: 5px 14px; background: #4a90e2; color: #fff;
+    border: none; border-radius: 6px; font-size: 20px; cursor: pointer;
+  }
+  #sentMsg { color: #2e7d32; font-size: 20px; font-weight: 700; display: none; }
+
+  @media print {
+    html, body {
+      overflow: visible;
+    }
+
+    #page {
+      transform: none !important;
+      position: relative;
+    }
+  }
+</style>
+</head>
+<body>
+  <div id="viewport">
+    <main id="page" aria-label="Interactive grammar exercise">
+      <header class="header">
+        <span class="ex">(Ex.2)</span> Write these sentences with <span class="yellow">do/does/don't/doesn't.</span> The meaning is<br>
+        the same.
+      </header>
+
+      <section class="content">
+        <div class="left-list" aria-label="Original sentences">
+          <div class="left-row"><span class="num">1</span><span class="sentence">Have you got any money?</span></div>
+          <div class="left-row"><span class="num">2</span><span class="sentence">I haven't got many clothes.</span></div>
+          <div class="left-row"><span class="num">3</span><span class="sentence">Has Tom got a brother?</span></div>
+          <div class="left-row"><span class="num">4</span><span class="sentence">How many children have they got?</span></div>
+          <div class="left-row"><span class="num">5</span><span class="sentence">Have you got any questions?</span></div>
+          <div class="left-row"><span class="num">6</span><span class="sentence">Sam hasn't got a job.</span></div>
+        </div>
+
+        <form class="right-list" autocomplete="off" spellcheck="false" aria-label="Student answers">
+          <div class="answer-row row-1">
+            <input class="answer-input" aria-label="Answer 1" data-answer="do you have any money" />
+          </div>
+          <div class="answer-row row-2">
+            <input class="answer-input" aria-label="Answer 2" data-answer="i don't have many clothes" data-alt="i do not have many clothes" />
+          </div>
+          <div class="answer-row row-3">
+            <input class="answer-input" aria-label="Answer 3" data-answer="does tom have a brother" />
+          </div>
+          <div class="answer-row row-4">
+            <input class="answer-input" aria-label="Answer 4" data-answer="how many children do they have" />
+          </div>
+          <div class="answer-row row-5">
+            <input class="answer-input" aria-label="Answer 5" data-answer="do you have any questions" />
+          </div>
+          <div class="answer-row row-6">
+            <input class="answer-input" aria-label="Answer 6" data-answer="sam doesn't have a job" data-alt="sam does not have a job" />
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <div id="submitPanel">
+      <input id="nameInput" type="text" placeholder="Твоё имя" />
+      <button id="submitBtn">Отправить</button>
+      <span id="sentMsg"></span>
+    </div>
+  </div>
+
+<script>
+  const BASE_WIDTH = 1536;
+  const BASE_HEIGHT = 864;
+  const page = document.getElementById('page');
+
+  function scalePage() {
+    const scale = Math.min(window.innerWidth / BASE_WIDTH, window.innerHeight / BASE_HEIGHT);
+    page.style.transform = `scale(${scale})`;
+  }
+
+  window.addEventListener('resize', scalePage);
+  scalePage();
+
+  function normalize(text) {
+    return text
+      .toLowerCase()
+      .replace(/[''`´]/g, "'")
+      .replace(/\bdo not\b/g, "don't")
+      .replace(/\bdoes not\b/g, "doesn't")
+      .replace(/[?.!,;:]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  document.querySelectorAll('.answer-input').forEach((input) => {
+    const mainAnswer = normalize(input.dataset.answer || '');
+    const alternatives = (input.dataset.alt || '')
+      .split('|')
+      .filter(Boolean)
+      .map(normalize);
+    const accepted = [mainAnswer, ...alternatives];
+
+    input.addEventListener('input', () => {
+      const value = normalize(input.value);
+      input.classList.toggle('correct', accepted.includes(value));
+    });
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const inputs = Array.from(document.querySelectorAll('.answer-input'));
+        const next = inputs[inputs.indexOf(input) + 1];
+        if (next) next.focus();
+      }
+    });
+  });
+
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    if (params.get('role') === 'student' && params.get('sessionId')) {
+      var panel = document.getElementById('submitPanel');
+      panel.style.display = 'flex';
+
+      document.getElementById('submitBtn').addEventListener('click', async function() {
+        var name = document.getElementById('nameInput').value.trim();
+        if (!name) { document.getElementById('nameInput').focus(); return; }
+
+        var answers = {};
+        var score = 0;
+        document.querySelectorAll('.answer-input').forEach(function(inp, i) {
+          var val = normalize(inp.value);
+          var mainAnswer = normalize(inp.dataset.answer || '');
+          var alternatives = (inp.dataset.alt || '').split('|').filter(Boolean).map(normalize);
+          var accepted = [mainAnswer].concat(alternatives).filter(Boolean);
+          var ok = val.length > 0 && accepted.includes(val);
+          if (ok) score++;
+          answers['q' + (i+1)] = { value: inp.value.trim(), correct: ok };
+        });
+
+        try {
+          await fetch('/kids-api/spotlight/results', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              lessonId: params.get('lessonId'),
+              activityId: params.get('activityId'),
+              sessionId: params.get('sessionId'),
+              studentName: name,
+              results: { answers: answers },
+              score: score,
+              total: 6
+            })
+          });
+          document.getElementById('submitBtn').style.display = 'none';
+          document.getElementById('nameInput').style.display = 'none';
+          var msg = document.getElementById('sentMsg');
+          msg.textContent = '✓ Отправлено! ' + score + '/6';
+          msg.style.display = 'inline';
+        } catch(e) { alert('Ошибка отправки'); }
+      });
+    }
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ex.1 — Write with got</title>
+  <style>
+    :root { --scale: 1; }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    body {
+      font-family: "Trebuchet MS", Arial, sans-serif;
+    }
+
+    #frame {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    #sheet {
+      width: 1717px;
+      height: 1078px;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(var(--scale));
+      transform-origin: center center;
+      background: #f4f4f4;
+      border: 2px solid #111111;
+    }
+
+    .top-bar {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1717px;
+      height: 80px;
+      background: #f31318;
+    }
+
+    .title {
+      position: absolute;
+      left: 34px;
+      top: 8px;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+      font-size: 48px;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+
+    .title .ex { color: #030303; }
+    .title .white { color: #ffffff; }
+    .title .yellow {
+      color: #ffff00;
+      font-style: italic;
+      font-weight: 700;
+    }
+
+    .row-num,
+    .sentence {
+      position: absolute;
+      color: #111111;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      font-size: 45px;
+      font-weight: 400;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .row-num {
+      left: 47px;
+      width: 40px;
+      text-align: left;
+    }
+
+    .sentence { left: 95px; }
+
+    .answer-line {
+      position: absolute;
+      left: 754px;
+      width: 952px;
+      height: 1px;
+      border-bottom: 3px dotted #bdbdbd;
+      opacity: .9;
+      transition: border-color .2s ease;
+    }
+
+    .answer-input {
+      position: absolute;
+      left: 773px;
+      width: 916px;
+      height: 64px;
+      padding: 0 10px 2px 10px;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: #ef0000;
+      font-family: "Comic Sans MS", "Trebuchet MS", cursive;
+      font-size: 43px;
+      line-height: 64px;
+      font-weight: 700;
+      letter-spacing: .1px;
+      text-shadow: 2px 3px 2px rgba(0,0,0,.18);
+      caret-color: #ef0000;
+      transition: color .2s ease, text-shadow .2s ease, background-color .2s ease;
+    }
+
+    .answer-input:focus {
+      background: rgba(255, 255, 0, .10);
+      border-radius: 8px;
+    }
+
+    .answer-input::placeholder {
+      color: transparent;
+    }
+
+    .answer-input.correct {
+      color: #129b2a;
+      text-shadow: 2px 3px 2px rgba(0,0,0,.10);
+      caret-color: #129b2a;
+    }
+
+    .answer-line.correct {
+      border-bottom-color: #76c87a;
+    }
+
+    /* exact row coordinates */
+    .r1 { top: 120px; }
+    .r2 { top: 200px; }
+    .r3 { top: 280px; }
+    .r4 { top: 359px; }
+    .r5 { top: 439px; }
+    .r6 { top: 519px; }
+    .r7 { top: 599px; }
+    .r8 { top: 679px; }
+
+    .l1 { top: 156px; }
+    .l2 { top: 236px; }
+    .l3 { top: 316px; }
+    .l4 { top: 396px; }
+    .l5 { top: 476px; }
+    .l6 { top: 556px; }
+    .l7 { top: 636px; }
+    .l8 { top: 716px; }
+
+    .i1 { top: 105px; }
+    .i2 { top: 185px; }
+    .i3 { top: 265px; }
+    .i4 { top: 345px; }
+    .i5 { top: 425px; }
+    .i6 { top: 505px; }
+    .i7 { top: 585px; }
+    .i8 { top: 665px; }
+
+    #submitPanel {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      z-index: 200;
+      background: rgba(255,255,255,0.96);
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 8px 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.15);
+      font-family: Arial, sans-serif;
+    }
+    #submitPanel input[type=text] {
+      padding: 4px 8px; border-radius: 6px; border: 1px solid #bbb;
+      font-size: 20px; width: 140px;
+    }
+    #submitPanel button {
+      padding: 5px 14px; background: #4a90e2; color: #fff;
+      border: none; border-radius: 6px; font-size: 20px; cursor: pointer;
+    }
+    #sentMsg { color: #2e7d32; font-size: 20px; font-weight: 700; display: none; }
+  </style>
+</head>
+<body>
+  <main id="frame" aria-label="English exercise: write the sentences with got">
+    <section id="sheet">
+      <div class="top-bar"></div>
+      <div class="title">
+        <span class="ex">(Ex.1)</span>
+        <span class="white">Write these sentences with</span>
+        <span class="yellow">got.</span>
+        <span class="white">The meaning is the same.</span>
+      </div>
+
+      <div class="row-num r1">1</div><div class="sentence r1">They have two children.</div><div class="answer-line l1"></div><input class="answer-input i1" type="text" aria-label="Answer 1" autocomplete="off" spellcheck="false" data-answers="they've got two children|they have got two children" />
+      <div class="row-num r2">2</div><div class="sentence r2">She doesn’t have a key.</div><div class="answer-line l2"></div><input class="answer-input i2" type="text" aria-label="Answer 2" autocomplete="off" spellcheck="false" data-answers="she hasn't got a key|she has not got a key" />
+      <div class="row-num r3">3</div><div class="sentence r3">He has a new job.</div><div class="answer-line l3"></div><input class="answer-input i3" type="text" aria-label="Answer 3" autocomplete="off" spellcheck="false" data-answers="he's got a new job|he has got a new job" />
+      <div class="row-num r4">4</div><div class="sentence r4">Do you have an umbrella?</div><div class="answer-line l4"></div><input class="answer-input i4" type="text" aria-label="Answer 4" autocomplete="off" spellcheck="false" data-answers="have you got an umbrella|have you got an umbrella?" />
+      <div class="row-num r5">5</div><div class="sentence r5">We have a lot of work to do.</div><div class="answer-line l5"></div><input class="answer-input i5" type="text" aria-label="Answer 5" autocomplete="off" spellcheck="false" data-answers="we've got a lot of work to do|we have got a lot of work to do" />
+      <div class="row-num r6">6</div><div class="sentence r6">I don’t have your phone number.</div><div class="answer-line l6"></div><input class="answer-input i6" type="text" aria-label="Answer 6" autocomplete="off" spellcheck="false" data-answers="i haven't got your phone number|i have not got your phone number" />
+      <div class="row-num r7">7</div><div class="sentence r7">Does your father have a car?</div><div class="answer-line l7"></div><input class="answer-input i7" type="text" aria-label="Answer 7" autocomplete="off" spellcheck="false" data-answers="has your father got a car|has your father got a car?" />
+      <div class="row-num r8">8</div><div class="sentence r8">How much money do we have?</div><div class="answer-line l8"></div><input class="answer-input i8" type="text" aria-label="Answer 8" autocomplete="off" spellcheck="false" data-answers="how much money have we got|how much money have we got?" />
+    </section>
+      <div id="submitPanel">
+        <input id="nameInput" type="text" placeholder="Твоё имя" />
+        <button id="submitBtn">Отправить</button>
+        <span id="sentMsg"></span>
+      </div>
+  </main>
+
+  <script>
+    const sheet = document.getElementById('sheet');
+
+    function fitSheet() {
+      const scale = Math.min(window.innerWidth / 1717, window.innerHeight / 1078);
+      sheet.style.setProperty('--scale', scale);
+    }
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .replace(/[’‘`]/g, "'")
+        .replace(/[“”]/g, '"')
+        .replace(/[?.!,;:]+$/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    window.addEventListener('resize', fitSheet);
+    fitSheet();
+
+    const inputs = Array.from(document.querySelectorAll('.answer-input'));
+    const lines = Array.from(document.querySelectorAll('.answer-line'));
+
+    inputs.forEach((input, index) => {
+      const line = lines[index];
+      const accepted = (input.dataset.answers || '')
+        .split('|')
+        .map(normalize)
+        .filter(Boolean);
+
+      function checkAnswer() {
+        const value = normalize(input.value);
+        const ok = value.length > 0 && accepted.includes(value);
+        input.classList.toggle('correct', ok);
+        if (line) line.classList.toggle('correct', ok);
+      }
+
+      input.addEventListener('input', checkAnswer);
+      input.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          const next = inputs[index + 1];
+          if (next) next.focus();
+        }
+      });
+
+      checkAnswer();
+    });
+
+    (function() {
+      var params = new URLSearchParams(window.location.search);
+      if (params.get('role') === 'student' && params.get('sessionId')) {
+        var panel = document.getElementById('submitPanel');
+        panel.style.display = 'flex';
+
+        document.getElementById('submitBtn').addEventListener('click', async function() {
+          var name = document.getElementById('nameInput').value.trim();
+          if (!name) { document.getElementById('nameInput').focus(); return; }
+
+          var answers = {};
+          var score = 0;
+          inputs.forEach(function(inp, i) {
+            var val = normalize(inp.value);
+            var accepted = (inp.dataset.answers || '').split('|').map(normalize).filter(Boolean);
+            var ok = val.length > 0 && accepted.includes(val);
+            if (ok) score++;
+            answers['q' + (i+1)] = { value: inp.value.trim(), correct: ok };
+          });
+
+          try {
+            await fetch('/kids-api/spotlight/results', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({
+                lessonId: params.get('lessonId'),
+                activityId: params.get('activityId'),
+                sessionId: params.get('sessionId'),
+                studentName: name,
+                results: { answers: answers },
+                score: score,
+                total: 8
+              })
+            });
+            document.getElementById('submitBtn').style.display = 'none';
+            document.getElementById('nameInput').style.display = 'none';
+            var msg = document.getElementById('sentMsg');
+            msg.textContent = '✓ Отправлено! ' + score + '/8';
+            msg.style.display = 'inline';
+          } catch(e) { alert('Ошибка отправки'); }
+        });
+      }
+    })();
+
+  </script>
+</body>
+</html>
