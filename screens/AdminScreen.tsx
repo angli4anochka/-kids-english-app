@@ -52,7 +52,8 @@ export default function AdminScreen() {
       return;
     }
     fetchTeachers();
-  }, [user, fetchTeachers, navigate]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.email]);
 
   const activate = async (teacherId: string, teacherName: string, days: number, plan: string) => {
     const key = teacherId + plan;
