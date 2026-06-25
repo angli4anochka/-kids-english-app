@@ -501,23 +501,23 @@ const SnakeWordGame = ({
   }
 
   return (
-    <div className="h-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4 overflow-hidden flex items-center justify-center">
+    <div className="h-full bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-2 overflow-hidden flex items-center justify-center">
       <div className="w-full h-full">
-        <div className="grid grid-cols-12 gap-4 h-full">
+        <div className="grid grid-cols-12 gap-3 h-full">
           {/* Left Panel */}
-          <aside className="col-span-4 bg-white rounded-3xl p-6 shadow-2xl space-y-4 flex flex-col">
+          <aside className="col-span-4 bg-white rounded-3xl p-4 shadow-2xl space-y-3 flex flex-col overflow-hidden">
             <div>
-              <h1 className="text-3xl font-black mb-2">Snake Word</h1>
+              <h1 className="text-2xl font-black mb-1">Snake Word</h1>
             </div>
 
             {/* Word slots */}
-            <div className="bg-gray-50 rounded-2xl p-4">
-              <div className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3">Build the word</div>
-              <div className="flex gap-2 flex-wrap">
+            <div className="bg-gray-50 rounded-xl p-3">
+              <div className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Build the word</div>
+              <div className="flex gap-1.5 flex-wrap">
                 {currentWord.split('').map((letter, index) => (
                   <div
                     key={index}
-                    className={`w-11 h-12 flex items-center justify-center rounded-xl font-black text-xl transition-all ${
+                    className={`w-9 h-10 flex items-center justify-center rounded-lg font-black text-lg transition-all ${
                       index < wordIndex
                         ? 'bg-green-500 text-white shadow-lg transform -rotate-2'
                         : 'bg-gray-200 text-gray-400'
@@ -540,30 +540,30 @@ const SnakeWordGame = ({
             )}
 
             {/* On-screen Controls */}
-            <div className="bg-gray-50 rounded-2xl p-4">
-              <div className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-3 text-center">Controls</div>
-              <div className="grid grid-cols-3 grid-rows-3 gap-2 w-48 mx-auto">
+            <div className="bg-gray-50 rounded-xl p-3 mt-auto">
+              <div className="text-xs font-bold text-gray-600 uppercase tracking-wide mb-2 text-center">Controls</div>
+              <div className="grid grid-cols-3 grid-rows-3 gap-1.5 w-36 mx-auto">
                 <button
                   onClick={() => changeDirection({ x: 0, y: -1 })}
-                  className="col-start-2 row-start-1 bg-blue-600 hover:bg-blue-700 text-white text-2xl font-black rounded-2xl h-14 shadow-md border-3 border-white/75 transition hover:-translate-y-1 active:scale-95"
+                  className="col-start-2 row-start-1 bg-blue-600 hover:bg-blue-700 text-white text-xl font-black rounded-xl h-10 shadow-md transition active:scale-95"
                 >
                   ↑
                 </button>
                 <button
                   onClick={() => changeDirection({ x: -1, y: 0 })}
-                  className="col-start-1 row-start-2 bg-blue-600 hover:bg-blue-700 text-white text-2xl font-black rounded-2xl h-14 shadow-md border-3 border-white/75 transition hover:-translate-y-1 active:scale-95"
+                  className="col-start-1 row-start-2 bg-blue-600 hover:bg-blue-700 text-white text-xl font-black rounded-xl h-10 shadow-md transition active:scale-95"
                 >
                   ←
                 </button>
                 <button
                   onClick={() => changeDirection({ x: 1, y: 0 })}
-                  className="col-start-3 row-start-2 bg-blue-600 hover:bg-blue-700 text-white text-2xl font-black rounded-2xl h-14 shadow-md border-3 border-white/75 transition hover:-translate-y-1 active:scale-95"
+                  className="col-start-3 row-start-2 bg-blue-600 hover:bg-blue-700 text-white text-xl font-black rounded-xl h-10 shadow-md transition active:scale-95"
                 >
                   →
                 </button>
                 <button
                   onClick={() => changeDirection({ x: 0, y: 1 })}
-                  className="col-start-2 row-start-3 bg-blue-600 hover:bg-blue-700 text-white text-2xl font-black rounded-2xl h-14 shadow-md border-3 border-white/75 transition hover:-translate-y-1 active:scale-95"
+                  className="col-start-2 row-start-3 bg-blue-600 hover:bg-blue-700 text-white text-xl font-black rounded-xl h-10 shadow-md transition active:scale-95"
                 >
                   ↓
                 </button>
