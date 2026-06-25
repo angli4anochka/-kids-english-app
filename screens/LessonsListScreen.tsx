@@ -416,12 +416,6 @@ export default function LessonsListScreen() {
                   </button>
                 </>
               )}
-              <button
-                onClick={() => setShowCreateCourseModal(true)}
-                className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition font-semibold"
-              >
-                + Создать курс
-              </button>
             </div>
           </div>
         </div>
