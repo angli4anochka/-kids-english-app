@@ -115,8 +115,8 @@ export default function TeacherGroups() {
     try {
       // Validate all students
       for (const student of students) {
-        if (!student.name.trim() || !student.login.trim() || !student.password.trim()) {
-          alert('Пожалуйста, заполните все поля для каждого ученика');
+        if (!student.name.trim() || !student.login.trim()) {
+          alert('Пожалуйста, заполните имя и логин для каждого ученика');
           return;
         }
       }
@@ -174,7 +174,7 @@ export default function TeacherGroups() {
   };
 
   const handleCreateGroup = async () => {
-    const validStudents = students.filter(s => s.name.trim() !== '' && s.login.trim() !== '' && s.password.trim() !== '');
+    const validStudents = students.filter(s => s.name.trim() !== '' && s.login.trim() !== '');
 
     if (validStudents.length === 0) {
       alert('Добавьте хотя бы одного ученика с логином и паролем!');
@@ -453,6 +453,17 @@ export default function TeacherGroups() {
                       {showCredentials === group.id ? '🔒' : '👁️'}
                     </button>
                     <button
+                      onClick={() => {
+                        const url = `${window.location.origin}/join/${group.id}`;
+                        navigator.clipboard.writeText(url);
+                        alert(`Ссылка скопирована:\n${url}`);
+                      }}
+                      className="text-green-500 hover:text-green-700 transition p-2"
+                      title="Ссылка для входа учеников"
+                    >
+                      🔗
+                    </button>
+                    <button
                       onClick={() => copyAllCredentials(group)}
                       className="text-purple-500 hover:text-purple-700 transition p-2"
                       title="Скопировать все учетные данные"
@@ -672,13 +683,9 @@ export default function TeacherGroups() {
                         placeholder="Логин (например: maria)"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition"
                       />
-                      <input
-                        type="text"
-                        value={student.password}
-                        onChange={(e) => updateStudent(index, 'password', e.target.value)}
-                        placeholder="Пароль (например: 123456)"
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition"
-                      />
+                      <div className="w-full px-3 py-2 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+                        🔑 PIN будет сгенерирован автоматически
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -705,7 +712,7 @@ export default function TeacherGroups() {
               </button>
               <button
                 onClick={handleCreateGroup}
-                disabled={!groupName.trim() || students.filter(s => s.name.trim() && s.login.trim() && s.password.trim()).length === 0}
+                disabled={!groupName.trim() || students.filter(s => s.name.trim() && s.login.trim()).length === 0}
                 className="flex-1 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Сохранить
@@ -842,13 +849,9 @@ export default function TeacherGroups() {
                         onChange={(e) => updateStudent(index, 'login', e.target.value)}
                         className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
                       />
-                      <input
-                        type="text"
-                        placeholder="Пароль"
-                        value={student.password}
-                        onChange={(e) => updateStudent(index, 'password', e.target.value)}
-                        className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition"
-                      />
+                      <div className="w-full px-4 py-2 bg-green-50 border border-green-200 rounded-lg text-sm text-green-700">
+                        🔑 PIN будет сгенерирован автоматически
+                      </div>
                     </div>
                   </div>
                 ))}
