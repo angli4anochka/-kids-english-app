@@ -165,76 +165,11 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       <div className="container mx-auto px-6 py-6">
         <div className="grid grid-cols-12 gap-6">
 
-          {/* LEFT — Statistics */}
-          <div className="col-span-4 space-y-4">
-
-            {/* Lesson count cards */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Статистика учебника</h2>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-blue-600">{lessons.length}</div>
-                  <div className="text-xs text-gray-600 mt-1">Уроков</div>
-                </div>
-                <div className="bg-green-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-green-600">{completedCount}</div>
-                  <div className="text-xs text-gray-600 mt-1">Пройдено</div>
-                </div>
-              </div>
-
-              {/* Progress bar */}
-              {lessons.length > 0 && (
-                <div className="mt-4">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Прогресс</span>
-                    <span>{progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div
-                      className="bg-gradient-to-r from-purple-500 to-blue-500 h-2.5 rounded-full transition-all duration-300"
-                      style={{ width: `${progress}%` }}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Group selector */}
-            <div className="bg-white rounded-2xl shadow-xl p-6">
-              <h2 className="text-lg font-bold text-gray-800 mb-4">Группа</h2>
-              {groups.length === 0 ? (
-                <p className="text-sm text-gray-400 text-center py-4">Нет групп</p>
-              ) : (
-                <div className="space-y-2">
-                  {groups.map(g => (
-                    <button
-                      key={g.id}
-                      onClick={() => setSelectedGroupId(g.id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
-                        selectedGroupId === g.id
-                          ? 'border-purple-400 bg-purple-50 text-purple-800'
-                          : 'border-gray-200 hover:border-purple-300 text-gray-700'
-                      }`}
-                    >
-                      👥 {g.name}
-                      {g.current_lesson_title && (
-                        <div className="text-xs text-blue-600 font-normal mt-0.5 truncate">
-                          📍 {g.current_lesson_title}
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-          </div>
-
-          {/* RIGHT — Lessons list */}
+          {/* LEFT — Lessons list */}
           <div className="col-span-8">
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="text-xl font-bold text-gray-800">Уроки</h2>
+                <h2 className="text-xl font-bold text-gray-800">Уроки курса</h2>
                 {currentGroup && (
                   <span className="text-sm text-gray-500">Группа: <strong>{currentGroup.name}</strong></span>
                 )}
@@ -280,6 +215,70 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 </div>
               )}
             </div>
+          </div>
+
+          {/* RIGHT — Statistics */}
+          <div className="col-span-4 space-y-4">
+
+            {/* Lesson count cards */}
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Статистика</h2>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-blue-50 rounded-xl p-4 text-center">
+                  <div className="text-3xl font-bold text-blue-600">{lessons.length}</div>
+                  <div className="text-xs text-gray-600 mt-1">Уроков</div>
+                </div>
+                <div className="bg-green-50 rounded-xl p-4 text-center">
+                  <div className="text-3xl font-bold text-green-600">{completedCount}</div>
+                  <div className="text-xs text-gray-600 mt-1">Пройдено</div>
+                </div>
+              </div>
+
+              {lessons.length > 0 && (
+                <div className="mt-4">
+                  <div className="flex justify-between text-xs text-gray-500 mb-1">
+                    <span>Прогресс</span>
+                    <span>{progress}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div
+                      className="bg-gradient-to-r from-purple-500 to-blue-500 h-2.5 rounded-full transition-all duration-300"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Group selector */}
+            <div className="bg-white rounded-2xl shadow-xl p-6">
+              <h2 className="text-lg font-bold text-gray-800 mb-4">Прогресс группы</h2>
+              {groups.length === 0 ? (
+                <p className="text-sm text-gray-400 text-center py-4">Нет групп</p>
+              ) : (
+                <div className="space-y-2">
+                  {groups.map(g => (
+                    <button
+                      key={g.id}
+                      onClick={() => setSelectedGroupId(g.id)}
+                      className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
+                        selectedGroupId === g.id
+                          ? 'border-purple-400 bg-purple-50 text-purple-800'
+                          : 'border-gray-200 hover:border-purple-300 text-gray-700'
+                      }`}
+                    >
+                      👥 {g.name}
+                      {g.current_lesson_title && (
+                        <div className="text-xs text-blue-600 font-normal mt-0.5 truncate">
+                          📍 {g.current_lesson_title}
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
           </div>
 
         </div>
