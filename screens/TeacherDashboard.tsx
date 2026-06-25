@@ -1,6 +1,6 @@
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from '@/utils/routing-adapter';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 
 export default function TeacherDashboard() {
@@ -9,11 +9,20 @@ export default function TeacherDashboard() {
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
+  const [subscription, setSubscription] = useState<{ active: boolean; daysLeft: number | null } | null>(null);
   const [groupName, setGroupName] = useState('');
   const [students, setStudents] = useState<string[]>(['']);
   const [tutorsDeskGroups, setTutorsDeskGroups] = useState<any[]>([]);
   const [isLoadingGroups, setIsLoadingGroups] = useState(false);
   const [selectedTutorsDeskGroup, setSelectedTutorsDeskGroup] = useState<any>(null);
+
+  useEffect(() => {
+    if (!user?.id) return;
+    fetch('/kids-api/teacher-subscription?teacherId=' + user.id)
+      .then(r => r.json())
+      .then(d => { if (d.success) setSubscription({ active: d.active, daysLeft: d.daysLeft }); })
+      .catch(() => {});
+  }, [user?.id]);
 
   const handleLogout = () => {
     logout();
@@ -204,12 +213,28 @@ export default function TeacherDashboard() {
                 <p className="text-gray-600">{user?.email}</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
-            >
-              Выйти
-            </button>
+            <div className="flex items-center gap-3">
+              {subscription === null ? null : subscription.active ? (
+                <div className="flex items-center gap-2 px-4 py-2 bg-green-100 border border-green-300 text-green-700 rounded-lg font-semibold text-sm">
+                  <span>✅</span>
+                  <span>Подписка: осталось {subscription.daysLeft} {subscription.daysLeft === 1 ? 'день' : subscription.daysLeft !== null && subscription.daysLeft < 5 ? 'дня' : 'дней'}</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => alert('Для оформления подписки свяжитесь с администратором или напишите на uniplay.kids@gmail.com')}
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-400 to-pink-500 hover:from-orange-500 hover:to-pink-600 text-white rounded-lg font-semibold text-sm transition shadow-md hover:shadow-lg"
+                >
+                  <span>🔓</span>
+                  <span>Подписаться</span>
+                </button>
+              )}
+              <button
+                onClick={handleLogout}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition"
+              >
+                Выйти
+              </button>
+            </div>
           </div>
         </Card>
 
