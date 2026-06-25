@@ -60,8 +60,8 @@ export default function LessonsListScreen() {
     try {
       setIsLoading(true);
 
-      // Load all courses (shared across all teachers)
-      const coursesResponse = await fetch(`/kids-api/courses`);
+      // Load all courses with access flag for this teacher
+      const coursesResponse = await fetch(`/kids-api/courses?teacherId=${user.id}`);
       const coursesData = await coursesResponse.json();
       if (coursesData.success) {
         setCourses(coursesData.data);
@@ -442,24 +442,37 @@ export default function LessonsListScreen() {
           courses.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-xl p-12 text-center">
               <div className="text-6xl mb-4">📚</div>
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Создайте свой первый курс</h2>
-              <p className="text-gray-600">Курс — это набор уроков по определенной теме (например, KidsBox, Phonics)</p>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Нет доступных курсов</h2>
+              <p className="text-gray-600">Обратитесь к администратору для получения доступа к курсам</p>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {courses.map(course => (
-                <button
-                  key={course.id}
-                  onClick={() => setSelectedCourse(course.id)}
-                  className="bg-white rounded-2xl shadow-lg p-8 text-left hover:shadow-xl hover:scale-105 transition-all border-2 border-transparent hover:border-purple-300"
-                >
-                  <div className="text-5xl mb-3">{course.emoji}</div>
-                  <div className="text-xl font-bold text-gray-800">{course.name}</div>
-                  {course.description && (
-                    <div className="text-sm text-gray-500 mt-1">{course.description}</div>
-                  )}
-                </button>
-              ))}
+              {courses.map((course: any) => {
+                const locked = !course.has_access;
+                return (
+                  <button
+                    key={course.id}
+                    onClick={() => !locked && setSelectedCourse(course.id)}
+                    className={`relative bg-white rounded-2xl shadow-lg p-8 text-left transition-all border-2
+                      ${locked
+                        ? 'opacity-60 cursor-not-allowed border-gray-200'
+                        : 'hover:shadow-xl hover:scale-105 border-transparent hover:border-purple-300 cursor-pointer'
+                      }`}
+                  >
+                    {locked && (
+                      <div className="absolute top-3 right-3 text-2xl">🔒</div>
+                    )}
+                    <div className="text-5xl mb-3">{course.emoji}</div>
+                    <div className="text-xl font-bold text-gray-800">{course.name}</div>
+                    {course.description && (
+                      <div className="text-sm text-gray-500 mt-1">{course.description}</div>
+                    )}
+                    {locked && (
+                      <div className="text-xs text-gray-400 mt-2">Нет подписки</div>
+                    )}
+                  </button>
+                );
+              })}
             </div>
           )
         ) : filteredLessons.length === 0 ? (
