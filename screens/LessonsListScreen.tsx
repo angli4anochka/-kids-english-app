@@ -53,7 +53,6 @@ export default function LessonsListScreen() {
   }, [selectedGroup]);
 
   const loadData = async () => {
-    // Wait until the teacher is hydrated — avoids firing /courses?teacherId= (empty -> 400)
     if (!user?.id) {
       setIsLoading(false);
       return;
@@ -61,8 +60,8 @@ export default function LessonsListScreen() {
     try {
       setIsLoading(true);
 
-      // Load courses
-      const coursesResponse = await fetch(`/kids-api/courses?teacherId=${user.id}`);
+      // Load all courses (shared across all teachers)
+      const coursesResponse = await fetch(`/kids-api/courses`);
       const coursesData = await coursesResponse.json();
       if (coursesData.success) {
         setCourses(coursesData.data);
