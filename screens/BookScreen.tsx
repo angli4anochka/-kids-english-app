@@ -256,41 +256,43 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
               {groups.length === 0 ? (
                 <p className="text-sm text-gray-400 text-center py-4">Нет групп</p>
               ) : (
-                <div className="space-y-2">
-                  {groups.map(g => (
-                    <button
-                      key={g.id}
-                      onClick={() => setSelectedGroupId(g.id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
-                        selectedGroupId === g.id
-                          ? 'border-purple-400 bg-purple-50 text-purple-800'
-                          : 'border-gray-200 hover:border-purple-300 text-gray-700'
-                      }`}
-                    >
-                      👥 {g.name}
-                      {g.current_lesson_title && (
-                        <div className="text-xs text-blue-600 font-normal mt-0.5 truncate">
-                          📍 {g.current_lesson_title}
-                        </div>
-                      )}
-                    </button>
-                  ))}
-                </div>
-                {lessons.length > 0 && (
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <div className="flex justify-between text-xs text-gray-500 mb-2">
-                      <span>Пройдено уроков</span>
-                      <span className="font-semibold text-purple-700">{completedCount} / {lessons.length}</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3">
-                      <div
-                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-500"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                    <div className="text-right text-xs text-purple-600 font-bold mt-1">{progress}%</div>
+                <>
+                  <div className="space-y-2">
+                    {groups.map(g => (
+                      <button
+                        key={g.id}
+                        onClick={() => setSelectedGroupId(g.id)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
+                          selectedGroupId === g.id
+                            ? 'border-purple-400 bg-purple-50 text-purple-800'
+                            : 'border-gray-200 hover:border-purple-300 text-gray-700'
+                        }`}
+                      >
+                        👥 {g.name}
+                        {g.current_lesson_title && (
+                          <div className="text-xs text-blue-600 font-normal mt-0.5 truncate">
+                            📍 {g.current_lesson_title}
+                          </div>
+                        )}
+                      </button>
+                    ))}
                   </div>
-                )}
+                  {lessons.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <div className="flex justify-between text-xs text-gray-500 mb-2">
+                        <span>Пройдено уроков</span>
+                        <span className="font-semibold text-purple-700">{completedCount} / {lessons.length}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div
+                          className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-500"
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                      <div className="text-right text-xs text-purple-600 font-bold mt-1">{progress}%</div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
 
