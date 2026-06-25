@@ -26,6 +26,7 @@ export default function JoinGroupPage() {
   const groupId = params.groupId as string;
 
   const [groupName, setGroupName] = useState('');
+  const [courseName, setCourseName] = useState<string | null>(null);
   const [students, setStudents] = useState<Student[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
@@ -41,6 +42,7 @@ export default function JoinGroupPage() {
         if (d.success) {
           setGroupName(d.data.group.name);
           setStudents(d.data.students);
+          setCourseName(d.data.courseName || null);
         }
       })
       .finally(() => setIsLoading(false));
@@ -91,7 +93,9 @@ export default function JoinGroupPage() {
       }
       localStorage.setItem('authToken', data.data.token);
       localStorage.setItem('authUser', JSON.stringify(data.data.user));
-      router.push('/map');
+      const cn = (courseName || '').toLowerCase();
+      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
+      router.push(isSpotlight ? '/student/spotlight' : '/map');
     } catch {
       setError('Ошибка входа');
     } finally {
