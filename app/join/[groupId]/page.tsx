@@ -91,8 +91,9 @@ export default function JoinGroupPage() {
         setTimeout(() => pinRefs[0].current?.focus(), 100);
         return;
       }
+      const userWithCourse = { ...data.data.user, courseName: courseName || '' };
       localStorage.setItem('authToken', data.data.token);
-      localStorage.setItem('authUser', JSON.stringify(data.data.user));
+      localStorage.setItem('authUser', JSON.stringify(userWithCourse));
       const cn = (courseName || '').toLowerCase();
       const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       router.push(isSpotlight ? '/student/spotlight' : '/map');

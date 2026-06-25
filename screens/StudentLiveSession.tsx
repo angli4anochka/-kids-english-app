@@ -69,12 +69,18 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
       // Can add state for isInteractive if needed for student view
     };
 
-    // Listen for session end — show overlay, then go to lesson results
+    // Listen for session end — show overlay, then redirect by course
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
       if (data.sessionId === sessionId) {
         setIsSessionEnded(true);
-        setTimeout(() => router.push(`/student/lesson-results?sessionId=${sessionId}`), 3000);
+        const storedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+        const cn = (storedUser.courseName || '').toLowerCase();
+        const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
+        const redirectUrl = isSpotlight
+          ? `/student/lesson-results?sessionId=${sessionId}`
+          : '/scoreboard';
+        setTimeout(() => router.push(redirectUrl), 3000);
       }
     };
 
