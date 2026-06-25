@@ -31,6 +31,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isSessionEnded, setIsSessionEnded] = useState(false);
+  const [redirectUrl, setRedirectUrl] = useState('/scoreboard');
 
   useEffect(() => {
     loadSession();
@@ -73,14 +74,15 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
       if (data.sessionId === sessionId) {
-        setIsSessionEnded(true);
         const storedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
         const cn = (storedUser.courseName || '').toLowerCase();
         const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
-        const redirectUrl = isSpotlight
+        const url = isSpotlight
           ? `/student/lesson-results?sessionId=${sessionId}`
           : '/scoreboard';
-        setTimeout(() => router.push(redirectUrl), 3000);
+        setRedirectUrl(url);
+        setIsSessionEnded(true);
+        setTimeout(() => router.push(url), 3000);
       }
     };
 
@@ -182,7 +184,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
           <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Урок завершен!</h2>
-            <p className="text-gray-600">Переход к разбору ошибок...</p>
+            <p className="text-gray-600">{redirectUrl === '/scoreboard' ? 'Переход к таблице лидеров...' : 'Переход к разбору ошибок...'}</p>
           </div>
         </div>
       )}
