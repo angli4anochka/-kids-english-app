@@ -422,12 +422,6 @@ export default function LessonsListScreen() {
                   <span className="text-lg font-bold text-gray-700">
                     {courses.find(c => c.id === selectedCourse)?.emoji} {courses.find(c => c.id === selectedCourse)?.name}
                   </span>
-                  <button
-                    onClick={() => navigate(`/course/${selectedCourse}`)}
-                    className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition font-semibold"
-                  >
-                    📚 Книги
-                  </button>
                 </>
               )}
             </div>
