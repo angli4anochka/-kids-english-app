@@ -256,7 +256,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       const teacherRedirect = isSpotlight
         ? `/teacher/lesson-results?sessionId=${sessionId}`
-        : `/teacher/lessons`;
+        : `/scoreboard`;
       setIsSessionEnded(true);
       setTimeout(() => router.push(teacherRedirect), 3000);
     } catch (err) {
