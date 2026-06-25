@@ -106,7 +106,7 @@ export default function CookiePolicyPage() {
         </Section>
 
         <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500 space-y-1">
-          <p><strong>Контакт:</strong> [email для обращений по персональным данным]</p>
+          <p><strong>Контакт:</strong> angli4anochka@gmail.com</p>
           <p><strong>Версия документа:</strong> {LEGAL_DOCUMENTS.cookiePolicy.version}</p>
           <p><strong>Дата обновления:</strong> {LEGAL_DOCUMENTS.cookiePolicy.updatedAt}</p>
         </div>

@@ -20,8 +20,8 @@ export default function PersonalDataConsentPage() {
         <section className="mb-7 text-sm text-gray-700 space-y-3 leading-relaxed">
           <p>
             Регистрируясь на платформе <strong>UniPlay Kids</strong> (uniplay-kids.ru), я, субъект персональных данных,
-            свободно, своей волей и в своём интересе даю согласие оператору — <strong>[ФИО / ИП / ООО оператора]</strong>{' '}
-            (ИНН/ОГРНИП: [ИНН / ОГРНИП / ОГРН], [адрес оператора]) — на обработку моих персональных данных
+            свободно, своей волей и в своём интересе даю согласие оператору — <strong>Малахова Альбина Сергеевна</strong>{' '}
+            (ИНН/ОГРНИП: 312824955688, г. Москва) — на обработку моих персональных данных
             на следующих условиях.
           </p>
         </section>
@@ -83,7 +83,7 @@ export default function PersonalDataConsentPage() {
         <Section title="6. Порядок отзыва согласия">
           <p>
             Я имею право отозвать настоящее согласие в любое время, направив письменное заявление на электронный адрес оператора:{' '}
-            <strong>[email для обращений по персональным данным]</strong>, или воспользовавшись разделом{' '}
+            <strong>angli4anochka@gmail.com</strong>, или воспользовавшись разделом{' '}
             <strong>«Настройки приватности»</strong> в личном кабинете.
           </p>
           <p className="mt-1">
@@ -100,8 +100,8 @@ export default function PersonalDataConsentPage() {
         </Section>
 
         <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500 space-y-1">
-          <p><strong>Оператор:</strong> [ФИО / ИП / ООО оператора]</p>
-          <p><strong>Контакт:</strong> [email для обращений по персональным данным]</p>
+          <p><strong>Оператор:</strong> Малахова Альбина Сергеевна</p>
+          <p><strong>Контакт:</strong> angli4anochka@gmail.com</p>
           <p><strong>Версия согласия:</strong> {LEGAL_DOCUMENTS.personalDataConsent.version}</p>
           <p><strong>Дата обновления:</strong> {LEGAL_DOCUMENTS.personalDataConsent.updatedAt}</p>
         </div>

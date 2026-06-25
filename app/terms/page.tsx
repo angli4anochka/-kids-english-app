@@ -19,7 +19,7 @@ export default function TermsPage() {
         <Section title="1. Общие положения">
           <p>
             Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между{' '}
-            <strong>[ФИО / ИП / ООО оператора]</strong> (далее — «Платформа», «Оператор») и пользователем
+            <strong>Малахова Альбина Сергеевна</strong> (далее — «Платформа», «Оператор») и пользователем
             образовательной платформы <strong>UniPlay Kids</strong>, расположенной по адресу{' '}
             <strong>uniplay-kids.ru</strong>.
           </p>
@@ -97,8 +97,8 @@ export default function TermsPage() {
         </Section>
 
         <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500 space-y-1">
-          <p><strong>Оператор:</strong> [ФИО / ИП / ООО оператора], [адрес оператора]</p>
-          <p><strong>Контакт:</strong> [email для обращений по персональным данным]</p>
+          <p><strong>Оператор:</strong> Малахова Альбина Сергеевна, г. Москва</p>
+          <p><strong>Контакт:</strong> angli4anochka@gmail.com</p>
           <p><strong>Версия документа:</strong> {LEGAL_DOCUMENTS.terms.version}</p>
           <p><strong>Дата обновления:</strong> {LEGAL_DOCUMENTS.terms.updatedAt}</p>
         </div>

@@ -16,10 +16,10 @@ export default function PrivacyPolicyPage() {
         <Section title="1. Оператор персональных данных">
           <p>Оператором персональных данных является:</p>
           <ul className="mt-2 space-y-1">
-            <li><strong>Наименование:</strong> [ФИО / ИП / ООО оператора]</li>
-            <li><strong>ИНН / ОГРНИП / ОГРН:</strong> [ИНН / ОГРНИП / ОГРН]</li>
-            <li><strong>Адрес:</strong> [адрес оператора]</li>
-            <li><strong>Email для обращений по персональным данным:</strong> [email для обращений по персональным данным]</li>
+            <li><strong>Наименование:</strong> Малахова Альбина Сергеевна</li>
+            <li><strong>ИНН / ОГРНИП / ОГРН:</strong> 312824955688</li>
+            <li><strong>Адрес:</strong> г. Москва</li>
+            <li><strong>Email для обращений по персональным данным:</strong> angli4anochka@gmail.com</li>
           </ul>
           <p className="mt-2">
             Сайт: <strong>uniplay-kids.ru</strong>
@@ -126,7 +126,7 @@ export default function PrivacyPolicyPage() {
             <li>обратиться с жалобой в Роскомнадзор.</li>
           </ul>
           <p className="mt-2">
-            Для реализации прав направьте запрос на: <strong>[email для обращений по персональным данным]</strong>
+            Для реализации прав направьте запрос на: <strong>angli4anochka@gmail.com</strong>
           </p>
         </Section>
 
@@ -134,7 +134,7 @@ export default function PrivacyPolicyPage() {
           <p>
             Вы можете отозвать согласие или запросить удаление данных через раздел{' '}
             <strong>«Настройки приватности»</strong> в личном кабинете или направив письмо на{' '}
-            <strong>[email для обращений по персональным данным]</strong>.
+            <strong>angli4anochka@gmail.com</strong>.
           </p>
           <p className="mt-1">
             Отзыв согласия не влияет на законность обработки, осуществлённой до отзыва. После отзыва согласия данные будут обезличены или уничтожены в течение 30 дней, за исключением данных, обработка которых требуется по закону.
@@ -167,9 +167,9 @@ export default function PrivacyPolicyPage() {
         </Section>
 
         <div className="mt-8 pt-6 border-t border-gray-200 text-sm text-gray-500 space-y-1">
-          <p><strong>Контакты оператора:</strong> [email для обращений по персональным данным]</p>
+          <p><strong>Контакты оператора:</strong> angli4anochka@gmail.com</p>
           <p><strong>Версия документа:</strong> {LEGAL_DOCUMENTS.privacyPolicy.version}</p>
-          <p><strong>Дата вступления в силу:</strong> [дата]</p>
+          <p><strong>Дата вступления в силу:</strong> 2026-06-25</p>
           <p><strong>Дата последнего обновления:</strong> {LEGAL_DOCUMENTS.privacyPolicy.updatedAt}</p>
         </div>
       </div>
