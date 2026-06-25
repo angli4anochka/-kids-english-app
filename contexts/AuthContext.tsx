@@ -7,7 +7,6 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<User>;
   loginStudent: (login: string, password: string) => Promise<User>;
-  loginWithGoogle: (code: string) => Promise<void>;
   register: (email: string, password: string, displayName: string) => Promise<void>;
   logout: () => void;
 }
@@ -92,30 +91,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return newUser;
   };
 
-  const loginWithGoogle = async (code: string) => {
-    // Use tutorsdesk.ru domain for redirect
-    const redirectUri = `https://tutorsdesk.ru/kids-app/auth/google/callback`;
-    const response = await fetch('/kids-api/auth/google', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ code, redirectUri }),
-    });
-
-    const data = await response.json();
-
-    if (!data.success) {
-      throw new Error(data.error || 'Google login failed');
-    }
-
-    const { token: newToken, user: newUser } = data.data;
-    setToken(newToken);
-    setUser(newUser);
-    typeof window !== "undefined" && localStorage.setItem('authToken', newToken);
-    typeof window !== "undefined" && localStorage.setItem('authUser', JSON.stringify(newUser));
-  };
-
   const register = async (email: string, password: string, displayName: string) => {
     const response = await fetch('/kids-api/auth/register', {
       method: 'POST',
@@ -146,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, isLoading, login, loginStudent, loginWithGoogle, register, logout }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, loginStudent, register, logout }}>
       {children}
     </AuthContext.Provider>
   );
