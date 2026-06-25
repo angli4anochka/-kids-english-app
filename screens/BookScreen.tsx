@@ -204,6 +204,12 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                         </span>
                         {done && <span className="text-green-500 text-xs shrink-0 font-semibold">✓ пройден</span>}
                         <button
+                          onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}`)}
+                          className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
+                        >
+                          ✏️
+                        </button>
+                        <button
                           onClick={() => handleStartLesson(lesson)}
                           className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
                         >
