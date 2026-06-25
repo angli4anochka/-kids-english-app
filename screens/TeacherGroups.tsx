@@ -261,7 +261,7 @@ export default function TeacherGroups() {
       id: s.id,
       name: s.student_name,
       login: s.login || '',
-      password: '' // Don't show existing password
+      password: s.plain_password || ''
     }));
     setStudents(editableStudents as any);
     setShowEditForm(true);
@@ -729,14 +729,6 @@ export default function TeacherGroups() {
                 Ученики - Добавить/Изменить логины и пароли
               </label>
 
-              {/* Important Notice */}
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                <p className="text-sm text-blue-800">
-                  <span className="font-semibold">ℹ️ Важно:</span> Пароли не отображаются из соображений безопасности.
-                  Оставьте поле пароля пустым, чтобы сохранить текущий пароль.
-                  Введите новый пароль только если хотите его изменить.
-                </p>
-              </div>
 
               <div className="space-y-4 max-h-96 overflow-y-auto">
                 {students.map((student, index) => (
@@ -769,14 +761,9 @@ export default function TeacherGroups() {
                           type="text"
                           value={student.password}
                           onChange={(e) => updateStudent(index, 'password', e.target.value)}
-                          placeholder="Новый пароль (оставьте пустым, чтобы не менять)"
+                          placeholder="Пароль"
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-indigo-500 focus:outline-none transition"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
-                          {student.password ?
-                            "⚠️ Будет установлен новый пароль" :
-                            "Текущий пароль сохранится"}
-                        </p>
                       </div>
                     </div>
                   </div>
