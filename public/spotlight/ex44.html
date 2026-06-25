@@ -313,6 +313,15 @@
       var panel = document.getElementById('submitPanel');
       panel.style.display = 'flex';
 
+      // Auto-fill from URL params (student is logged in)
+      var urlUserId = params.get('userId');
+      var urlStudentName = params.get('studentName');
+      if (urlStudentName) {
+        var nameInput = document.getElementById('nameInput');
+        nameInput.value = urlStudentName;
+        nameInput.style.display = 'none';
+      }
+
       document.getElementById('submitBtn').addEventListener('click', async function() {
         var name = document.getElementById('nameInput').value.trim();
         if (!name) { document.getElementById('nameInput').focus(); return; }
@@ -338,6 +347,7 @@
               activityId: params.get('activityId'),
               sessionId: params.get('sessionId'),
               studentName: name,
+              studentId: urlUserId || undefined,
               results: { answers: answers },
               score: score,
               total: 6

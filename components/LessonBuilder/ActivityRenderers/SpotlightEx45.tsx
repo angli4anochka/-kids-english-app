@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { useAuth } from '../../../contexts/AuthContext';
 
 interface Props {
   isTeacher?: boolean;
@@ -24,6 +25,7 @@ interface StudentResult {
 const TOTAL = 9;
 
 export default function SpotlightEx45({ isTeacher, lessonId, activityId, sessionId }: Props) {
+  const { user } = useAuth();
   const [results, setResults] = useState<StudentResult[]>([]);
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -47,7 +49,9 @@ export default function SpotlightEx45({ isTeacher, lessonId, activityId, session
   if (lessonId) params.set('lessonId', lessonId);
   if (activityId) params.set('activityId', activityId);
   if (sessionId) params.set('sessionId', sessionId);
-  if (sessionId) params.set('role', isTeacher ? 'teacher' : 'student');
+  params.set('role', isTeacher ? 'teacher' : 'student');
+  if (!isTeacher && user?.id) params.set('userId', user.id);
+  if (!isTeacher && user?.displayName) params.set('studentName', user.displayName);
   const src = `/spotlight/ex45.html${params.toString() ? '?' + params.toString() : ''}`;
 
   return (

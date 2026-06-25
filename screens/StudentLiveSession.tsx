@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
 import { useSocket } from '../hooks/useSocket';
+import { useAuth } from '../contexts/AuthContext';
 import ActivityRenderer from '../components/LessonBuilder/ActivityRenderer';
 import type { Activity } from '../types';
 
@@ -23,6 +24,7 @@ interface SessionData {
 export default function StudentLiveSession({ sessionId }: StudentLiveSessionProps) {
   const router = useRouter();
   const { socket, isConnected } = useSocket();
+  const { user } = useAuth();
   const [session, setSession] = useState<SessionData | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
@@ -67,12 +69,12 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
       // Can add state for isInteractive if needed for student view
     };
 
-    // Listen for session end — show overlay, then go to leaderboard after 3s
+    // Listen for session end — show overlay, then go to lesson results
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
       if (data.sessionId === sessionId) {
         setIsSessionEnded(true);
-        setTimeout(() => router.push('/scoreboard'), 3000);
+        setTimeout(() => router.push(`/student/lesson-results?sessionId=${sessionId}`), 3000);
       }
     };
 
@@ -174,7 +176,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
           <div className="bg-white rounded-3xl shadow-2xl p-12 max-w-md text-center">
             <div className="text-6xl mb-4">🎉</div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Урок завершен!</h2>
-            <p className="text-gray-600">Переход к таблице лидеров...</p>
+            <p className="text-gray-600">Переход к разбору ошибок...</p>
           </div>
         </div>
       )}
