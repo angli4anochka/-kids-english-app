@@ -1,5 +1,7 @@
+'use client';
 import { useState } from 'react';
-import { useNavigate, Link } from '@/utils/routing-adapter';
+import Link from 'next/link';
+import { useNavigate } from '@/utils/routing-adapter';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function RegisterScreen() {
@@ -139,14 +141,14 @@ export default function RegisterScreen() {
         <div className="mt-6 text-center">
           <p className="text-gray-600">
             Уже есть аккаунт?{' '}
-            <Link to="/login" className="text-blue-500 hover:text-blue-600 font-semibold">
+            <Link href="/login" className="text-blue-500 hover:text-blue-600 font-semibold">
               Войти
             </Link>
           </p>
         </div>
 
         <div className="mt-8 pt-6 border-t border-gray-200 text-center">
-          <Link to="/map" className="text-sm text-gray-500 hover:text-gray-700">
+          <Link href="/map" className="text-sm text-gray-500 hover:text-gray-700">
             ← Вернуться к карте
           </Link>
         </div>
