@@ -12,11 +12,12 @@ export default function LessonsListScreen() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [islands, setIslands] = useState<Island[]>([]);
+  const [books, setBooks] = useState<any[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [courseGroups, setCourseGroups] = useState<Group[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
-  const [expandedIslands, setExpandedIslands] = useState<Set<number>>(new Set([1])); // First island expanded by default
+  const [expandedIslands, setExpandedIslands] = useState<Set<number>>(new Set([1]));
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateCourseModal, setShowCreateCourseModal] = useState(false);
@@ -39,6 +40,9 @@ export default function LessonsListScreen() {
     if (selectedCourse) {
       generateIslandsFromLessons();
       loadCourseGroups(selectedCourse);
+      loadBooks(selectedCourse);
+    } else {
+      setBooks([]);
     }
   }, [selectedCourse, lessons]);
 
@@ -129,6 +133,16 @@ export default function LessonsListScreen() {
   const getIslandEmoji = (islandNumber: number): string => {
     const emojis = ['🏝️', '🌴', '🏖️', '🌊', '🏔️', '🌋', '🗻', '⛰️', '🏞️', '🏜️'];
     return emojis[(islandNumber - 1) % emojis.length] || '🏝️';
+  };
+
+  const loadBooks = async (courseId: string) => {
+    try {
+      const res = await fetch(`/kids-api/courses/${courseId}/books`);
+      const data = await res.json();
+      if (data.success) setBooks(data.data);
+    } catch {
+      setBooks([]);
+    }
   };
 
   const loadCourseGroups = async (courseId: string) => {
@@ -469,105 +483,28 @@ export default function LessonsListScreen() {
           </div>
         ) : (
           <div className="grid grid-cols-12 gap-6">
-            {/* Left sidebar - Islands accordion */}
+            {/* Left sidebar - Books list */}
             <div className="col-span-4">
               <div className="bg-white rounded-2xl shadow-xl p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-xl font-bold text-gray-800">Этапы курса</h2>
-                  <button
-                    onClick={() => navigate('/teacher/lessons/create')}
-                    className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-sm font-semibold"
-                  >
-                    + Урок
-                  </button>
-                </div>
+                <h2 className="text-xl font-bold text-gray-800 mb-4">Учебники</h2>
 
-                <div className="space-y-2">
-                  {islands.map(island => {
-                    const islandLessons = filteredLessons.filter(l => (l.islandId || 1) === (island.island_number || 1));
-                    const isExpanded = expandedIslands.has(island.island_number || 1);
-
-                    return (
-                      <div key={island.id} className="border-2 border-gray-200 rounded-xl overflow-hidden">
-                        {/* Island header */}
-                        <button
-                          onClick={() => toggleIsland(island.island_number || 1)}
-                          className="w-full px-4 py-3 flex items-center justify-between hover:bg-gray-50 transition"
-                        >
-                          <div className="flex items-center gap-2">
-                            <span className="text-2xl">{island.emoji}</span>
-                            <div className="text-left">
-                              <div className="font-bold text-gray-800">{island.name}</div>
-                              <div className="text-xs text-gray-500">{islandLessons.length} уроков</div>
-                            </div>
-                          </div>
-                          <div className="text-gray-400">
-                            {isExpanded ? '▼' : '▶'}
-                          </div>
-                        </button>
-
-                        {/* Lessons list */}
-                        {isExpanded && (
-                          <div className="border-t-2 border-gray-100 bg-gray-50">
-                            {islandLessons.length === 0 ? (
-                              <div className="px-4 py-3 text-sm text-gray-500 text-center">
-                                Нет уроков
-                              </div>
-                            ) : (
-                              islandLessons.map(lesson => {
-                                const isCompleted = lessonProgress[lesson.id] || false;
-                                return (
-                                  <div
-                                    key={lesson.id}
-                                    className="px-4 py-2 hover:bg-white transition border-b border-gray-200 last:border-b-0"
-                                  >
-                                    <div className="flex items-center justify-between">
-                                      <div className="flex-1 flex items-center gap-2">
-                                        {isCompleted && (
-                                          <span className="text-green-600 text-lg" title="Урок завершён">
-                                            ✓
-                                          </span>
-                                        )}
-                                        <div className={`font-semibold text-sm ${isCompleted ? 'text-green-700' : 'text-gray-800'}`}>
-                                          {lesson.title}
-                                        </div>
-                                      </div>
-                                      <div className="flex gap-2">
-                                        <button
-                                          onClick={() => {
-                                            setSelectedLessonToStart(lesson);
-                                            setShowStartLessonModal(true);
-                                          }}
-                                          className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-semibold transition-all hover:scale-105"
-                                          title="Запустить урок для группы"
-                                        >
-                                          Запустить
-                                        </button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                );
-                              })
-                            )}
-                            {/* Add lesson to this unit */}
-                            <div className="px-4 py-2 border-t border-gray-200">
-                              <button
-                                onClick={() => navigate(`/teacher/lessons/create?islandId=island-${island.island_number || 1}&courseId=${selectedCourse || ''}`)}
-                                className="w-full py-2 bg-green-50 hover:bg-green-100 text-green-700 rounded-lg text-xs font-semibold transition border border-dashed border-green-300"
-                              >
-                                + Добавить урок в {island.name}
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {islands.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <p>Нет этапов для этого курса</p>
+                {books.length === 0 ? (
+                  <div className="text-center py-8 text-gray-400">
+                    <div className="text-4xl mb-2">📚</div>
+                    <p className="text-sm">Нет учебников для этого курса</p>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {books.map((book: any) => (
+                      <button
+                        key={book.id}
+                        onClick={() => navigate(`/course/${selectedCourse}/book/${book.id}`)}
+                        className="w-full text-left px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition flex items-center gap-3"
+                      >
+                        <span className="text-2xl">{book.emoji || '📖'}</span>
+                        <span className="font-semibold text-gray-800">{book.title}</span>
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
