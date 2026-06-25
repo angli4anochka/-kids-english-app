@@ -276,6 +276,21 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                     </button>
                   ))}
                 </div>
+                {lessons.length > 0 && (
+                  <div className="mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex justify-between text-xs text-gray-500 mb-2">
+                      <span>Пройдено уроков</span>
+                      <span className="font-semibold text-purple-700">{completedCount} / {lessons.length}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-3">
+                      <div
+                        className="bg-gradient-to-r from-purple-500 to-blue-500 h-3 rounded-full transition-all duration-500"
+                        style={{ width: `${progress}%` }}
+                      />
+                    </div>
+                    <div className="text-right text-xs text-purple-600 font-bold mt-1">{progress}%</div>
+                  </div>
+                )}
               )}
             </div>
 
