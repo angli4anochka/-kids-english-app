@@ -31,6 +31,8 @@ export default function LessonsListScreen() {
   const [lessonProgress, setLessonProgress] = useState<Record<string, boolean>>({});
   const [selectedGroupForStart, setSelectedGroupForStart] = useState<number | null>(null);
   const [groupStudents, setGroupStudents] = useState<any[]>([]);
+  const [expandedBookId, setExpandedBookId] = useState<string | null>(null);
+  const [bookLessons, setBookLessons] = useState<Record<string, Lesson[]>>({});
 
   useEffect(() => {
     loadData();
@@ -187,6 +189,26 @@ export default function LessonsListScreen() {
     } catch (err) {
       console.error('Failed to complete lesson:', err);
       alert('Ошибка при завершении урока');
+    }
+  };
+
+  const toggleBook = async (bookId: string) => {
+    if (expandedBookId === bookId) {
+      setExpandedBookId(null);
+      return;
+    }
+    setExpandedBookId(bookId);
+    if (!bookLessons[bookId]) {
+      try {
+        const res = await fetch(`/kids-api/books/${bookId}/lessons`);
+        const data = await res.json();
+        if (data.success) {
+          setBookLessons(prev => ({
+            ...prev,
+            [bookId]: data.data.sort((a: any, b: any) => (a.order_index || 0) - (b.order_index || 0)),
+          }));
+        }
+      } catch { /* ignore */ }
     }
   };
 
@@ -501,16 +523,43 @@ export default function LessonsListScreen() {
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {books.map((book: any) => (
-                      <button
-                        key={book.id}
-                        onClick={() => navigate(`/course/${selectedCourse}/book/${book.id}`)}
-                        className="w-full text-left px-4 py-3 border-2 border-gray-200 rounded-xl hover:border-purple-400 hover:bg-purple-50 transition flex items-center gap-3"
-                      >
-                        <span className="text-2xl">{book.emoji || '📖'}</span>
-                        <span className="font-semibold text-gray-800">{book.title}</span>
-                      </button>
-                    ))}
+                    {books.map((book: any) => {
+                      const isOpen = expandedBookId === book.id;
+                      const bLessons = bookLessons[book.id] || [];
+                      return (
+                        <div key={book.id} className="border-2 rounded-xl overflow-hidden transition-all"
+                          style={{ borderColor: isOpen ? '#a78bfa' : '#e5e7eb' }}>
+                          <button
+                            onClick={() => toggleBook(book.id)}
+                            className={`w-full text-left px-4 py-3 flex items-center gap-3 transition ${isOpen ? 'bg-purple-50' : 'hover:bg-gray-50'}`}
+                          >
+                            <span className="text-2xl">{book.emoji || '📖'}</span>
+                            <span className="font-semibold text-gray-800 flex-1">{book.title}</span>
+                            <span className="text-gray-400 text-sm">{isOpen ? '▲' : '▼'}</span>
+                          </button>
+                          {isOpen && (
+                            <div className="border-t border-purple-100 bg-purple-50/40 px-3 py-2 space-y-1 max-h-[60vh] overflow-y-auto">
+                              {bLessons.length === 0 ? (
+                                <p className="text-xs text-gray-400 text-center py-3">Загрузка...</p>
+                              ) : (
+                                bLessons.map((lesson, idx) => (
+                                  <div key={lesson.id}
+                                    className="flex items-center gap-2 px-3 py-2 rounded-lg bg-white hover:bg-purple-50 transition border border-gray-100">
+                                    <span className="text-xs text-gray-300 w-5 text-right shrink-0">{idx + 1}</span>
+                                    <span className="text-sm flex-1 text-gray-800 truncate">{lesson.emoji || '📖'} {lesson.title}</span>
+                                    <button
+                                      onClick={() => { setSelectedLessonToStart(lesson); setShowStartLessonModal(true); }}
+                                      className="shrink-0 w-7 h-7 bg-green-500 hover:bg-green-600 text-white rounded-lg text-xs font-bold flex items-center justify-center"
+                                      title="Начать урок"
+                                    >▶</button>
+                                  </div>
+                                ))
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
