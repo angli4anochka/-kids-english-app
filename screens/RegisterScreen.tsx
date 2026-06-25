@@ -3,6 +3,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useNavigate } from '@/utils/routing-adapter';
 import { useAuth } from '../contexts/AuthContext';
+import ConsentCheckbox from '../components/consent/ConsentCheckbox';
+import MarketingConsentCheckbox from '../components/consent/MarketingConsentCheckbox';
 
 export default function RegisterScreen() {
   const navigate = useNavigate();
@@ -15,6 +17,9 @@ export default function RegisterScreen() {
   });
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [consentChecked, setConsentChecked] = useState(false);
+  const [marketingChecked, setMarketingChecked] = useState(false);
+  const [showConsentError, setShowConsentError] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +33,11 @@ export default function RegisterScreen() {
 
     if (formData.password.length < 6) {
       setError('Пароль должен быть минимум 6 символов');
+      return;
+    }
+
+    if (!consentChecked) {
+      setShowConsentError(true);
       return;
     }
 
@@ -128,6 +138,19 @@ export default function RegisterScreen() {
               {error}
             </div>
           )}
+
+          <div className="space-y-3 pt-2">
+            <ConsentCheckbox
+              sourceForm="register"
+              checked={consentChecked}
+              onChange={v => { setConsentChecked(v); if (v) setShowConsentError(false); }}
+              showError={showConsentError}
+            />
+            <MarketingConsentCheckbox
+              checked={marketingChecked}
+              onChange={setMarketingChecked}
+            />
+          </div>
 
           <button
             type="submit"
