@@ -66,6 +66,7 @@ class SocketService {
 
     this.socket = io(API_CONFIG.socketURL, {
       path: '/kids-api/socket.io/',
+      transports: ['websocket'],
       autoConnect: true,
       reconnection: true,
       reconnectionAttempts: 5,
