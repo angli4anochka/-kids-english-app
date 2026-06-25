@@ -166,7 +166,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
         <div className="grid grid-cols-12 gap-6">
 
           {/* LEFT — Lessons list */}
-          <div className="col-span-7">
+          <div className="col-span-4">
             <div className="bg-white rounded-2xl shadow-xl p-6">
               <div className="flex items-center justify-between mb-5">
                 <h2 className="text-xl font-bold text-gray-800">Уроки курса</h2>
@@ -218,7 +218,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
           </div>
 
           {/* RIGHT — Statistics */}
-          <div className="col-span-5 space-y-4">
+          <div className="col-span-8 space-y-4">
 
             {/* Lesson count cards */}
             <div className="bg-white rounded-2xl shadow-xl p-6">
