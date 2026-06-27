@@ -197,12 +197,16 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {grouped.map(({ unitNumber, lessons: unitLessons }) => (
+                  {grouped.map(({ unitNumber, lessons: unitLessons }) => {
+                    const unitLabel = unitNumber !== null
+                      ? (unitLessons[0]?.unit_name || `Unit ${unitNumber}`)
+                      : null;
+                    return (
                     <div key={unitNumber ?? 'ungrouped'}>
                       {unitNumber !== null && (
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 px-3 py-1 rounded-full">
-                            Unit {unitNumber}
+                            {unitLabel}
                           </span>
                           <div className="flex-1 h-px bg-purple-100" />
                         </div>
@@ -244,12 +248,13 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=${unitNumber}`)}
                             className="w-full mt-1 px-3 py-2 border-2 border-dashed border-purple-300 hover:border-purple-500 text-purple-500 hover:text-purple-700 rounded-xl transition text-xs font-semibold"
                           >
-                            + Добавить урок в Unit {unitNumber}
+                            + Добавить урок в {unitLabel}
                           </button>
                         )}
                       </div>
                     </div>
-                  ))}
+                    );
+                  })}
                 </div>
               )}
             </div>
