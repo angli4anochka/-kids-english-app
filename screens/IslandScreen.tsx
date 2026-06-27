@@ -358,7 +358,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
         <button
           onClick={() => {
             soundManager.playClick();
-            router.push('/map');
+            window.location.href = '/map';
           }}
           className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 active:scale-95 transition-all border-3 border-white flex items-center gap-2"
         >
@@ -369,7 +369,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
           onClick={() => {
             soundManager.playClick();
             logout();
-            router.push('/login');
+            window.location.href = '/login';
           }}
           className="px-6 py-3 bg-white/20 hover:bg-white/30 backdrop-blur text-white font-bold rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 active:scale-95 transition-all border-3 border-white flex items-center gap-2"
           title="Выйти из системы"
