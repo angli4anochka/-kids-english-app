@@ -70,7 +70,7 @@ export const useLessonData = ({
         const groupIdFilter = userRole === 'student' ? userGroupId : undefined;
         const lessons = await lessonService.getLessons(groupIdFilter);
         const lessonNum = lessonNumber ? parseInt(lessonNumber) : 1;
-        const lesson = lessons.find(l => l.islandId === islandNumber && (l.orderIndex === lessonNum || l.order_index === lessonNum));
+        const lesson = lessons.find(l => l.islandId === islandNumber && ((l as any).island_order === lessonNum || l.orderIndex === lessonNum || l.order_index === lessonNum));
 
         if (lesson) {
           setCurrentLessonId(lesson.id);
@@ -96,7 +96,7 @@ export const useLessonData = ({
         const islandNumber = parseInt(islandId.replace('island-', ''));
         const lessonNum = lessonNumber ? parseInt(lessonNumber) : 1;
         const lessons = await lessonService.getLessons(userGroupId);
-        const lesson = lessons.find(l => l.islandId === islandNumber && (l.orderIndex === lessonNum || l.order_index === lessonNum));
+        const lesson = lessons.find(l => l.islandId === islandNumber && ((l as any).island_order === lessonNum || l.orderIndex === lessonNum || l.order_index === lessonNum));
 
         if (lesson && lesson.id) {
           console.log('Loading lesson for student:', lesson.id);
