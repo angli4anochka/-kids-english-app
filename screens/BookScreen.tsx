@@ -137,6 +137,15 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
+  // Group lessons: null unit_number = ungrouped, others grouped under "Unit N"
+  const grouped: { unitNumber: number | null; lessons: Lesson[] }[] = [];
+  for (const lesson of lessons) {
+    const u = lesson.unit_number ?? null;
+    const existing = grouped.find(g => g.unitNumber === u);
+    if (existing) existing.lessons.push(lesson);
+    else grouped.push({ unitNumber: u, lessons: [lesson] });
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
       {/* Header */}
@@ -187,37 +196,52 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                   </button>
                 </div>
               ) : (
-                <div className="space-y-2">
-                  {lessons.map((lesson, idx) => {
-                    const done = lessonProgress[lesson.id];
-                    return (
-                      <div
-                        key={lesson.id}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition hover:shadow-sm ${
-                          done ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-purple-300'
-                        }`}
-                      >
-                        <span className="text-sm text-gray-400 w-6 text-center shrink-0 font-mono">{idx + 1}</span>
-                        <span className="text-lg shrink-0">{lesson.emoji || '📖'}</span>
-                        <span className={`flex-1 text-sm font-semibold truncate ${done ? 'text-green-700' : 'text-gray-800'}`}>
-                          {lesson.title}
-                        </span>
-                        {done && <span className="text-green-500 text-xs shrink-0 font-semibold">✓ пройден</span>}
-                        <button
-                          onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}`)}
-                          className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
-                        >
-                          ✏️
-                        </button>
-                        <button
-                          onClick={() => handleStartLesson(lesson)}
-                          className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
-                        >
-                          ▶ Начать
-                        </button>
+                <div className="space-y-4">
+                  {grouped.map(({ unitNumber, lessons: unitLessons }) => (
+                    <div key={unitNumber ?? 'ungrouped'}>
+                      {unitNumber !== null && (
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 px-3 py-1 rounded-full">
+                            Unit {unitNumber}
+                          </span>
+                          <div className="flex-1 h-px bg-purple-100" />
+                        </div>
+                      )}
+                      <div className={`space-y-2 ${unitNumber !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
+                        {unitLessons.map((lesson, idx) => {
+                          const done = lessonProgress[lesson.id];
+                          const globalIdx = lessons.indexOf(lesson);
+                          return (
+                            <div
+                              key={lesson.id}
+                              className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition hover:shadow-sm ${
+                                done ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-purple-300'
+                              }`}
+                            >
+                              <span className="text-sm text-gray-400 w-6 text-center shrink-0 font-mono">{globalIdx + 1}</span>
+                              <span className="text-lg shrink-0">{lesson.emoji || '📖'}</span>
+                              <span className={`flex-1 text-sm font-semibold truncate ${done ? 'text-green-700' : 'text-gray-800'}`}>
+                                {lesson.title}
+                              </span>
+                              {done && <span className="text-green-500 text-xs shrink-0 font-semibold">✓ пройден</span>}
+                              <button
+                                onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}`)}
+                                className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
+                              >
+                                ✏️
+                              </button>
+                              <button
+                                onClick={() => handleStartLesson(lesson)}
+                                className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
+                              >
+                                ▶ Начать
+                              </button>
+                            </div>
+                          );
+                        })}
                       </div>
-                    );
-                  })}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>

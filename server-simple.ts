@@ -109,16 +109,24 @@ app.post('/lessons', async (req, res) => {
 app.put('/lessons/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, status } = req.body;
+    const { title, description, status, unit_number } = req.body;
 
-    const result = await pool.query(`
-      UPDATE lessons
-      SET title = COALESCE($1, title),
-          description = COALESCE($2, description),
-          updated_at = NOW()
-      WHERE id = $3
-      RETURNING *
-    `, [title, description, id]);
+    const setClauses = [
+      'title = COALESCE($1, title)',
+      'description = COALESCE($2, description)',
+      'updated_at = NOW()',
+    ];
+    const params: any[] = [title, description, id];
+
+    if (unit_number !== undefined) {
+      params.push(unit_number);
+      setClauses.splice(2, 0, `unit_number = $${params.length}`);
+    }
+
+    const result = await pool.query(
+      `UPDATE lessons SET ${setClauses.join(', ')} WHERE id = $3 RETURNING *`,
+      params
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({ success: false, error: 'Lesson not found' });

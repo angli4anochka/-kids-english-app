@@ -12,6 +12,7 @@ export interface Lesson {
   courseId?: string;
   orderIndex?: number;
   order_index?: number;
+  unit_number?: number | null;
   createdAt: Date;
   updatedAt: Date;
 }
