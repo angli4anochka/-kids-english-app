@@ -644,7 +644,13 @@ const LessonBuilder = () => {
               if (bookIdFromUrl && courseIdFromUrl) {
                 navigate(`/course/${courseIdFromUrl}/book/${bookIdFromUrl}`);
               } else {
-                navigate('/teacher/lessons');
+                const path = window.location.pathname;
+                const islandMatch = path.match(/\/island\/(island-\d+)/);
+                if (islandMatch) {
+                  navigate(`/island/${islandMatch[1]}`);
+                } else {
+                  navigate('/teacher/lessons');
+                }
               }
             }}
             className="w-full py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-colors"

@@ -183,7 +183,7 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
 
         // Find lesson by both island ID and lesson number (order_index)
         const lessonNum = lessonNumber ? parseInt(lessonNumber) : 1;
-        const lesson = lessons.find(l => l.islandId === islandNumber && (l.orderIndex === lessonNum || l.order_index === lessonNum));
+        const lesson = lessons.find(l => l.islandId === islandNumber && ((l as any).island_order === lessonNum || l.orderIndex === lessonNum || l.order_index === lessonNum));
         console.log('Found lesson for island', islandNumber, 'lesson number', lessonNum, ':', lesson ? 'YES' : 'NO');
 
         // ПРОВЕРКА ДОСТУПА ДЛЯ СТУДЕНТОВ: проверяем, разблокирован ли урок
