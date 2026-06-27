@@ -692,7 +692,7 @@ const LessonBuilder = () => {
       {/* Activity Templates Modal */}
       {showAddModal && (
         <ActivityTemplates
-          onSelectTemplate={handleSelectTemplate}
+          onSelectTemplate={(id) => { handleSelectTemplate(id); setShowAddModal(false); }}
           onClose={() => setShowAddModal(false)}
         />
       )}
