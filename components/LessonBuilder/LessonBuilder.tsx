@@ -624,7 +624,12 @@ const LessonBuilder = () => {
         <div className="mt-6 space-y-2">
           {user?.role === 'teacher' && (
             <button
-              onClick={handleSaveLesson}
+              onClick={async () => {
+                await handleSaveLesson();
+                if (bookIdFromUrl && courseIdFromUrl) {
+                  navigate(`/course/${courseIdFromUrl}/book/${bookIdFromUrl}`);
+                }
+              }}
               disabled={isSaving}
               className={`w-full py-3 rounded-xl font-semibold transition-colors ${
                 isSaving
@@ -636,10 +641,16 @@ const LessonBuilder = () => {
             </button>
           )}
           <button
-            onClick={() => navigate('/teacher/lessons')}
+            onClick={() => {
+              if (bookIdFromUrl && courseIdFromUrl) {
+                navigate(`/course/${courseIdFromUrl}/book/${bookIdFromUrl}`);
+              } else {
+                navigate('/teacher/lessons');
+              }
+            }}
             className="w-full py-3 bg-gray-200 text-gray-700 rounded-xl font-semibold hover:bg-gray-300 transition-colors"
           >
-            ← Назад к урокам
+            ← Назад
           </button>
         </div>
       </div>
