@@ -487,14 +487,13 @@ const LessonBuilder = () => {
                         type="text"
                         value={editingTitleValue}
                         onChange={(e) => setEditingTitleValue(e.target.value)}
-                        onBlur={() => {
-                          handleEditActivity({ ...activity, title: editingTitleValue });
+                        onBlur={(e) => {
+                          handleEditActivity({ ...activity, title: e.target.value });
                           setEditingTitleId(null);
                         }}
                         onKeyDown={(e) => {
                           if (e.key === 'Enter') {
-                            handleEditActivity({ ...activity, title: editingTitleValue });
-                            setEditingTitleId(null);
+                            e.currentTarget.blur();
                           }
                           if (e.key === 'Escape') {
                             setEditingTitleId(null);
