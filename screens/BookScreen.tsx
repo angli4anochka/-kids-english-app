@@ -164,9 +164,9 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
           </div>
           <button
             onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}`)}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition font-semibold"
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-600 rounded-lg transition font-semibold text-sm"
           >
-            + Урок
+            + Урок без юнита
           </button>
         </div>
       </div>
