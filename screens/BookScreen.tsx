@@ -36,6 +36,8 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [lessonProgress, setLessonProgress] = useState<Record<string, boolean>>({});
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -123,6 +125,41 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Ошибка');
     }
+  };
+
+  const handleDrop = async (targetId: string) => {
+    if (!draggedId || draggedId === targetId) {
+      setDraggedId(null);
+      setDragOverId(null);
+      return;
+    }
+    const dragged = lessons.find(l => l.id === draggedId)!;
+    const target = lessons.find(l => l.id === targetId)!;
+    const draggedOrder = dragged.order_index ?? 0;
+    const targetOrder = target.order_index ?? 0;
+
+    // Swap order_index values
+    const updated = lessons.map(l => {
+      if (l.id === draggedId) return { ...l, order_index: targetOrder };
+      if (l.id === targetId) return { ...l, order_index: draggedOrder };
+      return l;
+    });
+    setLessons(updated.sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)));
+    setDraggedId(null);
+    setDragOverId(null);
+
+    await Promise.all([
+      fetch(`/kids-api/lessons/${draggedId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_index: targetOrder }),
+      }),
+      fetch(`/kids-api/lessons/${targetId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_index: draggedOrder }),
+      }),
+    ]);
   };
 
   if (isLoading) {
@@ -215,13 +252,24 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                         {unitLessons.map((lesson, _idx) => {
                           const done = lessonProgress[lesson.id];
                           const globalIdx = lessons.indexOf(lesson);
+                          const isDragging = draggedId === lesson.id;
+                          const isOver = dragOverId === lesson.id;
                           return (
                             <div
                               key={lesson.id}
-                              className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition hover:shadow-sm ${
+                              draggable
+                              onDragStart={() => setDraggedId(lesson.id)}
+                              onDragOver={e => { e.preventDefault(); setDragOverId(lesson.id); }}
+                              onDragLeave={() => setDragOverId(null)}
+                              onDrop={() => handleDrop(lesson.id)}
+                              onDragEnd={() => { setDraggedId(null); setDragOverId(null); }}
+                              className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition hover:shadow-sm cursor-grab active:cursor-grabbing ${
+                                isDragging ? 'opacity-40' :
+                                isOver ? 'border-purple-400 bg-purple-50 shadow-md' :
                                 done ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-purple-300'
                               }`}
                             >
+                              <span className="text-gray-300 hover:text-gray-500 shrink-0 cursor-grab select-none text-lg leading-none">⠿</span>
                               <span className="text-sm text-gray-400 w-6 text-center shrink-0 font-mono">{globalIdx + 1}</span>
                               <span className="text-lg shrink-0">{lesson.emoji || '📖'}</span>
                               <span className={`flex-1 text-sm font-semibold truncate ${done ? 'text-green-700' : 'text-gray-800'}`}>
