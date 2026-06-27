@@ -133,33 +133,25 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       setDragOverId(null);
       return;
     }
-    const dragged = lessons.find(l => l.id === draggedId)!;
-    const target = lessons.find(l => l.id === targetId)!;
-    const draggedOrder = dragged.order_index ?? 0;
-    const targetOrder = target.order_index ?? 0;
 
-    // Swap order_index values
-    const updated = lessons.map(l => {
-      if (l.id === draggedId) return { ...l, order_index: targetOrder };
-      if (l.id === targetId) return { ...l, order_index: draggedOrder };
-      return l;
-    });
-    setLessons(updated.sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0)));
+    // Build new order: move draggedId to where targetId is
+    const newOrder = [...lessons];
+    const fromIdx = newOrder.findIndex(l => l.id === draggedId);
+    const toIdx = newOrder.findIndex(l => l.id === targetId);
+    const [moved] = newOrder.splice(fromIdx, 1);
+    newOrder.splice(toIdx, 0, moved);
+
+    // Update local state immediately (optimistic)
+    setLessons(newOrder.map((l, i) => ({ ...l, order_index: i + 1 })));
     setDraggedId(null);
     setDragOverId(null);
 
-    await Promise.all([
-      fetch(`/kids-api/lessons/${draggedId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_index: targetOrder }),
-      }),
-      fetch(`/kids-api/lessons/${targetId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_index: draggedOrder }),
-      }),
-    ]);
+    // Single atomic request — assigns order_index 1,2,3,... in a DB transaction
+    await fetch(`/kids-api/books/${bookId}/lessons/reorder`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ lessonIds: newOrder.map(l => l.id) }),
+    });
   };
 
   if (isLoading) {
