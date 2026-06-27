@@ -5,6 +5,8 @@ interface UseLessonActionsParams {
   islandId?: string;
   lessonNumber?: string;
   courseId?: string;
+  bookId?: string;
+  unitNumber?: number | null;
   unitTitle: string;
   currentLessonId: string | null;
   currentGroupId: number | null;
@@ -30,6 +32,8 @@ export const useLessonActions = ({
   islandId,
   lessonNumber,
   courseId,
+  bookId,
+  unitNumber,
   unitTitle,
   currentLessonId,
   currentGroupId,
@@ -251,6 +255,8 @@ export const useLessonActions = ({
             emoji: '📚',
             groupId: currentGroupId,
             courseId: courseId || null,
+            bookId: bookId || null,
+            unit_number: unitNumber ?? null,
           }),
         });
 

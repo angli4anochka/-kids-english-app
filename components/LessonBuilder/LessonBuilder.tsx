@@ -34,6 +34,9 @@ const LessonBuilder = () => {
   const lessonIdFromUrl = searchParams.get('lessonId');
   const islandIdFromSearch = searchParams.get('islandId') || undefined;
   const courseIdFromUrl = searchParams.get('courseId') || undefined;
+  const bookIdFromUrl = searchParams.get('bookId') || undefined;
+  const unitNumberFromUrl = searchParams.get('unitNumber');
+  const unitNumberParsed = unitNumberFromUrl ? parseInt(unitNumberFromUrl, 10) : undefined;
   const islandId = islandIdFromParams || islandIdFromSearch;
   const { user } = useAuth();
 
@@ -82,6 +85,8 @@ const LessonBuilder = () => {
     islandId,
     lessonNumber,
     courseId: courseIdFromUrl,
+    bookId: bookIdFromUrl,
+    unitNumber: unitNumberParsed,
     unitTitle,
     currentLessonId,
     currentGroupId,

@@ -208,7 +208,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                         </div>
                       )}
                       <div className={`space-y-2 ${unitNumber !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
-                        {unitLessons.map((lesson, idx) => {
+                        {unitLessons.map((lesson, _idx) => {
                           const done = lessonProgress[lesson.id];
                           const globalIdx = lessons.indexOf(lesson);
                           return (
@@ -239,6 +239,14 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             </div>
                           );
                         })}
+                        {unitNumber !== null && (
+                          <button
+                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=${unitNumber}`)}
+                            className="w-full mt-1 px-3 py-2 border-2 border-dashed border-purple-300 hover:border-purple-500 text-purple-500 hover:text-purple-700 rounded-xl transition text-xs font-semibold"
+                          >
+                            + Добавить урок в Unit {unitNumber}
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))}
