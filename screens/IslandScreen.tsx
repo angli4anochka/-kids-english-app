@@ -296,22 +296,16 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
 
   // Проверяем прогресс уроков
   const getLessonStatus = (lessonNumber: number): 'locked' | 'available' | 'completed' => {
+    if (role === 'teacher') return 'available';
+
     const progressKey = `${island.id}-lesson-${lessonNumber}`;
     const isCompleted = localStorage.getItem(progressKey) === 'completed';
 
-    if (isCompleted) {
-      return 'completed';
-    }
+    if (isCompleted) return 'completed';
+    if (lessonNumber === 1) return 'available';
 
-    // Первый урок всегда доступен
-    if (lessonNumber === 1) {
-      return 'available';
-    }
-
-    // Урок доступен если предыдущий урок завершен
     const prevProgressKey = `${island.id}-lesson-${lessonNumber - 1}`;
     const isPrevCompleted = localStorage.getItem(prevProgressKey) === 'completed';
-
     return isPrevCompleted ? 'available' : 'locked';
   };
 
