@@ -137,12 +137,12 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Group lessons: null unit_number = ungrouped, others grouped under "Unit N"
+  // Group consecutive lessons with the same unit_number into blocks (preserves order)
   const grouped: { unitNumber: number | null; lessons: Lesson[] }[] = [];
   for (const lesson of lessons) {
     const u = lesson.unit_number ?? null;
-    const existing = grouped.find(g => g.unitNumber === u);
-    if (existing) existing.lessons.push(lesson);
+    const last = grouped[grouped.length - 1];
+    if (last && last.unitNumber === u) last.lessons.push(lesson);
     else grouped.push({ unitNumber: u, lessons: [lesson] });
   }
 
