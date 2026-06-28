@@ -40,6 +40,13 @@ export const useLessonData = ({
   // true while any fetch is in flight — keeps the UI from flashing empty state
   const [isLoading, setIsLoading] = useState(!!lessonIdFromUrl || !!(islandId && lessonNumber));
 
+  // Safety net: never spin forever — bail after 10 s
+  useEffect(() => {
+    if (!isLoading) return;
+    const t = setTimeout(() => setIsLoading(false), 10_000);
+    return () => clearTimeout(t);
+  }, [isLoading]);
+
   // Load current lesson and groupId
   useEffect(() => {
     // IMPORTANT: If lessonIdFromUrl exists, ONLY use that - don't search by islandId
@@ -175,7 +182,17 @@ export const useLessonData = ({
 
   // Load lesson data for teachers from API
   useEffect(() => {
-    if (userRole !== 'teacher' || !currentLessonId) return;
+    // Still waiting for currentLessonId to be set — do nothing yet
+    if (!currentLessonId) return;
+
+    // User is loaded but isn't a teacher — stop the spinner (student path handles its own loading)
+    if (userRole !== undefined && userRole !== 'teacher') {
+      setIsLoading(false);
+      return;
+    }
+
+    // userRole still unknown (auth not resolved yet) — wait for next render
+    if (!userRole) return;
 
     const loadLessonForTeacher = async () => {
       try {
