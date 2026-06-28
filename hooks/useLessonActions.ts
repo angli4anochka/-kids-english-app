@@ -162,9 +162,10 @@ export const useLessonActions = ({
           title: activity.title,
           subtitle: activity.subtitle,
           points: activity.points,
-          contentUrl: activity.imageUrl || activity.audioUrl || (activity as any).videoUrl,
+          contentUrl: (activity as any).wordwallUrl || activity.imageUrl || activity.audioUrl || (activity as any).videoUrl,
           contentData: {
             ...activity.contentData,
+            wordwallUrl: (activity as any).wordwallUrl || undefined,
             letterTraceConfig: activity.letterTraceConfig,
             letterRaceConfig: activity.letterRaceConfig,
             letterMazeConfig: activity.letterMazeConfig,
