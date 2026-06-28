@@ -23,7 +23,12 @@ const PresentationActivity = ({
   groupId,
   isTeacher = false
 }: PresentationActivityProps) => {
-  const [presentationType, setPresentationType] = useState(activity.presentationType || 'google-slides');
+  const [presentationType, setPresentationType] = useState(() => {
+    if (activity.presentationType) return activity.presentationType;
+    const url = activity.presentationUrl || '';
+    if (/youtube\.com|youtu\.be/.test(url)) return 'youtube-broadcast' as const;
+    return 'google-slides' as const;
+  });
   const [presentationUrl, setPresentationUrl] = useState(activity.presentationUrl || '');
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [inputUrl, setInputUrl] = useState(activity.presentationUrl || '');
