@@ -735,20 +735,10 @@ const PresentationActivity = ({
                 Браузер предложит <em>«Поделиться этой вкладкой»</em> — нажмите «Поделиться» и убедитесь, что включён <em>«звук вкладки»</em>. Отдельную вкладку с YouTube открывать не нужно.
               </p>
             </>
-          ) : (
-            <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
-              {presentationUrl && extractYoutubeId(presentationUrl) ? (
-                <iframe
-                  src={`https://www.youtube.com/embed/${extractYoutubeId(presentationUrl)}?mute=1&controls=1`}
-                  className="w-full h-full"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-400">
-                  Видео не найдено
-                </div>
-              )}
+          ) : isScreenSharing ? null : (
+            <div className="flex flex-col items-center justify-center w-full aspect-video bg-gray-50 rounded-xl">
+              <div className="text-6xl mb-4 text-gray-400">📺</div>
+              <p className="text-xl text-gray-500">Ожидание трансляции учителя...</p>
             </div>
           )}
           {!isTeacher && isScreenSharing && (
