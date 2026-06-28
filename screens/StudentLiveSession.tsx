@@ -59,9 +59,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     // Listen for activity navigation from teacher
     const handleActivityChanged = (data: { sessionId: string; activityIndex: number }) => {
       console.log('[Student] Received activity change:', data);
-      if (data.sessionId === sessionId) {
-        setCurrentActivityIndex(data.activityIndex);
-      }
+      setCurrentActivityIndex(data.activityIndex);
     };
 
     // Listen for interactive mode toggle
@@ -73,17 +71,16 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     // Listen for session end — show overlay, then redirect by course
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
-      if (data.sessionId === sessionId) {
-        const storedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
-        const cn = (storedUser.courseName || '').toLowerCase();
-        const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
-        const url = isSpotlight
-          ? `/student/lesson-results?sessionId=${sessionId}`
-          : '/scoreboard';
-        setRedirectUrl(url);
-        setIsSessionEnded(true);
-        setTimeout(() => router.push(url), 3000);
-      }
+      const storedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
+      const cn = (storedUser.courseName || '').toLowerCase();
+      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
+      const activeSessionId = data.sessionId || sessionId;
+      const url = isSpotlight
+        ? `/student/lesson-results?sessionId=${activeSessionId}`
+        : '/scoreboard';
+      setRedirectUrl(url);
+      setIsSessionEnded(true);
+      setTimeout(() => router.push(url), 3000);
     };
 
     socket.on('session:activity-changed', handleActivityChanged);
