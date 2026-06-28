@@ -736,10 +736,10 @@ const PresentationActivity = ({
               </p>
             </>
           ) : (
-            <TVFrame>
+            <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
               {presentationUrl && extractYoutubeId(presentationUrl) ? (
                 <iframe
-                  src={`https://www.youtube.com/embed/${extractYoutubeId(presentationUrl)}?autoplay=0&mute=1&controls=0&disablekb=1`}
+                  src={`https://www.youtube.com/embed/${extractYoutubeId(presentationUrl)}?mute=1&controls=1`}
                   className="w-full h-full"
                   allow="autoplay; encrypted-media"
                   allowFullScreen
@@ -749,7 +749,7 @@ const PresentationActivity = ({
                   Видео не найдено
                 </div>
               )}
-            </TVFrame>
+            </div>
           )}
           {!isTeacher && isScreenSharing && (
             <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
