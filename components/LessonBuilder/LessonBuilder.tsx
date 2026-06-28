@@ -27,11 +27,16 @@ const ACTIVITY_TYPES = [
   { id: 'quiz', icon: '❓', label: 'Quiz', color: 'bg-orange-100' },
 ];
 
-const LessonBuilder = () => {
+interface LessonBuilderProps {
+  lessonId?: string;
+}
+
+const LessonBuilder = ({ lessonId: lessonIdProp }: LessonBuilderProps = {}) => {
   const navigate = useNavigate();
   const { islandId: islandIdFromParams, lessonNumber } = useParams<{ islandId: string; lessonNumber: string }>();
   const [searchParams] = useSearchParams();
-  const lessonIdFromUrl = searchParams.get('lessonId');
+  // Prop takes priority over query param — avoids empty flash during router.replace() redirect
+  const lessonIdFromUrl = lessonIdProp || searchParams.get('lessonId');
   const islandIdFromSearch = searchParams.get('islandId') || undefined;
   const courseIdFromUrl = searchParams.get('courseId') || undefined;
   const bookIdFromUrl = searchParams.get('bookId') || undefined;
