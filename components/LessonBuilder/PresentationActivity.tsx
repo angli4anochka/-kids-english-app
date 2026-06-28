@@ -532,172 +532,112 @@ const PresentationActivity = ({
   };
 
   if (!isViewMode) {
-    // Edit mode
+    // Edit mode — compact tabs + URL bar + full-height preview
+    const [inputUrl, setInputUrl] = useState(presentationUrl);
+    const [previewUrl, setPreviewUrl] = useState(presentationUrl);
+
+    const handleApply = () => {
+      setPreviewUrl(inputUrl);
+      handleUrlChange(inputUrl);
+    };
+
+    const slidesId = previewUrl ? extractGoogleSlidesId(previewUrl) : '';
+    const slidesEmbedSrc = slidesId
+      ? (slidesId === 'USE_FULL_URL'
+          ? previewUrl
+          : `https://docs.google.com/presentation/d/e/${slidesId}/embed?start=false&loop=false&delayms=3000`)
+      : '';
+
+    const ytId = previewUrl ? extractYoutubeId(previewUrl) : '';
+    const ytEmbedSrc = ytId ? `https://www.youtube.com/embed/${ytId}` : '';
+
+    const TYPES = [
+      { key: 'google-slides', icon: '📊', label: 'Google Slides' },
+      { key: 'screen-share', icon: '🖥️', label: 'Экран' },
+      { key: 'youtube-broadcast', icon: '📺', label: 'YouTube' },
+      { key: 'upload', icon: '📤', label: 'Файл' },
+    ] as const;
+
+    const hasUrlInput = presentationType === 'google-slides' || presentationType === 'youtube-broadcast';
+    const previewSrc = presentationType === 'google-slides' ? slidesEmbedSrc : ytEmbedSrc;
+
     return (
-      <div className="w-full">
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-3">
-            Выберите способ показа презентации:
-          </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="flex flex-col h-full">
+        {/* Compact type tabs */}
+        <div className="flex items-center gap-1 p-2 bg-gray-50 border-b border-gray-200 shrink-0">
+          {TYPES.map(t => (
             <button
-              onClick={() => handleTypeChange('google-slides')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                presentationType === 'google-slides'
-                  ? 'border-purple-500 bg-purple-50'
-                  : 'border-gray-300 hover:border-purple-300'
+              key={t.key}
+              onClick={() => { handleTypeChange(t.key); setInputUrl(''); setPreviewUrl(''); }}
+              className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold transition ${
+                presentationType === t.key
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-white border border-gray-300 text-gray-600 hover:border-purple-400'
               }`}
             >
-              <div className="text-2xl mb-2">📊</div>
-              <div className="font-semibold">Google Slides</div>
-              <div className="text-xs text-gray-600 mt-1">Вставить из Google</div>
+              <span>{t.icon}</span>
+              <span>{t.label}</span>
             </button>
-
-            <button
-              onClick={() => handleTypeChange('screen-share')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                presentationType === 'screen-share'
-                  ? 'border-purple-500 bg-purple-50'
-                  : 'border-gray-300 hover:border-purple-300'
-              }`}
-            >
-              <div className="text-2xl mb-2">🖥️</div>
-              <div className="font-semibold">Демонстрация экрана</div>
-              <div className="text-xs text-gray-600 mt-1">Показать с компьютера</div>
-            </button>
-
-            <button
-              onClick={() => handleTypeChange('youtube-broadcast')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                presentationType === 'youtube-broadcast'
-                  ? 'border-purple-500 bg-purple-50'
-                  : 'border-gray-300 hover:border-purple-300'
-              }`}
-            >
-              <div className="text-2xl mb-2">📺</div>
-              <div className="font-semibold">YouTube + трансляция</div>
-              <div className="text-xs text-gray-600 mt-1">Ссылка + screen-share</div>
-            </button>
-
-            <button
-              onClick={() => handleTypeChange('upload')}
-              className={`p-4 rounded-lg border-2 transition-all ${
-                presentationType === 'upload'
-                  ? 'border-purple-500 bg-purple-50'
-                  : 'border-gray-300 hover:border-purple-300'
-              }`}
-            >
-              <div className="text-2xl mb-2">📤</div>
-              <div className="font-semibold">Загрузить файл</div>
-              <div className="text-xs text-gray-600 mt-1">PDF или изображения</div>
-            </button>
-          </div>
+          ))}
         </div>
 
-        {presentationType === 'google-slides' && (
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Ссылка на Google Slides презентацию:
-            </label>
+        {/* URL input bar (for slides + youtube) */}
+        {hasUrlInput && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 border-b border-gray-200 shrink-0">
             <input
               type="text"
-              placeholder="https://docs.google.com/presentation/d/..."
-              value={presentationUrl}
-              onChange={(e) => handleUrlChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none mb-3"
+              value={inputUrl}
+              onChange={e => setInputUrl(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') handleApply(); }}
+              placeholder={presentationType === 'google-slides'
+                ? 'https://docs.google.com/presentation/d/...'
+                : 'https://www.youtube.com/watch?v=...'}
+              className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-400"
             />
-            <div className="text-sm text-gray-600">
-              <p>💡 Совет: Откройте презентацию в Google Slides → Файл → Опубликовать в интернете → Встроить</p>
-            </div>
-
-            {presentationUrl && extractGoogleSlidesId(presentationUrl) && (
-              <div className="mt-4 border-2 border-gray-200 rounded-lg overflow-hidden h-[600px]">
-                <iframe
-                  src={
-                    extractGoogleSlidesId(presentationUrl) === 'USE_FULL_URL'
-                      ? presentationUrl
-                      : `https://docs.google.com/presentation/d/e/${extractGoogleSlidesId(presentationUrl)}/embed?start=false&loop=false&delayms=3000`
-                  }
-                  className="w-full h-full"
-                  allowFullScreen
-                />
-              </div>
-            )}
+            <button
+              onClick={handleApply}
+              className="px-4 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-lg transition shrink-0"
+            >
+              Применить
+            </button>
           </div>
         )}
 
-        {presentationType === 'screen-share' && (
-          <div className="text-center py-8">
-            <div className="text-6xl mb-4">🖥️</div>
-            <h3 className="text-xl font-semibold mb-2">Демонстрация экрана с трансляцией</h3>
-            <p className="text-gray-600 mb-4">
-              В режиме просмотра вы сможете поделиться экраном<br />
-              и ученики увидят его в реальном времени (как в Zoom)
-            </p>
-
-            {window.location.protocol !== 'https:' && window.location.hostname !== 'localhost' && (
-              <div className="bg-red-50 border border-red-300 rounded-lg p-4 max-w-md mx-auto mb-4">
-                <p className="text-sm text-red-800">
-                  <strong>⚠️ Внимание!</strong><br />
-                  Демонстрация экрана требует безопасного соединения (HTTPS).<br />
-                  Текущий адрес: {window.location.protocol}//{window.location.host}
-                </p>
-              </div>
-            )}
-
-            <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 max-w-md mx-auto">
-              <p className="text-sm text-blue-800">
-                <strong>Как это работает:</strong><br />
-                1. Переключитесь в режим просмотра<br />
-                2. Нажмите "Поделиться экраном"<br />
-                3. Выберите окно с презентацией<br />
-                4. Ученики увидят ваш экран с видео и аудио
-              </p>
-            </div>
-          </div>
-        )}
-
-        {presentationType === 'youtube-broadcast' && (
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Ссылка на YouTube видео:
-            </label>
-            <input
-              type="text"
-              placeholder="https://www.youtube.com/watch?v=..."
-              value={presentationUrl}
-              onChange={(e) => handleUrlChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none mb-3"
+        {/* Preview area */}
+        <div className="flex-1 min-h-0">
+          {hasUrlInput && previewSrc ? (
+            <iframe
+              src={previewSrc}
+              className="w-full h-full border-0"
+              allowFullScreen
+              title="Preview"
+              allow="autoplay; fullscreen; encrypted-media"
             />
-            <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mt-2">
-              <p className="text-sm text-blue-800">
-                <strong>Как это работает на уроке:</strong><br />
-                1. Учитель нажимает «Открыть YouTube и начать трансляцию»<br />
-                2. Видео откроется в новой вкладке<br />
-                3. Браузер спросит какое окно/вкладку расшарить — выберите YouTube-вкладку, обязательно с галочкой <em>«Поделиться звуком вкладки»</em><br />
-                4. Ученики увидят видео и услышат звук через WebRTC (одна копия плеера, нет рассинхрона)
-              </p>
+          ) : hasUrlInput && previewUrl ? (
+            <div className="flex items-center justify-center h-full text-red-400 flex-col gap-2">
+              <span className="text-4xl">⚠️</span>
+              <span className="text-sm">Не удалось распознать ссылку</span>
+              {presentationType === 'google-slides' && (
+                <span className="text-xs text-gray-500">💡 Файл → Опубликовать в интернете → Встроить</span>
+              )}
             </div>
-          </div>
-        )}
-
-        {presentationType === 'upload' && (
-          <div className="text-center py-8">
-            <div className="text-6xl mb-4">📤</div>
-            <h3 className="text-xl font-semibold mb-2">Загрузка презентации</h3>
-            <p className="text-gray-600 mb-4">
-              Конвертируйте вашу презентацию в PDF или изображения<br />
-              для быстрой загрузки
-            </p>
-            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 max-w-md mx-auto">
-              <p className="text-sm text-yellow-800">
-                <strong>Рекомендация:</strong><br />
-                Используйте Google Slides или демонстрацию экрана<br />
-                для лучшей производительности
-              </p>
+          ) : hasUrlInput ? (
+            <div className="flex items-center justify-center h-full text-gray-400 flex-col gap-2">
+              <span className="text-5xl">{presentationType === 'google-slides' ? '📊' : '📺'}</span>
+              <span className="text-sm">Вставьте ссылку и нажмите «Применить»</span>
             </div>
-          </div>
-        )}
+          ) : presentationType === 'screen-share' ? (
+            <div className="flex items-center justify-center h-full flex-col gap-3 text-center px-8">
+              <span className="text-5xl">🖥️</span>
+              <p className="text-gray-600 text-sm">В режиме просмотра нажмите «Поделиться экраном» — ученики увидят ваш экран в реальном времени</p>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center h-full flex-col gap-3 text-center px-8">
+              <span className="text-5xl">📤</span>
+              <p className="text-gray-600 text-sm">Рекомендуем использовать Google Slides или демонстрацию экрана</p>
+            </div>
+          )}
+        </div>
       </div>
     );
   }

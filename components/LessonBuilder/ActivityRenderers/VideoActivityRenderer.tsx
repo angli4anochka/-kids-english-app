@@ -1,7 +1,8 @@
+import { useState, useEffect } from 'react';
 import TVFrame from '../../Shared/TVFrame';
 import SyncedVideoPlayer from '../SyncedVideoPlayer';
 import SyncedVideoWithAudio from '../SyncedVideoWithAudio';
-import { parseVideoUrl, extractYoutubeId } from '../utils/videoUtils';
+import { parseVideoUrl } from '../utils/videoUtils';
 import type { Activity } from '../../../types';
 import type { Socket } from 'socket.io-client';
 
@@ -16,10 +17,6 @@ interface VideoActivityRendererProps {
   onEdit: (activity: Activity) => void;
 }
 
-/**
- * Компонент для отображения видео-активности
- * Поддерживает YouTube (с синхронизацией), VK, RuTube и прямые ссылки на видео
- */
 const VideoActivityRenderer = ({
   activity,
   isViewMode,
@@ -30,18 +27,24 @@ const VideoActivityRenderer = ({
   isConnected,
   onEdit,
 }: VideoActivityRendererProps) => {
-  console.log('[VIDEO RENDER]', {
-    isViewMode,
-    videoUrl: activity.videoUrl,
-    title: activity.title,
-    audioUrl: activity.audioUrl,
-  });
+  const savedUrl = activity.videoUrl || '';
+  const [inputUrl, setInputUrl] = useState(savedUrl);
+  const [previewUrl, setPreviewUrl] = useState(savedUrl);
 
-  // В режиме просмотра - видео на весь экран
+  useEffect(() => {
+    setInputUrl(activity.videoUrl || '');
+    setPreviewUrl(activity.videoUrl || '');
+  }, [activity.id]);
+
+  const handleApply = () => {
+    setPreviewUrl(inputUrl);
+    onEdit({ ...activity, videoUrl: inputUrl });
+  };
+
+  // View mode — full screen video
   if (isViewMode && activity.videoUrl) {
     const parsedVideo = parseVideoUrl(activity.videoUrl, isTeacher);
 
-    // Если YouTube - используем синхронизированный плеер
     if (parsedVideo.platform === 'youtube' && parsedVideo.supportsSync) {
       return (
         <TVFrame>
@@ -58,7 +61,6 @@ const VideoActivityRenderer = ({
       );
     }
 
-    // Для VK, RuTube - обычный iframe
     if (parsedVideo.platform === 'vk' || parsedVideo.platform === 'rutube') {
       return (
         <TVFrame>
@@ -73,7 +75,6 @@ const VideoActivityRenderer = ({
       );
     }
 
-    // Для прямых ссылок на видео файлы
     if (parsedVideo.platform === 'direct') {
       return (
         <SyncedVideoWithAudio
@@ -90,93 +91,60 @@ const VideoActivityRenderer = ({
     return null;
   }
 
-  // Режим редактирования
+  // Edit mode — URL bar + full-height preview
+  const parsed = previewUrl ? parseVideoUrl(previewUrl, false) : null;
+
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="w-full max-w-5xl">
-        {/* Video URL input */}
-        <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-2">
-            Ссылка на видео
-          </label>
-          <input
-            type="text"
-            placeholder="YouTube, VK Видео, RuTube или прямая ссылка на .mp4/.webm/.mov..."
-            value={activity.videoUrl || ''}
-            onChange={(e) => {
-              onEdit({
-                ...activity,
-                videoUrl: e.target.value,
-              });
-            }}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none"
-          />
-          <p className="text-xs text-gray-500 mt-1">
-            Поддерживаются: YouTube, VK Видео, RuTube, прямые видеофайлы (mp4/webm/mov)
-          </p>
-        </div>
+    <div className="flex flex-col h-full">
+      {/* URL input bar */}
+      <div className="flex items-center gap-2 p-3 bg-gray-50 border-b border-gray-200 shrink-0">
+        <span className="text-sm text-gray-500 shrink-0">🎬 Видео URL:</span>
+        <input
+          type="text"
+          value={inputUrl}
+          onChange={e => setInputUrl(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleApply(); }}
+          placeholder="YouTube, VK Видео, RuTube или .mp4..."
+          className="flex-1 px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-purple-400"
+        />
+        <button
+          onClick={handleApply}
+          className="px-4 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-lg transition shrink-0"
+        >
+          Применить
+        </button>
+      </div>
 
-        {/* Video preview */}
-        {activity.videoUrl && (
-          <div className="w-full">
-            {(() => {
-              const parsedVideo = parseVideoUrl(activity.videoUrl, false);
-
-              if (parsedVideo.platform === 'direct') {
-                return (
-                  <video
-                    src={parsedVideo.embedUrl}
-                    controls
-                    playsInline
-                    className="w-full max-h-[60vh] rounded-xl bg-black"
-                  />
-                );
-              } else if (parsedVideo.embedUrl) {
-                return (
-                  <iframe
-                    src={parsedVideo.embedUrl}
-                    className="w-full h-[60vh]"
-                    allowFullScreen
-                    title="Video player"
-                    allow="encrypted-media"
-                  />
-                );
-              } else {
-                return (
-                  <div className="border-2 border-red-300 bg-red-50 rounded-xl p-8 text-center">
-                    <p className="text-red-600 font-semibold mb-2">
-                      Не удалось распознать ссылку
-                    </p>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <p>
-                        <strong>YouTube:</strong> https://www.youtube.com/watch?v=VIDEO_ID
-                      </p>
-                      <p>
-                        <strong>VK Видео:</strong> https://vk.com/video-123456_789012
-                      </p>
-                      <p>
-                        <strong>RuTube:</strong> https://rutube.ru/video/VIDEO_ID/
-                      </p>
-                      <p>
-                        <strong>Прямой файл:</strong> https://.../video.mp4 (поддерживается .mp4, .webm, .mov)
-                      </p>
-                    </div>
-                  </div>
-                );
-              }
-            })()}
+      {/* Preview */}
+      <div className="flex-1 min-h-0 bg-black">
+        {parsed && parsed.embedUrl ? (
+          parsed.platform === 'direct' ? (
+            <video
+              src={parsed.embedUrl}
+              controls
+              playsInline
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <iframe
+              src={parsed.embedUrl}
+              className="w-full h-full border-0"
+              allowFullScreen
+              title="Video preview"
+              allow="autoplay; fullscreen; encrypted-media"
+            />
+          )
+        ) : previewUrl ? (
+          <div className="flex items-center justify-center h-full text-red-400 flex-col gap-2">
+            <span className="text-4xl">⚠️</span>
+            <span className="text-sm">Не удалось распознать ссылку</span>
+          </div>
+        ) : (
+          <div className="flex items-center justify-center h-full text-gray-400 flex-col gap-2">
+            <span className="text-5xl">🎬</span>
+            <span className="text-sm">Вставьте ссылку и нажмите «Применить»</span>
           </div>
         )}
-
-        {/* Empty state */}
-        {!activity.videoUrl && (
-          <div className="border-2 border-dashed border-purple-300 rounded-xl p-12 text-center">
-            <div className="text-6xl mb-4">📹</div>
-            <p className="text-gray-600">Вставьте ссылку на видео выше</p>
-            <p className="text-sm text-gray-500 mt-2">YouTube, VK Видео, RuTube или .mp4/.webm/.mov</p>
-          </div>
-        )}
-
       </div>
     </div>
   );
