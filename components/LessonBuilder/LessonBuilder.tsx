@@ -64,7 +64,7 @@ const LessonBuilder = () => {
     userGroupId: user?.groupId,
   });
 
-  const { currentLessonId, currentGroupId, unitTitle, activities, setUnitTitle, setActivities } = lessonData;
+  const { currentLessonId, currentGroupId, unitTitle, activities, isLoading, setUnitTitle, setActivities } = lessonData;
 
   // Local state
   const [selectedActivity, setSelectedActivity] = useState<Activity | null>(null);
@@ -300,6 +300,17 @@ const LessonBuilder = () => {
           }}
         >
           {renderActivityContent(selectedActivity)}
+        </div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4 text-purple-600">
+          <div className="w-12 h-12 border-4 border-purple-300 border-t-purple-600 rounded-full animate-spin" />
+          <span className="text-lg font-semibold">Загрузка урока...</span>
         </div>
       </div>
     );

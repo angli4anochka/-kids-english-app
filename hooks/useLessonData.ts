@@ -15,6 +15,7 @@ interface UseLessonDataReturn {
   currentGroupId: number | null;
   unitTitle: string;
   activities: Activity[];
+  isLoading: boolean;
   setUnitTitle: (title: string) => void;
   setActivities: (activities: Activity[]) => void;
   setCurrentLessonId: (id: string | null) => void;
@@ -36,6 +37,8 @@ export const useLessonData = ({
   const [currentGroupId, setCurrentGroupId] = useState<number | null>(null);
   const [unitTitle, setUnitTitle] = useState(lessonNumber ? `Unit ${lessonNumber}: Hello!` : 'Новый урок');
   const [activities, setActivities] = useState<Activity[]>([]);
+  // true while any fetch is in flight — keeps the UI from flashing empty state
+  const [isLoading, setIsLoading] = useState(!!lessonIdFromUrl || !!(islandId && lessonNumber));
 
   // Load current lesson and groupId
   useEffect(() => {
@@ -46,16 +49,16 @@ export const useLessonData = ({
       const loadByLessonId = async () => {
         console.log('Using lessonId from URL:', lessonIdFromUrl);
         setCurrentLessonId(lessonIdFromUrl);
-        // Load lesson to get groupId
         try {
           const lesson = await lessonService.getLesson(lessonIdFromUrl);
           setCurrentGroupId(lesson.groupId || null);
         } catch (error) {
           console.error('Error loading lesson by ID:', error);
         }
+        // isLoading stays true until teacher effect loads activities
       };
       loadByLessonId();
-      return; // Don't continue to island-based search
+      return;
     }
 
     // Only search by island if no lessonId in URL
@@ -239,6 +242,8 @@ export const useLessonData = ({
         }
       } catch (error) {
         console.error('Error loading lesson for teacher:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -250,6 +255,7 @@ export const useLessonData = ({
     currentGroupId,
     unitTitle,
     activities,
+    isLoading,
     setUnitTitle,
     setActivities,
     setCurrentLessonId,
