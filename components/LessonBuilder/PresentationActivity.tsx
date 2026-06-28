@@ -26,6 +26,8 @@ const PresentationActivity = ({
   const [presentationType, setPresentationType] = useState(activity.presentationType || 'google-slides');
   const [presentationUrl, setPresentationUrl] = useState(activity.presentationUrl || '');
   const [isScreenSharing, setIsScreenSharing] = useState(false);
+  const [inputUrl, setInputUrl] = useState(activity.presentationUrl || '');
+  const [previewUrl, setPreviewUrl] = useState(activity.presentationUrl || '');
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
@@ -532,10 +534,6 @@ const PresentationActivity = ({
   };
 
   if (!isViewMode) {
-    // Edit mode — compact tabs + URL bar + full-height preview
-    const [inputUrl, setInputUrl] = useState(presentationUrl);
-    const [previewUrl, setPreviewUrl] = useState(presentationUrl);
-
     const handleApply = () => {
       setPreviewUrl(inputUrl);
       handleUrlChange(inputUrl);
@@ -568,7 +566,7 @@ const PresentationActivity = ({
           {TYPES.map(t => (
             <button
               key={t.key}
-              onClick={() => { handleTypeChange(t.key); setInputUrl(''); setPreviewUrl(''); }}
+              onClick={() => { handleTypeChange(t.key); if (t.key !== presentationType) { setInputUrl(''); setPreviewUrl(''); } }}
               className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-semibold transition ${
                 presentationType === t.key
                   ? 'bg-purple-600 text-white'
