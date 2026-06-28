@@ -735,19 +735,21 @@ const PresentationActivity = ({
                 Браузер предложит <em>«Поделиться этой вкладкой»</em> — нажмите «Поделиться» и убедитесь, что включён <em>«звук вкладки»</em>. Отдельную вкладку с YouTube открывать не нужно.
               </p>
             </>
-          ) : isScreenSharing ? null : (
-            <div className="flex flex-col items-center justify-center w-full aspect-video bg-gray-50 rounded-xl">
-              <div className="text-6xl mb-4 text-gray-400">📺</div>
-              <p className="text-xl text-gray-500">Ожидание трансляции учителя...</p>
-              {showDebug && debugLogs.length > 0 && (
-                <div className="mt-6 w-full max-w-2xl max-h-64 overflow-y-auto bg-black/90 text-green-400 text-xs font-mono p-3 rounded-lg border border-green-500/30">
-                  <div className="text-green-300 mb-1 font-bold">WebRTC debug log:</div>
-                  {debugLogs.map((line, i) => (
-                    <div key={i} className="whitespace-pre-wrap break-all">{line}</div>
-                  ))}
+          ) : (
+            <TVFrame>
+              {presentationUrl && extractYoutubeId(presentationUrl) ? (
+                <iframe
+                  src={`https://www.youtube.com/embed/${extractYoutubeId(presentationUrl)}?autoplay=0&mute=1&controls=0&disablekb=1`}
+                  className="w-full h-full"
+                  allow="autoplay; encrypted-media"
+                  allowFullScreen
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-400">
+                  Видео не найдено
                 </div>
               )}
-            </div>
+            </TVFrame>
           )}
           {!isTeacher && isScreenSharing && (
             <div className="relative w-full aspect-video bg-black rounded-xl overflow-hidden">
