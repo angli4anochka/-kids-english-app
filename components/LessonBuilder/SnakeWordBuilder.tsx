@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import SnakeWordGame from './SnakeWordGame';
 import type { GameResult } from './SnakeWordGame';
 
@@ -31,9 +31,24 @@ const SnakeWordBuilder = ({ value, onChange, isViewMode = false, onFinish }: Sna
 
   const [wordsText, setWordsText] = useState(config.words.join('\n'));
   const [showPreview, setShowPreview] = useState(false);
+  const isMounted = useRef(false);
+  const prevWordCount = useRef(config.words.length);
 
-  // Update parent when config changes (skip in view mode — students don't edit)
+  // Sync internal state when the value prop gains real words for the first time
+  // (e.g., lazy enrichment fills in snakeWordConfig after slim initial load)
   useEffect(() => {
+    const incoming = value?.words?.length ?? 0;
+    if (incoming > 0 && prevWordCount.current === 0) {
+      prevWordCount.current = incoming;
+      setConfig(value!);
+      setWordsText(value!.words.join('\n'));
+    }
+  }, [value]);
+
+  // Update parent when config changes — skip the initial mount to avoid
+  // overwriting DB data with an empty default before enrichment loads real words
+  useEffect(() => {
+    if (!isMounted.current) { isMounted.current = true; return; }
     if (isViewMode) return;
     onChange?.(config);
   }, [config, isViewMode]);
