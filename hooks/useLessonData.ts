@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { lessonService } from '../services/lessonService';
 import type { Activity } from '../types';
 
@@ -20,6 +20,7 @@ interface UseLessonDataReturn {
   setActivities: (activities: Activity[]) => void;
   setCurrentLessonId: (id: string | null) => void;
   setCurrentGroupId: (id: number | null) => void;
+  enrichActivity: (lessonId: string, activityId: string) => Promise<void>;
 }
 
 /**
@@ -39,6 +40,8 @@ export const useLessonData = ({
   const [activities, setActivities] = useState<Activity[]>([]);
   // true while any fetch is in flight — keeps the UI from flashing empty state
   const [isLoading, setIsLoading] = useState(!!lessonIdFromUrl || !!(islandId && lessonNumber));
+  // Track which activity IDs already have full content_data loaded
+  const enrichedIds = useRef<Set<string>>(new Set());
 
   // Safety net: never spin forever — bail after 10 s
   useEffect(() => {
@@ -110,60 +113,15 @@ export const useLessonData = ({
 
         if (lesson && lesson.id) {
           console.log('Loading lesson for student:', lesson.id);
-
-          // Set lesson title
           setUnitTitle(lesson.title || `Unit ${lessonNumber}: Hello!`);
 
-          // Load activities from backend API
           try {
-            const lessonActivities = await lessonService.getActivities(lesson.id);
-            console.log('Loaded activities from API:', lessonActivities.length);
+            // Slim load — no content_data; activities are enriched on-demand when shown
+            const lessonActivities = await lessonService.getActivities(lesson.id, true /* slim */);
+            console.log('Loaded slim activities from API:', lessonActivities.length);
 
             if (lessonActivities && lessonActivities.length > 0) {
-              // Transform API activities to our Activity interface
-              const transformedActivities = lessonActivities.map((apiActivity: any) => {
-                const contentData = apiActivity.content_data || apiActivity.contentData;
-                const contentUrl = apiActivity.content_url || apiActivity.contentUrl;
-
-                // Debug video activities
-                if (apiActivity.type === 'video') {
-                  console.log('[VIDEO DEBUG]', {
-                    title: apiActivity.title,
-                    type: apiActivity.type,
-                    contentUrl,
-                    content_url: apiActivity.content_url,
-                    audio_url: apiActivity.audio_url
-                  });
-                }
-
-                return {
-                  id: apiActivity.id,
-                  type: apiActivity.type,
-                  title: apiActivity.title,
-                  subtitle: apiActivity.subtitle || '',
-                  isCompleted: contentData?.isCompleted || false,
-                  points: apiActivity.points || 10,
-                  tags: contentData?.tags || [],
-                  content: contentData?.content,
-                  // Extract from contentData first, fallback to contentUrl based on type
-                  imageUrl: contentData?.imageUrl || (apiActivity.type === 'image' ? contentUrl : undefined),
-                  videoUrl: contentData?.videoUrl || (apiActivity.type === 'video' || apiActivity.type === 'youtube' ? contentUrl : undefined),
-                  wordwallUrl: contentData?.wordwallUrl || (apiActivity.type === 'wordwall' || apiActivity.type === 'game' ? contentUrl : undefined),
-                  geniallyUrl: contentData?.geniallyUrl || (apiActivity.type === 'genially' ? contentUrl : undefined),
-                  audioUrl: apiActivity.audio_url || contentData?.audioUrl,
-                  dragTextData: contentData?.dragTextData,
-                  presentationType: contentData?.presentationType,
-                  presentationUrl: contentData?.presentationUrl,
-                  slides: contentData?.slides,
-                  currentSlide: contentData?.currentSlide,
-                  snakeWordConfig: contentData?.snakeWordConfig,
-                  letterTraceConfig: contentData?.letterTraceConfig,
-                  letterRaceConfig: contentData?.letterRaceConfig,
-                  letterMazeConfig: contentData?.letterMazeConfig,
-                };
-              });
-
-              setActivities(transformedActivities);
+              setActivities(lessonActivities.map(transformApiActivity));
               console.log('Activities loaded successfully for student');
             } else {
               console.log('No activities found in database');
@@ -179,6 +137,52 @@ export const useLessonData = ({
 
     loadLessonForStudent();
   }, [userRole, islandId, lessonNumber, userGroupId]);
+
+  // Shared helper: transform a raw DB activity row to our Activity type
+  const transformApiActivity = (apiActivity: any): Activity => {
+    const contentData = apiActivity.content_data || apiActivity.contentData;
+    const contentUrl = apiActivity.content_url || apiActivity.contentUrl;
+    return {
+      id: apiActivity.id,
+      type: apiActivity.type,
+      title: apiActivity.title,
+      subtitle: apiActivity.subtitle || '',
+      isCompleted: contentData?.isCompleted || false,
+      points: apiActivity.points || 10,
+      tags: contentData?.tags || [],
+      content: contentData?.content,
+      imageUrl: contentData?.imageUrl || (apiActivity.type === 'image' ? contentUrl : undefined),
+      videoUrl: contentData?.videoUrl || (apiActivity.type === 'video' || apiActivity.type === 'youtube' ? contentUrl : undefined),
+      wordwallUrl: contentData?.wordwallUrl || (apiActivity.type === 'wordwall' || apiActivity.type === 'game' ? contentUrl : undefined),
+      geniallyUrl: contentData?.geniallyUrl || (apiActivity.type === 'genially' ? contentUrl : undefined),
+      audioUrl: apiActivity.audio_url || contentData?.audioUrl,
+      dragTextData: contentData?.dragTextData,
+      presentationType: contentData?.presentationType,
+      presentationUrl: contentData?.presentationUrl,
+      slides: contentData?.slides,
+      currentSlide: contentData?.currentSlide || 0,
+      externalUrl: contentData?.externalUrl,
+      snakeWordConfig: contentData?.snakeWordConfig,
+      letterTraceConfig: contentData?.letterTraceConfig,
+      letterRaceConfig: contentData?.letterRaceConfig,
+      letterMazeConfig: contentData?.letterMazeConfig,
+    };
+  };
+
+  // Fetch full content_data for one activity and merge it into the activities array.
+  // No-op if the activity has already been enriched.
+  const enrichActivity = useCallback(async (lessonId: string, activityId: string) => {
+    if (enrichedIds.current.has(activityId)) return;
+    enrichedIds.current.add(activityId); // optimistic — prevents duplicate fetches
+    try {
+      const full = await lessonService.getActivity(lessonId, activityId);
+      const enriched = transformApiActivity(full);
+      setActivities(prev => prev.map(a => a.id === activityId ? enriched : a));
+    } catch (err) {
+      enrichedIds.current.delete(activityId); // allow retry on error
+      console.error('Error enriching activity:', activityId, err);
+    }
+  }, []);
 
   // Load lesson data for teachers from API
   useEffect(() => {
@@ -198,68 +202,33 @@ export const useLessonData = ({
       try {
         console.log('Loading lesson for teacher from API, lessonId:', currentLessonId);
 
-        // Fetch lesson details
-        const lesson = await lessonService.getLesson(currentLessonId);
+        // Fetch lesson metadata and slim activity list in parallel — no content_data yet
+        const [lesson, activitiesData] = await Promise.all([
+          lessonService.getLesson(currentLessonId),
+          lessonService.getActivities(currentLessonId, true /* slim */),
+        ]);
+
         if (lesson?.title) {
           setUnitTitle(lesson.title);
         }
 
-        // Fetch activities
-        const activitiesData = await lessonService.getActivities(currentLessonId);
-        console.log('Loaded activities for teacher:', activitiesData);
+        console.log('Loaded slim activities for teacher:', activitiesData.length);
 
-        // Only load from API if localStorage is empty
         if (activitiesData.length > 0) {
-          // Transform API data to frontend format
-          const transformedActivities: Activity[] = activitiesData.map((apiActivity: any) => {
-            const contentData = apiActivity.content_data || apiActivity.contentData;
-            const contentUrl = apiActivity.content_url || apiActivity.contentUrl;
-
-            const transformed = {
-              id: apiActivity.id,
-              type: apiActivity.type,
-              title: apiActivity.title,
-              subtitle: apiActivity.subtitle || '',
-              isCompleted: contentData?.isCompleted || false,
-              points: apiActivity.points || 10,
-              tags: contentData?.tags || [],
-              content: contentData?.content,
-              // Extract from contentData first, fallback to contentUrl based on type
-              imageUrl: contentData?.imageUrl || (apiActivity.type === 'image' ? contentUrl : undefined),
-              videoUrl: contentData?.videoUrl || (apiActivity.type === 'video' || apiActivity.type === 'youtube' ? contentUrl : undefined),
-              wordwallUrl: contentData?.wordwallUrl || (apiActivity.type === 'wordwall' || apiActivity.type === 'game' ? contentUrl : undefined),
-              geniallyUrl: contentData?.geniallyUrl || (apiActivity.type === 'genially' ? contentUrl : undefined),
-              audioUrl: apiActivity.audio_url || contentData?.audioUrl,
-              dragTextData: contentData?.dragTextData,
-              presentationType: contentData?.presentationType,
-              presentationUrl: contentData?.presentationUrl,
-              slides: contentData?.slides,
-              currentSlide: contentData?.currentSlide || 0,
-              externalUrl: contentData?.externalUrl,
-              snakeWordConfig: contentData?.snakeWordConfig,
-              letterTraceConfig: contentData?.letterTraceConfig,
-              letterRaceConfig: contentData?.letterRaceConfig,
-              letterMazeConfig: contentData?.letterMazeConfig,
-            };
-
-            // Debug log for activities with audio
-            if (transformed.audioUrl || apiActivity.audio_url) {
-              console.log('Activity with audio:', {
-                title: transformed.title,
-                type: transformed.type,
-                audioUrl: transformed.audioUrl,
-                audio_url_from_api: apiActivity.audio_url
-              });
-            }
-
-            return transformed;
-          });
-
+          const transformedActivities: Activity[] = activitiesData.map(transformApiActivity);
           setActivities(transformedActivities);
+
+          // Debug log for activities with audio
+          transformedActivities.forEach(a => {
+            if (a.audioUrl) {
+              console.log('Activity with audio:', { title: a.title, type: a.type, audioUrl: a.audioUrl });
+            }
+          });
         }
       } catch (error) {
         console.error('Error loading lesson for teacher:', error);
       } finally {
+        // Show the lesson immediately — content_data loads on-demand per activity
         setIsLoading(false);
       }
     };
@@ -277,5 +246,6 @@ export const useLessonData = ({
     setActivities,
     setCurrentLessonId,
     setCurrentGroupId,
+    enrichActivity,
   };
 };

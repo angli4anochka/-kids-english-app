@@ -131,17 +131,27 @@ class LessonService {
     }
   }
 
-  async getActivities(lessonId: string): Promise<LessonActivity[]> {
-    const response = await fetch(
-      `${API_CONFIG.baseURL}${API_CONFIG.endpoints.lessons}/${lessonId}/activities`,
-      {
-        headers: this.getHeaders(),
-      }
-    );
+  async getActivities(lessonId: string, slim = false): Promise<LessonActivity[]> {
+    const url = `${API_CONFIG.baseURL}${API_CONFIG.endpoints.lessons}/${lessonId}/activities${slim ? '?slim=1' : ''}`;
+    const response = await fetch(url, { headers: this.getHeaders() });
 
     const data = await response.json();
     if (!data.success) {
       throw new Error(data.error || 'Failed to fetch activities');
+    }
+
+    return data.data;
+  }
+
+  async getActivity(lessonId: string, activityId: string): Promise<any> {
+    const response = await fetch(
+      `${API_CONFIG.baseURL}${API_CONFIG.endpoints.lessons}/${lessonId}/activities/${activityId}`,
+      { headers: this.getHeaders() }
+    );
+
+    const data = await response.json();
+    if (!data.success) {
+      throw new Error(data.error || 'Failed to fetch activity');
     }
 
     return data.data;

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
 import { useSocket } from '../hooks/useSocket';
 import ActivityRenderer from '../components/LessonBuilder/ActivityRenderer';
@@ -49,6 +49,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
   const [session, setSession] = useState<SessionData | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [currentActivityIndex, setCurrentActivityIndex] = useState(0);
+  const enrichedActivityIds = useRef<Set<string>>(new Set());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isInteractive, setIsInteractive] = useState(false);
@@ -135,6 +136,40 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
     return () => { socket.off('activity-result', handleResult); };
   }, [socket, isConnected]);
 
+  const transformActivities = (data: any[]): Activity[] => {
+    const transformed = data.map((activity: any) => {
+      const contentData = activity.content_data || {};
+      return {
+        ...activity,
+        ...contentData,
+        wordwallUrl: activity.type === 'wordwall' ? activity.content_url : contentData.wordwallUrl,
+        presentationUrl: activity.type === 'presentation' ? activity.content_url : contentData.presentationUrl,
+        geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
+        videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
+        imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
+      };
+    });
+    return transformed.sort((a: Activity, b: Activity) =>
+      (a.order_index || 0) - (b.order_index || 0)
+    );
+  };
+
+  const enrichActivity = async (lessonId: string, activityId: string) => {
+    if (enrichedActivityIds.current.has(activityId)) return;
+    enrichedActivityIds.current.add(activityId);
+    try {
+      const resp = await fetch(`/kids-api/lessons/${lessonId}/activities/${activityId}`);
+      const data = await resp.json();
+      if (data.success) {
+        const [enriched] = transformActivities([data.data]);
+        setActivities(prev => prev.map(a => a.id === activityId ? enriched : a));
+      }
+    } catch (err) {
+      enrichedActivityIds.current.delete(activityId);
+      console.error('Error enriching activity:', activityId, err);
+    }
+  };
+
   const loadSession = async () => {
     try {
       setIsLoading(true);
@@ -153,39 +188,24 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       setCurrentActivityIndex(sessionData.data.current_activity_index || 0);
       setIsInteractive(sessionData.data.is_interactive || false);
 
-      // Load lesson activities
+      // Load lesson activities — slim (no content_data) for fast initial load
       console.log('Loading activities for lesson:', sessionData.data.lesson_id);
-      const activitiesResponse = await fetch(`/kids-api/lessons/${sessionData.data.lesson_id}/activities`);
+      const activitiesResponse = await fetch(`/kids-api/lessons/${sessionData.data.lesson_id}/activities?slim=1`);
       const activitiesData = await activitiesResponse.json();
-      console.log('Activities data:', activitiesData);
 
       if (activitiesData.success) {
-        // Transform activities from backend format to frontend format
-        const transformed = (activitiesData.data || []).map((activity: any) => {
-          const contentData = activity.content_data || {};
-          return {
-            ...activity,
-            // Spread content_data fields to top level
-            ...contentData,
-            // Map content_url to specific fields based on type
-            wordwallUrl: activity.type === 'wordwall' ? activity.content_url : contentData.wordwallUrl,
-            presentationUrl: activity.type === 'presentation' ? activity.content_url : contentData.presentationUrl,
-            geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
-            videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
-            imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
-          };
-        });
-
-        const sorted = transformed.sort((a: Activity, b: Activity) =>
-          (a.order_index || 0) - (b.order_index || 0)
-        );
-        console.log('Sorted and transformed activities:', sorted);
-        setActivities(sorted);
+        const transformed = transformActivities(activitiesData.data || []);
+        console.log('Loaded slim activities:', transformed.length);
+        setActivities(transformed);
       } else {
         console.error('Failed to load activities:', activitiesData);
       }
 
       setIsLoading(false);
+      // Enrich the starting activity immediately after slim load
+      const startIndex = sessionData.data.current_activity_index || 0;
+      const startActivity = activitiesData.data?.[startIndex];
+      if (startActivity) enrichActivity(sessionData.data.lesson_id, startActivity.id);
     } catch (err) {
       console.error('Error loading session:', err);
       setError(err instanceof Error ? err.message : 'Failed to load session');
@@ -219,6 +239,14 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       console.error('Failed to update activity:', err);
     }
   };
+
+  // When current activity changes, fetch its full content_data if not yet loaded
+  useEffect(() => {
+    const activity = activities[currentActivityIndex];
+    if (activity && session?.lesson_id) {
+      enrichActivity(session.lesson_id, activity.id);
+    }
+  }, [currentActivityIndex, activities.length, session?.lesson_id]);
 
   const toggleInteractive = async () => {
     try {
