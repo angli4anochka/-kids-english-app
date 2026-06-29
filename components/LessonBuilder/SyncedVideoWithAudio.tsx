@@ -238,7 +238,7 @@ const SyncedVideoWithAudio: React.FC<Props> = ({ videoUrl, audioUrl, isTeacher, 
           muted={!isTeacher}
           autoPlay={false}
           playsInline
-          preload="auto"
+          preload="metadata"
           style={{ objectFit: 'contain', backgroundColor: '#000' }}
           onPlay={handleVideoPlay}
           onPause={handleVideoPause}
