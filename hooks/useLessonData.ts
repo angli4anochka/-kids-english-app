@@ -43,7 +43,7 @@ export const useLessonData = ({
   // Safety net: never spin forever — bail after 10 s
   useEffect(() => {
     if (!isLoading) return;
-    const t = setTimeout(() => setIsLoading(false), 10_000);
+    const t = setTimeout(() => setIsLoading(false), 30_000);
     return () => clearTimeout(t);
   }, [isLoading]);
 
