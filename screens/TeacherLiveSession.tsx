@@ -202,10 +202,11 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       }
 
       setIsLoading(false);
-      // Enrich the starting activity immediately after slim load
-      const startIndex = sessionData.data.current_activity_index || 0;
-      const startActivity = activitiesData.data?.[startIndex];
-      if (startActivity) enrichActivity(sessionData.data.lesson_id, startActivity.id);
+      // Background: enrich ALL activities with full content_data in parallel
+      // Most are tiny (<1KB), only the rare base64 image is heavy
+      if (activitiesData.data?.length) {
+        activitiesData.data.forEach((a: any) => enrichActivity(sessionData.data.lesson_id, a.id));
+      }
     } catch (err) {
       console.error('Error loading session:', err);
       setError(err instanceof Error ? err.message : 'Failed to load session');

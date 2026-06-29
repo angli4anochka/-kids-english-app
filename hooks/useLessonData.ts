@@ -123,6 +123,8 @@ export const useLessonData = ({
             if (lessonActivities && lessonActivities.length > 0) {
               setActivities(lessonActivities.map(transformApiActivity));
               console.log('Activities loaded successfully for student');
+              // Background: enrich all activities with full content_data in parallel
+              lessonActivities.forEach((a: any) => enrichActivity(lesson.id, a.id));
             } else {
               console.log('No activities found in database');
             }
@@ -224,11 +226,15 @@ export const useLessonData = ({
               console.log('Activity with audio:', { title: a.title, type: a.type, audioUrl: a.audioUrl });
             }
           });
+
+          // Background: enrich ALL activities with full content_data in parallel.
+          // Most are tiny (<1KB), the lesson stays visible immediately via slim data above.
+          activitiesData.forEach((a: any) => enrichActivity(currentLessonId!, a.id));
         }
       } catch (error) {
         console.error('Error loading lesson for teacher:', error);
       } finally {
-        // Show the lesson immediately — content_data loads on-demand per activity
+        // Show the lesson immediately — content_data fills in per-activity in background
         setIsLoading(false);
       }
     };
