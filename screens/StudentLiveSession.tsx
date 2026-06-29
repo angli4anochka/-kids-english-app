@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
 import { useSocket } from '../hooks/useSocket';
 import { useAuth } from '../contexts/AuthContext';
@@ -32,6 +32,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
   const [error, setError] = useState('');
   const [isSessionEnded, setIsSessionEnded] = useState(false);
   const [redirectUrl, setRedirectUrl] = useState('/scoreboard');
+  const enrichedIds = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     loadSession();
@@ -60,6 +61,12 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     const handleActivityChanged = (data: { sessionId: string; activityIndex: number }) => {
       console.log('[Student] Received activity change:', data);
       setCurrentActivityIndex(data.activityIndex);
+      // Ensure the new activity has full content loaded
+      setActivities(prev => {
+        const a = prev[data.activityIndex];
+        if (a && session?.lesson_id) enrichActivity(session.lesson_id, a.id!);
+        return prev;
+      });
     };
 
     // Listen for interactive mode toggle
@@ -94,15 +101,46 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     };
   }, [socket, isConnected, session, sessionId, router]);
 
+  const transformActivities = (data: any[]): Activity[] => {
+    const transformed = data.map((activity: any) => {
+      const contentData = activity.content_data || {};
+      return {
+        ...activity,
+        ...contentData,
+        wordwallUrl: activity.type === 'wordwall' ? activity.content_url : contentData.wordwallUrl,
+        presentationUrl: activity.type === 'presentation' ? activity.content_url : contentData.presentationUrl,
+        geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
+        videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
+        imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
+      };
+    });
+    return transformed.sort((a: Activity, b: Activity) =>
+      (a.order_index || 0) - (b.order_index || 0)
+    );
+  };
+
+  const enrichActivity = async (lessonId: string, activityId: string) => {
+    if (enrichedIds.current.has(activityId)) return;
+    enrichedIds.current.add(activityId);
+    try {
+      const resp = await fetch(`/kids-api/lessons/${lessonId}/activities/${activityId}`);
+      const data = await resp.json();
+      if (data.success) {
+        const [enriched] = transformActivities([data.data]);
+        setActivities(prev => prev.map(a => a.id === activityId ? enriched : a));
+      }
+    } catch (err) {
+      enrichedIds.current.delete(activityId);
+    }
+  };
+
   const loadSession = async () => {
     try {
       setIsLoading(true);
 
-      // Load session data
       console.log('[Student] Loading session:', sessionId);
       const sessionResponse = await fetch(`/kids-api/live-sessions/${sessionId}`);
       const sessionData = await sessionResponse.json();
-      console.log('[Student] Session data:', sessionData);
 
       if (!sessionData.success) {
         throw new Error('Session not found');
@@ -111,32 +149,15 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
       setSession(sessionData.data);
       setCurrentActivityIndex(sessionData.data.current_activity_index || 0);
 
-      // Load lesson activities
-      console.log('[Student] Loading activities for lesson:', sessionData.data.lesson_id);
-      const activitiesResponse = await fetch(`/kids-api/lessons/${sessionData.data.lesson_id}/activities`);
+      // Slim load — fast, shows lesson immediately
+      const activitiesResponse = await fetch(`/kids-api/lessons/${sessionData.data.lesson_id}/activities?slim=1`);
       const activitiesData = await activitiesResponse.json();
-      console.log('[Student] Activities data:', activitiesData);
 
       if (activitiesData.success) {
-        // Transform activities from backend format to frontend format
-        const transformed = (activitiesData.data || []).map((activity: any) => {
-          const contentData = activity.content_data || {};
-          return {
-            ...activity,
-            ...contentData,
-            wordwallUrl: activity.type === 'wordwall' ? activity.content_url : contentData.wordwallUrl,
-            presentationUrl: activity.type === 'presentation' ? activity.content_url : contentData.presentationUrl,
-            geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
-            videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
-            imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
-          };
-        });
-
-        const sorted = transformed.sort((a: Activity, b: Activity) =>
-          (a.order_index || 0) - (b.order_index || 0)
-        );
-        console.log('[Student] Sorted and transformed activities:', sorted);
+        const sorted = transformActivities(activitiesData.data || []);
         setActivities(sorted);
+        // Enrich all activities in background; most are <1KB, only base64 images are heavy
+        sorted.forEach((a: Activity) => enrichActivity(sessionData.data.lesson_id, a.id!));
       }
 
       setIsLoading(false);
