@@ -35,7 +35,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-  const [lessonProgress, setLessonProgress] = useState<Record<string, boolean>>({});
+  const [lessonProgress, setLessonProgress] = useState<Record<string, { is_completed: boolean; progress_percent: number }>>({});
   const [startingLessonId, setStartingLessonId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -79,8 +79,13 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       .then(r => r.json())
       .then(d => {
         if (d.success) {
-          const map: Record<string, boolean> = {};
-          d.data.forEach((item: any) => { map[item.lesson_id] = item.is_completed; });
+          const map: Record<string, { is_completed: boolean; progress_percent: number }> = {};
+          d.data.forEach((item: any) => {
+            map[item.lesson_id] = {
+              is_completed: item.is_completed,
+              progress_percent: item.progress_percent || 0,
+            };
+          });
           setLessonProgress(map);
         }
       })
@@ -166,7 +171,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
     );
   }
 
-  const completedCount = lessons.filter(l => lessonProgress[l.id]).length;
+  const completedCount = lessons.filter(l => lessonProgress[l.id]?.is_completed).length;
   const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
@@ -246,7 +251,9 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                       )}
                       <div className={`space-y-2 ${unitNumber !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
                         {unitLessons.map((lesson, _idx) => {
-                          const done = lessonProgress[lesson.id];
+                          const prog = lessonProgress[lesson.id];
+                          const done = prog?.is_completed ?? false;
+                          const pct = prog?.progress_percent ?? 0;
                           const globalIdx = lessons.indexOf(lesson);
                           const isDragging = draggedId === lesson.id;
                           const isOver = dragOverId === lesson.id;
@@ -259,32 +266,49 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                               onDragLeave={() => setDragOverId(null)}
                               onDrop={() => handleDrop(lesson.id)}
                               onDragEnd={() => { setDraggedId(null); setDragOverId(null); }}
-                              className={`flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition hover:shadow-sm cursor-grab active:cursor-grabbing ${
+                              className={`px-4 py-3 rounded-xl border-2 transition hover:shadow-sm cursor-grab active:cursor-grabbing ${
                                 isDragging ? 'opacity-40' :
                                 isOver ? 'border-purple-400 bg-purple-50 shadow-md' :
-                                done ? 'border-green-200 bg-green-50' : 'border-gray-200 hover:border-purple-300'
+                                done ? 'border-green-200 bg-green-50' :
+                                pct > 0 ? 'border-blue-200 bg-blue-50' :
+                                'border-gray-200 hover:border-purple-300'
                               }`}
                             >
-                              <span className="text-gray-300 hover:text-gray-500 shrink-0 cursor-grab select-none text-lg leading-none">⠿</span>
-                              <span className="text-sm text-gray-400 w-6 text-center shrink-0 font-mono">{globalIdx + 1}</span>
-                              <span className="text-lg shrink-0">{lesson.emoji || '📖'}</span>
-                              <span className={`flex-1 text-sm font-semibold truncate ${done ? 'text-green-700' : 'text-gray-800'}`}>
-                                {lesson.title}
-                              </span>
-                              {done && <span className="text-green-500 text-xs shrink-0 font-semibold">✓ пройден</span>}
-                              <button
-                                onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}&bookId=${bookId}&courseId=${courseId}`)}
-                                className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
-                              >
-                                ✏️
-                              </button>
-                              <button
-                                onClick={() => handleStartLesson(lesson)}
-                                disabled={startingLessonId === lesson.id}
-                                className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
-                              >
-                                {startingLessonId === lesson.id ? '⏳' : '▶ Начать'}
-                              </button>
+                              <div className="flex items-center gap-3">
+                                <span className="text-gray-300 hover:text-gray-500 shrink-0 cursor-grab select-none text-lg leading-none">⠿</span>
+                                <span className="text-sm text-gray-400 w-6 text-center shrink-0 font-mono">{globalIdx + 1}</span>
+                                <span className="text-lg shrink-0">{lesson.emoji || '📖'}</span>
+                                <span className={`flex-1 text-sm font-semibold truncate ${done ? 'text-green-700' : pct > 0 ? 'text-blue-700' : 'text-gray-800'}`}>
+                                  {lesson.title}
+                                </span>
+                                {done
+                                  ? <span className="text-green-500 text-xs shrink-0 font-semibold">✓ пройден</span>
+                                  : pct > 0
+                                    ? <span className="text-blue-500 text-xs shrink-0 font-semibold">{pct}%</span>
+                                    : null
+                                }
+                                <button
+                                  onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}&bookId=${bookId}&courseId=${courseId}`)}
+                                  className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
+                                >
+                                  ✏️
+                                </button>
+                                <button
+                                  onClick={() => handleStartLesson(lesson)}
+                                  disabled={startingLessonId === lesson.id}
+                                  className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
+                                >
+                                  {startingLessonId === lesson.id ? '⏳' : '▶ Начать'}
+                                </button>
+                              </div>
+                              {pct > 0 && (
+                                <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
+                                  <div
+                                    className={`h-1.5 rounded-full transition-all duration-500 ${done ? 'bg-gradient-to-r from-green-400 to-green-500' : 'bg-gradient-to-r from-blue-400 to-purple-500'}`}
+                                    style={{ width: `${pct}%` }}
+                                  />
+                                </div>
+                              )}
                             </div>
                           );
                         })}
