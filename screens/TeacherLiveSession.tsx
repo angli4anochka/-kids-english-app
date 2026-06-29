@@ -52,6 +52,16 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [isInteractive, setIsInteractive] = useState(false);
+
+  // Safety net: never spin forever — bail after 15 s
+  useEffect(() => {
+    if (!isLoading) return;
+    const t = setTimeout(() => {
+      setIsLoading(false);
+      setError('Не удалось загрузить урок. Попробуйте обновить страницу.');
+    }, 15_000);
+    return () => clearTimeout(t);
+  }, [isLoading]);
   const [results, setResults] = useState<ActivityResult[]>([]);
   const [spotlightResults, setSpotlightResults] = useState<SpotlightResult[]>([]);
   const [isSessionEnded, setIsSessionEnded] = useState(false);

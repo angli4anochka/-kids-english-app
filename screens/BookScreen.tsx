@@ -36,6 +36,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
   const [lessonProgress, setLessonProgress] = useState<Record<string, boolean>>({});
+  const [startingLessonId, setStartingLessonId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
 
@@ -91,6 +92,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       alert('Выберите группу');
       return;
     }
+    setStartingLessonId(lesson.id);
     try {
       const response = await fetch('/kids-api/live-sessions', {
         method: 'POST',
@@ -124,6 +126,8 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       navigate(`/teacher/live-session/${data.data.id}`);
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Ошибка');
+    } finally {
+      setStartingLessonId(null);
     }
   };
 
@@ -276,9 +280,10 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                               </button>
                               <button
                                 onClick={() => handleStartLesson(lesson)}
-                                className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
+                                disabled={startingLessonId === lesson.id}
+                                className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
                               >
-                                ▶ Начать
+                                {startingLessonId === lesson.id ? '⏳' : '▶ Начать'}
                               </button>
                             </div>
                           );
