@@ -4,4 +4,3 @@ export { useProgress } from './useProgress';
 export { useUserRole } from './useUserRole';
 export { useSession } from './useSession';
 export { useSocket } from './useSocket';
-export { useLessonSocket } from './useLessonSocket';
