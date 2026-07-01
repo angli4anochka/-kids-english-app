@@ -111,7 +111,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
         presentationUrl: activity.type === 'presentation' ? activity.content_url : contentData.presentationUrl,
         geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
         videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
-        imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
+        imageUrl: contentData.imageUrl || (activity.type === 'image' ? activity.content_url : undefined),
       };
     });
     return transformed.sort((a: Activity, b: Activity) =>
