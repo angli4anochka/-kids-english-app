@@ -123,8 +123,8 @@ export const useLessonData = ({
             if (lessonActivities && lessonActivities.length > 0) {
               setActivities(lessonActivities.map(transformApiActivity));
               console.log('Activities loaded successfully for student');
-              // Background: enrich all activities with full content_data in parallel
-              lessonActivities.forEach((a: any) => enrichActivity(lesson.id, a.id));
+              // Background: enrich activities with full content_data, throttled
+              enrichActivitiesQueued(lesson.id, lessonActivities.map((a: any) => a.id));
             } else {
               console.log('No activities found in database');
             }
@@ -186,6 +186,22 @@ export const useLessonData = ({
     }
   }, []);
 
+  // Enrich activities in display order with only a few requests in flight at once.
+  // Firing all of them at the same time saturates the connection with media
+  // downloads from Object Storage, which stalls the first (visible) activity
+  // right along with the rest — most noticeable for first-time users with an
+  // empty browser cache.
+  const enrichActivitiesQueued = useCallback((lessonId: string, activityIds: string[]) => {
+    const concurrency = 2;
+    let cursor = 0;
+    const pullNext = () => {
+      if (cursor >= activityIds.length) return;
+      const id = activityIds[cursor++];
+      enrichActivity(lessonId, id).finally(pullNext);
+    };
+    for (let i = 0; i < Math.min(concurrency, activityIds.length); i++) pullNext();
+  }, [enrichActivity]);
+
   // Load lesson data for teachers from API
   useEffect(() => {
     // Still waiting for currentLessonId to be set — do nothing yet
@@ -227,9 +243,9 @@ export const useLessonData = ({
             }
           });
 
-          // Background: enrich ALL activities with full content_data in parallel.
-          // Most are tiny (<1KB), the lesson stays visible immediately via slim data above.
-          activitiesData.forEach((a: any) => enrichActivity(currentLessonId!, a.id));
+          // Background: enrich activities with full content_data, throttled so
+          // media downloads don't all compete at once (see enrichActivitiesQueued).
+          enrichActivitiesQueued(currentLessonId!, activitiesData.map((a: any) => a.id));
         }
       } catch (error) {
         console.error('Error loading lesson for teacher:', error);
