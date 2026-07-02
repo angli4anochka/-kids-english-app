@@ -12,6 +12,7 @@ import GeniallyActivityRenderer from './ActivityRenderers/GeniallyActivityRender
 import CompleteActivityRenderer from './ActivityRenderers/CompleteActivityRenderer';
 import DragWordsActivityRenderer from './ActivityRenderers/DragWordsActivityRenderer';
 import SecretKeyQuestActivityRenderer from './ActivityRenderers/SecretKeyQuestActivityRenderer';
+import AbcQuestActivityRenderer from './ActivityRenderers/AbcQuestActivityRenderer';
 import SpotlightHtmlActivityRenderer from './ActivityRenderers/SpotlightHtmlActivityRenderer';
 
 interface ActivityRendererProps {
@@ -227,6 +228,21 @@ const ActivityRenderer = ({
   if (activity.type === 'secret-key-quest') {
     return (
       <SecretKeyQuestActivityRenderer
+        activity={activity}
+        isViewMode={isViewMode}
+        isTeacher={isTeacher}
+        lessonId={lessonId}
+        groupId={groupId}
+        sessionId={sessionId}
+        onEdit={onEdit}
+      />
+    );
+  }
+
+  // ABC Quest quiz (буквы алфавита в формате квиза)
+  if (activity.type === 'abc-quest') {
+    return (
+      <AbcQuestActivityRenderer
         activity={activity}
         isViewMode={isViewMode}
         isTeacher={isTeacher}

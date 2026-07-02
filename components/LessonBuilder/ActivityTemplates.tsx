@@ -383,6 +383,37 @@ const ACTIVITY_TEMPLATES: Template[] = [
     )
   },
   {
+    id: 'abc-quest',
+    title: 'ABC Quest Quiz',
+    description: 'Квиз на знание алфавита',
+    category: 'games',
+    preview: (
+      <div className="p-3">
+        <div className="w-full h-24 bg-gradient-to-br from-amber-200 via-orange-200 to-pink-200 rounded-lg mb-2 flex items-center justify-center relative overflow-hidden">
+          <div className="absolute top-2 right-2 text-3xl animate-bounce">🔤</div>
+          <div className="text-gray-800 text-center z-10">
+            <div className="text-4xl font-bold mb-1">🧩</div>
+            <div className="text-xs font-semibold">ABC Quest</div>
+          </div>
+        </div>
+        <div className="space-y-2">
+          <div className="text-xs text-gray-600">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-1">
+                <span className="text-xl">❓</span>
+                <span className="text-xs text-gray-400">квиз</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-lg font-bold text-amber-600">A B C</span>
+              </div>
+            </div>
+            <div className="text-xs text-gray-400">Проверь знание алфавита в формате квиза</div>
+          </div>
+        </div>
+      </div>
+    )
+  },
+  {
     id: 'letter-jump',
     title: 'Letter Jump',
     description: 'Прыгай и собирай правильные буквы',

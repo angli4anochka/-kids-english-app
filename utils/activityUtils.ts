@@ -74,6 +74,7 @@ export const getTemplateName = (templateId: string): string => {
     'letter-race': 'Гонки букв',
     'letter-maze': 'Лабиринт букв',
     'secret-key-quest': 'Квест: Секретный ключ',
+    'abc-quest': 'ABC Quest Quiz',
     'letter-jump': 'Прыжки на букву',
     'bubble-grammar': 'Грамматические пузыри',
   };
@@ -104,6 +105,7 @@ export const getActivityTypeFromTemplate = (templateId: string): string => {
     'letter-race': 'letter-race',
     'letter-maze': 'letter-maze',
     'secret-key-quest': 'secret-key-quest',
+    'abc-quest': 'abc-quest',
     'letter-jump': 'letter-jump',
     'bubble-grammar': 'bubble-grammar',
   };
@@ -122,6 +124,7 @@ export const getTemplateTags = (templateId: string): string[] | undefined => {
     'letter-race': ['Letter Race'],
     'letter-maze': ['Letter Maze'],
     'secret-key-quest': ['Quest'],
+    'abc-quest': ['ABC Quest'],
     'letter-jump': ['Letter Jump'],
     'bubble-grammar': ['Bubble', 'Grammar'],
   };

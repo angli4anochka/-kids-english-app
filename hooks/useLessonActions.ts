@@ -65,6 +65,7 @@ export const useLessonActions = ({
       'letter-race': 'Гонки букв',
       'letter-maze': 'Letter Maze',
       'secret-key-quest': 'Секретный ключ',
+      'abc-quest': 'ABC Quest Quiz',
       'letter-jump': 'Letter Jump',
       'bubble-grammar': 'Bubble Grammar Pop',
     };
@@ -94,6 +95,7 @@ export const useLessonActions = ({
       'letter-race': 'letter-race',
       'letter-maze': 'letter-maze',
       'secret-key-quest': 'secret-key-quest',
+      'abc-quest': 'abc-quest',
       'letter-jump': 'letter-jump',
       'bubble-grammar': 'bubble-grammar',
     };
@@ -107,7 +109,7 @@ export const useLessonActions = ({
       subtitle: '',
       isCompleted: false,
       points: 10,
-      tags: templateId === 'wordwall-game' ? ['Wordwall'] : templateId === 'genially' ? ['Genially'] : templateId === 'snake-word' ? ['Snake'] : templateId === 'letter-trace' ? ['Letter Trace'] : templateId === 'letter-race' ? ['Letter Race'] : templateId === 'letter-maze' ? ['Letter Maze'] : templateId === 'secret-key-quest' ? ['Quest'] : templateId === 'letter-jump' ? ['Letter Jump'] : templateId === 'bubble-grammar' ? ['Bubble', 'Grammar'] : undefined,
+      tags: templateId === 'wordwall-game' ? ['Wordwall'] : templateId === 'genially' ? ['Genially'] : templateId === 'snake-word' ? ['Snake'] : templateId === 'letter-trace' ? ['Letter Trace'] : templateId === 'letter-race' ? ['Letter Race'] : templateId === 'letter-maze' ? ['Letter Maze'] : templateId === 'secret-key-quest' ? ['Quest'] : templateId === 'abc-quest' ? ['ABC Quest'] : templateId === 'letter-jump' ? ['Letter Jump'] : templateId === 'bubble-grammar' ? ['Bubble', 'Grammar'] : undefined,
       snakeWordConfig: templateId === 'snake-word' ? {
         words: [],
         speedMs: 390,

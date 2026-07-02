@@ -19,6 +19,7 @@ export type ActivityType =
   | 'letter-race'
   | 'letter-maze'
   | 'secret-key-quest'
+  | 'abc-quest'
   | 'letter-jump'
   | 'bubble-grammar'
   // Legacy types for backward compatibility
@@ -141,7 +142,7 @@ export interface LetterMazeActivity extends BaseActivity {
 }
 
 export interface GameActivity extends BaseActivity {
-  type: 'secret-key-quest' | 'letter-jump' | 'bubble-grammar';
+  type: 'secret-key-quest' | 'abc-quest' | 'letter-jump' | 'bubble-grammar';
   gameUrl?: string;
 }
 
