@@ -12,7 +12,7 @@ interface Props {
 const W = 1180;
 const H = 820;
 
-export default function SpotlightS5Alphabet({ isTeacher, lessonId, activityId, sessionId }: Props) {
+export default function SpotlightS5WeLearnEnglish({ isTeacher, lessonId, activityId, sessionId }: Props) {
   const { user } = useAuth();
   const containerRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
@@ -30,7 +30,7 @@ export default function SpotlightS5Alphabet({ isTeacher, lessonId, activityId, s
   }, []);
 
   const handleMessage = useCallback(async (e: MessageEvent) => {
-    if (e.data?.type !== 'spotlight5-alphabet-done' || submitted || isTeacher || !lessonId) return;
+    if (e.data?.type !== 'we-learn-english-done' || submitted || isTeacher || !lessonId) return;
     try {
       await fetch('/kids-api/spotlight/results', {
         method: 'POST',
@@ -57,7 +57,7 @@ export default function SpotlightS5Alphabet({ isTeacher, lessonId, activityId, s
     <div ref={containerRef} style={{ width: '100%', height: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f1f1f1', position: 'relative' }}>
       <div style={{ width: W, height: H, transform: `scale(${scale})`, transformOrigin: 'center center', flexShrink: 0 }}>
         <iframe
-          src="/spotlight/spotlight5-alphabet-dragdrop.html"
+          src="/spotlight/we-learn-english-dragdrop.html"
           width={W}
           height={H}
           style={{ border: 'none', display: 'block' }}
