@@ -1,5 +1,6 @@
 import type { Activity } from '../../../types';
 import SpotlightVerbBeSlides from './SpotlightVerbBeSlides';
+import SpotlightS5Alphabet from './SpotlightS5Alphabet';
 import SpotlightEx1 from './SpotlightEx1';
 import SpotlightEx2 from './SpotlightEx2';
 import SpotlightEx3 from './SpotlightEx3';
@@ -64,6 +65,7 @@ interface SlideProps {
 
 const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'verb-be': SpotlightVerbBeSlides,
+  'spotlight5-alphabet': SpotlightS5Alphabet,
   'verb-be-ex1': SpotlightEx1,
   'verb-be-ex2': SpotlightEx2,
   'verb-be-ex3': SpotlightEx3,
