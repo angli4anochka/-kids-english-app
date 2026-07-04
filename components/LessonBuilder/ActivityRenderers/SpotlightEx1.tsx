@@ -42,6 +42,7 @@ export default function SpotlightEx1({ isTeacher, lessonId, activityId, sessionI
           studentAnswer: answers[i],
           correctAnswer: q.answer,
           isCorrect: answers[i] === q.answer,
+          sentence: `${q.before} ${q.answer} ${q.after}`,
         })),
         score: QUESTIONS.filter((q, i) => answers[i] === q.answer).length,
         total: QUESTIONS.length,

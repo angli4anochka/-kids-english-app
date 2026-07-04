@@ -9,6 +9,7 @@ interface AnswerDetail {
   studentAnswer?: string;
   correctAnswer?: string;
   isCorrect: boolean;
+  sentence?: string;
 }
 
 interface ActivityResult {
@@ -97,14 +98,22 @@ export default function LessonResultsScreen() {
                     <div key={idx} className="bg-red-50 rounded-xl p-3 border border-red-100">
                       <div className="flex items-start gap-3">
                         <span className="text-red-400 font-bold text-sm mt-0.5">#{(answer.questionIndex ?? idx) + 1}</span>
-                        <div>
+                        <div className="space-y-1">
                           <div className="flex items-center gap-2 text-sm">
                             <span className="text-red-500">✗</span>
-                            <span className="text-red-700 font-medium">{answer.studentAnswer || '—'}</span>
-                            {answer.correctAnswer && (
-                              <span className="text-gray-400">(правильно: {answer.correctAnswer})</span>
-                            )}
+                            <span className="text-red-700 line-through">{answer.studentAnswer || '—'}</span>
                           </div>
+                          {answer.sentence ? (
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="text-green-500">✓</span>
+                              <span className="text-green-700 font-semibold">{answer.sentence}</span>
+                            </div>
+                          ) : answer.correctAnswer && (
+                            <div className="flex items-center gap-2 text-sm">
+                              <span className="text-green-500">✓</span>
+                              <span className="text-green-700 font-semibold">{answer.correctAnswer}</span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>

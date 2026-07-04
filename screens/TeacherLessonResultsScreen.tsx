@@ -8,6 +8,7 @@ interface AnswerDetail {
   studentAnswer?: string;
   correctAnswer?: string;
   isCorrect: boolean;
+  sentence?: string;
 }
 
 interface ActivityResult {
@@ -165,14 +166,13 @@ export default function TeacherLessonResultsScreen() {
                             <span className="ml-2 text-gray-400 font-normal">{activity.score}/{activity.total}</span>
                           </h3>
                           {details.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
+                            <div className="space-y-1.5">
                               {details.map((answer, idx) => (
-                                <div key={idx} className="bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-sm">
-                                  <span className="text-gray-400 mr-1">#{(answer.questionIndex ?? idx) + 1}</span>
-                                  <span className="text-red-700 font-medium">{answer.studentAnswer || '—'}</span>
-                                  {answer.correctAnswer && (
-                                    <span className="text-gray-400 ml-1">(верно: {answer.correctAnswer})</span>
-                                  )}
+                                <div key={idx} className="bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-sm flex items-center gap-2 flex-wrap">
+                                  <span className="text-gray-400">#{(answer.questionIndex ?? idx) + 1}</span>
+                                  <span className="text-red-700 line-through">{answer.studentAnswer || '—'}</span>
+                                  <span className="text-gray-300">→</span>
+                                  <span className="text-green-700 font-semibold">{answer.sentence || answer.correctAnswer}</span>
                                 </div>
                               ))}
                             </div>
