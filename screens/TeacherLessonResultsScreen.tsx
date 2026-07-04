@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
 
-interface AnswerInfo {
-  value: string;
-  correct: boolean;
+interface AnswerDetail {
+  questionIndex?: number;
+  studentAnswer?: string;
+  correctAnswer?: string;
+  isCorrect: boolean;
 }
 
 interface ActivityResult {
@@ -15,7 +17,7 @@ interface ActivityResult {
   activity_id: string;
   activity_title: string;
   order_index: number;
-  results: { answers: Record<string, AnswerInfo> };
+  results: AnswerDetail[];
   score: number;
   total: number;
 }
@@ -63,14 +65,11 @@ export default function TeacherLessonResultsScreen() {
                 totalAnswered: 0,
               };
             }
-            const answers = row.results?.answers || {};
-            const wrong = Object.values(answers).filter(a => !a.correct && a.value).length;
-            const correct = Object.values(answers).filter(a => a.correct).length;
-            const answered = Object.values(answers).filter(a => a.value).length;
+            const wrong = Math.max(0, row.total - row.score);
             byStudent[key].activities.push(row);
             byStudent[key].totalWrong += wrong;
-            byStudent[key].totalCorrect += correct;
-            byStudent[key].totalAnswered += answered;
+            byStudent[key].totalCorrect += row.score;
+            byStudent[key].totalAnswered += row.total;
           }
           setStudents(Object.values(byStudent).sort((a, b) => a.name.localeCompare(b.name)));
         }
@@ -119,10 +118,7 @@ export default function TeacherLessonResultsScreen() {
 
         {students.map(student => {
           const isExp = expandedStudent === (student.studentId || student.name);
-          const wrongActivities = student.activities.filter(a => {
-            const answers = a.results?.answers || {};
-            return Object.values(answers).some(ans => !ans.correct && ans.value);
-          });
+          const wrongActivities = student.activities.filter(a => (a.total - a.score) > 0);
 
           return (
             <div key={student.studentId || student.name} className="bg-white rounded-2xl shadow-lg mb-4 overflow-hidden">
@@ -160,22 +156,29 @@ export default function TeacherLessonResultsScreen() {
                     <p className="text-green-600 font-medium">Все ответы верные!</p>
                   ) : (
                     wrongActivities.map(activity => {
-                      const answers = activity.results?.answers || {};
-                      const wrongs = Object.entries(answers).filter(([, a]) => !a.correct && a.value);
+                      const wrongCount = activity.total - activity.score;
+                      const details = (activity.results || []).filter(a => !a.isCorrect);
                       return (
                         <div key={activity.id}>
                           <h3 className="text-sm font-bold text-gray-700 mb-2">
                             {activity.activity_title || 'Упражнение'}
                             <span className="ml-2 text-gray-400 font-normal">{activity.score}/{activity.total}</span>
                           </h3>
-                          <div className="flex flex-wrap gap-2">
-                            {wrongs.map(([key, answer]) => (
-                              <div key={key} className="bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-sm">
-                                <span className="text-gray-400 mr-1">#{key.replace('q', '')}</span>
-                                <span className="text-red-700 font-medium">{answer.value}</span>
-                              </div>
-                            ))}
-                          </div>
+                          {details.length > 0 ? (
+                            <div className="flex flex-wrap gap-2">
+                              {details.map((answer, idx) => (
+                                <div key={idx} className="bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-sm">
+                                  <span className="text-gray-400 mr-1">#{(answer.questionIndex ?? idx) + 1}</span>
+                                  <span className="text-red-700 font-medium">{answer.studentAnswer || '—'}</span>
+                                  {answer.correctAnswer && (
+                                    <span className="text-gray-400 ml-1">(верно: {answer.correctAnswer})</span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-500">Ошибок: {wrongCount} из {activity.total} (детали не сохранены)</p>
+                          )}
                         </div>
                       );
                     })

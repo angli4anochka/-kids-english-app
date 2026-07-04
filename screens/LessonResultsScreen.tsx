@@ -4,12 +4,19 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from '@/utils/routing-adapter';
 import { useAuth } from '../contexts/AuthContext';
 
+interface AnswerDetail {
+  questionIndex?: number;
+  studentAnswer?: string;
+  correctAnswer?: string;
+  isCorrect: boolean;
+}
+
 interface ActivityResult {
   id: string;
   activity_id: string;
   activity_title: string;
   order_index: number;
-  results: { answers: Record<string, { value: string; correct: boolean }> };
+  results: AnswerDetail[];
   score: number;
   total: number;
 }
@@ -43,15 +50,8 @@ export default function LessonResultsScreen() {
     load();
   }, [sessionId, user?.id]);
 
-  const wrongActivities = results.filter(r => {
-    const answers = r.results?.answers || {};
-    return Object.values(answers).some(a => !a.correct && a.value);
-  });
-
-  const totalWrong = wrongActivities.reduce((sum, r) => {
-    const answers = r.results?.answers || {};
-    return sum + Object.values(answers).filter(a => !a.correct && a.value).length;
-  }, 0);
+  const wrongActivities = results.filter(r => (r.total - r.score) > 0);
+  const totalWrong = wrongActivities.reduce((sum, r) => sum + (r.total - r.score), 0);
 
   if (isLoading) {
     return (
@@ -81,35 +81,40 @@ export default function LessonResultsScreen() {
 
         {/* Mistakes by activity */}
         {wrongActivities.map(activity => {
-          const answers = activity.results?.answers || {};
-          const wrongs = Object.entries(answers).filter(([, a]) => !a.correct && a.value);
-          if (wrongs.length === 0) return null;
+          const wrongCount = activity.total - activity.score;
+          const details = (activity.results || []).filter(a => !a.isCorrect);
           return (
             <div key={activity.id} className="bg-white rounded-2xl shadow-lg p-6 mb-4">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <span className="bg-red-100 text-red-600 rounded-full w-7 h-7 flex items-center justify-center text-sm font-bold">
-                  {wrongs.length}
+                  {wrongCount}
                 </span>
                 {activity.activity_title || 'Упражнение'}
               </h2>
-              <div className="space-y-3">
-                {wrongs.map(([key, answer]) => {
-                  const qNum = key.replace('q', '');
-                  return (
-                    <div key={key} className="bg-red-50 rounded-xl p-3 border border-red-100">
+              {details.length > 0 ? (
+                <div className="space-y-3">
+                  {details.map((answer, idx) => (
+                    <div key={idx} className="bg-red-50 rounded-xl p-3 border border-red-100">
                       <div className="flex items-start gap-3">
-                        <span className="text-red-400 font-bold text-sm mt-0.5">#{qNum}</span>
+                        <span className="text-red-400 font-bold text-sm mt-0.5">#{(answer.questionIndex ?? idx) + 1}</span>
                         <div>
                           <div className="flex items-center gap-2 text-sm">
                             <span className="text-red-500">✗</span>
-                            <span className="text-red-700 font-medium">{answer.value || '—'}</span>
+                            <span className="text-red-700 font-medium">{answer.studentAnswer || '—'}</span>
+                            {answer.correctAnswer && (
+                              <span className="text-gray-400">(правильно: {answer.correctAnswer})</span>
+                            )}
                           </div>
                         </div>
                       </div>
                     </div>
-                  );
-                })}
-              </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Ошибок: {wrongCount} из {activity.total} (детали ответов не сохранены для этого упражнения)
+                </p>
+              )}
             </div>
           );
         })}
