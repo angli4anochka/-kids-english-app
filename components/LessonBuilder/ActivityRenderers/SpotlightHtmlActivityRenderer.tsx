@@ -4,6 +4,7 @@ import SpotlightS5Alphabet from './SpotlightS5Alphabet';
 import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
 import SpotlightS5UkUsa from './SpotlightS5UkUsa';
 import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
+import SpotlightS5InternationalWords from './SpotlightS5InternationalWords';
 import SpotlightEx1 from './SpotlightEx1';
 import SpotlightEx2 from './SpotlightEx2';
 import SpotlightEx3 from './SpotlightEx3';
@@ -72,6 +73,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
   'spotlight5-uk-usa': SpotlightS5UkUsa,
   'spotlight5-australia-nz': SpotlightS5AustraliaNz,
+  'spotlight5-international-words': SpotlightS5InternationalWords,
   'verb-be-ex1': SpotlightEx1,
   'verb-be-ex2': SpotlightEx2,
   'verb-be-ex3': SpotlightEx3,
