@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alphabet I–R Interactive</title>
+<style>
+  :root{
+    --yellow:#f4c31f;
+    --blue:#245fa8;
+    --dark:#243a73;
+    --sky:#8fd5ee;
+    --panel:#eefaff;
+    --cream:#fff7d7;
+    --orange:#f0ab3d;
+    --green:#1fa85b;
+    --red:#e24c4c;
+    --ink:#111;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:1000px;
+    height:580px;
+    background:#fff;
+    border:8px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.18);
+    padding:0 16px 12px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .header{
+    height:56px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .title{
+    width:320px;
+    height:56px;
+    margin:0 0 0 -16px;
+    background:var(--dark);
+    color:#fff;
+    border-radius:0 0 18px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:22px;
+    font-weight:900;
+    text-shadow:2px 2px 0 rgba(0,0,0,.18);
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-right:8px;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:4px 10px;
+    min-width:95px;
+    text-align:center;
+    font-weight:900;
+    font-size:13px;
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:16px;
+    line-height:1.1;
+  }
+
+  .btn{
+    border:none;
+    border-radius:14px;
+    background:var(--blue);
+    color:#fff;
+    padding:7px 12px;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 2px 0 rgba(0,0,0,.14);
+  }
+
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    box-shadow:none;
+  }
+
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:13px;
+    font-weight:900;
+    margin:6px 0 8px;
+  }
+
+  .badge{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    background:#4266a9;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .stage{height:492px;}
+  .stage.hidden{display:none;}
+
+  .main{
+    display:grid;
+    grid-template-columns:1.25fr .85fr;
+    gap:12px;
+    height:100%;
+  }
+
+  .panel{
+    background:#dff4fb;
+    border:3px solid var(--sky);
+    border-radius:28px;
+    box-shadow:inset 0 0 0 6px #f8fdff;
+    padding:8px;
+    overflow:hidden;
+  }
+
+  .panel.right{
+    background:#fff8df;
+    border-color:#eab14d;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+  }
+
+  .panel-title{
+    margin:0 0 6px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:16px;
+    font-weight:900;
+  }
+
+  .match-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 10px;
+  }
+
+  .match-card{
+    background:#fff;
+    border:2px solid #9fd8ec;
+    border-radius:18px;
+    padding:7px 8px;
+    min-height:68px;
+    display:grid;
+    grid-template-columns:52px 1fr;
+    gap:5px;
+    align-items:center;
+  }
+
+  .icon-box{
+    width:50px;
+    height:50px;
+    border-radius:16px;
+    background:#f8fdff;
+    border:2px solid #d8edf7;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    line-height:1;
+  }
+
+  .letter{
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:15px;
+    font-weight:900;
+    color:var(--blue);
+    margin-bottom:1px;
+  }
+
+  .emoji{font-size:22px;}
+
+  .drop{
+    min-height:36px;
+    border:3px dotted #b9b9b9;
+    border-radius:14px;
+    background:#fbfbfb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px;
+    font-size:13px;
+    font-weight:900;
+    text-align:center;
+    color:#777;
+    transition:.15s ease;
+  }
+
+  .drop::before{
+    content:"drop word";
+    font-size:11px;
+    opacity:.6;
+  }
+
+  .drop.filled::before{display:none}
+  .drop.over{border-color:var(--sky); background:#eefaff}
+  .drop.correct{border-style:solid; border-color:var(--green); background:#effff4; color:#158238}
+  .drop.wrong{border-style:solid; border-color:var(--red); background:#fff1f1}
+
+  .cards-wrap{
+    background:#fff;
+    border:2px solid #f0bd63;
+    border-radius:20px;
+    padding:8px;
+    height:388px;
+  }
+
+  .cards{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    height:100%;
+    overflow:hidden;
+  }
+
+  .card{
+    min-height:32px;
+    border:2px solid #9fd8ec;
+    border-radius:14px;
+    background:#fff;
+    color:#1d5d99;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:3px 6px;
+    font-size:13px;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    box-shadow:0 2px 0 rgba(0,0,0,.08);
+  }
+
+  .card.dragging{opacity:.45}
+  .card.selected{outline:3px solid var(--orange)}
+  .card.locked{background:#effff4; border-color:var(--green); color:#158238; box-shadow:none; cursor:default}
+
+  .stage2-panel{
+    height:100%;
+    background:#fff8df;
+    border:3px solid #eab14d;
+    border-radius:28px;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+    padding:14px;
+    overflow:hidden;
+  }
+
+  .stage2-note{
+    margin:0 0 10px;
+    text-align:center;
+    font-weight:900;
+    font-size:13px;
+    color:#75531a;
+  }
+
+  .complete-grid{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:10px;
+  }
+
+  .complete-card{
+    background:#fff;
+    border:2px solid #9fd8ec;
+    border-radius:18px;
+    min-height:155px;
+    padding:9px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 2px 0 rgba(0,0,0,.06);
+  }
+
+  .complete-pic{
+    width:54px;
+    height:54px;
+    border-radius:16px;
+    background:#f8fdff;
+    border:2px solid #d8edf7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:30px;
+  }
+
+  .pattern{
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:16px;
+    font-weight:900;
+    color:#777;
+    letter-spacing:2px;
+    min-height:24px;
+  }
+
+  .complete-input{
+    width:100%;
+    height:34px;
+    border:2px solid #d4d4d4;
+    border-radius:12px;
+    padding:4px 8px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:13px;
+    font-weight:900;
+    text-align:center;
+    outline:none;
+    background:#fff;
+  }
+
+  .complete-input.ok{border-color:var(--green); background:#effff4; color:#158238}
+  .complete-input.bad{border-color:var(--red); background:#fff1f1; color:#c22828}
+
+  .finish{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:26px;
+    padding:22px 28px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,.22);
+    display:none;
+    z-index:10;
+    min-width:300px;
+  }
+
+  .finish.show{display:block}
+
+  .finish h2{
+    margin:0 0 6px;
+    color:var(--green);
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:30px;
+  }
+
+  .finish p{
+    margin:0;
+    font-size:16px;
+    font-weight:900;
+  }
+
+  @media(max-width:900px){
+    html,body{overflow:auto;height:auto}
+    body{align-items:flex-start}
+    .slide{
+      width:100%;
+      min-height:100vh;
+      height:auto;
+      border-width:6px;
+      padding:0 10px 10px;
+    }
+    .header{height:auto; flex-direction:column; align-items:stretch; gap:6px}
+    .title{margin:0 -10px 0; width:auto; border-radius:0 0 16px 16px}
+    .stage{height:auto}
+    .main{grid-template-columns:1fr; height:auto}
+    .complete-grid{grid-template-columns:1fr 1fr}
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">Alphabet I–R</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 20</span></div>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <div class="task" id="taskLine"><span class="badge">6</span> Stage 1: Match the words to the letters and pictures.</div>
+
+  <section class="stage" id="stage1">
+    <div class="main">
+      <div class="panel">
+        <h2 class="panel-title">Match the words</h2>
+        <div class="match-grid">
+          <div class="match-card"><div class="icon-box"><div class="letter">Ii</div><div class="emoji">🍦</div></div><div class="drop" data-answer="ice cream"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Jj</div><div class="emoji">🏺</div></div><div class="drop" data-answer="jug"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Kk</div><div class="emoji">🪁</div></div><div class="drop" data-answer="kite"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Ll</div><div class="emoji">🍋</div></div><div class="drop" data-answer="lemon"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Mm</div><div class="emoji">🐭</div></div><div class="drop" data-answer="mouse"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Nn</div><div class="emoji">🪺</div></div><div class="drop" data-answer="nest"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Oo</div><div class="emoji">🍊</div></div><div class="drop" data-answer="orange"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Pp</div><div class="emoji">🖊️</div></div><div class="drop" data-answer="pen"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Qq</div><div class="emoji">👑</div></div><div class="drop" data-answer="queen"></div></div>
+          <div class="match-card"><div class="icon-box"><div class="letter">Rr</div><div class="emoji">🐰</div></div><div class="drop" data-answer="rabbit"></div></div>
+        </div>
+      </div>
+
+      <div class="panel right">
+        <h2 class="panel-title">Word cards</h2>
+        <div class="cards-wrap">
+          <div class="cards" id="cards"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage hidden" id="stage2">
+    <div class="stage2-panel">
+      <h2 class="panel-title">Complete the words</h2>
+      <p class="stage2-note">Stage 2: Type the full word under each picture.</p>
+      <div class="complete-grid">
+        <div class="complete-card"><div class="complete-pic">🍦</div><div class="pattern">i _ _</div><input class="complete-input" data-answer="ice cream" placeholder="ice cream"></div>
+        <div class="complete-card"><div class="complete-pic">🏺</div><div class="pattern">j _ _</div><input class="complete-input" data-answer="jug" placeholder="jug"></div>
+        <div class="complete-card"><div class="complete-pic">🪁</div><div class="pattern">k _ _ _</div><input class="complete-input" data-answer="kite" placeholder="kite"></div>
+        <div class="complete-card"><div class="complete-pic">🍋</div><div class="pattern">l _ _ _ _</div><input class="complete-input" data-answer="lemon" placeholder="lemon"></div>
+        <div class="complete-card"><div class="complete-pic">🐭</div><div class="pattern">m _ _ _ _</div><input class="complete-input" data-answer="mouse" placeholder="mouse"></div>
+        <div class="complete-card"><div class="complete-pic">🪺</div><div class="pattern">n _ _ _</div><input class="complete-input" data-answer="nest" placeholder="nest"></div>
+        <div class="complete-card"><div class="complete-pic">🍊</div><div class="pattern">o _ _ _ _ _</div><input class="complete-input" data-answer="orange" placeholder="orange"></div>
+        <div class="complete-card"><div class="complete-pic">🖊️</div><div class="pattern">p _ _</div><input class="complete-input" data-answer="pen" placeholder="pen"></div>
+        <div class="complete-card"><div class="complete-pic">👑</div><div class="pattern">q _ _ _ _</div><input class="complete-input" data-answer="queen" placeholder="queen"></div>
+        <div class="complete-card"><div class="complete-pic">🐰</div><div class="pattern">r _ _ _ _ _</div><input class="complete-input" data-answer="rabbit" placeholder="rabbit"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="finish" id="finish">
+    <h2>Great job!</h2>
+    <p>You finished the I–R slide.</p>
+  </div>
+</main>
+
+<script>
+const words = ["ice cream","jug","kite","lemon","mouse","nest","orange","pen","queen","rabbit"];
+let matchScore = 0;
+let completeScore = 0;
+let selectedCard = null;
+let dropWrongCounts = {};
+let reported = false;
+
+const scoreEl = document.getElementById("score");
+const cardsBox = document.getElementById("cards");
+const finish = document.getElementById("finish");
+const stage1 = document.getElementById("stage1");
+const stage2 = document.getElementById("stage2");
+const taskLine = document.getElementById("taskLine");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function normalize(str){
+  return String(str || "").toLowerCase().trim().replace(/\s+/g, " ");
+}
+
+function renderCards(){
+  cardsBox.innerHTML = "";
+  shuffle(words).forEach(word => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.textContent = word;
+    card.dataset.answer = word;
+    card.draggable = true;
+
+    card.addEventListener("click", () => {
+      if(card.classList.contains("locked")) return;
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+      selectedCard = card;
+      card.classList.add("selected");
+    });
+
+    card.addEventListener("dragstart", e => {
+      selectedCard = card;
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", word);
+    });
+
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+    cardsBox.appendChild(card);
+  });
+}
+
+function setupDrops(){
+  document.querySelectorAll(".drop").forEach(drop => {
+    drop.addEventListener("click", () => {
+      if(selectedCard) placeCard(selectedCard, drop);
+    });
+
+    drop.addEventListener("dragover", e => {
+      e.preventDefault();
+      if(!drop.classList.contains("correct")) drop.classList.add("over");
+    });
+
+    drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+
+    drop.addEventListener("drop", e => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const word = e.dataTransfer.getData("text/plain");
+      const card = Array.from(document.querySelectorAll(".card:not(.locked)")).find(c => c.dataset.answer === word);
+      placeCard(card, drop);
+    });
+  });
+}
+
+function placeCard(card, drop){
+  if(!card || card.classList.contains("locked") || drop.classList.contains("correct")) return;
+  if(card.dataset.answer === drop.dataset.answer){
+    card.classList.remove("selected","dragging");
+    card.classList.add("locked");
+    card.draggable = false;
+    drop.classList.add("filled","correct");
+    drop.textContent = "";
+    drop.appendChild(card);
+    selectedCard = null;
+    matchScore++;
+    updateScore();
+    if(matchScore === 10){
+      setTimeout(showStage2, 350);
+    }
+  } else {
+    dropWrongCounts[drop.dataset.answer] = (dropWrongCounts[drop.dataset.answer] || 0) + 1;
+    drop.classList.add("wrong");
+    setTimeout(() => drop.classList.remove("wrong"), 320);
+  }
+}
+
+function showStage2(){
+  stage1.classList.add("hidden");
+  stage2.classList.remove("hidden");
+  taskLine.innerHTML = '<span class="badge">7</span> Stage 2: Complete the words.';
+}
+
+function setupCompleteInputs(){
+  document.querySelectorAll(".complete-input").forEach(input => {
+    input.addEventListener("input", () => {
+      const wasOk = input.classList.contains("ok");
+      const ok = normalize(input.value) === input.dataset.answer;
+
+      if(ok && !wasOk) completeScore++;
+      if(!ok && wasOk) completeScore--;
+
+      input.classList.toggle("ok", ok);
+      input.classList.toggle("bad", !!input.value && !ok);
+      updateScore();
+    });
+  });
+}
+
+function reportResults(){
+  const matchResults = words.map((word, i) => {
+    const wrongCount = dropWrongCounts[word] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: i,
+      correctAnswer: word,
+      studentAnswer: isCorrect ? word : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `match: ${word}`,
+    };
+  });
+  const inputs = document.querySelectorAll(".complete-input");
+  const completeResults = Array.from(inputs).map((input, i) => {
+    const isCorrect = input.classList.contains("ok");
+    return {
+      questionIndex: matchResults.length + i,
+      correctAnswer: input.dataset.answer,
+      studentAnswer: input.value || "",
+      isCorrect,
+      sentence: `complete: ${input.dataset.answer}`,
+    };
+  });
+  const results = [...matchResults, ...completeResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "alphabet-ir-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function updateScore(){
+  const total = matchScore + completeScore;
+  scoreEl.textContent = `${total} / 20`;
+  if(total === 20){
+    setTimeout(() => finish.classList.add("show"), 250);
+    if(!reported){
+      reported = true;
+      reportResults();
+    }
+  }
+}
+
+function resetAll(){
+  matchScore = 0;
+  completeScore = 0;
+  selectedCard = null;
+  dropWrongCounts = {};
+  reported = false;
+  finish.classList.remove("show");
+  stage1.classList.remove("hidden");
+  stage2.classList.add("hidden");
+  taskLine.innerHTML = '<span class="badge">6</span> Stage 1: Match the words to the letters and pictures.';
+
+  document.querySelectorAll(".drop").forEach(drop => {
+    drop.className = "drop";
+    drop.textContent = "";
+  });
+
+  document.querySelectorAll(".complete-input").forEach(input => {
+    input.value = "";
+    input.classList.remove("ok","bad");
+  });
+
+  renderCards();
+  updateScore();
+}
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+renderCards();
+setupDrops();
+setupCompleteInputs();
+updateScore();
+</script>
+</body>
+</html>
