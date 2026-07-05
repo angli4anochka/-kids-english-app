@@ -177,6 +177,7 @@
     border-color:var(--orange);
     display:flex;
     flex-direction:column;
+    min-height:0;
   }
 
   .panel-title{
@@ -273,9 +274,9 @@
   .rule-card{
     background:#fff;
     border:2px solid #f0bd63;
-    border-radius:18px;
-    padding:8px 5px;
-    min-height:92px;
+    border-radius:16px;
+    padding:6px 5px;
+    min-height:74px;
     text-align:center;
     box-shadow:0 2px 0 rgba(0,0,0,.06);
   }
@@ -372,19 +373,25 @@
     display:grid;
     grid-template-columns:.75fr 1fr;
     gap:9px;
+    flex:1;
+    min-height:0;
+    overflow-y:auto;
   }
 
   .bank{
     min-height:112px;
+    height:100%;
     background:#fff;
     border:2px dashed #9bd9e8;
     border-radius:18px;
     padding:8px;
     display:flex;
     flex-wrap:wrap;
-    gap:7px;
+    gap:6px;
     align-content:flex-start;
     justify-content:center;
+    overflow-y:auto;
+    box-sizing:border-box;
   }
 
   .tile{
