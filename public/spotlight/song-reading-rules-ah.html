@@ -577,6 +577,7 @@
       </div>
 
       <div class="song-controls">
+        <button class="btn" id="playSongBtn">▶ Play song</button>
         <button class="btn orange" id="nextLineBtn">Next line</button>
         <button class="btn secondary" id="showSongBtn">Show song</button>
       </div>
@@ -644,6 +645,7 @@ const wordBank = document.getElementById("wordBank");
 const scoreEl = document.getElementById("score");
 const finish = document.getElementById("finish");
 const songAudio = document.getElementById("songAudio");
+const playSongBtn = document.getElementById("playSongBtn");
 
 function shuffle(arr){
   const copy = [...arr];
@@ -879,6 +881,23 @@ document.getElementById("closeHint").addEventListener("click", () => document.ge
 document.getElementById("hintModal").addEventListener("click", e => {
   if(e.target.id === "hintModal") document.getElementById("hintModal").classList.remove("show");
 });
+
+function updatePlaySongBtn(){
+  playSongBtn.textContent = songAudio.paused ? "▶ Play song" : "⏸ Pause song";
+}
+
+playSongBtn.addEventListener("click", () => {
+  if(songAudio.paused){
+    songAudio.play().catch(() => {});
+  } else {
+    songAudio.pause();
+  }
+});
+
+songAudio.addEventListener("play", updatePlaySongBtn);
+songAudio.addEventListener("pause", updatePlaySongBtn);
+songAudio.addEventListener("ended", updatePlaySongBtn);
+updatePlaySongBtn();
 
 resetRules();
 </script>

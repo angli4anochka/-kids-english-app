@@ -10,7 +10,7 @@ interface Props {
 }
 
 const W = 1220;
-const H = 830;
+const H = 820;
 
 export default function SpotlightS5SongReadingRules({ isTeacher, lessonId, activityId, sessionId }: Props) {
   const { user } = useAuth();
