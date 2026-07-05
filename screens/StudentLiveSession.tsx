@@ -19,6 +19,7 @@ interface SessionData {
   current_activity_index: number;
   is_interactive: boolean;
   created_at: string;
+  course_name?: string;
 }
 
 export default function StudentLiveSession({ sessionId }: StudentLiveSessionProps) {
@@ -78,8 +79,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     // Listen for session end — show overlay, then redirect by course
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
-      const storedUser = JSON.parse(localStorage.getItem('authUser') || '{}');
-      const cn = (storedUser.courseName || '').toLowerCase();
+      const cn = (session?.course_name || '').toLowerCase();
       const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       const activeSessionId = data.sessionId || sessionId;
       const url = isSpotlight

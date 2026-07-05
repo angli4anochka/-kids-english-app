@@ -114,6 +114,7 @@ export default function SpotlightEx2({ isTeacher, lessonId, activityId, sessionI
           studentAnswer: placed[i] || '',
           correctAnswer: s.answer,
           isCorrect: normalize(placed[i] || '') === normalize(s.answer),
+          sentence: `${s.answer} ${s.after}`,
         })),
         score: SENTENCES.filter((s, i) => normalize(placed[i] || '') === normalize(s.answer)).length,
         total: SENTENCES.length,

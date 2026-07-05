@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The English Alphabet I — Interactive</title>
+<style>
+  :root{
+    --yellow:#f6c51f;
+    --blue:#245fa8;
+    --dark:#24335d;
+    --sky:#65bfd7;
+    --green:#22a853;
+    --red:#e74848;
+    --orange:#efbd63;
+    --cream:#fff7d2;
+    --paper:#fff;
+    --ink:#111;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    overflow:hidden;
+    color:var(--ink);
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:min(1220px, 100vw);
+    height:min(830px, 100vh);
+    background:#fff;
+    border:12px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.22);
+    position:relative;
+    overflow:hidden;
+    padding:0 28px 24px;
+  }
+
+  .header{
+    height:78px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+
+  .title{
+    width:540px;
+    height:78px;
+    margin:0 0 0 -28px;
+    background:var(--dark);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:34px;
+    font-weight:900;
+    text-shadow:2px 3px 0 rgba(0,0,0,.25);
+    border-radius:0 0 22px 0;
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:9px 15px;
+    font-weight:900;
+    min-width:112px;
+    text-align:center;
+    box-shadow:0 2px 0 rgba(0,0,0,.07);
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:25px;
+    line-height:1;
+    margin-top:2px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:15px;
+    background:var(--blue);
+    color:#fff;
+    padding:11px 17px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.18);
+  }
+
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    box-shadow:none;
+  }
+
+  .btn.orange{background:#f0a63a;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18);}
+
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:17px;
+    font-weight:900;
+    margin-bottom:10px;
+  }
+
+  .badge{
+    width:29px;
+    height:29px;
+    border-radius:4px;
+    background:#4266a9;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .instruction{
+    background:#fffef8;
+    border:2px dashed rgba(240,182,76,.75);
+    border-radius:16px;
+    padding:9px 12px;
+    font-size:15px;
+    line-height:1.28;
+    margin-bottom:12px;
+  }
+
+  .main{
+    display:grid;
+    grid-template-columns:1.35fr .9fr;
+    gap:22px;
+    height:610px;
+  }
+
+  .letters-panel{
+    background:#eefaff;
+    border:3px solid #86cde0;
+    border-radius:28px;
+    padding:16px;
+    box-shadow:inset 0 0 0 7px #f8fdff;
+    overflow:hidden;
+  }
+
+  .panel-title{
+    margin:0 0 12px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:30px;
+    font-weight:900;
+    text-shadow:1px 2px 0 #fff;
+  }
+
+  .letter-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px 16px;
+  }
+
+  .letter-card{
+    min-height:112px;
+    background:#fff;
+    border:2px solid #9bd9e8;
+    border-radius:22px;
+    padding:10px;
+    display:grid;
+    grid-template-columns:90px 1fr;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 2px 0 rgba(0,0,0,.06);
+  }
+
+  .letter-box{
+    height:86px;
+    border-radius:20px;
+    background:#f7fcff;
+    border:2px solid #9bd9e8;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:#5bbdd6;
+    text-shadow:1px 1px 0 #fff, 2px 2px 0 rgba(0,0,0,.12);
+    font-weight:900;
+  }
+
+  .big-letter{
+    font-size:34px;
+    line-height:1;
+  }
+
+  .small-letter{
+    font-size:27px;
+    line-height:1;
+  }
+
+  .picture{
+    font-size:42px;
+    text-align:center;
+    line-height:1;
+    margin-bottom:4px;
+  }
+
+  .drop{
+    min-height:39px;
+    width:100%;
+    border:3px dotted #bbbbbb;
+    border-radius:14px;
+    background:#fbfbfb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:4px;
+    transition:.16s ease;
+    text-align:center;
+    font-weight:900;
+    font-size:15px;
+    color:#777;
+  }
+
+  .drop::before{
+    content:"drop word";
+    opacity:.62;
+    font-size:12px;
+    font-weight:700;
+  }
+
+  .drop.filled::before{display:none;}
+
+  .drop.over{
+    background:#eefaff;
+    border-color:var(--sky);
+    transform:scale(1.02);
+  }
+
+  .drop.correct{
+    background:#effff4;
+    border-style:solid;
+    border-color:var(--green);
+    color:#158238;
+  }
+
+  .drop.wrong{
+    background:#fff1f1;
+    border-style:solid;
+    border-color:var(--red);
+    animation:shake .26s ease;
+  }
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    30%{transform:translateX(-5px);}
+    70%{transform:translateX(5px);}
+  }
+
+  .cards-panel{
+    background:#fff;
+    border:3px solid var(--orange);
+    border-radius:28px;
+    padding:16px;
+    box-shadow:inset 0 0 0 7px #fff9df;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .cards-title{
+    margin:0;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:29px;
+    font-weight:900;
+  }
+
+  .cards{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    flex:1;
+  }
+
+  .card{
+    min-height:54px;
+    border:3px solid #9bd9e8;
+    border-radius:18px;
+    background:#fff;
+    color:#1c558b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px 12px;
+    font-size:18px;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    touch-action:none;
+    box-shadow:0 3px 0 rgba(0,0,0,.12);
+    transition:.14s ease;
+  }
+
+  .card:active{cursor:grabbing;}
+  .card.dragging{opacity:.45; transform:scale(.96);}
+  .card.selected{
+    outline:4px solid #f0a63a;
+    transform:scale(1.03);
+  }
+
+  .card.locked{
+    cursor:default;
+    background:#effff4;
+    border-color:var(--green);
+    color:#158238;
+    box-shadow:none;
+    min-height:32px;
+    font-size:14px;
+    padding:4px 8px;
+  }
+
+  .order-reveal{
+    position:absolute;
+    left:28px;
+    right:28px;
+    bottom:22px;
+    height:0;
+    opacity:0;
+    pointer-events:none;
+    overflow:hidden;
+    transition:.4s ease;
+    background:linear-gradient(135deg,#fff7d2 0%, #eefaff 100%);
+    border:4px solid var(--orange);
+    border-radius:30px;
+    padding:0 24px;
+    z-index:6;
+    box-shadow:0 12px 30px rgba(0,0,0,.20);
+  }
+
+  .order-reveal.show{
+    height:270px;
+    opacity:1;
+    pointer-events:auto;
+    padding:18px 24px;
+  }
+
+  .order-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+  .order-head h2{
+    margin:0;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:30px;
+    line-height:1;
+  }
+
+  .tiny-score{
+    font-weight:900;
+    color:#75531a;
+    background:#fff7d2;
+    border:2px solid var(--orange);
+    border-radius:14px;
+    padding:7px 12px;
+  }
+
+  .order-layout{
+    display:grid;
+    grid-template-columns:1fr 1.1fr;
+    gap:18px;
+  }
+
+  .order-bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    align-content:flex-start;
+  }
+
+  .order-card{
+    border:2px solid var(--orange);
+    border-radius:16px;
+    background:#fff;
+    padding:9px 12px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 2px 0 rgba(0,0,0,.08);
+    user-select:none;
+  }
+
+  .order-card.used{
+    opacity:.45;
+    cursor:not-allowed;
+  }
+
+  .order-list{
+    min-height:178px;
+    background:#fff;
+    border:3px dashed #9cccdc;
+    border-radius:22px;
+    padding:12px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px 12px;
+    align-content:start;
+  }
+
+  .order-slot{
+    border-bottom:2px dotted #aaa;
+    padding:5px 8px;
+    font-weight:900;
+    min-height:31px;
+  }
+
+  .order-slot.ok{
+    color:#158238;
+    border-color:var(--green);
+    background:#effff4;
+    border-radius:10px;
+  }
+
+  .order-slot.bad{
+    color:#c22828;
+    border-color:var(--red);
+    background:#fff1f1;
+    border-radius:10px;
+  }
+
+  .modal-bg{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.25);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+    padding:30px;
+  }
+
+  .modal-bg.show{display:flex;}
+
+  .modal{
+    width:min(720px,100%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:28px;
+    padding:26px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    position:relative;
+  }
+
+  .modal h2{
+    margin:0 0 16px;
+    text-align:center;
+    color:var(--blue);
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:30px;
+  }
+
+  .hint-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    font-size:17px;
+    font-weight:800;
+  }
+
+  .hint-item{
+    background:#eefaff;
+    border:2px solid #9bd9e8;
+    border-radius:16px;
+    padding:10px;
+  }
+
+  .close{
+    position:absolute;
+    right:15px;
+    top:14px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid var(--blue);
+    background:#fff;
+    color:var(--blue);
+    font-weight:900;
+    cursor:pointer;
+    font-size:19px;
+  }
+
+  @media(max-width:980px){
+    html,body{overflow:auto; height:auto;}
+    body{align-items:flex-start;}
+    .slide{height:auto; min-height:100vh; border-width:8px; padding:0 12px 320px;}
+    .header{height:auto; flex-direction:column; align-items:stretch; gap:8px;}
+    .title{margin:0 -12px 6px; width:auto; border-radius:0 0 18px 18px;}
+    .main{grid-template-columns:1fr; height:auto;}
+    .letter-grid{grid-template-columns:1fr;}
+    .order-reveal{position:fixed; left:10px; right:10px; bottom:10px;}
+    .order-reveal.show{height:auto; max-height:440px; overflow:auto; padding:18px;}
+    .order-layout{grid-template-columns:1fr;}
+    .hint-list{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">The English alphabet (I)</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 8</span></div>
+      <button class="btn orange" id="hintBtn">Hint</button>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <div class="task"><span class="badge">1</span> Match the words to the letters and pictures.</div>
+
+  <section class="main">
+    <div class="letters-panel">
+      <h2 class="panel-title">Aa — Hh</h2>
+      <div class="letter-grid" id="letterGrid"></div>
+    </div>
+
+    <aside class="cards-panel">
+      <h2 class="cards-title">Words</h2>
+      <div class="cards" id="cards"></div>
+    </aside>
+  </section>
+
+  <section class="order-reveal" id="orderReveal">
+    <div class="order-head">
+      <h2>Put the words in alphabetical order</h2>
+      <div class="tiny-score" id="orderScore">0 / 8</div>
+    </div>
+    <div class="order-layout">
+      <div class="order-bank" id="orderBank"></div>
+      <div class="order-list" id="orderList"></div>
+    </div>
+  </section>
+
+  <div class="modal-bg" id="hintModal">
+    <div class="modal">
+      <button class="close" id="closeHint">×</button>
+      <h2>Helpful pairs</h2>
+      <div class="hint-list">
+        <div class="hint-item">Aa — apple</div>
+        <div class="hint-item">Bb — ball</div>
+        <div class="hint-item">Cc — cat</div>
+        <div class="hint-item">Dd — doll</div>
+        <div class="hint-item">Ee — egg</div>
+        <div class="hint-item">Ff — fox</div>
+        <div class="hint-item">Gg — girl</div>
+        <div class="hint-item">Hh — hat</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const words = [
+  {letter:"Aa", word:"apple", emoji:"🍎"},
+  {letter:"Bb", word:"ball", emoji:"⚽"},
+  {letter:"Cc", word:"cat", emoji:"🐱"},
+  {letter:"Dd", word:"doll", emoji:"🪆"},
+  {letter:"Ee", word:"egg", emoji:"🥚"},
+  {letter:"Ff", word:"fox", emoji:"🦊"},
+  {letter:"Gg", word:"girl", emoji:"👧"},
+  {letter:"Hh", word:"hat", emoji:"👒"}
+];
+
+const orderWords = ["hand","book","garlic","ant","cap","envelope","flag","dog"];
+const orderAnswer = ["ant","book","cap","dog","envelope","flag","garlic","hand"];
+
+let score = 0;
+let selectedCard = null;
+let chosenOrder = [];
+let dropWrongCounts = {};
+let reported = false;
+
+const letterGrid = document.getElementById("letterGrid");
+const cardsBox = document.getElementById("cards");
+const scoreEl = document.getElementById("score");
+const orderReveal = document.getElementById("orderReveal");
+const orderBank = document.getElementById("orderBank");
+const orderList = document.getElementById("orderList");
+const orderScoreEl = document.getElementById("orderScore");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function renderLetters(){
+  letterGrid.innerHTML = "";
+  words.forEach(item => {
+    const box = document.createElement("div");
+    box.className = "letter-card";
+    box.innerHTML = `
+      <div class="letter-box">
+        <div class="big-letter">${item.letter[0]}</div>
+        <div class="small-letter">${item.letter[1]}</div>
+      </div>
+      <div>
+        <div class="picture">${item.emoji}</div>
+        <div class="drop" data-answer="${item.word}"></div>
+      </div>
+    `;
+    letterGrid.appendChild(box);
+  });
+}
+
+function renderCards(){
+  cardsBox.innerHTML = "";
+  shuffle(words).forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.textContent = item.word;
+    card.dataset.answer = item.word;
+    card.draggable = true;
+
+    card.addEventListener("click", () => {
+      if(card.classList.contains("locked")) return;
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+      selectedCard = card;
+      card.classList.add("selected");
+    });
+
+    card.addEventListener("dragstart", e => {
+      selectedCard = card;
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", item.word);
+    });
+
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+    cardsBox.appendChild(card);
+  });
+}
+
+function setupDrops(){
+  document.querySelectorAll(".drop").forEach(drop => {
+    drop.addEventListener("click", () => {
+      if(selectedCard) placeCard(selectedCard, drop);
+    });
+
+    drop.addEventListener("dragover", e => {
+      e.preventDefault();
+      if(!drop.classList.contains("correct")) drop.classList.add("over");
+    });
+
+    drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+
+    drop.addEventListener("drop", e => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const word = e.dataTransfer.getData("text/plain");
+      const card = Array.from(document.querySelectorAll(".card:not(.locked)")).find(c => c.dataset.answer === word);
+      placeCard(card, drop);
+    });
+  });
+}
+
+function placeCard(card, drop){
+  if(!card || card.classList.contains("locked") || drop.classList.contains("correct")) return;
+  const ok = card.dataset.answer === drop.dataset.answer;
+
+  if(ok){
+    card.classList.remove("selected", "dragging");
+    card.classList.add("locked");
+    card.draggable = false;
+    drop.classList.add("correct", "filled");
+    drop.textContent = "";
+    drop.appendChild(card);
+    selectedCard = null;
+    score++;
+    updateScore();
+  } else {
+    dropWrongCounts[card.dataset.answer] = (dropWrongCounts[card.dataset.answer] || 0) + 1;
+    drop.classList.add("wrong");
+    setTimeout(() => drop.classList.remove("wrong"), 360);
+  }
+}
+
+function updateScore(){
+  scoreEl.textContent = `${score} / 8`;
+  if(score === 8){
+    setTimeout(() => orderReveal.classList.add("show"), 320);
+  }
+}
+
+function reportResults(){
+  const letterResults = words.map((item, i) => {
+    const wrongCount = dropWrongCounts[item.word] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: i,
+      correctAnswer: item.word,
+      studentAnswer: isCorrect ? item.word : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `${item.letter} — ${item.word}`,
+    };
+  });
+  const orderResults = orderAnswer.map((word, i) => {
+    const isCorrect = chosenOrder[i] === word;
+    return {
+      questionIndex: letterResults.length + i,
+      correctAnswer: word,
+      studentAnswer: chosenOrder[i] || "(empty)",
+      isCorrect,
+      sentence: `position ${i + 1}: ${word}`,
+    };
+  });
+  const results = [...letterResults, ...orderResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "alphabet-1-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function renderOrder(){
+  orderBank.innerHTML = "";
+  shuffle(orderWords).forEach(word => {
+    const btn = document.createElement("button");
+    btn.className = "order-card";
+    btn.textContent = word;
+    btn.dataset.word = word;
+
+    btn.addEventListener("click", () => {
+      if(btn.classList.contains("used")) return;
+      chosenOrder.push(word);
+      btn.classList.add("used");
+      renderOrderList();
+    });
+
+    orderBank.appendChild(btn);
+  });
+  renderOrderList();
+}
+
+function renderOrderList(){
+  orderList.innerHTML = "";
+  for(let i = 0; i < 8; i++){
+    const div = document.createElement("div");
+    div.className = "order-slot";
+    const word = chosenOrder[i] || "";
+    div.textContent = `${i + 1}. ${word}`;
+    if(chosenOrder.length === 8){
+      div.classList.add(chosenOrder[i] === orderAnswer[i] ? "ok" : "bad");
+    }
+    orderList.appendChild(div);
+  }
+
+  const okCount = chosenOrder.filter((word, i) => word === orderAnswer[i]).length;
+  orderScoreEl.textContent = `${okCount} / 8`;
+
+  if(chosenOrder.length === 8 && !reported){
+    reported = true;
+    reportResults();
+  }
+}
+
+function resetAll(){
+  score = 0;
+  selectedCard = null;
+  chosenOrder = [];
+  dropWrongCounts = {};
+  reported = false;
+  orderReveal.classList.remove("show");
+  scoreEl.textContent = "0 / 8";
+  orderScoreEl.textContent = "0 / 8";
+  renderLetters();
+  renderCards();
+  setupDrops();
+  renderOrder();
+}
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+document.getElementById("hintBtn").addEventListener("click", () => document.getElementById("hintModal").classList.add("show"));
+document.getElementById("closeHint").addEventListener("click", () => document.getElementById("hintModal").classList.remove("show"));
+document.getElementById("hintModal").addEventListener("click", e => {
+  if(e.target.id === "hintModal") document.getElementById("hintModal").classList.remove("show");
+});
+
+resetAll();
+</script>
+</body>
+</html>

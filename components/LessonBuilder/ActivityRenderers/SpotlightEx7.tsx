@@ -104,6 +104,7 @@ export default function SpotlightEx7({ isTeacher, lessonId, activityId, sessionI
           studentAnswer: answers[i],
           correctAnswer: t.answer,
           isCorrect: true,
+          sentence: `${t.subject} ${t.answer}`,
         })),
         score: 4,
         total: 4,

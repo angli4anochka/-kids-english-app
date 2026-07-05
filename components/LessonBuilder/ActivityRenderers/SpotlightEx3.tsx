@@ -114,6 +114,7 @@ export default function SpotlightEx3({ isTeacher, lessonId, activityId, sessionI
               studentAnswer: placed[i] || '',
               correctAnswer: t.answer,
               isCorrect: placed[i] === t.answer,
+              sentence: t.answer,
             })),
             score: TASKS.filter((t, i) => placed[i] === t.answer).length,
             total: TASKS.length,

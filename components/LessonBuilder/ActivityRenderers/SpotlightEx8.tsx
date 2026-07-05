@@ -147,6 +147,7 @@ export default function SpotlightEx8({ isTeacher, lessonId, activityId, sessionI
               studentAnswer: placed[i] || '',
               correctAnswer: t.answer,
               isCorrect: placed[i] === t.answer,
+              sentence: `${t.before} ${t.answer} ${t.after}`.replace(/\s+/g, ' ').trim(),
             })),
             score: sc,
             total: TASKS.length,

@@ -132,6 +132,7 @@ export default function SpotlightEx4({ isTeacher, lessonId, activityId, sessionI
               studentAnswer: placed || '',
               correctAnswer: t.answer,
               isCorrect: placed === t.answer,
+              sentence: `${t.answer} ${t.text}`,
             })),
             score: allTasks.filter(({ t, placed }) => placed === t.answer).length,
             total: allTasks.length,

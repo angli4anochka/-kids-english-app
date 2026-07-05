@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Dialogue — What's your name?</title>
+<style>
+  :root{
+    --yellow:#f6c51f;
+    --blue:#245fa8;
+    --dark:#24335d;
+    --sky:#65bfd7;
+    --green:#22a853;
+    --red:#e74848;
+    --orange:#efbd63;
+    --cream:#fff7d2;
+    --ink:#111;
+  }
+
+  *{box-sizing:border-box;}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    overflow:hidden;
+    color:var(--ink);
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:1220px;
+    height:820px;
+    background:#fff;
+    border:12px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.22);
+    position:relative;
+    overflow:hidden;
+    padding:0 28px 22px;
+    transform:scale(.85);
+    transform-origin:center center;
+    flex:0 0 auto;
+  }
+
+  .header{
+    height:76px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+
+  .title{
+    width:520px;
+    height:76px;
+    margin:0 0 0 -28px;
+    background:var(--dark);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:34px;
+    font-weight:900;
+    text-shadow:2px 3px 0 rgba(0,0,0,.25);
+    border-radius:0 0 22px 0;
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:7px 13px;
+    font-weight:900;
+    min-width:108px;
+    text-align:center;
+    box-shadow:0 2px 0 rgba(0,0,0,.07);
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:22px;
+    line-height:1;
+    margin-top:2px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:15px;
+    background:var(--blue);
+    color:#fff;
+    padding:9px 15px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.18);
+  }
+
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    box-shadow:none;
+  }
+
+  .btn.orange{background:#f0a63a;}
+  .btn.green{background:var(--green);}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.18);}
+
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:16px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+
+  .badge{
+    width:29px;
+    height:29px;
+    border-radius:4px;
+    background:#4266a9;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .instruction{
+    background:#fffef8;
+    border:2px dashed rgba(240,182,76,.75);
+    border-radius:16px;
+    padding:8px 11px;
+    font-size:14px;
+    line-height:1.28;
+    margin-bottom:10px;
+  }
+
+  .main{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    height:620px;
+  }
+
+  .panel{
+    background:#eefaff;
+    border:3px solid #86cde0;
+    border-radius:28px;
+    padding:14px;
+    box-shadow:inset 0 0 0 7px #f8fdff;
+    overflow:hidden;
+  }
+
+  .right-panel{
+    background:#fff9df;
+    border-color:var(--orange);
+  }
+
+  .panel-title{
+    margin:0 0 10px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:28px;
+    font-weight:900;
+    text-shadow:1px 2px 0 #fff;
+  }
+
+  .scene{
+    height:168px;
+    background:#fff;
+    border:2px solid #9bd9e8;
+    border-radius:24px;
+    margin-bottom:12px;
+    padding:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+
+  .scene img{
+    max-width:100%;
+    max-height:100%;
+    object-fit:contain;
+    display:block;
+  }
+
+  .dialogue-box{
+    background:#fff;
+    border:3px solid #9bd9e8;
+    border-radius:24px;
+    padding:18px;
+    height:390px;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .bubble{
+    max-width:86%;
+    border:3px solid #d7e9f2;
+    background:#f8fdff;
+    border-radius:24px;
+    padding:12px 16px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:26px;
+    line-height:1.12;
+    font-weight:900;
+    opacity:0;
+    transform:translateY(10px);
+    transition:.25s ease;
+  }
+
+  .bubble.show{
+    opacity:1;
+    transform:translateY(0);
+  }
+
+  .bubble.left{
+    align-self:flex-start;
+  }
+
+  .bubble.right{
+    align-self:flex-end;
+    background:#fff7d2;
+    border-color:#f0bd63;
+  }
+
+  .name{
+    color:#f08a00;
+  }
+
+  .dialogue-controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:10px;
+  }
+
+  .build-area{
+    background:#fff;
+    border:3px solid #f0bd63;
+    border-radius:24px;
+    padding:10px;
+    min-height:180px;
+    margin-bottom:10px;
+  }
+
+  .sentence-row{
+    display:grid;
+    grid-template-columns:60px 1fr;
+    gap:10px;
+    align-items:center;
+    margin-bottom:8px;
+  }
+
+  .speaker{
+    width:52px;
+    height:52px;
+    border-radius:20px;
+    background:#f7fcff;
+    border:2px solid #9bd9e8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:36px;
+  }
+
+  .drop{
+    min-height:48px;
+    border:3px dotted #bbb;
+    border-radius:18px;
+    background:#fbfbfb;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+    gap:6px;
+    padding:7px;
+    font-size:17px;
+    font-weight:900;
+  }
+
+  .drop::before{
+    content:"build the sentence";
+    opacity:.55;
+    font-size:13px;
+  }
+
+  .drop.filled::before{display:none;}
+
+  .drop.over{
+    background:#eefaff;
+    border-color:var(--sky);
+  }
+
+  .drop.correct{
+    background:#effff4;
+    border-style:solid;
+    border-color:var(--green);
+  }
+
+  .drop.wrong{
+    background:#fff1f1;
+    border-style:solid;
+    border-color:var(--red);
+    animation:shake .26s ease;
+  }
+
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    30%{transform:translateX(-5px);}
+    70%{transform:translateX(5px);}
+  }
+
+  .word-bank{
+    min-height:130px;
+    background:#fff;
+    border:2px dashed #9bd9e8;
+    border-radius:22px;
+    padding:12px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    align-content:flex-start;
+    justify-content:center;
+  }
+
+  .tile{
+    border:2px solid #9bd9e8;
+    background:#fff;
+    color:#1c558b;
+    border-radius:15px;
+    padding:8px 12px;
+    font-size:18px;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    box-shadow:0 2px 0 rgba(0,0,0,.1);
+    transition:.14s ease;
+  }
+
+  .tile.selected{
+    outline:4px solid #f0a63a;
+    transform:scale(1.04);
+  }
+
+  .tile.dragging{
+    opacity:.45;
+    transform:scale(.96);
+  }
+
+  .tile.locked{
+    cursor:default;
+    background:#effff4;
+    border-color:var(--green);
+    color:#158238;
+    box-shadow:none;
+  }
+
+  .practice{
+    background:#fff;
+    border:3px solid #f0bd63;
+    border-radius:24px;
+    padding:14px;
+    margin-top:12px;
+  }
+
+  .practice-title{
+    margin:0 0 10px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:24px;
+    color:var(--blue);
+    font-weight:900;
+  }
+
+  .input-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+
+  .input-row input{
+    width:100%;
+    height:46px;
+    border:3px solid #d8d8d8;
+    border-radius:16px;
+    padding:4px 12px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:22px;
+    font-weight:900;
+    outline:none;
+    text-align:center;
+  }
+
+  .input-row input.ok{
+    border-color:var(--green);
+    background:#effff4;
+    color:#158238;
+  }
+
+  .finish{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:30px;
+    padding:26px 34px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,.22);
+    z-index:10;
+    display:none;
+    min-width:360px;
+  }
+
+  .finish.show{display:block;}
+
+  .finish h2{
+    margin:0 0 8px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--green);
+    font-size:34px;
+  }
+
+  .finish p{
+    margin:0;
+    font-size:20px;
+    font-weight:900;
+  }
+
+  @media(max-width:980px){
+    html,body{overflow:auto;height:auto;}
+    body{align-items:flex-start;}
+    .slide{width:100%;height:auto;min-height:100vh;transform:none;border-width:8px;padding:0 12px 22px;}
+    .header{height:auto;flex-direction:column;align-items:stretch;gap:8px;}
+    .title{margin:0 -12px 6px;width:auto;border-radius:0 0 18px 18px;}
+    .main{grid-template-columns:1fr;height:auto;}
+    .dialogue-box{height:auto;min-height:350px;}
+    .input-row{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">What’s your name?</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 5</span></div>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <div class="task"><span class="badge">5</span> Listen and read. Then build the dialogue.</div>
+
+  <section class="main">
+    <div class="panel">
+      <h2 class="panel-title">Listen and read</h2>
+      <div class="dialogue-box">
+        <div class="bubble left">Hello!</div>
+        <div class="bubble right">Hi!</div>
+        <div class="bubble left">What’s your name?</div>
+        <div class="bubble right">My name’s <span class="name">Gina</span>.</div>
+        <div class="bubble left">Nice to meet you, Gina.</div>
+        <div class="bubble right">Nice to meet you too!</div>
+      </div>
+
+      <div class="dialogue-controls">
+        <button class="btn orange" id="nextBtn">Next line</button>
+        <button class="btn secondary" id="showBtn">Show dialogue</button>
+      </div>
+    </div>
+
+    <div class="panel right-panel">
+      <h2 class="panel-title">Build the dialogue</h2>
+
+      <div class="build-area">
+        <div class="sentence-row">
+          <div class="speaker">👧</div>
+          <div class="drop" data-answer="What’s your name?"></div>
+        </div>
+        <div class="sentence-row">
+          <div class="speaker">🧒</div>
+          <div class="drop" data-answer="My name’s Gina."></div>
+        </div>
+        <div class="sentence-row">
+          <div class="speaker">👧</div>
+          <div class="drop" data-answer="Nice to meet you."></div>
+        </div>
+      </div>
+
+      <div class="word-bank" id="wordBank"></div>
+
+      <div class="practice">
+        <h3 class="practice-title">Now write about you</h3>
+        <div class="input-row">
+          <input id="nameInput" placeholder="My name’s ...">
+          <input id="meetInput" placeholder="Nice to meet you.">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="finish" id="finish">
+    <h2>Great dialogue!</h2>
+    <p>You can ask and answer names.</p>
+  </div>
+</main>
+
+<script>
+const phrases = [
+  "What’s your name?",
+  "My name’s Gina.",
+  "Nice to meet you."
+];
+
+let selectedTile = null;
+let score = 0;
+let lineIndex = 0;
+let nameDone = false;
+let meetDone = false;
+let dropWrongCounts = {};
+let reported = false;
+
+const scoreEl = document.getElementById("score");
+const finish = document.getElementById("finish");
+const wordBank = document.getElementById("wordBank");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function renderTiles(){
+  wordBank.innerHTML = "";
+  shuffle(phrases).forEach(text => {
+    const tile = document.createElement("div");
+    tile.className = "tile";
+    tile.textContent = text;
+    tile.dataset.answer = text;
+    tile.draggable = true;
+
+    tile.addEventListener("click", () => {
+      if(tile.classList.contains("locked")) return;
+      document.querySelectorAll(".tile").forEach(t => t.classList.remove("selected"));
+      selectedTile = tile;
+      tile.classList.add("selected");
+    });
+
+    tile.addEventListener("dragstart", e => {
+      selectedTile = tile;
+      tile.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", text);
+    });
+
+    tile.addEventListener("dragend", () => tile.classList.remove("dragging"));
+
+    wordBank.appendChild(tile);
+  });
+}
+
+function setupDrops(){
+  document.querySelectorAll(".drop").forEach(drop => {
+    drop.addEventListener("click", () => {
+      if(selectedTile) placeTile(selectedTile, drop);
+    });
+
+    drop.addEventListener("dragover", e => {
+      e.preventDefault();
+      if(!drop.classList.contains("correct")) drop.classList.add("over");
+    });
+
+    drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+
+    drop.addEventListener("drop", e => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const text = e.dataTransfer.getData("text/plain");
+      const tile = Array.from(document.querySelectorAll(".tile:not(.locked)")).find(t => t.textContent === text);
+      placeTile(tile, drop);
+    });
+  });
+}
+
+function placeTile(tile, drop){
+  if(!tile || tile.classList.contains("locked") || drop.classList.contains("correct")) return;
+
+  if(tile.dataset.answer === drop.dataset.answer){
+    tile.classList.remove("selected","dragging");
+    tile.classList.add("locked");
+    tile.draggable = false;
+    drop.classList.add("filled","correct");
+    drop.textContent = "";
+    drop.appendChild(tile);
+    selectedTile = null;
+    score++;
+    updateScore();
+  } else {
+    dropWrongCounts[drop.dataset.answer] = (dropWrongCounts[drop.dataset.answer] || 0) + 1;
+    drop.classList.add("wrong");
+    setTimeout(() => drop.classList.remove("wrong"), 360);
+  }
+}
+
+function normalize(text){
+  return String(text || "").toLowerCase().trim().replace(/[’']/g,"'").replace(/\s+/g," ");
+}
+
+function checkInputs(){
+  const nameInput = document.getElementById("nameInput");
+  const meetInput = document.getElementById("meetInput");
+
+  const nameOk = normalize(nameInput.value).startsWith("my name") && nameInput.value.trim().length > 10;
+  const meetOk = normalize(meetInput.value) === "nice to meet you.";
+
+  if(nameOk && !nameDone){
+    nameDone = true;
+    nameInput.classList.add("ok");
+    score++;
+  }
+
+  if(meetOk && !meetDone){
+    meetDone = true;
+    meetInput.classList.add("ok");
+    score++;
+  }
+
+  updateScore();
+}
+
+function reportResults(){
+  const dialogueResults = phrases.map((text, i) => {
+    const wrongCount = dropWrongCounts[text] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: i,
+      correctAnswer: text,
+      studentAnswer: isCorrect ? text : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: text,
+    };
+  });
+  const nameInput = document.getElementById("nameInput");
+  const meetInput = document.getElementById("meetInput");
+  const practiceResults = [
+    {
+      questionIndex: dialogueResults.length,
+      correctAnswer: "My name's ...",
+      studentAnswer: nameInput.value || "",
+      isCorrect: nameDone,
+      sentence: "Write your own name sentence",
+    },
+    {
+      questionIndex: dialogueResults.length + 1,
+      correctAnswer: "Nice to meet you.",
+      studentAnswer: meetInput.value || "",
+      isCorrect: meetDone,
+      sentence: "Nice to meet you.",
+    },
+  ];
+  const results = [...dialogueResults, ...practiceResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "dialogue-whats-your-name-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function updateScore(){
+  scoreEl.textContent = `${score} / 5`;
+  if(score >= 5){
+    setTimeout(() => finish.classList.add("show"), 300);
+    if(!reported){
+      reported = true;
+      reportResults();
+    }
+  }
+}
+
+function resetAll(){
+  selectedTile = null;
+  score = 0;
+  lineIndex = 0;
+  nameDone = false;
+  meetDone = false;
+  dropWrongCounts = {};
+  reported = false;
+  finish.classList.remove("show");
+  document.querySelectorAll(".bubble").forEach(b => b.classList.remove("show"));
+  document.querySelectorAll(".drop").forEach(d => {
+    d.className = "drop";
+    d.textContent = "";
+  });
+  document.getElementById("nameInput").value = "";
+  document.getElementById("meetInput").value = "";
+  document.getElementById("nameInput").className = "";
+  document.getElementById("meetInput").className = "";
+  renderTiles();
+  setupDrops();
+  updateScore();
+}
+
+document.getElementById("nextBtn").addEventListener("click", () => {
+  const lines = document.querySelectorAll(".bubble");
+  if(lineIndex < lines.length){
+    lines[lineIndex].classList.add("show");
+    lineIndex++;
+  }
+});
+
+document.getElementById("showBtn").addEventListener("click", () => {
+  document.querySelectorAll(".bubble").forEach(b => b.classList.add("show"));
+  lineIndex = 6;
+});
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+document.getElementById("nameInput").addEventListener("input", checkInputs);
+document.getElementById("meetInput").addEventListener("input", checkInputs);
+
+resetAll();
+</script>
+</body>
+</html>
