@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Australia / New Zealand + International Words</title>
+<style>
+  :root{
+    --yellow:#f6c51f;
+    --blue:#245fa8;
+    --dark:#24335d;
+    --sky:#65bfd7;
+    --green:#22a853;
+    --red:#e74848;
+    --orange:#efbd63;
+    --cream:#fff7d2;
+    --paper:#fff;
+    --ink:#111;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    overflow:hidden;
+    color:var(--ink);
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:min(1220px, 100vw);
+    height:min(830px, 100vh);
+    background:linear-gradient(90deg,#d9f1fb 0 47%, #fff 47% 100%);
+    border:12px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.22);
+    position:relative;
+    overflow:hidden;
+    padding:0 28px 24px;
+  }
+
+  .header{
+    height:78px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+  }
+
+  .title{
+    width:560px;
+    height:78px;
+    margin:0 0 0 -28px;
+    background:var(--dark);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:34px;
+    font-weight:900;
+    text-shadow:2px 3px 0 rgba(0,0,0,.25);
+    border-radius:0 0 22px 0;
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:9px 15px;
+    font-weight:900;
+    min-width:112px;
+    text-align:center;
+    box-shadow:0 2px 0 rgba(0,0,0,.07);
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:25px;
+    line-height:1;
+    margin-top:2px;
+  }
+
+  .btn{
+    border:none;
+    border-radius:15px;
+    background:var(--blue);
+    color:#fff;
+    padding:11px 17px;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 3px 0 rgba(0,0,0,.18);
+  }
+
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    box-shadow:none;
+  }
+
+  .btn.orange{ background:#f0a63a; }
+  .btn:hover{ transform:translateY(-1px); }
+  .btn:active{ transform:translateY(2px); box-shadow:0 1px 0 rgba(0,0,0,.18); }
+
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:17px;
+    font-weight:900;
+    margin-bottom:10px;
+  }
+
+  .badge{
+    width:29px;
+    height:29px;
+    border-radius:4px;
+    background:#4266a9;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .instruction{
+    background:#fffef8;
+    border:2px dashed rgba(240,182,76,.75);
+    border-radius:16px;
+    padding:9px 12px;
+    font-size:15px;
+    line-height:1.28;
+    margin-bottom:12px;
+  }
+
+  .main{
+    display:grid;
+    grid-template-columns:1.35fr .9fr;
+    gap:22px;
+    height:660px;
+  }
+
+  .countries{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    min-width:0;
+  }
+
+  .country{
+    background:#eefaff;
+    border:3px solid #86cde0;
+    border-radius:28px;
+    padding:16px;
+    box-shadow:inset 0 0 0 7px #f8fdff;
+    display:flex;
+    flex-direction:column;
+    min-width:0;
+    position:relative;
+  }
+
+  .country.au{
+    background:linear-gradient(180deg,#d9f1fb,#eefaff);
+  }
+
+  .country.nz{
+    background:linear-gradient(180deg,#d9f1fb,#f2fff0);
+  }
+
+  .country h2{
+    margin:0 0 10px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:31px;
+    font-weight:900;
+    text-shadow:1px 2px 0 #fff;
+  }
+
+  .flag{
+    position:absolute;
+    top:16px;
+    right:18px;
+    font-size:32px;
+  }
+
+  .country-visual{
+    height:135px;
+    background:#fff;
+    border-radius:22px;
+    border:2px solid rgba(0,0,0,.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    font-size:52px;
+    margin-bottom:12px;
+    box-shadow:0 2px 0 rgba(0,0,0,.06);
+  }
+
+  .zone{
+    flex:1;
+    background:#fff;
+    border:3px dashed #9cccdc;
+    border-radius:22px;
+    padding:12px;
+    display:flex;
+    align-content:flex-start;
+    flex-wrap:wrap;
+    gap:9px;
+    transition:.16s ease;
+    min-height:280px;
+  }
+
+  .zone.over{
+    background:#eefaff;
+    border-color:var(--sky);
+  }
+
+  .right-panel{
+    background:#fff;
+    border:3px solid var(--orange);
+    border-radius:28px;
+    padding:16px;
+    box-shadow:inset 0 0 0 7px #fff9df;
+    min-width:0;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .bank-title{
+    margin:0;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:29px;
+    font-weight:900;
+  }
+
+  .bank{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-content:flex-start;
+    justify-content:center;
+    flex:1;
+    overflow:auto;
+  }
+
+  .card{
+    width:135px;
+    min-height:82px;
+    border:3px solid #9bd9e8;
+    border-radius:18px;
+    background:#fff;
+    color:#1c558b;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:8px 10px;
+    font-size:15px;
+    line-height:1.1;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    touch-action:none;
+    box-shadow:0 3px 0 rgba(0,0,0,.12);
+    transition:.14s ease;
+  }
+
+  .card .emoji{
+    font-size:31px;
+    line-height:1;
+    margin-bottom:4px;
+  }
+
+  .card:active{ cursor:grabbing; }
+  .card.dragging{ opacity:.45; transform:scale(.96); }
+  .card.selected{
+    outline:4px solid #f0a63a;
+    transform:scale(1.03);
+  }
+
+  .card.locked{
+    cursor:default;
+    background:#effff4;
+    border-color:var(--green);
+    color:#158238;
+    box-shadow:none;
+    width:120px;
+    min-height:70px;
+    font-size:13px;
+  }
+
+  .sport-reveal{
+    position:absolute;
+    left:28px;
+    right:28px;
+    bottom:22px;
+    height:0;
+    opacity:0;
+    pointer-events:none;
+    overflow:hidden;
+    transition:.4s ease;
+    background:linear-gradient(135deg,#fff7d2 0%, #eefaff 100%);
+    border:4px solid var(--orange);
+    border-radius:30px;
+    padding:0 24px;
+    z-index:6;
+    box-shadow:0 12px 30px rgba(0,0,0,.20);
+  }
+
+  .sport-reveal.show{
+    height:255px;
+    opacity:1;
+    pointer-events:auto;
+    padding:18px 24px;
+  }
+
+  .sport-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:12px;
+  }
+
+  .sport-head h2{
+    margin:0;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:30px;
+    line-height:1;
+  }
+
+  .tiny-score{
+    font-weight:900;
+    color:#75531a;
+    background:#fff7d2;
+    border:2px solid var(--orange);
+    border-radius:14px;
+    padding:7px 12px;
+  }
+
+  .sport-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:14px;
+  }
+
+  .sport-item{
+    background:#fff;
+    border:2px solid #9bd9e8;
+    border-radius:22px;
+    padding:12px;
+    min-height:150px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:0 2px 0 rgba(0,0,0,.06);
+  }
+
+  .sport-pic{
+    font-size:48px;
+    text-align:center;
+    line-height:1;
+  }
+
+  .sport-item select{
+    width:100%;
+    border:2px solid #d8d8d8;
+    border-radius:12px;
+    background:#fff;
+    padding:8px;
+    font-size:15px;
+    font-weight:800;
+    outline:none;
+  }
+
+  .sport-item select.ok{
+    border-color:var(--green);
+    background:#effff4;
+    color:#158238;
+  }
+
+  .sport-item select.bad{
+    border-color:var(--red);
+    background:#fff1f1;
+    color:#c22828;
+  }
+
+  .modal-bg{
+    position:absolute;
+    inset:0;
+    background:rgba(0,0,0,.25);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    z-index:20;
+    padding:30px;
+  }
+
+  .modal-bg.show{ display:flex; }
+
+  .modal{
+    width:min(680px,100%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:28px;
+    padding:26px;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    position:relative;
+  }
+
+  .modal h2{
+    margin:0 0 16px;
+    text-align:center;
+    color:var(--blue);
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:30px;
+  }
+
+  .hint-list{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    font-size:17px;
+    font-weight:800;
+  }
+
+  .hint-item{
+    background:#eefaff;
+    border:2px solid #9bd9e8;
+    border-radius:16px;
+    padding:10px;
+  }
+
+  .close{
+    position:absolute;
+    right:15px;
+    top:14px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid var(--blue);
+    background:#fff;
+    color:var(--blue);
+    font-weight:900;
+    cursor:pointer;
+    font-size:19px;
+  }
+
+  @media(max-width:980px){
+    html,body{ overflow:auto; height:auto; }
+    body{ align-items:flex-start; }
+    .slide{ height:auto; min-height:100vh; border-width:8px; padding:0 12px 300px; }
+    .header{ height:auto; flex-direction:column; align-items:stretch; gap:8px; }
+    .title{ margin:0 -12px 6px; width:auto; border-radius:0 0 18px 18px; }
+    .main{ grid-template-columns:1fr; height:auto; }
+    .countries{ grid-template-columns:1fr; }
+    .sport-reveal{
+      position:fixed;
+      left:10px;
+      right:10px;
+      bottom:10px;
+    }
+    .sport-reveal.show{ height:auto; max-height:420px; overflow:auto; padding:18px; }
+    .sport-grid{ grid-template-columns:1fr 1fr; }
+    .hint-list{ grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">Australia / New Zealand</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 7</span></div>
+      <button class="btn orange" id="hintBtn">Hint</button>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <div class="task"><span class="badge">1</span> Put the words into the correct country.</div>
+  <div class="instruction">
+    Перетащи карточки в Australia или New Zealand. После этого появится вторая активность с International Words: Sport. Да, один слайд, две активности, чтобы не плодить HTML-зоопарк.
+  </div>
+
+  <section class="main">
+    <div class="countries">
+      <div class="country au">
+        <span class="flag">🇦🇺</span>
+        <h2>Australia</h2>
+        <div class="country-visual">🦘 🎭</div>
+        <div class="zone" data-country="australia" id="australiaZone"></div>
+      </div>
+
+      <div class="country nz">
+        <span class="flag">🇳🇿</span>
+        <h2>New Zealand</h2>
+        <div class="country-visual">🥝 🐑</div>
+        <div class="zone" data-country="newzealand" id="newZealandZone"></div>
+      </div>
+    </div>
+
+    <aside class="right-panel">
+      <h2 class="bank-title">Cards</h2>
+      <div class="bank" id="bank"></div>
+    </aside>
+  </section>
+
+  <section class="sport-reveal" id="sportReveal">
+    <div class="sport-head">
+      <h2>International Words: Sport</h2>
+      <div class="tiny-score" id="sportScore">0 / 4</div>
+    </div>
+    <div class="sport-grid" id="sportGrid"></div>
+  </section>
+
+  <div class="modal-bg" id="hintModal">
+    <div class="modal">
+      <button class="close" id="closeHint">×</button>
+      <h2>Helpful pairs</h2>
+      <div class="hint-list">
+        <div class="hint-item">Australia: kangaroo, Hugh Jackman</div>
+        <div class="hint-item">New Zealand: kiwi fruit, kiwi bird, Katherine Mansfield, Lorde, sheep</div>
+        <div class="hint-item">Sport words: hockey, football, ping-pong, tennis</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+const countryCards = [
+  { text:"kangaroo", emoji:"🦘", country:"australia" },
+  { text:"Hugh Jackman", emoji:"🎭", country:"australia" },
+  { text:"kiwi fruit", emoji:"🥝", country:"newzealand" },
+  { text:"kiwi bird", emoji:"🐦", country:"newzealand" },
+  { text:"Katherine Mansfield", emoji:"📚", country:"newzealand" },
+  { text:"Lorde", emoji:"🎤", country:"newzealand" },
+  { text:"sheep", emoji:"🐑", country:"newzealand" }
+];
+
+const sports = [
+  { text:"hockey", emoji:"🏒" },
+  { text:"football", emoji:"⚽" },
+  { text:"ping-pong", emoji:"🏓" },
+  { text:"tennis", emoji:"🎾" }
+];
+
+let score = 0;
+let selected = null;
+let sportScore = 0;
+let countryWrongCounts = {};
+let sportWrongCounts = {};
+let reported = false;
+
+const bank = document.getElementById("bank");
+const scoreEl = document.getElementById("score");
+const sportReveal = document.getElementById("sportReveal");
+const sportGrid = document.getElementById("sportGrid");
+const sportScoreEl = document.getElementById("sportScore");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function renderCards(){
+  bank.innerHTML = "";
+  shuffle(countryCards).forEach(item => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.country = item.country;
+    card.dataset.text = item.text;
+    card.draggable = true;
+    card.innerHTML = `<div class="emoji">${item.emoji}</div><div>${item.text}</div>`;
+
+    card.addEventListener("click", () => {
+      if(card.classList.contains("locked")) return;
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+      selected = card;
+      card.classList.add("selected");
+    });
+
+    card.addEventListener("dragstart", e => {
+      selected = card;
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", item.text);
+    });
+
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+    bank.appendChild(card);
+  });
+}
+
+function updateScore(){
+  scoreEl.textContent = `${score} / 7`;
+  if(score === 7){
+    setTimeout(() => sportReveal.classList.add("show"), 320);
+  }
+}
+
+function placeCard(card, zone){
+  if(!card || card.classList.contains("locked")) return;
+  const ok = card.dataset.country === zone.dataset.country;
+
+  if(ok){
+    card.classList.remove("selected", "dragging");
+    card.classList.add("locked");
+    card.draggable = false;
+    zone.appendChild(card);
+    selected = null;
+    score++;
+    updateScore();
+  } else {
+    countryWrongCounts[card.dataset.text] = (countryWrongCounts[card.dataset.text] || 0) + 1;
+    zone.style.borderColor = "var(--red)";
+    zone.style.background = "#fff1f1";
+    setTimeout(() => {
+      zone.style.borderColor = "#9cccdc";
+      zone.style.background = "#fff";
+    }, 360);
+  }
+}
+
+document.querySelectorAll(".zone").forEach(zone => {
+  zone.addEventListener("click", () => {
+    if(selected) placeCard(selected, zone);
+  });
+
+  zone.addEventListener("dragover", e => {
+    e.preventDefault();
+    zone.classList.add("over");
+  });
+
+  zone.addEventListener("dragleave", () => zone.classList.remove("over"));
+
+  zone.addEventListener("drop", e => {
+    e.preventDefault();
+    zone.classList.remove("over");
+    const text = e.dataTransfer.getData("text/plain");
+    const card = Array.from(document.querySelectorAll(".card:not(.locked)")).find(c => c.dataset.text === text);
+    placeCard(card, zone);
+  });
+});
+
+function reportResults(){
+  const countryResults = countryCards.map((item, i) => {
+    const wrongCount = countryWrongCounts[item.text] || 0;
+    const isCorrect = wrongCount === 0;
+    const countryLabel = item.country === "australia" ? "Australia" : "New Zealand";
+    return {
+      questionIndex: i,
+      correctAnswer: countryLabel,
+      studentAnswer: isCorrect ? countryLabel : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `${item.text} — ${countryLabel}`,
+    };
+  });
+  const sportResults = sports.map((item, i) => {
+    const wrongCount = sportWrongCounts[item.text] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: countryResults.length + i,
+      correctAnswer: item.text,
+      studentAnswer: isCorrect ? item.text : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `${item.text} — sport word`,
+    };
+  });
+  const results = [...countryResults, ...sportResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "australia-nz-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function renderSports(){
+  sportGrid.innerHTML = "";
+  const options = `<option value="">Choose</option>` + sports.map(s => `<option value="${s.text}">${s.text}</option>`).join("");
+
+  sports.forEach(item => {
+    const box = document.createElement("div");
+    box.className = "sport-item";
+    box.innerHTML = `
+      <div class="sport-pic">${item.emoji}</div>
+      <select data-answer="${item.text}">${options}</select>
+    `;
+    sportGrid.appendChild(box);
+  });
+
+  sportGrid.querySelectorAll("select").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const ok = sel.value === sel.dataset.answer;
+      if(sel.value && !ok){
+        sportWrongCounts[sel.dataset.answer] = (sportWrongCounts[sel.dataset.answer] || 0) + 1;
+      }
+      if(ok && !sel.classList.contains("ok")){
+        sportScore++;
+      }
+      if(!ok && sel.classList.contains("ok")){
+        sportScore--;
+      }
+      sel.classList.toggle("ok", ok);
+      sel.classList.toggle("bad", Boolean(sel.value) && !ok);
+      sportScoreEl.textContent = `${sportScore} / 4`;
+      if(sportScore === 4 && !reported){
+        reported = true;
+        reportResults();
+      }
+    });
+  });
+}
+
+function resetAll(){
+  score = 0;
+  sportScore = 0;
+  selected = null;
+  countryWrongCounts = {};
+  sportWrongCounts = {};
+  reported = false;
+  sportReveal.classList.remove("show");
+  scoreEl.textContent = "0 / 7";
+  sportScoreEl.textContent = "0 / 4";
+  document.querySelectorAll(".zone").forEach(zone => {
+    zone.innerHTML = "";
+    zone.style.borderColor = "#9cccdc";
+    zone.style.background = "#fff";
+  });
+  renderCards();
+  renderSports();
+}
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+document.getElementById("hintBtn").addEventListener("click", () => document.getElementById("hintModal").classList.add("show"));
+document.getElementById("closeHint").addEventListener("click", () => document.getElementById("hintModal").classList.remove("show"));
+document.getElementById("hintModal").addEventListener("click", e => {
+  if(e.target.id === "hintModal") document.getElementById("hintModal").classList.remove("show");
+});
+
+resetAll();
+</script>
+</body>
+</html>
