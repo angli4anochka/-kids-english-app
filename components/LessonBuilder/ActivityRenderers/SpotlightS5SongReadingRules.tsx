@@ -23,7 +23,7 @@ export default function SpotlightS5SongReadingRules({ isTeacher, lessonId, activ
     if (!el) return;
     const ro = new ResizeObserver(([entry]) => {
       const { width, height } = entry.contentRect;
-      setScale(Math.min(width / W, height / H) * 0.9);
+      setScale(Math.min(width / W, height / H) * 0.89);
     });
     ro.observe(el);
     return () => ro.disconnect();
