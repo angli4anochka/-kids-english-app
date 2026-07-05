@@ -265,7 +265,7 @@
 
   .rules-grid{
     display:grid;
-    grid-template-columns:repeat(5, 1fr);
+    grid-template-columns:repeat(4, 1fr);
     gap:8px;
     margin-bottom:10px;
   }
@@ -547,7 +547,7 @@
   <div class="header">
     <h1 class="title">Sing the Song + Reading Rules</h1>
     <div class="tools">
-      <div class="score">Rules <span id="score">0 / 15</span></div>
+      <div class="score">Rules <span id="score">0 / 24</span></div>
       <button class="btn orange" id="hintBtn">Hint</button>
       <button class="btn secondary" id="resetBtn">Reset</button>
     </div>
@@ -614,9 +614,12 @@
       <button class="close" id="closeHint">×</button>
       <h2>Reading Rules hint</h2>
       <div class="hint-list">
+        <div class="hint-item">Aa → /æ/ → apple, ant</div>
         <div class="hint-item">Bb → /b/ → ball, book</div>
         <div class="hint-item">Cc → /k/ → cat, cap</div>
         <div class="hint-item">Dd → /d/ → dog, doll</div>
+        <div class="hint-item">Ee → /e/ → egg, elephant</div>
+        <div class="hint-item">Ff → /f/ → fox, fish</div>
         <div class="hint-item">Gg → /g/ → game, flag</div>
         <div class="hint-item">Hh → /h/ → hand, hat</div>
       </div>
@@ -626,9 +629,12 @@
 
 <script>
 const rules = [
+  {letter:"Aa", sound:"/æ/", words:["apple","ant"]},
   {letter:"Bb", sound:"/b/", words:["ball","book"]},
   {letter:"Cc", sound:"/k/", words:["cat","cap"]},
   {letter:"Dd", sound:"/d/", words:["dog","doll"]},
+  {letter:"Ee", sound:"/e/", words:["egg","elephant"]},
+  {letter:"Ff", sound:"/f/", words:["fox","fish"]},
   {letter:"Gg", sound:"/g/", words:["game","flag"]},
   {letter:"Hh", sound:"/h/", words:["hand","hat"]}
 ];
@@ -827,8 +833,8 @@ function markWrong(drop){
 }
 
 function updateScore(){
-  scoreEl.textContent = `${score} / 15`;
-  if(score === 15){
+  scoreEl.textContent = `${score} / 24`;
+  if(score === 24){
     setTimeout(() => finish.classList.add("show"), 320);
     if(!reported){
       reported = true;
