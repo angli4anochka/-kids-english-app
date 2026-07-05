@@ -11,6 +11,7 @@ import SpotlightS5FindWordsRightWrong from './SpotlightS5FindWordsRightWrong';
 import SpotlightS5DialogueName from './SpotlightS5DialogueName';
 import SpotlightS5AlphabetIR from './SpotlightS5AlphabetIR';
 import SpotlightS5ReadingRuleI from './SpotlightS5ReadingRuleI';
+import SpotlightS5ReadingRulesJR from './SpotlightS5ReadingRulesJR';
 import SpotlightEx1 from './SpotlightEx1';
 import SpotlightEx2 from './SpotlightEx2';
 import SpotlightEx3 from './SpotlightEx3';
@@ -86,6 +87,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'spotlight5-dialogue-name': SpotlightS5DialogueName,
   'spotlight5-alphabet-ir': SpotlightS5AlphabetIR,
   'spotlight5-reading-rule-i': SpotlightS5ReadingRuleI,
+  'spotlight5-reading-rules-jr': SpotlightS5ReadingRulesJR,
   'verb-be-ex1': SpotlightEx1,
   'verb-be-ex2': SpotlightEx2,
   'verb-be-ex3': SpotlightEx3,
