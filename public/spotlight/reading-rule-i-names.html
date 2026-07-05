@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reading Rule Ii + Names</title>
+<style>
+  :root{
+    --yellow:#f4c31f;
+    --blue:#245fa8;
+    --dark:#243a73;
+    --sky:#8fd5ee;
+    --cream:#fff7d7;
+    --orange:#f0ab3d;
+    --green:#1fa85b;
+    --red:#e24c4c;
+    --ink:#111;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:1000px;
+    height:580px;
+    background:#fff;
+    border:8px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.18);
+    padding:0 16px 12px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .header{
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .title{
+    width:380px;
+    height:54px;
+    margin:0 0 0 -16px;
+    background:var(--dark);
+    color:#fff;
+    border-radius:0 0 18px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:22px;
+    font-weight:900;
+    text-shadow:2px 2px 0 rgba(0,0,0,.18);
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-right:8px;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:4px 10px;
+    min-width:95px;
+    text-align:center;
+    font-weight:900;
+    font-size:13px;
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:18px;
+    line-height:1.1;
+  }
+
+  .btn{
+    border:none;
+    border-radius:14px;
+    background:var(--blue);
+    color:#fff;
+    padding:7px 12px;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+    box-shadow:0 2px 0 rgba(0,0,0,.14);
+  }
+
+  .btn.secondary{
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    box-shadow:none;
+  }
+
+  .task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:14px;
+    font-weight:900;
+    margin:6px 0 8px;
+  }
+
+  .badge{
+    width:30px;
+    height:30px;
+    border-radius:5px;
+    background:#4266a9;
+    color:#fff;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:900;
+    flex:0 0 auto;
+  }
+
+  .stage{height:508px;}
+  .stage.hidden{display:none;}
+
+  .main{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:12px;
+    height:100%;
+  }
+
+  .panel{
+    background:#dff4fb;
+    border:3px solid var(--sky);
+    border-radius:26px;
+    box-shadow:inset 0 0 0 6px #f8fdff;
+    padding:10px;
+    overflow:hidden;
+  }
+
+  .panel.right{
+    background:#fff8df;
+    border-color:#eab14d;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+  }
+
+  .panel-title{
+    margin:0 0 7px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:18px;
+    font-weight:900;
+  }
+
+  .rule-card{
+    background:#fff;
+    border:3px solid #9fd8ec;
+    border-radius:24px;
+    padding:12px;
+    height:218px;
+    margin-bottom:10px;
+    display:grid;
+    grid-template-columns:130px 1fr;
+    gap:12px;
+    align-items:center;
+  }
+
+  .big-letter{
+    width:120px;
+    height:150px;
+    border-radius:24px;
+    background:#eefaff;
+    border:3px solid #9fd8ec;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-weight:900;
+  }
+
+  .big-letter .upper{font-size:58px; line-height:.9;}
+  .big-letter .lower{font-size:44px; line-height:.9;}
+
+  .rule-text{
+    font-size:22px;
+    line-height:1.25;
+    font-weight:900;
+  }
+
+  .sound{
+    display:inline-block;
+    background:#fff7d7;
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:6px 14px;
+    color:#c66f00;
+    font-size:28px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+  }
+
+  .examples{
+    display:grid;
+    grid-template-columns:repeat(5, 1fr);
+    gap:7px;
+    margin-top:13px;
+  }
+
+  .example{
+    background:#eefaff;
+    border:2px solid #9fd8ec;
+    border-radius:14px;
+    text-align:center;
+    padding:6px 4px;
+    font-weight:900;
+    color:#1d5d99;
+    font-size:15px;
+  }
+
+  .listen-box{
+    height:218px;
+    background:#fff;
+    border:2px dashed #9fd8ec;
+    border-radius:22px;
+    padding:22px 10px 10px;
+  }
+
+  .listen-title{
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:18px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+
+  .listen-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+  }
+
+  .listen-item{
+    background:#f8fdff;
+    border:2px solid #d8edf7;
+    border-radius:16px;
+    padding:7px 5px;
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:16px;
+    font-weight:900;
+    cursor:pointer;
+    color:#1d5d99;
+  }
+
+  .listen-item.active{
+    background:#effff4;
+    border-color:var(--green);
+    color:#158238;
+    transform:scale(1.02);
+  }
+
+  .sort-area{
+    height:100%;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:8px;
+  }
+
+  .target{
+    background:#fff;
+    border:3px solid #f0bd63;
+    border-radius:22px;
+    padding:10px;
+    min-height:250px;
+  }
+
+  .target-title{
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:#c66f00;
+    font-size:20px;
+    font-weight:900;
+    margin-bottom:8px;
+  }
+
+  .drop-zone{
+    min-height:174px;
+    border:3px dotted #bbb;
+    border-radius:18px;
+    background:#fbfbfb;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-content:flex-start;
+    justify-content:center;
+    padding:10px;
+  }
+
+  .drop-zone::before{
+    content:"drop the names with /ɪ/";
+    opacity:.55;
+    font-size:13px;
+    font-weight:900;
+    align-self:center;
+  }
+
+  .drop-zone.filled::before{display:none;}
+  .drop-zone.over{border-color:var(--sky); background:#eefaff;}
+  .drop-zone.correct{border-color:var(--green); background:#effff4;}
+
+  .name-bank{
+    background:#fff;
+    border:2px dashed #9fd8ec;
+    border-radius:22px;
+    padding:9px;
+    min-height:150px;
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:8px;
+    align-content:start;
+  }
+
+  .name-card{
+    min-height:38px;
+    border:2px solid #9fd8ec;
+    border-radius:14px;
+    background:#fff;
+    color:#1d5d99;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:5px 8px;
+    font-size:16px;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    box-shadow:0 2px 0 rgba(0,0,0,.08);
+  }
+
+  .name-card.selected{outline:3px solid var(--orange);}
+  .name-card.dragging{opacity:.45;}
+  .name-card.locked{background:#effff4; border-color:var(--green); color:#158238; box-shadow:none; cursor:default;}
+
+  .next-note{
+    text-align:center;
+    font-size:12px;
+    font-weight:800;
+    color:#75531a;
+  }
+
+  .stage2-panel{
+    height:100%;
+    background:#fff8df;
+    border:3px solid #eab14d;
+    border-radius:26px;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+    padding:14px;
+    overflow:hidden;
+  }
+
+  .stage2-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    height:405px;
+  }
+
+  .quiz-card{
+    background:#fff;
+    border:2px solid #9fd8ec;
+    border-radius:22px;
+    padding:12px;
+    display:grid;
+    grid-template-rows:auto 1fr auto;
+    gap:8px;
+  }
+
+  .avatar{
+    width:92px;
+    height:92px;
+    margin:0 auto;
+    border-radius:50%;
+    background:#eefaff;
+    border:3px solid #9fd8ec;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:54px;
+  }
+
+  .sentence{
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:22px;
+    font-weight:900;
+  }
+
+  .sentence span{color:#f08a00;}
+
+  .options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+  }
+
+  .option{
+    border:2px solid #9fd8ec;
+    background:#fff;
+    border-radius:14px;
+    padding:7px;
+    font-size:15px;
+    font-weight:900;
+    color:#1d5d99;
+    cursor:pointer;
+  }
+
+  .option.ok{border-color:var(--green); background:#effff4; color:#158238;}
+  .option.bad{border-color:var(--red); background:#fff1f1; color:#c22828;}
+
+  .finish{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:26px;
+    padding:22px 28px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,.22);
+    display:none;
+    z-index:10;
+    min-width:300px;
+  }
+
+  .finish.show{display:block}
+
+  .finish h2{
+    margin:0 0 8px;
+    color:var(--green);
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:30px;
+  }
+
+  .finish p{
+    margin:0;
+    font-size:18px;
+    font-weight:900;
+  }
+
+  @media(max-width:900px){
+    html,body{overflow:auto;height:auto}
+    body{align-items:flex-start}
+    .slide{width:100%; min-height:100vh; height:auto; border-width:6px; padding:0 10px 10px}
+    .header{height:auto; flex-direction:column; align-items:stretch; gap:6px}
+    .title{margin:0 -10px 0; width:auto; border-radius:0 0 16px 16px}
+    .stage{height:auto}
+    .main,.stage2-grid{grid-template-columns:1fr; height:auto}
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">Reading Rule Ii + Names</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 12</span></div>
+      <button class="btn secondary" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage1">
+    <div class="main">
+      <div class="panel">
+        <h2 class="panel-title">Reading Rule Ii</h2>
+
+        <div class="rule-card">
+          <div class="big-letter">
+            <div class="upper">I</div>
+            <div class="lower">i</div>
+          </div>
+          <div class="rule-text">
+            Ii can sound like <span class="sound">/ɪ/</span>
+            <div class="examples">
+              <div class="example">in</div>
+              <div class="example">sit</div>
+              <div class="example">pin</div>
+              <div class="example">big</div>
+              <div class="example">milk</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="listen-box">
+          <div class="listen-title">Click and read</div>
+          <div class="listen-grid">
+            <div class="listen-item">in</div>
+            <div class="listen-item">sit</div>
+            <div class="listen-item">pin</div>
+            <div class="listen-item">big</div>
+            <div class="listen-item">milk</div>
+            <div class="listen-item">Jill</div>
+            <div class="listen-item">Kim</div>
+            <div class="listen-item">Nick</div>
+            <div class="listen-item">Bill</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel right">
+        <h2 class="panel-title">Names with /ɪ/</h2>
+        <div class="sort-area">
+          <div class="target">
+            <div class="target-title">short i sound /ɪ/</div>
+            <div class="drop-zone" id="dropZone"></div>
+          </div>
+          <div class="name-bank" id="nameBank"></div>
+          <div class="next-note">When all names are sorted, Stage 2 opens.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage hidden" id="stage2">
+    <div class="stage2-panel">
+      <h2 class="panel-title">Choose the name</h2>
+      <div class="stage2-grid">
+        <div class="quiz-card">
+          <div class="avatar">👧</div>
+          <div class="sentence">My name’s <span>Jill</span>.</div>
+          <div class="options">
+            <button class="option" data-answer="Jill">Jill</button>
+            <button class="option" data-answer="Kim">Kim</button>
+          </div>
+        </div>
+
+        <div class="quiz-card">
+          <div class="avatar">🧒</div>
+          <div class="sentence">My name’s <span>Nick</span>.</div>
+          <div class="options">
+            <button class="option" data-answer="Bill">Bill</button>
+            <button class="option" data-answer="Nick">Nick</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="finish" id="finish">
+    <h2>Great job!</h2>
+    <p>You know the short Ii sound.</p>
+  </div>
+</main>
+
+<script>
+const names = ["Jill","Kim","Nick","Bill","Tim","Liz"];
+let sortScore = 0;
+let quizScore = 0;
+let selectedCard = null;
+let quizWrongCounts = {};
+let reported = false;
+
+const scoreEl = document.getElementById("score");
+const nameBank = document.getElementById("nameBank");
+const dropZone = document.getElementById("dropZone");
+const stage1 = document.getElementById("stage1");
+const stage2 = document.getElementById("stage2");
+const finish = document.getElementById("finish");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function renderNames(){
+  nameBank.innerHTML = "";
+  shuffle(names).forEach(name => {
+    const card = document.createElement("div");
+    card.className = "name-card";
+    card.textContent = name;
+    card.dataset.answer = "short-i";
+    card.draggable = true;
+
+    card.addEventListener("click", () => {
+      if(card.classList.contains("locked")) return;
+      document.querySelectorAll(".name-card").forEach(c => c.classList.remove("selected"));
+      selectedCard = card;
+      card.classList.add("selected");
+    });
+
+    card.addEventListener("dragstart", e => {
+      selectedCard = card;
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", name);
+    });
+
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+    nameBank.appendChild(card);
+  });
+}
+
+function setupDropZone(){
+  dropZone.addEventListener("click", () => {
+    if(selectedCard) placeName(selectedCard);
+  });
+
+  dropZone.addEventListener("dragover", e => {
+    e.preventDefault();
+    dropZone.classList.add("over");
+  });
+
+  dropZone.addEventListener("dragleave", () => dropZone.classList.remove("over"));
+
+  dropZone.addEventListener("drop", e => {
+    e.preventDefault();
+    dropZone.classList.remove("over");
+    const name = e.dataTransfer.getData("text/plain");
+    const card = Array.from(document.querySelectorAll(".name-card:not(.locked)")).find(c => c.textContent === name);
+    placeName(card);
+  });
+}
+
+function placeName(card){
+  if(!card || card.classList.contains("locked")) return;
+  card.classList.remove("selected","dragging");
+  card.classList.add("locked");
+  card.draggable = false;
+  dropZone.classList.add("filled","correct");
+  dropZone.appendChild(card);
+  selectedCard = null;
+  sortScore++;
+  updateScore();
+
+  if(sortScore === 6){
+    setTimeout(showStage2, 400);
+  }
+}
+
+function showStage2(){
+  stage1.classList.add("hidden");
+  stage2.classList.remove("hidden");
+}
+
+function setupQuiz(){
+  document.querySelectorAll(".quiz-card").forEach(card => {
+    const rightName = card.querySelector(".sentence span").textContent.trim();
+    card.querySelectorAll(".option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(card.dataset.done === "true") return;
+        if(btn.dataset.answer === rightName){
+          btn.classList.add("ok");
+          card.dataset.done = "true";
+          quizScore++;
+          updateScore();
+        } else {
+          quizWrongCounts[rightName] = (quizWrongCounts[rightName] || 0) + 1;
+          btn.classList.add("bad");
+          setTimeout(() => btn.classList.remove("bad"), 400);
+        }
+      });
+    });
+  });
+}
+
+function setupReadClicks(){
+  document.querySelectorAll(".listen-item").forEach(item => {
+    item.addEventListener("click", () => {
+      item.classList.toggle("active");
+    });
+  });
+}
+
+function reportResults(){
+  const sortResults = names.map((name, i) => ({
+    questionIndex: i,
+    correctAnswer: name,
+    studentAnswer: name,
+    isCorrect: true,
+    sentence: `${name} has the short /\u026a/ sound`,
+  }));
+  const quizResults = Array.from(document.querySelectorAll(".quiz-card")).map((card, i) => {
+    const rightName = card.querySelector(".sentence span").textContent.trim();
+    const wrongCount = quizWrongCounts[rightName] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: sortResults.length + i,
+      correctAnswer: rightName,
+      studentAnswer: isCorrect ? rightName : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `My name's ${rightName}.`,
+    };
+  });
+  const results = [...sortResults, ...quizResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "reading-rule-i-names-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function updateScore(){
+  const total = sortScore + quizScore + 4; 
+  scoreEl.textContent = `${total} / 12`;
+  if(sortScore === 6 && quizScore === 2){
+    setTimeout(() => finish.classList.add("show"), 300);
+    if(!reported){
+      reported = true;
+      reportResults();
+    }
+  }
+}
+
+function resetAll(){
+  sortScore = 0;
+  quizScore = 0;
+  selectedCard = null;
+  quizWrongCounts = {};
+  reported = false;
+  finish.classList.remove("show");
+  stage1.classList.remove("hidden");
+  stage2.classList.add("hidden");
+  dropZone.innerHTML = "";
+  dropZone.className = "drop-zone";
+
+  document.querySelectorAll(".quiz-card").forEach(card => {
+    delete card.dataset.done;
+  });
+  document.querySelectorAll(".option").forEach(btn => btn.classList.remove("ok","bad"));
+  document.querySelectorAll(".listen-item").forEach(item => item.classList.remove("active"));
+
+  renderNames();
+  scoreEl.textContent = "0 / 12";
+}
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+renderNames();
+setupDropZone();
+setupQuiz();
+setupReadClicks();
+scoreEl.textContent = "0 / 12";
+</script>
+</body>
+</html>

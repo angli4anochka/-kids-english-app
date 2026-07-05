@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Reading Rules J–R</title>
+<style>
+  :root{
+    --yellow:#f4c31f;
+    --blue:#245fa8;
+    --dark:#243a73;
+    --sky:#8fd5ee;
+    --cream:#fff7d7;
+    --orange:#f0ab3d;
+    --green:#1fa85b;
+    --red:#e24c4c;
+    --ink:#111;
+  }
+
+  *{box-sizing:border-box}
+
+  html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    background:#f2f2f2;
+    font-family:"Trebuchet MS", Arial, sans-serif;
+    color:var(--ink);
+    overflow:hidden;
+  }
+
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .slide{
+    width:1000px;
+    height:580px;
+    background:#fff;
+    border:8px solid var(--yellow);
+    box-shadow:0 10px 28px rgba(0,0,0,.18);
+    padding:0 16px 12px;
+    overflow:hidden;
+    position:relative;
+  }
+
+  .header{
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+  }
+
+  .title{
+    width:360px;
+    height:54px;
+    margin:0 0 0 -16px;
+    background:var(--dark);
+    color:#fff;
+    border-radius:0 0 18px 0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:22px;
+    font-weight:900;
+    text-shadow:2px 2px 0 rgba(0,0,0,.18);
+  }
+
+  .tools{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-right:8px;
+  }
+
+  .score{
+    background:var(--cream);
+    border:2px solid var(--orange);
+    border-radius:16px;
+    padding:4px 10px;
+    min-width:95px;
+    text-align:center;
+    font-weight:900;
+    font-size:13px;
+  }
+
+  .score span{
+    display:block;
+    color:var(--blue);
+    font-size:18px;
+    line-height:1.1;
+  }
+
+  .btn{
+    border:none;
+    border-radius:14px;
+    background:#fff;
+    color:var(--blue);
+    border:2px solid var(--blue);
+    padding:7px 12px;
+    font-size:13px;
+    font-weight:900;
+    cursor:pointer;
+  }
+
+  .stage{height:508px;}
+  .stage.hidden{display:none;}
+
+  .main{
+    display:grid;
+    grid-template-columns:1.25fr .85fr;
+    gap:12px;
+    height:100%;
+  }
+
+  .panel{
+    background:#dff4fb;
+    border:3px solid var(--sky);
+    border-radius:26px;
+    box-shadow:inset 0 0 0 6px #f8fdff;
+    padding:8px;
+    overflow:hidden;
+  }
+
+  .panel.right{
+    background:#fff8df;
+    border-color:#eab14d;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+  }
+
+  .panel-title{
+    margin:0 0 6px;
+    text-align:center;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    color:var(--blue);
+    font-size:17px;
+    font-weight:900;
+  }
+
+  .rule-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:8px;
+  }
+
+  .rule-card{
+    background:#fff;
+    border:2px solid #9fd8ec;
+    border-radius:18px;
+    padding:7px;
+    min-height:130px;
+    display:grid;
+    grid-template-rows:auto auto 1fr;
+    gap:5px;
+    text-align:center;
+  }
+
+  .letter{
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:21px;
+    font-weight:900;
+    color:var(--blue);
+    line-height:1;
+  }
+
+  .wordline{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    font-weight:900;
+    color:#1d5d99;
+    font-size:14px;
+  }
+
+  .emoji{font-size:22px;}
+
+  .sound-drop{
+    min-height:35px;
+    border:3px dotted #bbb;
+    border-radius:14px;
+    background:#fbfbfb;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:3px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-weight:900;
+    color:#777;
+  }
+
+  .sound-drop::before{
+    content:"sound";
+    opacity:.55;
+    font-size:12px;
+  }
+
+  .sound-drop.filled::before{display:none;}
+  .sound-drop.over{border-color:var(--sky); background:#eefaff;}
+  .sound-drop.correct{border-style:solid; border-color:var(--green); background:#effff4; color:#158238;}
+  .sound-drop.wrong{border-style:solid; border-color:var(--red); background:#fff1f1;}
+
+  .sound-bank{
+    height:456px;
+    background:#fff;
+    border:2px solid #f0bd63;
+    border-radius:20px;
+    padding:8px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+    align-content:start;
+  }
+
+  .sound-card{
+    min-height:37px;
+    border:2px solid #9fd8ec;
+    border-radius:14px;
+    background:#fff;
+    color:#1d5d99;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:4px 6px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:15px;
+    font-weight:900;
+    cursor:grab;
+    user-select:none;
+    box-shadow:0 2px 0 rgba(0,0,0,.08);
+  }
+
+  .sound-card.selected{outline:3px solid var(--orange);}
+  .sound-card.dragging{opacity:.45;}
+  .sound-card.locked{background:#effff4; border-color:var(--green); color:#158238; box-shadow:none; cursor:default;}
+
+  .stage2-panel{
+    height:100%;
+    background:#fff8df;
+    border:3px solid #eab14d;
+    border-radius:26px;
+    box-shadow:inset 0 0 0 6px #fffdf4;
+    padding:12px;
+    overflow:hidden;
+  }
+
+  .guess-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    height:450px;
+  }
+
+  .guess-card{
+    background:#fff;
+    border:2px solid #9fd8ec;
+    border-radius:18px;
+    padding:8px;
+    display:grid;
+    grid-template-rows:auto auto 1fr;
+    gap:6px;
+    text-align:center;
+  }
+
+  .guess-pic{
+    width:58px;
+    height:58px;
+    margin:0 auto;
+    border-radius:16px;
+    background:#f8fdff;
+    border:2px solid #d8edf7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+  }
+
+  .guess-word{
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:18px;
+    font-weight:900;
+    color:#777;
+  }
+
+  .letters{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    align-content:center;
+  }
+
+  .letter-option{
+    border:2px solid #9fd8ec;
+    background:#fff;
+    border-radius:13px;
+    padding:6px;
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:17px;
+    font-weight:900;
+    color:#1d5d99;
+    cursor:pointer;
+  }
+
+  .letter-option.ok{border-color:var(--green); background:#effff4; color:#158238;}
+  .letter-option.bad{border-color:var(--red); background:#fff1f1; color:#c22828;}
+
+  .finish{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:#fff;
+    border:8px solid var(--yellow);
+    border-radius:26px;
+    padding:22px 28px;
+    text-align:center;
+    box-shadow:0 8px 28px rgba(0,0,0,.22);
+    display:none;
+    z-index:10;
+    min-width:300px;
+  }
+
+  .finish.show{display:block}
+
+  .finish h2{
+    margin:0 0 8px;
+    color:var(--green);
+    font-family:"Comic Sans MS","Trebuchet MS",cursive;
+    font-size:30px;
+  }
+
+  .finish p{
+    margin:0;
+    font-size:18px;
+    font-weight:900;
+  }
+
+  @media(max-width:900px){
+    html,body{overflow:auto;height:auto}
+    body{align-items:flex-start}
+    .slide{width:100%; min-height:100vh; height:auto; border-width:6px; padding:0 10px 10px}
+    .header{height:auto; flex-direction:column; align-items:stretch; gap:6px}
+    .title{margin:0 -10px 0; width:auto; border-radius:0 0 16px 16px}
+    .stage{height:auto}
+    .main,.guess-grid{grid-template-columns:1fr; height:auto}
+  }
+</style>
+</head>
+<body>
+<main class="slide">
+  <div class="header">
+    <h1 class="title">Reading Rules J–R</h1>
+    <div class="tools">
+      <div class="score">Score <span id="score">0 / 15</span></div>
+      <button class="btn" id="resetBtn">Reset</button>
+    </div>
+  </div>
+
+  <section class="stage" id="stage1">
+    <div class="main">
+      <div class="panel">
+        <h2 class="panel-title">Match the sounds</h2>
+        <div class="rule-grid">
+          <div class="rule-card"><div class="letter">Jj</div><div class="wordline"><span class="emoji">🏺</span>jug</div><div class="sound-drop" data-answer="/dʒ/"></div></div>
+          <div class="rule-card"><div class="letter">Kk</div><div class="wordline"><span class="emoji">🪁</span>kite</div><div class="sound-drop" data-answer="/k/"></div></div>
+          <div class="rule-card"><div class="letter">Ll</div><div class="wordline"><span class="emoji">🍋</span>lemon</div><div class="sound-drop" data-answer="/l/"></div></div>
+          <div class="rule-card"><div class="letter">Mm</div><div class="wordline"><span class="emoji">🐭</span>mouse</div><div class="sound-drop" data-answer="/m/"></div></div>
+          <div class="rule-card"><div class="letter">Nn</div><div class="wordline"><span class="emoji">🪺</span>nest</div><div class="sound-drop" data-answer="/n/"></div></div>
+          <div class="rule-card"><div class="letter">Oo</div><div class="wordline"><span class="emoji">🍊</span>orange</div><div class="sound-drop" data-answer="/ɒ/"></div></div>
+          <div class="rule-card"><div class="letter">Pp</div><div class="wordline"><span class="emoji">🖊️</span>pen</div><div class="sound-drop" data-answer="/p/"></div></div>
+          <div class="rule-card"><div class="letter">Qq</div><div class="wordline"><span class="emoji">👑</span>queen</div><div class="sound-drop" data-answer="/kw/"></div></div>
+          <div class="rule-card"><div class="letter">Rr</div><div class="wordline"><span class="emoji">🐰</span>rabbit</div><div class="sound-drop" data-answer="/r/"></div></div>
+        </div>
+      </div>
+
+      <div class="panel right">
+        <h2 class="panel-title">Sound cards</h2>
+        <div class="sound-bank" id="soundBank"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="stage hidden" id="stage2">
+    <div class="stage2-panel">
+      <h2 class="panel-title">Guess the first letter</h2>
+      <div class="guess-grid">
+        <div class="guess-card" data-answer="J"><div class="guess-pic">🏺</div><div class="guess-word">_ug</div><div class="letters"><button class="letter-option">J</button><button class="letter-option">G</button></div></div>
+        <div class="guess-card" data-answer="K"><div class="guess-pic">🪁</div><div class="guess-word">_ite</div><div class="letters"><button class="letter-option">K</button><button class="letter-option">C</button></div></div>
+        <div class="guess-card" data-answer="L"><div class="guess-pic">🍋</div><div class="guess-word">_emon</div><div class="letters"><button class="letter-option">R</button><button class="letter-option">L</button></div></div>
+        <div class="guess-card" data-answer="M"><div class="guess-pic">🐭</div><div class="guess-word">_ouse</div><div class="letters"><button class="letter-option">N</button><button class="letter-option">M</button></div></div>
+        <div class="guess-card" data-answer="P"><div class="guess-pic">🖊️</div><div class="guess-word">_en</div><div class="letters"><button class="letter-option">P</button><button class="letter-option">B</button></div></div>
+        <div class="guess-card" data-answer="R"><div class="guess-pic">🐰</div><div class="guess-word">_abbit</div><div class="letters"><button class="letter-option">W</button><button class="letter-option">R</button></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="finish" id="finish">
+    <h2>Great job!</h2>
+    <p>You finished J–R reading rules.</p>
+  </div>
+</main>
+
+<script>
+const sounds = ["/dʒ/","/k/","/l/","/m/","/n/","/ɒ/","/p/","/kw/","/r/"];
+let soundScore = 0;
+let guessScore = 0;
+let selectedCard = null;
+let soundWrongCounts = {};
+let guessWrongCounts = {};
+let reported = false;
+
+const scoreEl = document.getElementById("score");
+const soundBank = document.getElementById("soundBank");
+const stage1 = document.getElementById("stage1");
+const stage2 = document.getElementById("stage2");
+const finish = document.getElementById("finish");
+
+function shuffle(arr){
+  const copy = [...arr];
+  for(let i = copy.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+function renderSounds(){
+  soundBank.innerHTML = "";
+  shuffle(sounds).forEach(sound => {
+    const card = document.createElement("div");
+    card.className = "sound-card";
+    card.textContent = sound;
+    card.dataset.answer = sound;
+    card.draggable = true;
+
+    card.addEventListener("click", () => {
+      if(card.classList.contains("locked")) return;
+      document.querySelectorAll(".sound-card").forEach(c => c.classList.remove("selected"));
+      selectedCard = card;
+      card.classList.add("selected");
+    });
+
+    card.addEventListener("dragstart", e => {
+      selectedCard = card;
+      card.classList.add("dragging");
+      e.dataTransfer.setData("text/plain", sound);
+    });
+
+    card.addEventListener("dragend", () => card.classList.remove("dragging"));
+
+    soundBank.appendChild(card);
+  });
+}
+
+function setupDrops(){
+  document.querySelectorAll(".sound-drop").forEach(drop => {
+    drop.addEventListener("click", () => {
+      if(selectedCard) placeSound(selectedCard, drop);
+    });
+
+    drop.addEventListener("dragover", e => {
+      e.preventDefault();
+      if(!drop.classList.contains("correct")) drop.classList.add("over");
+    });
+
+    drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+
+    drop.addEventListener("drop", e => {
+      e.preventDefault();
+      drop.classList.remove("over");
+      const sound = e.dataTransfer.getData("text/plain");
+      const card = Array.from(document.querySelectorAll(".sound-card:not(.locked)")).find(c => c.dataset.answer === sound);
+      placeSound(card, drop);
+    });
+  });
+}
+
+function placeSound(card, drop){
+  if(!card || card.classList.contains("locked") || drop.classList.contains("correct")) return;
+  if(card.dataset.answer === drop.dataset.answer){
+    card.classList.remove("selected","dragging");
+    card.classList.add("locked");
+    card.draggable = false;
+    drop.classList.add("filled","correct");
+    drop.textContent = "";
+    drop.appendChild(card);
+    selectedCard = null;
+    soundScore++;
+    updateScore();
+    if(soundScore === 9){
+      setTimeout(showStage2, 450);
+    }
+  } else {
+    soundWrongCounts[drop.dataset.answer] = (soundWrongCounts[drop.dataset.answer] || 0) + 1;
+    drop.classList.add("wrong");
+    setTimeout(() => drop.classList.remove("wrong"), 320);
+  }
+}
+
+function showStage2(){
+  stage1.classList.add("hidden");
+  stage2.classList.remove("hidden");
+}
+
+function setupGuess(){
+  document.querySelectorAll(".guess-card").forEach(card => {
+    card.querySelectorAll(".letter-option").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if(card.dataset.done === "true") return;
+        if(btn.textContent.trim() === card.dataset.answer){
+          btn.classList.add("ok");
+          card.dataset.done = "true";
+          guessScore++;
+          updateScore();
+        } else {
+          guessWrongCounts[card.dataset.answer] = (guessWrongCounts[card.dataset.answer] || 0) + 1;
+          btn.classList.add("bad");
+          setTimeout(() => btn.classList.remove("bad"), 350);
+        }
+      });
+    });
+  });
+}
+
+function reportResults(){
+  const soundResults = sounds.map((sound, i) => {
+    const wrongCount = soundWrongCounts[sound] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: i,
+      correctAnswer: sound,
+      studentAnswer: isCorrect ? sound : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `sound ${sound}`,
+    };
+  });
+  const guessResults = Array.from(document.querySelectorAll(".guess-card")).map((card, i) => {
+    const answer = card.dataset.answer;
+    const wrongCount = guessWrongCounts[answer] || 0;
+    const isCorrect = wrongCount === 0;
+    return {
+      questionIndex: soundResults.length + i,
+      correctAnswer: answer,
+      studentAnswer: isCorrect ? answer : `${wrongCount} wrong ${wrongCount === 1 ? "try" : "tries"}`,
+      isCorrect,
+      sentence: `first letter: ${answer}`,
+    };
+  });
+  const results = [...soundResults, ...guessResults];
+  const totalScore = results.filter(r => r.isCorrect).length;
+  window.parent.postMessage({
+    type: "reading-rules-jr-done",
+    score: totalScore,
+    total: results.length,
+    results,
+  }, "*");
+}
+
+function updateScore(){
+  const total = soundScore + guessScore;
+  scoreEl.textContent = `${total} / 15`;
+  if(total === 15){
+    setTimeout(() => finish.classList.add("show"), 250);
+    if(!reported){
+      reported = true;
+      reportResults();
+    }
+  }
+}
+
+function resetAll(){
+  soundScore = 0;
+  guessScore = 0;
+  selectedCard = null;
+  soundWrongCounts = {};
+  guessWrongCounts = {};
+  reported = false;
+  finish.classList.remove("show");
+  stage1.classList.remove("hidden");
+  stage2.classList.add("hidden");
+
+  document.querySelectorAll(".sound-drop").forEach(drop => {
+    drop.className = "sound-drop";
+    drop.textContent = "";
+  });
+
+  document.querySelectorAll(".guess-card").forEach(card => {
+    delete card.dataset.done;
+  });
+
+  document.querySelectorAll(".letter-option").forEach(btn => btn.classList.remove("ok","bad"));
+
+  renderSounds();
+  setupDrops();
+  updateScore();
+}
+
+document.getElementById("resetBtn").addEventListener("click", resetAll);
+
+renderSounds();
+setupDrops();
+setupGuess();
+updateScore();
+</script>
+</body>
+</html>
