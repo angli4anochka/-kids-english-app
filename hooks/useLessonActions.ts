@@ -164,10 +164,11 @@ export const useLessonActions = ({
           title: activity.title,
           subtitle: activity.subtitle,
           points: activity.points,
-          contentUrl: (activity as any).wordwallUrl || activity.imageUrl || activity.audioUrl || (activity as any).videoUrl,
+          contentUrl: (activity as any).wordwallUrl || activity.imageUrl || activity.audioUrl || (activity as any).videoUrl || (activity as any).externalUrl,
           contentData: {
             ...activity.contentData,
             wordwallUrl: (activity as any).wordwallUrl || undefined,
+            externalUrl: (activity as any).externalUrl || undefined,
             letterTraceConfig: activity.letterTraceConfig,
             letterRaceConfig: activity.letterRaceConfig,
             letterMazeConfig: activity.letterMazeConfig,
@@ -303,7 +304,7 @@ export const useLessonActions = ({
           type: activity.type,
           title: activity.title,
           subtitle: activity.subtitle || '',
-          contentUrl: activity.videoUrl || activity.wordwallUrl || activity.geniallyUrl || activity.imageUrl || (activity as any).presentationUrl || null,
+          contentUrl: activity.videoUrl || activity.wordwallUrl || activity.geniallyUrl || activity.imageUrl || (activity as any).presentationUrl || (activity as any).externalUrl || null,
           audioUrl: activity.audioUrl || null,
           contentData: {
             // All possible activity data fields
@@ -311,6 +312,7 @@ export const useLessonActions = ({
             videoUrl: activity.videoUrl,
             wordwallUrl: activity.wordwallUrl,
             geniallyUrl: activity.geniallyUrl,
+            externalUrl: (activity as any).externalUrl,
             audioUrl: activity.audioUrl,
             dragTextData: activity.dragTextData,
             presentationType: (activity as any).presentationType,
