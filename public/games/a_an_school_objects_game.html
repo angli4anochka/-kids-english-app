@@ -22,25 +22,31 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
       font-family: "Trebuchet MS", Arial, sans-serif;
       color: var(--ink);
       background:
         radial-gradient(circle at 12% 10%, rgba(255,255,255,.85) 0 7%, transparent 7.5%),
         radial-gradient(circle at 88% 8%, rgba(255,255,255,.75) 0 6%, transparent 6.5%),
         linear-gradient(145deg, #d9f1ff 0%, #f4fbff 45%, #dff3ff 100%);
-      padding: 24px;
+      padding: clamp(8px, 1vw, 16px);
     }
 
     .app {
       width: min(1180px, 100%);
+      height: 100%;
       margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: clamp(8px, 1vw, 14px);
+      min-height: 0;
     }
 
     .hero {
       background: linear-gradient(135deg, #277fd1, #65b9f0);
-      border-radius: 30px;
-      padding: 28px 30px;
+      border-radius: 24px;
+      padding: clamp(12px, 1.5vw, 20px);
       color: white;
       box-shadow: var(--shadow);
       display: grid;
@@ -51,44 +57,44 @@
 
     .hero h1 {
       margin: 0 0 8px;
-      font-size: clamp(34px, 6vw, 64px);
+      font-size: clamp(26px, 4vw, 48px);
       line-height: .95;
     }
 
     .hero p {
       margin: 0;
-      font-size: clamp(17px, 2.4vw, 25px);
+      font-size: clamp(14px, 1.7vw, 22px);
       font-weight: 700;
     }
 
     .hero-emoji {
-      font-size: clamp(70px, 10vw, 120px);
+      font-size: clamp(48px, 7vw, 90px);
       filter: drop-shadow(0 10px 10px rgba(0,0,0,.16));
     }
 
     .rule {
-      margin: 22px 0;
-      padding: 22px 26px;
+      margin: 0;
+      padding: clamp(10px, 1.1vw, 16px);
       border: 3px solid #80bdf0;
-      border-radius: 26px;
+      border-radius: 22px;
       background: rgba(255,255,255,.92);
       box-shadow: var(--shadow);
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+      gap: clamp(8px, 1vw, 14px);
     }
 
     .rule-card {
       background: var(--blue-soft);
-      border-radius: 20px;
-      padding: 18px 20px;
-      font-size: 20px;
-      line-height: 1.45;
+      border-radius: 16px;
+      padding: clamp(8px, 1vw, 13px);
+      font-size: clamp(14px, 1.35vw, 18px);
+      line-height: 1.25;
     }
 
     .rule-card strong {
       display: block;
-      font-size: 28px;
+      font-size: clamp(18px, 2vw, 24px);
       color: var(--blue-dark);
       margin-bottom: 5px;
     }
@@ -101,9 +107,13 @@
 
     .exercise {
       background: rgba(255,255,255,.72);
-      border-radius: 30px;
-      padding: 24px;
+      border-radius: 24px;
+      padding: clamp(10px, 1.2vw, 18px);
       box-shadow: var(--shadow);
+      min-height: 0;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: auto 1fr auto auto;
     }
 
     .exercise-title {
@@ -111,13 +121,13 @@
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      margin-bottom: 20px;
+      margin-bottom: clamp(8px, 1vw, 14px);
     }
 
     .exercise-title h2 {
       margin: 0;
       color: var(--blue-dark);
-      font-size: clamp(26px, 4vw, 40px);
+      font-size: clamp(20px, 2.7vw, 32px);
     }
 
     .score {
@@ -132,17 +142,31 @@
       border: 2px solid #b9dcf8;
     }
 
+    .page-info {
+      min-width: 110px;
+      padding: 8px 13px;
+      border-radius: 999px;
+      background: #eaf5ff;
+      color: var(--blue-dark);
+      text-align: center;
+      font-weight: 900;
+      font-size: 16px;
+      border: 2px solid #b9dcf8;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 16px;
+      gap: clamp(8px, 1vw, 14px);
+      align-content: start;
+      min-height: 0;
     }
 
     .item {
       position: relative;
-      min-height: 220px;
-      padding: 18px 16px 16px;
-      border-radius: 24px;
+      min-height: clamp(150px, 20vh, 205px);
+      padding: clamp(12px, 1.2vw, 16px);
+      border-radius: 20px;
       background: var(--card);
       border: 3px solid transparent;
       box-shadow: 0 8px 20px rgba(47, 89, 130, .1);
@@ -170,8 +194,8 @@
       position: absolute;
       top: 12px;
       left: 14px;
-      width: 32px;
-      height: 32px;
+      width: 28px;
+      height: 28px;
       display: grid;
       place-items: center;
       border-radius: 50%;
@@ -182,7 +206,7 @@
 
     .icon {
       margin-top: 22px;
-      font-size: 76px;
+      font-size: clamp(46px, 6vw, 70px);
       line-height: 1;
       filter: drop-shadow(0 6px 5px rgba(25, 52, 81, .14));
     }
@@ -193,7 +217,7 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      font-size: 20px;
+      font-size: clamp(15px, 1.45vw, 20px);
       font-weight: 800;
       text-align: center;
     }
@@ -227,14 +251,14 @@
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 14px;
-      margin-top: 24px;
+      gap: 10px;
+      margin-top: clamp(8px, 1vw, 14px);
     }
 
     .btn {
       border: 0;
       border-radius: 18px;
-      padding: 14px 25px;
+      padding: 10px 18px;
       cursor: pointer;
       font: inherit;
       font-size: 20px;
@@ -257,14 +281,24 @@
       border: 2px solid #9cccf1;
     }
 
+    .page-nav {
+      background: linear-gradient(135deg, #7db7ff, #4d8bec);
+      color: white;
+    }
+
+    .page-nav:disabled {
+      opacity: .4;
+      cursor: default;
+    }
+
     .result {
       display: none;
-      margin-top: 18px;
-      padding: 18px;
+      margin-top: 8px;
+      padding: 10px 14px;
       border-radius: 18px;
       background: white;
       text-align: center;
-      font-size: 23px;
+      font-size: clamp(16px, 1.6vw, 22px);
       font-weight: 900;
     }
 
@@ -288,13 +322,24 @@
       .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .exercise { padding: 14px; }
       .exercise-title { align-items: stretch; flex-direction: column; }
-      .item { min-height: 195px; }
+      .item { min-height: 170px; }
       .icon { font-size: 64px; }
     }
 
     @media (max-width: 420px) {
       .grid { grid-template-columns: 1fr; }
       .item { min-height: 180px; }
+    }
+
+    @media (max-height: 680px) {
+      .hero p,
+      .rule {
+        display: none;
+      }
+
+      .app {
+        grid-template-rows: auto 1fr;
+      }
     }
   </style>
 </head>
@@ -324,11 +369,14 @@
       <div class="exercise-title">
         <h2>Complete the phrases</h2>
         <div class="score" id="score">0 / 13</div>
+        <div class="page-info" id="pageInfo">1 / 4</div>
       </div>
 
       <div class="grid" id="grid"></div>
 
       <div class="actions">
+        <button class="btn page-nav" id="prevPageButton" type="button">Back</button>
+        <button class="btn page-nav" id="nextPageButton" type="button">Next</button>
         <button class="btn check" id="checkButton">Check answers</button>
         <button class="btn reset" id="resetButton">Try again</button>
       </div>
@@ -356,15 +404,25 @@
 
     const grid = document.getElementById("grid");
     const score = document.getElementById("score");
+    const pageInfo = document.getElementById("pageInfo");
     const result = document.getElementById("result");
+    const prevPageButton = document.getElementById("prevPageButton");
+    const nextPageButton = document.getElementById("nextPageButton");
     const checkButton = document.getElementById("checkButton");
     const resetButton = document.getElementById("resetButton");
+    const pageSize = 4;
+    let currentPage = 0;
+    let savedAnswers = Array(objects.length).fill("");
     let resultSent = false;
 
     function buildExercise() {
       grid.innerHTML = "";
 
-      objects.forEach((item, index) => {
+      const start = currentPage * pageSize;
+      const pageObjects = objects.slice(start, start + pageSize);
+
+      pageObjects.forEach((item, pageIndex) => {
+        const index = start + pageIndex;
         const card = document.createElement("article");
         card.className = "item";
         card.innerHTML = `
@@ -380,6 +438,8 @@
               spellcheck="false"
               aria-label="Article before ${item.word}"
               data-answer="${item.answer}"
+              data-index="${index}"
+              value="${savedAnswers[index]}"
             />
             <span>${item.word}</span>
           </label>
@@ -388,22 +448,42 @@
         grid.appendChild(card);
       });
 
-      score.textContent = `0 / ${objects.length}`;
+      updatePageControls();
+    }
+
+    function updatePageControls() {
+      const pageCount = Math.ceil(objects.length / pageSize);
+      pageInfo.textContent = `${currentPage + 1} / ${pageCount}`;
+      prevPageButton.disabled = currentPage === 0;
+      nextPageButton.disabled = currentPage === pageCount - 1;
+    }
+
+    function saveVisibleAnswers() {
+      document.querySelectorAll(".article-input").forEach(input => {
+        savedAnswers[Number(input.dataset.index)] = input.value.trim().toLowerCase();
+      });
+    }
+
+    function goToPage(page) {
+      saveVisibleAnswers();
+      currentPage = Math.max(0, Math.min(page, Math.ceil(objects.length / pageSize) - 1));
+      buildExercise();
       result.classList.remove("show");
       result.textContent = "";
     }
 
     function checkAnswers() {
-      const inputs = [...document.querySelectorAll(".article-input")];
+      saveVisibleAnswers();
       let correctCount = 0;
       const answers = [];
+      let firstWrongIndex = -1;
 
-      inputs.forEach((input, index) => {
-        const card = input.closest(".item");
-        const feedback = card.querySelector(".feedback");
-        const userAnswer = input.value.trim().toLowerCase();
-        const correctAnswer = input.dataset.answer;
-        const object = objects[index];
+      objects.forEach((object, index) => {
+        const input = document.querySelector(`.article-input[data-index="${index}"]`);
+        const card = input?.closest(".item");
+        const feedback = card?.querySelector(".feedback");
+        const userAnswer = savedAnswers[index];
+        const correctAnswer = object.answer;
 
         answers.push({
           word: object.word,
@@ -412,17 +492,18 @@
           correct: userAnswer === correctAnswer
         });
 
-        card.classList.remove("correct", "wrong");
+        card?.classList.remove("correct", "wrong");
 
         if (userAnswer === correctAnswer) {
           correctCount++;
-          card.classList.add("correct");
-          feedback.textContent = "Correct ✓";
-        } else {
+          card?.classList.add("correct");
+          if (feedback) feedback.textContent = "Correct ✓";
+        } else if (card && feedback) {
+          if (firstWrongIndex === -1) firstWrongIndex = index;
           card.classList.add("wrong");
-          feedback.textContent = userAnswer
-            ? `Try again`
-            : "Write a or an";
+          feedback.textContent = userAnswer ? "Try again" : "Write a or an";
+        } else if (firstWrongIndex === -1) {
+          firstWrongIndex = index;
         }
       });
 
@@ -446,12 +527,21 @@
       } else {
         result.textContent = `${correctCount} correct. Fix the red cards and check again.`;
         result.style.color = "#b02e3a";
+        if (firstWrongIndex !== -1 && Math.floor(firstWrongIndex / pageSize) !== currentPage) {
+          goToPage(Math.floor(firstWrongIndex / pageSize));
+          setTimeout(checkAnswers, 0);
+        }
       }
     }
 
     function resetExercise() {
       resultSent = false;
+      savedAnswers = Array(objects.length).fill("");
+      currentPage = 0;
       buildExercise();
+      score.textContent = `0 / ${objects.length}`;
+      result.classList.remove("show");
+      result.textContent = "";
       document.querySelector(".article-input")?.focus();
     }
 
@@ -461,6 +551,7 @@
         .toLowerCase()
         .replace(/[^a-z]/g, "")
         .slice(0, 2);
+      savedAnswers[Number(event.target.dataset.index)] = event.target.value;
 
       const card = event.target.closest(".item");
       card.classList.remove("correct", "wrong");
@@ -471,9 +562,16 @@
       if (event.key !== "Enter" || !event.target.classList.contains("article-input")) return;
       const inputs = [...document.querySelectorAll(".article-input")];
       const currentIndex = inputs.indexOf(event.target);
-      inputs[currentIndex + 1]?.focus();
+      if (inputs[currentIndex + 1]) {
+        inputs[currentIndex + 1].focus();
+      } else {
+        goToPage(currentPage + 1);
+        document.querySelector(".article-input")?.focus();
+      }
     });
 
+    prevPageButton.addEventListener("click", () => goToPage(currentPage - 1));
+    nextPageButton.addEventListener("click", () => goToPage(currentPage + 1));
     checkButton.addEventListener("click", checkAnswers);
     resetButton.addEventListener("click", resetExercise);
 
