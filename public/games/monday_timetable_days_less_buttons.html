@@ -926,7 +926,6 @@
       if (timetableIndex >= timetableTasks.length){
         timetableQuestion.textContent = "Great! Now write your answer below.";
         return;
-        return;
       }
 
       timetableQuestion.textContent = timetableTasks[timetableIndex].text;
@@ -993,6 +992,57 @@
       };
     }
 
+    function buildDetailedResults(daysResult){
+      const results = [];
+
+      timetableTasks.forEach((task, index) => {
+        const selector = task.type === "time"
+          ? `.time-cell[data-type="time"][data-time="${task.time}"].found`
+          : `.lesson-cell[data-type="subject"][data-subject="${task.subject}"].found`;
+        const isCorrect = Boolean(document.querySelector(selector));
+
+        results.push({
+          questionIndex: index,
+          section: "timetable",
+          studentAnswer: isCorrect ? (task.time || task.subject || "") : "",
+          correctAnswer: task.time || task.subject || "",
+          isCorrect,
+          sentence: task.text
+        });
+      });
+
+      missingData.forEach((item, index) => {
+        const card = missingGrid.children[index];
+        const isCorrect = Boolean(card && card.classList.contains("done"));
+
+        results.push({
+          questionIndex: timetableTasks.length + index,
+          section: "missing-letters",
+          studentAnswer: isCorrect ? item.answer : "",
+          correctAnswer: item.answer,
+          isCorrect,
+          sentence: item.word
+        });
+      });
+
+      days.forEach((day, index) => {
+        const slot = orderSlots.children[index];
+        const studentAnswer = slot?.textContent?.trim() || "";
+        const isCorrect = Boolean(slot && slot.classList.contains("filled") && studentAnswer === day);
+
+        results.push({
+          questionIndex: timetableTasks.length + missingData.length + index,
+          section: "days-order",
+          studentAnswer: isCorrect ? day : "",
+          correctAnswer: day,
+          isCorrect,
+          sentence: `Day ${index + 1}: ${day}`
+        });
+      });
+
+      return results;
+    }
+
     function sendResultsToTeacher(){
       const answer = studentAnswer.value.trim();
 
@@ -1004,10 +1054,8 @@
       }
 
       const daysResult = getDaysResult();
-      const score =
-        Math.min(timetableIndex, timetableTasks.length) +
-        daysResult.completedLetters.length +
-        daysResult.orderedDays.length;
+      const detailedResults = buildDetailedResults(daysResult);
+      const score = detailedResults.filter(item => item.isCorrect).length;
       const total = timetableTasks.length + missingData.length + days.length;
 
       const result = {
@@ -1019,6 +1067,7 @@
         score,
         total,
         results: {
+          answers: detailedResults,
           mondayAnswer: answer,
           timetableProgress: `${Math.min(timetableIndex, timetableTasks.length)} / ${timetableTasks.length}`,
           days: daysResult
