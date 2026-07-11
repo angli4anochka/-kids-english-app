@@ -398,6 +398,7 @@
     const resetBtn = document.getElementById('resetBtn');
     const success = document.getElementById('success');
     const dpr = Math.max(1, window.devicePixelRatio || 1);
+    let resultSent = false;
 
     function paintFoil(canvas) {
       const card = canvas.closest('.scratch-card');
@@ -491,6 +492,15 @@
       if (revealed === cards.length) {
         success.classList.add('show');
         launchConfetti();
+        if (!resultSent && window.parent !== window) {
+          resultSent = true;
+          window.parent.postMessage({
+            type: 'school-intro-done',
+            score: revealed,
+            total: cards.length,
+            results: { revealed }
+          }, '*');
+        }
         setTimeout(() => success.classList.remove('show'), 2400);
       }
     }
@@ -541,6 +551,7 @@
 
     function resetGame() {
       success.classList.remove('show');
+      resultSent = false;
       cards.forEach(card => {
         card.classList.remove('revealed');
         const canvas = card.querySelector('canvas');

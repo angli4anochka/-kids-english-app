@@ -157,6 +157,7 @@
 
     let currentIndex = -1;
     let isFinished = false;
+    let resultSent = false;
 
     const page = document.getElementById("page");
     const lessonText = document.getElementById("lessonText");
@@ -170,6 +171,15 @@
 
       if (currentIndex >= lessons.length) {
         isFinished = true;
+        if (!resultSent && window.parent !== window) {
+          resultSent = true;
+          window.parent.postMessage({
+            type: "wheres-the-lesson-done",
+            score: lessons.length,
+            total: lessons.length,
+            results: { viewed: lessons.map(item => item.question) }
+          }, "*");
+        }
         return;
       }
 

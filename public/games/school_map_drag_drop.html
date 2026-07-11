@@ -401,6 +401,7 @@
     let dragCard = null;
     let originalParent = null;
     let originalNext = null;
+    let resultSent = false;
 
     function showToast(text, good = true) {
       toast.textContent = text;
@@ -415,6 +416,15 @@
 
       if (solved.size === zones.length) {
         done.classList.add('show');
+        if (!resultSent && window.parent !== window) {
+          resultSent = true;
+          window.parent.postMessage({
+            type: 'school-map-done',
+            score: solved.size,
+            total: zones.length,
+            results: { subjects: Array.from(solved) }
+          }, '*');
+        }
         setTimeout(() => done.classList.remove('show'), 2200);
       }
     }

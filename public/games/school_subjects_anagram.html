@@ -904,6 +904,7 @@
     let answer = [];
     let currentLetters = [];
     let wrongAttempts = 0;
+    let resultSent = false;
 
     function shuffleLetters(word) {
       const letters = word.toUpperCase().split("");
@@ -1020,6 +1021,15 @@
         feedback.classList.add("show");
         nextBtn.classList.add("show");
         nextBtn.textContent = index === subjects.length - 1 ? "Start again" : "Next";
+        if (index === subjects.length - 1 && !resultSent && window.parent !== window) {
+          resultSent = true;
+          window.parent.postMessage({
+            type: "school-subjects-anagram-done",
+            score: subjects.length,
+            total: subjects.length,
+            results: { completedWords: subjects.map(item => item.word) }
+          }, "*");
+        }
         setTimeout(() => feedback.classList.remove("show"), 1050);
       } else {
         wrongAttempts++;
@@ -1041,7 +1051,10 @@
     function nextSubject() {
       if (!nextBtn.classList.contains("show")) return;
       index++;
-      if (index >= subjects.length) index = 0;
+      if (index >= subjects.length) {
+        index = 0;
+        resultSent = false;
+      }
       renderSubject();
     }
 

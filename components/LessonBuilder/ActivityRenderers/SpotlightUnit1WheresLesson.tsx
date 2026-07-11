@@ -1,21 +1,15 @@
-'use client';
+import SpotlightIframeActivity, { type SpotlightActivityProps } from './SpotlightIframeActivity';
 
-interface Props {
-  isTeacher?: boolean;
-  lessonId?: string;
-  activityId?: string;
-  sessionId?: string;
-}
+const SANDBOX = 'allow-scripts allow-same-origin allow-forms allow-pointer-lock';
 
-export default function SpotlightUnit1WheresLesson({ isTeacher, lessonId, activityId, sessionId }: Props) {
+export default function SpotlightUnit1WheresLesson(props: SpotlightActivityProps) {
   return (
-    <div className="w-full h-full">
-      <iframe
-        src="/games/wheres_the_lesson_no_repeat.html"
-        className="w-full h-full border-0"
-        title="Where's the lesson?"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
-      />
-    </div>
+    <SpotlightIframeActivity
+      {...props}
+      src="/games/wheres_the_lesson_no_repeat.html"
+      title="Where's the lesson?"
+      doneMessageTypes={['wheres-the-lesson-done']}
+      sandbox={SANDBOX}
+    />
   );
 }

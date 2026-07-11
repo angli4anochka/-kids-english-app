@@ -1,21 +1,15 @@
-'use client';
+import SpotlightIframeActivity, { type SpotlightActivityProps } from './SpotlightIframeActivity';
 
-interface Props {
-  isTeacher?: boolean;
-  lessonId?: string;
-  activityId?: string;
-  sessionId?: string;
-}
+const SANDBOX = 'allow-scripts allow-same-origin allow-forms allow-pointer-lock';
 
-export default function SpotlightUnit1SchoolSubjectsFlashlight({ isTeacher, lessonId, activityId, sessionId }: Props) {
+export default function SpotlightUnit1SchoolSubjectsFlashlight(props: SpotlightActivityProps) {
   return (
-    <div className="w-full h-full">
-      <iframe
-        src="/games/school_subjects_flashlight.html"
-        className="w-full h-full border-0"
-        title="School Subjects Flashlight Game"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
-      />
-    </div>
+    <SpotlightIframeActivity
+      {...props}
+      src="/games/school_subjects_flashlight.html"
+      title="School Subjects Flashlight Game"
+      doneMessageTypes={['gameCompleted', 'school-subjects-flashlight-done']}
+      sandbox={SANDBOX}
+    />
   );
 }
