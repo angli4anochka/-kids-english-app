@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>A or An? School Objects</title>
+  <style>
+    :root {
+      --blue: #4d9ce8;
+      --blue-dark: #1e64b7;
+      --blue-soft: #eaf5ff;
+      --green: #35a853;
+      --red: #db3b48;
+      --ink: #24324a;
+      --card: rgba(255,255,255,.96);
+      --shadow: 0 14px 34px rgba(48, 86, 133, .16);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { min-height: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Trebuchet MS", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(255,255,255,.85) 0 7%, transparent 7.5%),
+        radial-gradient(circle at 88% 8%, rgba(255,255,255,.75) 0 6%, transparent 6.5%),
+        linear-gradient(145deg, #d9f1ff 0%, #f4fbff 45%, #dff3ff 100%);
+      padding: 24px;
+    }
+
+    .app {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #277fd1, #65b9f0);
+      border-radius: 30px;
+      padding: 28px 30px;
+      color: white;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .hero h1 {
+      margin: 0 0 8px;
+      font-size: clamp(34px, 6vw, 64px);
+      line-height: .95;
+    }
+
+    .hero p {
+      margin: 0;
+      font-size: clamp(17px, 2.4vw, 25px);
+      font-weight: 700;
+    }
+
+    .hero-emoji {
+      font-size: clamp(70px, 10vw, 120px);
+      filter: drop-shadow(0 10px 10px rgba(0,0,0,.16));
+    }
+
+    .rule {
+      margin: 22px 0;
+      padding: 22px 26px;
+      border: 3px solid #80bdf0;
+      border-radius: 26px;
+      background: rgba(255,255,255,.92);
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .rule-card {
+      background: var(--blue-soft);
+      border-radius: 20px;
+      padding: 18px 20px;
+      font-size: 20px;
+      line-height: 1.45;
+    }
+
+    .rule-card strong {
+      display: block;
+      font-size: 28px;
+      color: var(--blue-dark);
+      margin-bottom: 5px;
+    }
+
+    .vowels {
+      color: #78a900;
+      font-weight: 900;
+      letter-spacing: 2px;
+    }
+
+    .exercise {
+      background: rgba(255,255,255,.72);
+      border-radius: 30px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .exercise-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .exercise-title h2 {
+      margin: 0;
+      color: var(--blue-dark);
+      font-size: clamp(26px, 4vw, 40px);
+    }
+
+    .score {
+      min-width: 140px;
+      padding: 11px 18px;
+      border-radius: 18px;
+      background: white;
+      color: var(--blue-dark);
+      text-align: center;
+      font-weight: 900;
+      font-size: 20px;
+      border: 2px solid #b9dcf8;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .item {
+      position: relative;
+      min-height: 220px;
+      padding: 18px 16px 16px;
+      border-radius: 24px;
+      background: var(--card);
+      border: 3px solid transparent;
+      box-shadow: 0 8px 20px rgba(47, 89, 130, .1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+
+    .item:hover { transform: translateY(-3px); }
+
+    .item.correct {
+      border-color: #67c97e;
+      background: #effcf2;
+    }
+
+    .item.wrong {
+      border-color: #ee7b86;
+      background: #fff1f3;
+      animation: shake .32s ease;
+    }
+
+    .number {
+      position: absolute;
+      top: 12px;
+      left: 14px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: white;
+      font-weight: 900;
+    }
+
+    .icon {
+      margin-top: 22px;
+      font-size: 76px;
+      line-height: 1;
+      filter: drop-shadow(0 6px 5px rgba(25, 52, 81, .14));
+    }
+
+    .answer-line {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .article-input {
+      width: 62px;
+      border: 0;
+      border-bottom: 3px solid #75b6e8;
+      outline: 0;
+      text-align: center;
+      font: inherit;
+      color: var(--blue-dark);
+      background: transparent;
+      text-transform: lowercase;
+      padding: 4px 2px;
+    }
+
+    .article-input:focus { border-bottom-color: var(--blue-dark); }
+
+    .feedback {
+      min-height: 22px;
+      margin-top: 8px;
+      font-weight: 900;
+      font-size: 15px;
+    }
+
+    .correct .feedback { color: var(--green); }
+    .wrong .feedback { color: var(--red); }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 18px;
+      padding: 14px 25px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 20px;
+      font-weight: 900;
+      transition: transform .14s ease, filter .14s ease;
+    }
+
+    .btn:active { transform: scale(.96); }
+    .btn:hover { filter: brightness(1.04); }
+
+    .check {
+      background: linear-gradient(135deg, #277fd1, #5aacdf);
+      color: white;
+      box-shadow: 0 9px 18px rgba(39, 127, 209, .25);
+    }
+
+    .reset {
+      background: white;
+      color: var(--blue-dark);
+      border: 2px solid #9cccf1;
+    }
+
+    .result {
+      display: none;
+      margin-top: 18px;
+      padding: 18px;
+      border-radius: 18px;
+      background: white;
+      text-align: center;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .result.show { display: block; }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-7px); }
+      75% { transform: translateX(7px); }
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 680px) {
+      body { padding: 12px; }
+      .hero { grid-template-columns: 1fr; text-align: center; }
+      .hero-emoji { display: none; }
+      .rule { grid-template-columns: 1fr; padding: 16px; }
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .exercise { padding: 14px; }
+      .exercise-title { align-items: stretch; flex-direction: column; }
+      .item { min-height: 195px; }
+      .icon { font-size: 64px; }
+    }
+
+    @media (max-width: 420px) {
+      .grid { grid-template-columns: 1fr; }
+      .item { min-height: 180px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <h1>A or An?</h1>
+        <p>Write the correct article before each school object.</p>
+      </div>
+      <div class="hero-emoji">🎒</div>
+    </section>
+
+    <section class="rule" aria-label="Grammar rule">
+      <div class="rule-card">
+        <strong>a + consonant sound</strong>
+        a book, a ruler, a pencil
+      </div>
+      <div class="rule-card">
+        <strong>an + vowel sound</strong>
+        <span class="vowels">a, e, i, o, u</span><br>
+        an eraser, an atlas
+      </div>
+    </section>
+
+    <section class="exercise">
+      <div class="exercise-title">
+        <h2>Complete the phrases</h2>
+        <div class="score" id="score">0 / 13</div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+
+      <div class="actions">
+        <button class="btn check" id="checkButton">Check answers</button>
+        <button class="btn reset" id="resetButton">Try again</button>
+      </div>
+
+      <div class="result" id="result"></div>
+    </section>
+  </main>
+
+  <script>
+    const objects = [
+      { word: "pencil sharpener", icon: "✏️", answer: "a" },
+      { word: "ruler", icon: "📏", answer: "a" },
+      { word: "eraser", icon: "🧼", answer: "an" },
+      { word: "pencil case", icon: "🧰", answer: "a" },
+      { word: "notebook", icon: "📓", answer: "a" },
+      { word: "atlas", icon: "🌍", answer: "an" },
+      { word: "blackboard", icon: "🧑‍🏫", answer: "a" },
+      { word: "book", icon: "📘", answer: "a" },
+      { word: "school bag", icon: "🎒", answer: "a" },
+      { word: "pen", icon: "🖊️", answer: "a" },
+      { word: "pencil", icon: "✏️", answer: "a" },
+      { word: "notepad", icon: "🗒️", answer: "a" },
+      { word: "timetable", icon: "📅", answer: "a" }
+    ];
+
+    const grid = document.getElementById("grid");
+    const score = document.getElementById("score");
+    const result = document.getElementById("result");
+    const checkButton = document.getElementById("checkButton");
+    const resetButton = document.getElementById("resetButton");
+    let resultSent = false;
+
+    function buildExercise() {
+      grid.innerHTML = "";
+
+      objects.forEach((item, index) => {
+        const card = document.createElement("article");
+        card.className = "item";
+        card.innerHTML = `
+          <div class="number">${index + 1}</div>
+          <div class="icon" aria-hidden="true">${item.icon}</div>
+          <label class="answer-line">
+            <input
+              class="article-input"
+              type="text"
+              maxlength="2"
+              autocomplete="off"
+              autocapitalize="none"
+              spellcheck="false"
+              aria-label="Article before ${item.word}"
+              data-answer="${item.answer}"
+            />
+            <span>${item.word}</span>
+          </label>
+          <div class="feedback"></div>
+        `;
+        grid.appendChild(card);
+      });
+
+      score.textContent = `0 / ${objects.length}`;
+      result.classList.remove("show");
+      result.textContent = "";
+    }
+
+    function checkAnswers() {
+      const inputs = [...document.querySelectorAll(".article-input")];
+      let correctCount = 0;
+      const answers = [];
+
+      inputs.forEach((input, index) => {
+        const card = input.closest(".item");
+        const feedback = card.querySelector(".feedback");
+        const userAnswer = input.value.trim().toLowerCase();
+        const correctAnswer = input.dataset.answer;
+        const object = objects[index];
+
+        answers.push({
+          word: object.word,
+          answer: userAnswer,
+          correctAnswer,
+          correct: userAnswer === correctAnswer
+        });
+
+        card.classList.remove("correct", "wrong");
+
+        if (userAnswer === correctAnswer) {
+          correctCount++;
+          card.classList.add("correct");
+          feedback.textContent = "Correct ✓";
+        } else {
+          card.classList.add("wrong");
+          feedback.textContent = userAnswer
+            ? `Try again`
+            : "Write a or an";
+        }
+      });
+
+      score.textContent = `${correctCount} / ${objects.length}`;
+      result.classList.add("show");
+
+      if (correctCount === objects.length) {
+        result.textContent = "Excellent! All answers are correct! 🎉";
+        result.style.color = "#258b43";
+        if (!resultSent && window.parent !== window) {
+          resultSent = true;
+          window.parent.postMessage({
+            type: "a-an-school-objects-done",
+            score: correctCount,
+            total: objects.length,
+            results: {
+              answers
+            }
+          }, "*");
+        }
+      } else {
+        result.textContent = `${correctCount} correct. Fix the red cards and check again.`;
+        result.style.color = "#b02e3a";
+      }
+    }
+
+    function resetExercise() {
+      resultSent = false;
+      buildExercise();
+      document.querySelector(".article-input")?.focus();
+    }
+
+    grid.addEventListener("input", event => {
+      if (!event.target.classList.contains("article-input")) return;
+      event.target.value = event.target.value
+        .toLowerCase()
+        .replace(/[^a-z]/g, "")
+        .slice(0, 2);
+
+      const card = event.target.closest(".item");
+      card.classList.remove("correct", "wrong");
+      card.querySelector(".feedback").textContent = "";
+    });
+
+    grid.addEventListener("keydown", event => {
+      if (event.key !== "Enter" || !event.target.classList.contains("article-input")) return;
+      const inputs = [...document.querySelectorAll(".article-input")];
+      const currentIndex = inputs.indexOf(event.target);
+      inputs[currentIndex + 1]?.focus();
+    });
+
+    checkButton.addEventListener("click", checkAnswers);
+    resetButton.addEventListener("click", resetExercise);
+
+    buildExercise();
+  </script>
+</body>
+</html>
