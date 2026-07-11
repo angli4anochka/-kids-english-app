@@ -414,8 +414,8 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       )}
       {/* Top Control Bar */}
       <div className="bg-white shadow-lg border-b-4 border-purple-300">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+        <div className="w-full px-3 sm:px-5 lg:px-8 py-4">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div className="flex items-center gap-4">
               <button
                 onClick={() => router.push('/teacher/lessons')}
@@ -446,13 +446,13 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-12 gap-6">
+      <div className="w-full px-2 sm:px-4 lg:px-6 py-4 lg:py-6">
+        <div className="grid grid-cols-1 xl:grid-cols-[280px_minmax(0,1fr)] gap-4 lg:gap-6">
           {/* Left Sidebar - Activities List + Who finished */}
-          <div className="col-span-3 flex flex-col gap-4">
-            <div className="bg-white rounded-2xl shadow-xl p-4 sticky top-6">
+          <div className="flex flex-col gap-4 min-w-0">
+            <div className="bg-white rounded-2xl shadow-xl p-4 xl:sticky xl:top-6">
               <h2 className="text-xl font-bold text-gray-900 mb-4">Этапы урока</h2>
-              <div className="space-y-2 max-h-[40vh] overflow-y-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-2 max-h-[28vh] xl:max-h-[40vh] overflow-y-auto">
                 {activities.map((activity, index) => (
                   <button
                     key={activity.id}
@@ -548,7 +548,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
           </div>
 
           {/* Main Content - Current Activity */}
-          <div className="col-span-9">
+          <div className="min-w-0">
             {activities.length === 0 ? (
               <div className="bg-white rounded-3xl shadow-2xl p-12 text-center">
                 <p className="text-2xl text-gray-600">В этом уроке пока нет этапов</p>
@@ -556,8 +556,8 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
             ) : currentActivity ? (
               <div>
                 <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
-                  <div className="bg-gradient-to-r from-purple-500 to-indigo-600 px-8 py-6">
-                    <h2 className="text-3xl font-bold text-white mb-2">
+                  <div className="bg-gradient-to-r from-purple-500 to-indigo-600 px-4 sm:px-6 lg:px-8 py-3 lg:py-5">
+                    <h2 className="text-xl lg:text-3xl font-bold text-white mb-1 lg:mb-2">
                       {currentActivity.title || `Этап ${currentActivityIndex + 1}`}
                     </h2>
                     {currentActivity.subtitle && (
@@ -565,7 +565,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
                     )}
                   </div>
 
-                  <div className="p-3 h-[calc(100vh-200px)]">
+                  <div className="p-1 sm:p-2 lg:p-3 h-[calc(100vh-180px)] min-h-[520px]">
                     <ActivityRenderer
                       key={currentActivity.id}
                       activity={currentActivity}

@@ -44,7 +44,7 @@ export default function SpotlightIframeActivity({
 
     const ro = new ResizeObserver(([entry]) => {
       const { width: currentWidth, height: currentHeight } = entry.contentRect;
-      setScale(Math.min(currentWidth / width, currentHeight / height) * 0.9);
+      setScale(Math.min(currentWidth / width, currentHeight / height) * 0.98);
     });
     ro.observe(el);
     return () => ro.disconnect();
