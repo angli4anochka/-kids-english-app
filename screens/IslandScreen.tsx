@@ -114,23 +114,22 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     };
   }, [socket, isConnected, role, router, user?.groupId, user?.group_id]);
 
-  // Check for active session via HTTP API when student loads (in addition to WebSocket)
+  // Poll for active session every 5 s so student auto-joins when teacher starts without needing a refresh
   useEffect(() => {
     if (role !== 'student' || !user?.groupId) return;
 
+    let stopped = false;
+
     const checkActiveSession = async () => {
       try {
-        console.log('[IslandScreen] Checking for active session via API in group:', user.groupId);
         const response = await fetch(`/kids-api/groups/${user.groupId}/active-session`);
         const data = await response.json();
-
-        if (data.success && data.data) {
+        if (data.success && data.data && !stopped) {
+          stopped = true;
           const sessionUrl = `/student/live-session/${data.data.id}`;
-          console.log('[IslandScreen] ✅ Found active session via API! URL:', sessionUrl);
+          console.log('[IslandScreen] ✅ Found active session:', sessionUrl);
           setLessonReadyUrl(sessionUrl);
-          soundManager.playCorrect(); // Play sound to get attention
-        } else {
-          console.log('[IslandScreen] No active session found for group', user.groupId);
+          soundManager.playCorrect();
         }
       } catch (error) {
         console.error('[IslandScreen] Error checking active session:', error);
@@ -138,6 +137,8 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     };
 
     checkActiveSession();
+    const interval = setInterval(() => { if (!stopped) checkActiveSession(); }, 5000);
+    return () => { stopped = true; clearInterval(interval); };
   }, [role, user?.groupId]);
 
   // Handler for student clicking "Join Lesson" button

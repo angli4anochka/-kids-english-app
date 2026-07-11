@@ -88,29 +88,36 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
       socket.off('navigate-to-lesson', handleNavigateToLiveSession);
     };
   }, [socket, isConnected, user?.role, user?.groupId, user?.group_id]);
-  // Check for active session when student loads (for students who join late)
+  // Poll for active session every 5 s so student auto-joins when teacher starts without needing a refresh
   useEffect(() => {
     if (user?.role !== 'student' || !user?.groupId) return;
 
+    let stopped = false;
+
     const checkActiveSession = async () => {
       try {
-        console.log('[LessonScreen] Checking for active session in group:', user.groupId);
         const response = await fetch(`/kids-api/groups/${user.groupId}/active-session`);
         const data = await response.json();
-
-        if (data.success && data.data) {
+        if (data.success && data.data && !stopped) {
           const sessionUrl = `/student/live-session/${data.data.id}`;
-          console.log('[LessonScreen] ✅ Found active session! URL:', sessionUrl);
+          console.log('[LessonScreen] ✅ Found active session:', sessionUrl);
           setLiveSessionUrl(sessionUrl);
-        } else {
-          console.log('[LessonScreen] No active session found for group', user.groupId);
+          stopped = true; // stop polling once found
         }
       } catch (error) {
         console.error('[LessonScreen] Error checking active session:', error);
       }
     };
 
-    checkActiveSession();
+    checkActiveSession(); // immediate first check
+    const interval = setInterval(() => {
+      if (!stopped) checkActiveSession();
+    }, 5000);
+
+    return () => {
+      stopped = true;
+      clearInterval(interval);
+    };
   }, [user?.role, user?.groupId]);
 
 

@@ -76,9 +76,16 @@ const PresentationActivity = ({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      stopScreenShare();
+      if (isTeacher) {
+        stopScreenShare();
+      } else {
+        // Students: silently close WebRTC connections without broadcasting stop to others
+        peerConnectionsRef.current.forEach(pc => pc.close());
+        peerConnectionsRef.current.clear();
+        streamRef.current = null;
+      }
     };
-  }, []);
+  }, [isTeacher]);
 
   const [isMuted, setIsMuted] = useState(!isTeacher);
   const [needsTapToPlay, setNeedsTapToPlay] = useState(false);
@@ -345,16 +352,28 @@ const PresentationActivity = ({
 
   // ========== STUDENT: Create offer when teacher is ready ==========
   useEffect(() => {
-    if (!socket || isTeacher || !isViewMode || (presentationType !== 'screen-share' && presentationType !== 'youtube-broadcast')) return;
+    if (!socket || !isConnected || isTeacher || !isViewMode || (presentationType !== 'screen-share' && presentationType !== 'youtube-broadcast')) return;
 
     const handleTeacherReady = async ({ lessonId: readyLessonId, groupId: readyGroupId, teacherId }: { lessonId: string; groupId: number; teacherId?: string }) => {
       console.log('[WebRTC] Student received teacher ready signal');
       if (teacherId) teacherSocketIdRef.current = teacherId;
       pushDebug('✅ received teacher ready, teacherId=' + (teacherId || 'none'));
 
+      // Close any existing PC before creating a new one
+      const existingPc = peerConnectionsRef.current.get('teacher');
+      if (existingPc) {
+        existingPc.close();
+        peerConnectionsRef.current.delete('teacher');
+        pushDebug('🔄 closed old PC');
+      }
+
       try {
         // Create peer connection
         const pc = new RTCPeerConnection(iceServers);
+
+        // Collect incoming tracks into a local MediaStream.
+        // DO NOT rely on event.streams[0] — it can be empty in Firefox and some Chrome versions.
+        const incomingStream = new MediaStream();
 
         // Explicitly request audio + video reception (iOS Safari ignores legacy offerToReceive* options)
         pc.addTransceiver('audio', { direction: 'recvonly' });
@@ -370,9 +389,10 @@ const PresentationActivity = ({
 
         // Handle incoming tracks from teacher
         pc.ontrack = (event) => {
-          console.log('[WebRTC] Student received track:', event.track.kind);
-          pushDebug('🎬 ontrack: ' + event.track.kind);
-          streamRef.current = event.streams[0];
+          console.log('[WebRTC] Student received track:', event.track.kind, 'streams:', event.streams.length);
+          pushDebug('🎬 ontrack: ' + event.track.kind + ' streams=' + event.streams.length);
+          incomingStream.addTrack(event.track);
+          streamRef.current = incomingStream;
           setIsScreenSharing(true);
         };
 
@@ -483,7 +503,7 @@ const PresentationActivity = ({
       socket.off('screen-share-stop', handleStop);
       socket.off('screen-share-ice-candidate', handleIceCandidate);
     };
-  }, [socket, isTeacher, isViewMode, presentationType]);
+  }, [socket, isConnected, isTeacher, isViewMode, presentationType]);
 
   const extractGoogleSlidesId = (url: string): string => {
     const patterns = [

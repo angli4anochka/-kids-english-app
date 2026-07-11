@@ -57,6 +57,11 @@ import SpotlightEx42 from './SpotlightEx42';
 import SpotlightEx43 from './SpotlightEx43';
 import SpotlightEx44 from './SpotlightEx44';
 import SpotlightEx45 from './SpotlightEx45';
+import SpotlightUnit1SchoolIntro from './SpotlightUnit1SchoolIntro';
+import SpotlightUnit1SchoolMap from './SpotlightUnit1SchoolMap';
+import SpotlightUnit1SchoolSubjectsAnagram from './SpotlightUnit1SchoolSubjectsAnagram';
+import SpotlightUnit1SchoolSubjectsFlashlight from './SpotlightUnit1SchoolSubjectsFlashlight';
+import SpotlightUnit1WheresLesson from './SpotlightUnit1WheresLesson';
 
 interface Props {
   activity: Activity;
@@ -133,6 +138,11 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'have-ex5': SpotlightEx43,
   'have-ex6': SpotlightEx44,
   'have-ex7': SpotlightEx45,
+  'unit1-school-intro': SpotlightUnit1SchoolIntro,
+  'unit1-school-map': SpotlightUnit1SchoolMap,
+  'unit1-school-subjects-anagram': SpotlightUnit1SchoolSubjectsAnagram,
+  'unit1-school-subjects-flashlight': SpotlightUnit1SchoolSubjectsFlashlight,
+  'unit1-wheres-lesson': SpotlightUnit1WheresLesson,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {

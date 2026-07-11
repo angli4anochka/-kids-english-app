@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Card from '../components/ui/Card';
 
 export default function TeacherDashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -208,9 +208,9 @@ export default function TeacherDashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">
-                  Добро пожаловать, {user?.displayName}!
+                  Добро пожаловать{isAuthLoading ? '...' : `, ${user?.displayName}`}!
                 </h1>
-                <p className="text-gray-600">{user?.email}</p>
+                <p className="text-gray-600">{isAuthLoading ? '' : user?.email}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
