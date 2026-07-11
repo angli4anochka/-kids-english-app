@@ -1,30 +1,4 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
-
-const SUBJECTS = [
-  { id: 'english', name: 'English', icon: '📖' },
-  { id: 'maths', name: 'Maths', icon: '➗' },
-  { id: 'science', name: 'Science', icon: '🔬' },
-  { id: 'history', name: 'History', icon: '🏛️' },
-  { id: 'art', name: 'Art', icon: '🎨' },
-  { id: 'geography', name: 'Geography', icon: '🌍' },
-  { id: 'music', name: 'Music', icon: '🎵' },
-  { id: 'it', name: 'IT', icon: '💻' },
-  { id: 'pe', name: 'PE', icon: '⚽' },
-];
-
-const ROOMS = [
-  { id: 'english', name: 'English Classroom', x: 26, y: 34, subjectId: 'english' },
-  { id: 'maths', name: 'Maths Room', x: 74, y: 34, subjectId: 'maths' },
-  { id: 'science', name: 'Science Lab', x: 15, y: 54, subjectId: 'science' },
-  { id: 'history', name: 'History Room', x: 39, y: 55, subjectId: 'history' },
-  { id: 'art', name: 'Art Studio', x: 58, y: 54, subjectId: 'art' },
-  { id: 'geography', name: 'Geography Room', x: 80, y: 54, subjectId: 'geography' },
-  { id: 'music', name: 'Music Room', x: 24, y: 78, subjectId: 'music' },
-  { id: 'it', name: 'IT Room', x: 49, y: 78, subjectId: 'it' },
-  { id: 'pe', name: 'Sports Hall', x: 73, y: 78, subjectId: 'pe' },
-];
 
 interface Props {
   isTeacher?: boolean;
@@ -34,19 +8,17 @@ interface Props {
 }
 
 export default function SpotlightUnit1SchoolMap({ isTeacher, lessonId, activityId, sessionId }: Props) {
-  const { user } = useAuth();
-  const [placedSubjects, setPlacedSubjects] = useState<Record<string, string>>({});
-  const [draggingId, setDraggingId] = useState<string | null>(null);
-  const [completed, setCompleted] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const placedCount = Object.keys(placedSubjects).length;
-  const allPlaced = placedCount === SUBJECTS.length;
-
-  const correctCount = Object.entries(placedSubjects).filter(
-    ([subjectId, roomId]) => {
-      const room = ROOMS.find(r => r.id === roomId);
-      return room?.subjectId === subjectId;
+  return (
+    <div className="w-full h-full">
+      <iframe
+        src="/games/school_map_drag_drop.html"
+        className="w-full h-full border-0"
+        title="School Map Drag and Drop"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+      />
+    </div>
+  );
+}
     }
   ).length;
 

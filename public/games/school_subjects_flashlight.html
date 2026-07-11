@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>School Subjects Flashlight Game</title>
+  <style>
+    :root {
+      --lamp-x: 50%;
+      --lamp-y: 50%;
+      --yellow: #ffd84a;
+      --yellow-soft: #fff2a6;
+      --blue: #6fc4ff;
+      --green: #64e391;
+      --red: #ff6b6b;
+      --ink: #07111f;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      font-family: "Trebuchet MS", "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(64, 129, 255, .10), transparent 28%),
+        radial-gradient(circle at 78% 75%, rgba(255, 216, 74, .12), transparent 32%),
+        linear-gradient(135deg, #07111f, #02050a 58%, #07111f);
+      color: #fff;
+      cursor: none;
+      user-select: none;
+    }
+
+    .stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1.6px),
+        radial-gradient(circle, rgba(255,216,74,.12) 1px, transparent 1.5px);
+      background-size: 54px 54px, 86px 86px;
+      background-position: 0 0, 20px 34px;
+      opacity: .65;
+      pointer-events: none;
+    }
+
+    .title-box {
+      position: absolute;
+      top: 24px;
+      left: 63%;
+      transform: translateX(-50%);
+      z-index: 30;
+      text-align: center;
+      pointer-events: none;
+      transition: opacity .35s ease, transform .35s ease;
+    }
+
+    .title-box.hidden {
+      opacity: 0;
+      transform: translateX(-50%) translateY(-10px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(42px, 6vw, 92px);
+      line-height: .9;
+      color: var(--yellow);
+      letter-spacing: .03em;
+      text-transform: lowercase;
+      text-shadow:
+        0 0 12px rgba(255, 216, 74, .8),
+        0 0 36px rgba(255, 216, 74, .45),
+        0 5px 0 rgba(0,0,0,.35);
+    }
+
+    .subtitle {
+      margin-top: 9px;
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,216,74,.28);
+      color: #ffe991;
+      font-weight: 900;
+      font-size: clamp(13px, 1.4vw, 19px);
+      text-shadow: 0 2px 8px rgba(0,0,0,.7);
+    }
+
+    .board {
+      position: absolute;
+      left: 16px;
+      top: 16px;
+      z-index: 31;
+      padding: 7px 10px;
+      border-radius: 14px;
+      background: rgba(0,0,0,.28);
+      border: 1px solid rgba(255,216,74,.24);
+      box-shadow: 0 8px 20px rgba(0,0,0,.20);
+      backdrop-filter: blur(3px);
+      pointer-events: none;
+    }
+
+    .score {
+      color: var(--yellow);
+      font-weight: 950;
+      font-size: clamp(12px, 1.05vw, 16px);
+      white-space: nowrap;
+    }
+
+    .found-list {
+      display: none;
+    }
+
+    .found-pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      color: rgba(255,255,255,.5);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .found-pill.done {
+      background: rgba(100, 227, 145, .22);
+      color: #b8ffce;
+      box-shadow: 0 0 12px rgba(100, 227, 145, .22);
+    }
+
+    .reset-btn {
+      position: absolute;
+      right: 22px;
+      bottom: 20px;
+      z-index: 35;
+      border: 0;
+      border-radius: 16px;
+      padding: 10px 15px;
+      background: linear-gradient(135deg, #ff7eb3, #ffb26b);
+      color: #fff;
+      font-weight: 950;
+      font-size: 16px;
+      box-shadow: 0 12px 28px rgba(0,0,0,.32), inset 0 -4px rgba(0,0,0,.15);
+      cursor: pointer;
+    }
+
+    .items {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+    }
+
+    .found-layer {
+      position: absolute;
+      inset: 0;
+      z-index: 45;
+      pointer-events: none;
+    }
+
+    .word {
+      --size: 1;
+      position: absolute;
+      left: var(--x);
+      top: var(--y);
+      transform: translate(-50%, -50%) rotate(var(--r));
+      min-width: calc(112px * var(--size));
+      min-height: calc(58px * var(--size));
+      padding: calc(9px * var(--size)) calc(14px * var(--size));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 2px solid rgba(255,255,255,.20);
+      border-radius: 20px;
+      background: rgba(255,255,255,.08);
+      color: rgba(255,255,255,.88);
+      font-size: calc(clamp(18px, 1.8vw, 30px) * var(--size));
+      font-weight: 950;
+      letter-spacing: .01em;
+      text-shadow: 0 2px 8px rgba(0,0,0,.72);
+      box-shadow: 0 8px 22px rgba(0,0,0,.20);
+      cursor: none;
+      transition: transform .2s ease, opacity .2s ease, background .2s ease, box-shadow .2s ease;
+      opacity: .96;
+    }
+
+    .word .icon {
+      font-size: 1.12em;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,.5));
+    }
+
+    .word.subject {
+      border-color: rgba(255,216,74,.30);
+      background: rgba(255,216,74,.10);
+    }
+
+    .word.found {
+      z-index: 60;
+      color: #243047;
+      background: linear-gradient(135deg, #fff8cf 0%, #f8e78b 58%, #efd36e 100%);
+      border-color: rgba(255, 248, 207, .9);
+      box-shadow:
+        0 0 0 4px rgba(248,231,139,.18),
+        0 0 16px rgba(248,231,139,.42),
+        0 10px 26px rgba(0,0,0,.28);
+      opacity: 1;
+      cursor: default;
+      filter: brightness(1.02) saturate(.9);
+      animation: subjectGlow 1.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes subjectGlow {
+      from {
+        filter: brightness(1.00) saturate(.88);
+        box-shadow:
+          0 0 0 3px rgba(248,231,139,.14),
+          0 0 10px rgba(248,231,139,.30),
+          0 10px 26px rgba(0,0,0,.26);
+      }
+      to {
+        filter: brightness(1.08) saturate(.98);
+        box-shadow:
+          0 0 0 4px rgba(248,231,139,.20),
+          0 0 18px rgba(248,231,139,.45),
+          0 10px 26px rgba(0,0,0,.28);
+      }
+    }
+
+    .word.wrong {
+      animation: wrong .35s ease;
+    }
+
+    @keyframes wrong {
+      0%, 100% { transform: translate(-50%, -50%) rotate(var(--r)); }
+      25% { transform: translate(calc(-50% - 8px), -50%) rotate(var(--r)); }
+      55% { transform: translate(calc(-50% + 8px), -50%) rotate(var(--r)); }
+      80% { transform: translate(calc(-50% - 4px), -50%) rotate(var(--r)); }
+    }
+
+    .darkness {
+      position: absolute;
+      inset: 0;
+      z-index: 20;
+      pointer-events: none;
+      background:
+        radial-gradient(circle 62px at var(--lamp-x) var(--lamp-y),
+          rgba(0,0,0,0) 0%,
+          rgba(0,0,0,0) 43%,
+          rgba(0,0,0,.66) 62%,
+          rgba(0,0,0,.94) 100%);
+      mix-blend-mode: multiply;
+    }
+
+    .darkness::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle 68px at var(--lamp-x) var(--lamp-y),
+          rgba(255, 238, 148, .36) 0%,
+          rgba(255, 238, 148, .20) 45%,
+          rgba(255, 238, 148, .04) 63%,
+          transparent 78%);
+      mix-blend-mode: screen;
+    }
+
+    .flashlight-ring {
+      position: absolute;
+      left: var(--lamp-x);
+      top: var(--lamp-y);
+      z-index: 25;
+      width: 136px;
+      height: 136px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      pointer-events: none;
+      border: 2px solid rgba(255, 232, 126, .26);
+      box-shadow:
+        inset 0 0 28px rgba(255, 232, 126, .13),
+        0 0 36px rgba(255, 232, 126, .14);
+    }
+
+    .message {
+      position: absolute;
+      left: 50%;
+      bottom: 22px;
+      transform: translateX(-50%);
+      z-index: 34;
+      min-height: 42px;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.38);
+      border: 1px solid rgba(255,216,74,.24);
+      color: var(--yellow-soft);
+      font-weight: 950;
+      font-size: clamp(15px, 1.4vw, 20px);
+      box-shadow: 0 10px 30px rgba(0,0,0,.24);
+      backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity .2s ease;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    .win {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      display: none;
+      place-items: center;
+      background: transparent;
+      pointer-events: none;
+    }
+
+    .win.show {
+      display: grid;
+    }
+
+    .win-card {
+      padding: 26px 36px;
+      border-radius: 28px;
+      text-align: center;
+      background: rgba(255, 248, 207, .96);
+      border: 4px solid #fff4ac;
+      box-shadow: 0 22px 70px rgba(0,0,0,.45);
+      color: #17345c;
+      font-weight: 950;
+      animation: pop .5s ease both;
+    }
+
+    .win-card strong {
+      display: block;
+      font-size: clamp(34px, 5vw, 72px);
+      color: #1f8b54;
+    }
+
+    .win-card span {
+      display: block;
+      margin-top: 6px;
+      font-size: clamp(16px, 2vw, 28px);
+    }
+
+    @keyframes pop {
+      from { transform: scale(.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    @media (max-width: 760px) {
+      .title-box {
+        top: 14px;
+        left: 64%;
+      }
+
+      .board {
+        top: 10px;
+        left: 10px;
+        bottom: auto;
+        max-width: 160px;
+      }
+
+      .found-list {
+        display: none;
+      }
+
+      .reset-btn {
+        right: 12px;
+        bottom: 12px;
+        padding: 8px 12px;
+      }
+
+      .word {
+        min-width: 92px;
+        min-height: 46px;
+        font-size: 16px;
+      }
+
+      .darkness {
+        background:
+          radial-gradient(circle 54px at var(--lamp-x) var(--lamp-y),
+            rgba(0,0,0,0) 0%,
+            rgba(0,0,0,0) 43%,
+            rgba(0,0,0,.70) 62%,
+            rgba(0,0,0,.95) 100%);
+      }
+
+      .flashlight-ring {
+        width: 118px;
+        height: 118px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage" id="stage">
+    <div class="stars"></div>
+
+    <section class="title-box">
+      <h1>school subjects</h1>
+      <div class="subtitle">Find and click only school subjects</div>
+    </section>
+
+    <aside class="board">
+      <div class="score" id="score">0 / 9 subjects</div>
+      <div class="found-list" id="foundList"></div>
+    </aside>
+
+    <section class="items" id="items" aria-label="Hidden words">
+      <button class="word subject" style="--x: 42%; --y: 16%; --r: -6deg; --size: .95;" data-word="English"><span class="icon">📖</span>English</button>
+      <button class="word decoy" style="--x: 57%; --y: 22%; --r: 5deg; --size: .9;" data-word="cat"><span class="icon">🐱</span>cat</button>
+      <button class="word subject" style="--x: 78%; --y: 18%; --r: 2deg; --size: 1;" data-word="Maths"><span class="icon">➗</span>Maths</button>
+      <button class="word decoy" style="--x: 18%; --y: 43%; --r: -4deg; --size: .92;" data-word="train"><span class="icon">🚂</span>train</button>
+
+      <button class="word subject" style="--x: 36%; --y: 39%; --r: 3deg; --size: .95;" data-word="Science"><span class="icon">🔬</span>Science</button>
+      <button class="word decoy" style="--x: 59%; --y: 42%; --r: -4deg; --size: .88;" data-word="sun"><span class="icon">☀️</span>sun</button>
+      <button class="word subject" style="--x: 84%; --y: 40%; --r: -3deg; --size: .95;" data-word="History"><span class="icon">🏛️</span>History</button>
+      <button class="word decoy" style="--x: 22%; --y: 64%; --r: 6deg; --size: .82;" data-word="car"><span class="icon">🚗</span>car</button>
+
+      <button class="word subject" style="--x: 43%; --y: 62%; --r: -2deg; --size: .92;" data-word="Art"><span class="icon">🎨</span>Art</button>
+      <button class="word decoy" style="--x: 66%; --y: 64%; --r: 4deg; --size: .82;" data-word="pizza"><span class="icon">🍕</span>pizza</button>
+      <button class="word subject" style="--x: 86%; --y: 65%; --r: 3deg; --size: .90;" data-word="Geography"><span class="icon">🌍</span>Geography</button>
+      <button class="word decoy" style="--x: 16%; --y: 84%; --r: -5deg; --size: .78;" data-word="grumpy dwarf"><span class="icon">🧙</span>grumpy dwarf</button>
+
+      <button class="word subject" style="--x: 35%; --y: 82%; --r: 5deg; --size: .9;" data-word="Music"><span class="icon">🎵</span>Music</button>
+      <button class="word decoy" style="--x: 56%; --y: 84%; --r: -5deg; --size: .78;" data-word="apple"><span class="icon">🍎</span>apple</button>
+      <button class="word subject" style="--x: 52%; --y: 76%; --r: -2deg; --size: .86;" data-word="IT"><span class="icon">💻</span>IT</button>
+      <button class="word subject" style="--x: 72%; --y: 78%; --r: 4deg; --size: .86;" data-word="PE"><span class="icon">⚽</span>PE</button>
+    </section>
+
+    <section class="found-layer" id="foundLayer" aria-hidden="true"></section>
+
+    <div class="darkness"></div>
+    <div class="flashlight-ring"></div>
+
+    <div class="message" id="message">Good! It’s a school subject.</div>
+    <button class="reset-btn" id="resetBtn" type="button">Reset</button>
+
+    <div class="win" id="win">
+      <div class="win-card">
+        <strong>Great job!</strong>
+        <span>You found all school subjects.</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const stage = document.getElementById('stage');
+    const titleBox = document.querySelector('.title-box');
+    const words = Array.from(document.querySelectorAll('.word'));
+    const subjects = words.filter(word => word.classList.contains('subject'));
+    const score = document.getElementById('score');
+    const message = document.getElementById('message');
+    const foundList = document.getElementById('foundList');
+    const foundLayer = document.getElementById('foundLayer');
+    const itemsLayer = document.getElementById('items');
+    const resetBtn = document.getElementById('resetBtn');
+    const win = document.getElementById('win');
+
+    let found = new Set();
+
+    subjects.forEach(item => {
+      const pill = document.createElement('span');
+      pill.className = 'found-pill';
+      pill.dataset.word = item.dataset.word;
+      pill.textContent = item.dataset.word;
+      foundList.appendChild(pill);
+    });
+
+    function moveLamp(event) {
+      const pointer = event.touches ? event.touches[0] : event;
+      const x = pointer.clientX;
+      const y = pointer.clientY;
+      document.documentElement.style.setProperty('--lamp-x', x + 'px');
+      document.documentElement.style.setProperty('--lamp-y', y + 'px');
+    }
+
+    function showMessage(text, type = 'good') {
+      message.textContent = text;
+      message.style.color = type === 'bad' ? '#ffb3b3' : '#fff2a6';
+      message.classList.add('show');
+      clearTimeout(showMessage.timer);
+      showMessage.timer = setTimeout(() => message.classList.remove('show'), 900);
+    }
+
+    function updateScore() {
+      score.textContent = `${found.size} / ${subjects.length} subjects`;
+
+      document.querySelectorAll('.found-pill').forEach(pill => {
+        pill.classList.toggle('done', found.has(pill.dataset.word));
+      });
+
+      // Отправляем прогресс через postMessage
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'gameProgress',
+          progress: found.size,
+          total: subjects.length
+        }, '*');
+      }
+
+      if (found.size === subjects.length) {
+        win.classList.add('show');
+
+        // Отправляем сообщение о победе через postMessage
+        if (window.parent !== window) {
+          window.parent.postMessage({
+            type: 'gameCompleted',
+            result: 'win',
+            score: found.size,
+            total: subjects.length
+          }, '*');
+        }
+
+        setTimeout(() => win.classList.remove('show'), 2200);
+      }
+    }
+
+    words.forEach(word => {
+      word.addEventListener('pointermove', moveLamp);
+
+      word.addEventListener('click', event => {
+        event.preventDefault();
+        moveLamp(event);
+
+        const isSubject = word.classList.contains('subject');
+        const value = word.dataset.word;
+
+        if (isSubject) {
+          word.classList.add('found');
+          found.add(value);
+          foundLayer.appendChild(word);
+          word.style.pointerEvents = 'none';
+
+          if (found.size === 1) {
+            titleBox.classList.add('hidden');
+          }
+
+          showMessage(`${value} is a school subject!`);
+          updateScore();
+        } else {
+          word.classList.remove('wrong');
+          void word.offsetWidth;
+          word.classList.add('wrong');
+          showMessage('Not a school subject. Skip it.', 'bad');
+        }
+      });
+    });
+
+    stage.addEventListener('pointermove', moveLamp);
+    stage.addEventListener('touchmove', moveLamp, { passive: true });
+
+    resetBtn.addEventListener('click', () => {
+      found.clear();
+      words.forEach(word => {
+        itemsLayer.appendChild(word);
+        word.style.pointerEvents = '';
+        word.classList.remove('found', 'wrong');
+      });
+      win.classList.remove('show');
+      titleBox.classList.remove('hidden');
+      updateScore();
+      showMessage('Find the school subjects again.');
+
+      // Отправляем сообщение о сбросе игры через postMessage
+      if (window.parent !== window) {
+        window.parent.postMessage({
+          type: 'gameReset',
+          game: 'school_subjects_flashlight'
+        }, '*');
+      }
+    });
+
+    // Отслеживаем видимость страницы для VK Mini App интеграции
+    document.addEventListener('visibilitychange', () => {
+      if (window.parent !== window) {
+        if (document.hidden) {
+          window.parent.postMessage({
+            type: 'VKWebAppViewHide'
+          }, '*');
+        } else {
+          window.parent.postMessage({
+            type: 'VKWebAppViewRestore'
+          }, '*');
+        }
+      }
+    });
+
+    // Отправляем событие инициализации игры
+    if (window.parent !== window) {
+      window.parent.postMessage({
+        type: 'gameInitialized',
+        game: 'school_subjects_flashlight',
+        totalItems: subjects.length
+      }, '*');
+    }
+
+    updateScore();
+  </script>
+</body>
+</html>

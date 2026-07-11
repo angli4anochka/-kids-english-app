@@ -1,18 +1,4 @@
 'use client';
-import { useState, useCallback, useEffect } from 'react';
-import { useAuth } from '../../../contexts/AuthContext';
-
-const WORDS = [
-  { word: 'music', scrambled: 'muis', hint: '🎵' },
-  { word: 'english', scrambled: 'glienhs', hint: '📖' },
-  { word: 'maths', scrambled: 'mths', hint: '➗' },
-  { word: 'science', scrambled: 'cinecse', hint: '🔬' },
-  { word: 'history', scrambled: 'toryhis', hint: '🏛️' },
-  { word: 'art', scrambled: 'tar', hint: '🎨' },
-  { word: 'geography', scrambled: 'ggpyaroh', hint: '🌍' },
-  { word: 'it', scrambled: 'ti', hint: '💻' },
-  { word: 'pe', scrambled: 'ep', hint: '⚽' },
-];
 
 interface Props {
   isTeacher?: boolean;
@@ -22,31 +8,17 @@ interface Props {
 }
 
 export default function SpotlightUnit1SchoolSubjectsAnagram({ isTeacher, lessonId, activityId, sessionId }: Props) {
-  const { user } = useAuth();
-  const [currentWord, setCurrentWord] = useState(0);
-  const [userAnswer, setUserAnswer] = useState('');
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [attempts, setAttempts] = useState<Record<number, number>>({});
-  const [completed, setCompleted] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const answeredCount = Object.keys(answers).length;
-  const allAnswered = answeredCount === WORDS.length;
-
-  const currentWordData = WORDS[currentWord];
-  const currentAttempts = attempts[currentWord] || 0;
-  const isCurrentAnswered = answers[currentWord];
-
-  const correctCount = Object.entries(answers).filter(
-    ([wordIndex, answer]) => WORDS[parseInt(wordIndex)].word.toLowerCase() === answer.toLowerCase()
-  ).length;
-
-  useEffect(() => {
-    if (allAnswered && !completed) {
-      setCompleted(true);
-      setTimeout(() => submitResults(), 1500);
-    }
-  }, [allAnswered, completed]);
+  return (
+    <div className="w-full h-full">
+      <iframe
+        src="/games/school_subjects_anagram.html"
+        className="w-full h-full border-0"
+        title="School Subjects Anagram Game"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock"
+      />
+    </div>
+  );
+}
 
   const submitResults = useCallback(async () => {
     if (submitted || isTeacher || !lessonId) return;
