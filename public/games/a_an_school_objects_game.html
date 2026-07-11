@@ -332,13 +332,30 @@
     }
 
     @media (max-height: 680px) {
-      .hero p,
-      .rule {
+      .hero p {
         display: none;
       }
 
       .app {
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto 1fr;
+        gap: 6px;
+      }
+
+      .rule {
+        padding: 7px;
+        gap: 7px;
+      }
+
+      .rule-card {
+        padding: 7px 10px;
+        font-size: 13px;
+        line-height: 1.15;
+      }
+
+      .rule-card strong {
+        display: inline;
+        font-size: 15px;
+        margin: 0 6px 0 0;
       }
     }
   </style>
