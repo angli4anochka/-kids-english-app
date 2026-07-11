@@ -2,14 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
-
-interface AnswerDetail {
-  questionIndex?: number;
-  studentAnswer?: string;
-  correctAnswer?: string;
-  isCorrect: boolean;
-  sentence?: string;
-}
+import { normalizeAnswerDetails } from '../utils/resultDetails';
 
 interface ActivityResult {
   id: string;
@@ -158,7 +151,7 @@ export default function TeacherLessonResultsScreen() {
                   ) : (
                     wrongActivities.map(activity => {
                       const wrongCount = activity.total - activity.score;
-                      const details = (activity.results || []).filter(a => !a.isCorrect);
+                      const details = normalizeAnswerDetails(activity.results).filter(a => !a.isCorrect);
                       return (
                         <div key={activity.id}>
                           <h3 className="text-sm font-bold text-gray-700 mb-2">

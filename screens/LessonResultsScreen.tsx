@@ -3,14 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from '@/utils/routing-adapter';
 import { useAuth } from '../contexts/AuthContext';
-
-interface AnswerDetail {
-  questionIndex?: number;
-  studentAnswer?: string;
-  correctAnswer?: string;
-  isCorrect: boolean;
-  sentence?: string;
-}
+import { normalizeAnswerDetails } from '../utils/resultDetails';
 
 interface ActivityResult {
   id: string;
@@ -83,7 +76,7 @@ export default function LessonResultsScreen() {
         {/* Mistakes by activity */}
         {wrongActivities.map(activity => {
           const wrongCount = activity.total - activity.score;
-          const details = (activity.results || []).filter(a => !a.isCorrect);
+          const details = normalizeAnswerDetails(activity.results).filter(a => !a.isCorrect);
           return (
             <div key={activity.id} className="bg-white rounded-2xl shadow-lg p-6 mb-4">
               <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
