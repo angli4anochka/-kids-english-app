@@ -92,25 +92,7 @@
     }
 
     .answer {
-      position: absolute;
-      left: 50%;
-      bottom: 4.2%;
-      transform: translateX(-50%);
-      z-index: 5;
-      padding: 12px 30px;
-      min-width: 34%;
-      max-width: 72%;
-      text-align: center;
-      font-size: clamp(20px, 2.45vw, 42px);
-      font-weight: 900;
-      line-height: 1.12;
-      color: #173d8f;
-      background: rgba(255, 255, 255, 0.9);
-      border: 4px solid rgba(255, 255, 255, 0.98);
-      border-radius: 999px;
-      box-shadow: 0 10px 24px rgba(0,0,0,.16);
-      user-select: none;
-      pointer-events: none;
+      display: none;
     }
 
     @media (max-width: 900px) {
@@ -124,11 +106,6 @@
         top: calc(54% + 72px);
       }
 
-      .answer {
-        bottom: 3.3%;
-        padding: 10px 22px;
-        max-width: 78%;
-      }
     }
   </style>
 </head>
@@ -139,7 +116,6 @@
       <span class="lesson" id="lessonText"></span>
     </div>
     <div class="hint" id="hint">Click to show a lesson</div>
-    <div class="answer" id="answerText">It’s in Room …</div>
   </main>
 
   <script>
@@ -161,7 +137,6 @@
 
     const page = document.getElementById("page");
     const lessonText = document.getElementById("lessonText");
-    const answerText = document.getElementById("answerText");
     const hint = document.getElementById("hint");
 
     function nextLesson() {
@@ -184,7 +159,6 @@
       }
 
       lessonText.textContent = lessons[currentIndex].question;
-      answerText.textContent = lessons[currentIndex].answer;
       hint.style.display = "none";
 
       if (currentIndex === lessons.length - 1) {
