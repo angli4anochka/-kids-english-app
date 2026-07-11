@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A or An? Dog Quiz</title>
+  <style>
+    :root{
+      --blue:#2f7fd4;
+      --blue-2:#5db5f3;
+      --ink:#21375b;
+      --soft:#6b86a8;
+      --card:#ffffff;
+      --ok:#33a35f;
+      --bad:#d64e5f;
+      --shadow:0 18px 44px rgba(32,69,120,.16);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      width:100%;
+      height:100%;
+      margin:0;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 14% 8%, rgba(255,255,255,.88), transparent 20%),
+        radial-gradient(circle at 86% 10%, rgba(255,255,255,.7), transparent 16%),
+        linear-gradient(145deg,#d9ecff 0%,#eef9ff 46%,#e7f3ff 100%);
+    }
+
+    body{
+      padding:clamp(8px,1vw,14px);
+    }
+
+    .app{
+      height:100%;
+      max-width:1180px;
+      margin:0 auto;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:clamp(8px,1vw,14px);
+      min-height:0;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:14px;
+      align-items:center;
+      padding:clamp(12px,1.4vw,18px);
+      border-radius:24px;
+      background:linear-gradient(135deg,var(--blue),var(--blue-2));
+      color:#fff;
+      box-shadow:var(--shadow);
+    }
+
+    .hero h1{
+      margin:0 0 4px;
+      font-size:clamp(26px,3.7vw,44px);
+      line-height:.95;
+    }
+
+    .hero p{
+      margin:0;
+      font-size:clamp(14px,1.7vw,20px);
+      font-weight:700;
+      line-height:1.25;
+    }
+
+    .hero-emoji{
+      font-size:clamp(42px,6vw,72px);
+      filter:drop-shadow(0 10px 12px rgba(0,0,0,.16));
+    }
+
+    .rule{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .rule-card{
+      padding:clamp(9px,1vw,13px);
+      border-radius:18px;
+      background:rgba(255,255,255,.92);
+      border:3px solid rgba(255,255,255,.9);
+      box-shadow:var(--shadow);
+      font-size:clamp(13px,1.3vw,18px);
+      line-height:1.25;
+    }
+
+    .rule-card strong{
+      display:block;
+      margin-bottom:4px;
+      color:var(--blue);
+      font-size:clamp(16px,1.9vw,22px);
+    }
+
+    .vowels{
+      color:#72a000;
+      font-weight:900;
+      letter-spacing:0;
+    }
+
+    .quiz-shell{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:10px;
+      padding:clamp(10px,1.2vw,16px);
+      border-radius:24px;
+      background:rgba(255,255,255,.82);
+      border:4px solid rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .quiz-head{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .quiz-head h2{
+      margin:0;
+      color:var(--blue);
+      font-size:clamp(18px,2.4vw,28px);
+      line-height:1.05;
+    }
+
+    .score{
+      min-width:104px;
+      padding:8px 12px;
+      border-radius:999px;
+      background:#eaf5ff;
+      color:var(--blue);
+      border:2px solid #c9e2fb;
+      text-align:center;
+      font-weight:900;
+      font-size:clamp(13px,1.1vw,16px);
+      white-space:nowrap;
+    }
+
+    .quiz-wrap{
+      min-height:0;
+      overflow:auto;
+      scrollbar-width:thin;
+    }
+
+    .quiz{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:clamp(8px,.95vw,14px);
+    }
+
+    .item{
+      position:relative;
+      min-height:clamp(112px,18vh,168px);
+      padding:clamp(12px,1.1vw,16px);
+      border-radius:20px;
+      background:var(--card);
+      border:3px solid transparent;
+      box-shadow:0 8px 20px rgba(47,89,130,.1);
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:8px;
+      align-items:start;
+      transition:transform .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .item:hover{transform:translateY(-2px)}
+    .item.good{
+      border-color:#67c97e;
+      background:#effcf2;
+    }
+    .item.bad{
+      border-color:#ee7b86;
+      background:#fff1f3;
+      animation:shake .32s ease;
+    }
+
+    .num{
+      width:30px;
+      height:30px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      background:var(--blue);
+      color:#fff;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .item-top{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+
+    .dog{
+      font-size:clamp(26px,3.2vw,40px);
+      line-height:1;
+    }
+
+    .answer-line{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      text-align:center;
+      font-size:clamp(14px,1.4vw,18px);
+      font-weight:800;
+      line-height:1.15;
+      min-width:0;
+    }
+
+    .article-input{
+      width:56px;
+      border:0;
+      border-bottom:3px solid #75b6e8;
+      outline:0;
+      text-align:center;
+      font:inherit;
+      color:var(--blue);
+      background:transparent;
+      text-transform:lowercase;
+      padding:3px 2px;
+      flex:none;
+    }
+
+    .article-input:focus{
+      border-bottom-color:var(--blue);
+    }
+
+    .word{
+      min-width:0;
+      overflow-wrap:anywhere;
+    }
+
+    .feedback{
+      min-height:18px;
+      font-size:13px;
+      font-weight:900;
+      color:var(--soft);
+    }
+
+    .item.good .feedback{color:var(--ok)}
+    .item.bad .feedback{color:var(--bad)}
+
+    .actions{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:16px;
+      padding:11px 18px;
+      font:inherit;
+      font-size:16px;
+      font-weight:900;
+      cursor:pointer;
+      transition:transform .14s ease, filter .14s ease, opacity .14s ease;
+    }
+    .btn:active{transform:scale(.97)}
+    .btn:hover{filter:brightness(1.03)}
+
+    .check{
+      background:linear-gradient(135deg,#277fd1,#5aacdf);
+      color:#fff;
+      box-shadow:0 9px 18px rgba(39,127,209,.22);
+    }
+    .reset{
+      background:#fff;
+      color:var(--blue);
+      border:2px solid #9cccf1;
+    }
+
+    .result{
+      min-height:24px;
+      text-align:center;
+      font-weight:900;
+      font-size:clamp(15px,1.5vw,20px);
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-7px)}
+      75%{transform:translateX(7px)}
+    }
+
+    @media (max-width:700px){
+      .hero{grid-template-columns:1fr;text-align:center}
+      .hero-emoji{display:none}
+      .rule{grid-template-columns:1fr}
+      .quiz{grid-template-columns:1fr}
+      .item{min-height:118px}
+      .answer-line{justify-content:flex-start}
+    }
+
+    @media (max-height:720px){
+      .hero p{display:none}
+      .app{gap:8px}
+      .quiz-shell{padding:10px}
+      .item{min-height:104px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="hero">
+      <div>
+        <h1>A or An?</h1>
+        <p>Choose the correct article before each dog word.</p>
+      </div>
+      <div class="hero-emoji">🐶</div>
+    </section>
+
+    <section class="rule" aria-label="Grammar rule">
+      <div class="rule-card">
+        <strong>a + consonant sound</strong>
+        a dog, a ball, a tail
+      </div>
+      <div class="rule-card">
+        <strong>an + vowel sound</strong>
+        <span class="vowels">a, e, i, o, u</span><br>
+        an apple, an egg
+      </div>
+    </section>
+
+    <section class="quiz-shell">
+      <div class="quiz-head">
+        <h2>Complete the phrases</h2>
+        <div class="score" id="score">0 / 10</div>
+      </div>
+
+      <div class="quiz-wrap">
+        <div class="quiz" id="quiz"></div>
+      </div>
+
+      <div class="actions">
+        <button class="btn check" id="checkBtn" type="button">Check answers</button>
+        <button class="btn reset" id="resetBtn" type="button">Try again</button>
+      </div>
+
+      <div class="result" id="result"></div>
+    </section>
+  </main>
+
+  <script>
+    const tasks = [
+      { word: 'apple', answer: 'an', icon: '🍎' },
+      { word: 'dog', answer: 'a', icon: '🐶' },
+      { word: 'elephant', answer: 'an', icon: '🐘' },
+      { word: 'book', answer: 'a', icon: '📘' },
+      { word: 'orange', answer: 'an', icon: '🍊' },
+      { word: 'umbrella', answer: 'an', icon: '☂️' },
+      { word: 'cat', answer: 'a', icon: '🐱' },
+      { word: 'ice cream', answer: 'an', icon: '🍦' },
+      { word: 'pencil', answer: 'a', icon: '✏️' },
+      { word: 'egg', answer: 'an', icon: '🥚' },
+    ];
+
+    const quiz = document.getElementById('quiz');
+    const score = document.getElementById('score');
+    const result = document.getElementById('result');
+    const checkBtn = document.getElementById('checkBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    let sent = false;
+
+    function build() {
+      quiz.innerHTML = '';
+      tasks.forEach((task, index) => {
+        const el = document.createElement('article');
+        el.className = 'item';
+        el.innerHTML = `
+          <div class="item-top">
+            <div class="num">${index + 1}</div>
+            <div class="dog" aria-hidden="true">${task.icon}</div>
+          </div>
+          <label class="answer-line">
+            <input class="article-input" type="text" maxlength="2" autocomplete="off" autocapitalize="none" spellcheck="false" data-answer="${task.answer}" aria-label="Article before ${task.word}" />
+            <span class="word">${task.word}</span>
+          </label>
+          <div></div>
+          <div class="feedback"></div>
+        `;
+        quiz.appendChild(el);
+      });
+      score.textContent = `0 / ${tasks.length}`;
+      result.textContent = '';
+    }
+
+    function check() {
+      const inputs = [...document.querySelectorAll('.article-input')];
+      let correct = 0;
+      const answers = [];
+
+      inputs.forEach((input) => {
+        const item = input.closest('.item');
+        const userAnswer = input.value.trim().toLowerCase();
+        const correctAnswer = input.dataset.answer;
+        const ok = userAnswer === correctAnswer;
+
+        answers.push({
+          word: input.nextElementSibling?.textContent || '',
+          answer: userAnswer,
+          correctAnswer,
+          correct: ok,
+        });
+
+        item.classList.remove('good', 'bad');
+        if (ok) {
+          correct += 1;
+          item.classList.add('good');
+          item.querySelector('.feedback').textContent = 'Correct';
+        } else {
+          item.classList.add('bad');
+          item.querySelector('.feedback').textContent = userAnswer ? 'Try again' : 'Write a or an';
+        }
+      });
+
+      score.textContent = `${correct} / ${tasks.length}`;
+      result.textContent = correct === tasks.length ? 'Perfect! 10/10' : `${correct} correct.`;
+      result.style.color = correct === tasks.length ? '#258b43' : '#b02e3a';
+
+      if (correct === tasks.length && !sent && window.parent !== window) {
+        sent = true;
+        window.parent.postMessage({
+          type: 'unit1b-a-an-dog-quiz-done',
+          score: correct,
+          total: tasks.length,
+          results: { answers },
+        }, '*');
+      }
+    }
+
+    function reset() {
+      sent = false;
+      build();
+    }
+
+    quiz.addEventListener('input', (event) => {
+      if (!event.target.classList.contains('article-input')) return;
+      event.target.value = event.target.value.toLowerCase().replace(/[^a-z]/g, '').slice(0, 2);
+      const item = event.target.closest('.item');
+      item.classList.remove('good', 'bad');
+      item.querySelector('.feedback').textContent = '';
+      result.textContent = '';
+    });
+
+    quiz.addEventListener('keydown', (event) => {
+      if (event.key !== 'Enter' || !event.target.classList.contains('article-input')) return;
+      const inputs = [...document.querySelectorAll('.article-input')];
+      const currentIndex = inputs.indexOf(event.target);
+      inputs[currentIndex + 1]?.focus();
+    });
+
+    checkBtn.addEventListener('click', check);
+    resetBtn.addEventListener('click', reset);
+
+    build();
+  </script>
+</body>
+</html>
