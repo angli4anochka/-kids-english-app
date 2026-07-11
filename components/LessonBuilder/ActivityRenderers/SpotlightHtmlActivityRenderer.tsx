@@ -62,6 +62,7 @@ import SpotlightUnit1SchoolMap from './SpotlightUnit1SchoolMap';
 import SpotlightUnit1SchoolSubjectsAnagram from './SpotlightUnit1SchoolSubjectsAnagram';
 import SpotlightUnit1SchoolSubjectsFlashlight from './SpotlightUnit1SchoolSubjectsFlashlight';
 import SpotlightUnit1WheresLesson from './SpotlightUnit1WheresLesson';
+import SpotlightUnit1MondayTimetableDays from './SpotlightUnit1MondayTimetableDays';
 
 interface Props {
   activity: Activity;
@@ -143,6 +144,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1-school-subjects-anagram': SpotlightUnit1SchoolSubjectsAnagram,
   'unit1-school-subjects-flashlight': SpotlightUnit1SchoolSubjectsFlashlight,
   'unit1-wheres-lesson': SpotlightUnit1WheresLesson,
+  'unit1-monday-timetable-days': SpotlightUnit1MondayTimetableDays,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
