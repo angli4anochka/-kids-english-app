@@ -72,6 +72,7 @@ import SpotlightUnit1bBuildTheDialogue from './SpotlightUnit1bBuildTheDialogue';
 import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs';
 import SpotlightUnit1bPronounMachine from './SpotlightUnit1bPronounMachine';
 import SpotlightUnit1bAmIsAreRulesPracticeNoMonster from './SpotlightUnit1bAmIsAreRulesPracticeNoMonster';
+import SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos from './SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos';
 
 interface Props {
   activity: Activity;
@@ -163,6 +164,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1b-reading-original-listening-build-dialogue-inputs': SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs,
   'unit1b-pronoun-machine': SpotlightUnit1bPronounMachine,
   'unit1b-am-is-are-rules-practice-no-monster': SpotlightUnit1bAmIsAreRulesPracticeNoMonster,
+  'unit1b-affirmative-negative-html-worksheet-dynamic-photos': SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
