@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reading — Original, Listening, Build Your Dialogue</title>
+  <style>
+    :root{
+      --ink:#173d68;
+      --soft:#5f7898;
+      --blue:#4d8bec;
+      --yellow:#ffd86d;
+      --green:#35c66b;
+      --paper:rgba(255,255,255,.92);
+      --shadow:0 18px 42px rgba(28,68,118,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 14%, rgba(255,255,255,.94), transparent 18%),
+        radial-gradient(circle at 88% 14%, rgba(255,255,255,.62), transparent 18%),
+        linear-gradient(135deg,#eaf7ff 0%,#fff2c9 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:10px 14px 14px;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      gap:10px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge,.progress{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.82);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(12px,1vw,16px);
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      flex:1;
+      text-align:center;
+      font-size:clamp(27px,3vw,48px);
+      color:#2f73d8;
+      text-shadow:0 3px 0 rgba(255,255,255,.94);
+      line-height:.96;
+    }
+
+    .screen{
+      min-height:0;
+      width:min(1220px,100%);
+      justify-self:center;
+      display:none;
+      gap:14px;
+    }
+
+    .screen.active{display:grid}
+
+    .screen.reading{
+      grid-template-columns:minmax(520px,1fr) minmax(280px,.34fr);
+    }
+
+    .screen.listening{
+      grid-template-columns:minmax(0,1fr);
+      place-items:center;
+    }
+
+    .screen.builder{
+      grid-template-columns:minmax(520px,1fr) minmax(340px,.42fr);
+    }
+
+    .panel{
+      min-height:0;
+      border-radius:30px;
+      background:var(--paper);
+      border:5px solid rgba(255,255,255,.88);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .dialogue-panel{
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+    }
+
+    .panel-top{
+      padding:12px 16px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(239,248,255,.76));
+      border-bottom:3px solid rgba(255,255,255,.68);
+    }
+
+    .panel-title{
+      display:grid;
+      gap:4px;
+    }
+
+    .panel-title strong{
+      font-size:clamp(22px,2vw,34px);
+      color:#244a78;
+      line-height:1;
+    }
+
+    .panel-title span{
+      color:#5f7898;
+      font-size:clamp(12px,.95vw,15px);
+      font-weight:850;
+    }
+
+    .characters{
+      display:flex;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .person{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 7px 14px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(12px,1vw,16px);
+    }
+
+    .avatar{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#ffd86d,#ff93bd);
+      border:2px solid #fff;
+      font-size:19px;
+    }
+
+    .dialogue-list{
+      min-height:0;
+      overflow:auto;
+      display:grid;
+      align-content:start;
+      gap:8px;
+      padding:14px;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(255,255,255,.34), transparent 9%),
+        radial-gradient(circle at 88% 15%, rgba(255,255,255,.28), transparent 10%),
+        linear-gradient(135deg,#e3f7df,#dff0ff);
+    }
+
+    .line{
+      border-radius:18px;
+      padding:10px 12px;
+      background:#fff;
+      box-shadow:0 7px 15px rgba(0,0,0,.08);
+      font-size:clamp(15px,1.18vw,19px);
+      line-height:1.18;
+      font-weight:900;
+      width:min(86%,680px);
+    }
+
+    .line.right{
+      justify-self:end;
+      background:#dcffd9;
+      color:#174c2a;
+      text-align:right;
+    }
+
+    .line-name{
+      display:block;
+      font-size:clamp(11px,.85vw,14px);
+      font-weight:950;
+      margin-bottom:3px;
+      color:#2b9bd8;
+    }
+
+    .line.right .line-name{color:#159c4b}
+
+    .nav-row{
+      padding:11px 14px;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      background:rgba(255,255,255,.58);
+      border-top:3px solid rgba(255,255,255,.65);
+    }
+
+    button{
+      font-family:inherit;
+    }
+
+    .btn{
+      border:0;
+      border-radius:999px;
+      min-width:118px;
+      padding:10px 17px;
+      background:linear-gradient(135deg,#7db7ff,#4d8bec);
+      color:#fff;
+      font-size:clamp(14px,1.1vw,18px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .btn.green{
+      background:linear-gradient(135deg,#65d782,#35b65b);
+    }
+
+    .side-card{
+      padding:16px;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:12px;
+    }
+
+    .side-title{
+      display:grid;
+      gap:5px;
+      text-align:center;
+    }
+
+    .side-title strong{
+      font-size:clamp(22px,2vw,32px);
+      color:#244a78;
+      line-height:1;
+    }
+
+    .side-title span{
+      color:#5f7898;
+      font-size:clamp(12px,.95vw,15px);
+      font-weight:850;
+    }
+
+    .mini-box{
+      min-height:0;
+      border-radius:24px;
+      background:#f6fbff;
+      border:3px solid rgba(255,255,255,.82);
+      padding:14px;
+      display:grid;
+      align-content:center;
+      gap:12px;
+      text-align:center;
+    }
+
+    .mini-box .big{
+      font-size:clamp(24px,2.4vw,38px);
+      font-weight:950;
+      color:#244a78;
+      line-height:1.08;
+    }
+
+    .mini-box p{
+      margin:0;
+      font-size:clamp(14px,1.1vw,18px);
+      color:#5f7898;
+      font-weight:850;
+      line-height:1.25;
+    }
+
+    .audio-card{
+      width:min(760px,100%);
+      min-height:min(520px,78vh);
+      padding:clamp(22px,2.4vw,40px);
+      display:grid;
+      place-items:center;
+      text-align:center;
+      gap:22px;
+    }
+
+    .audio-icon{
+      width:clamp(110px,13vw,170px);
+      height:clamp(110px,13vw,170px);
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#dff0ff,#98c9ff);
+      box-shadow:0 16px 34px rgba(0,0,0,.12), inset 0 -8px rgba(0,0,0,.08);
+      font-size:clamp(52px,7vw,92px);
+    }
+
+    .audio-title{
+      display:grid;
+      gap:8px;
+    }
+
+    .audio-title strong{
+      font-size:clamp(30px,3.3vw,56px);
+      color:#244a78;
+      line-height:1;
+    }
+
+    .audio-title span{
+      color:#5f7898;
+      font-size:clamp(16px,1.3vw,22px);
+      font-weight:850;
+    }
+
+    .builder-controls{
+      padding:14px;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:12px;
+    }
+
+    .form-grid{
+      min-height:0;
+      overflow:auto;
+      display:grid;
+      align-content:start;
+      gap:10px;
+      padding-right:4px;
+    }
+
+    .field{
+      display:grid;
+      gap:5px;
+      padding:10px 12px;
+      border-radius:20px;
+      background:#f6fbff;
+      box-shadow:inset 0 -3px rgba(0,0,0,.03);
+    }
+
+    .field label{
+      font-size:clamp(12px,.95vw,15px);
+      font-weight:950;
+      color:#5f7898;
+    }
+
+    .field input{
+      width:100%;
+      min-height:42px;
+      border:0;
+      border-radius:14px;
+      padding:10px 12px;
+      background:#fff;
+      color:#244a78;
+      font-family:inherit;
+      font-size:clamp(15px,1.05vw,17px);
+      font-weight:900;
+      box-shadow:inset 0 -3px rgba(0,0,0,.04);
+      outline:none;
+    }
+
+    .complete-box{
+      display:grid;
+      place-items:center;
+      min-height:46px;
+      padding:9px 12px;
+      border-radius:18px;
+      background:#eff6ff;
+      text-align:center;
+      color:#5f7898;
+      font-size:clamp(12px,.95vw,15px);
+      font-weight:850;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) scale(.85);
+      padding:18px 28px;
+      border-radius:28px;
+      background:rgba(255,255,255,.96);
+      border:4px solid white;
+      box-shadow:0 22px 60px rgba(0,0,0,.22);
+      color:#2c9b55;
+      font-size:clamp(34px,5vw,76px);
+      font-weight:950;
+      opacity:0;
+      pointer-events:none;
+      z-index:20;
+      transition:opacity .2s ease, transform .2s ease;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%,-50%) scale(1);
+    }
+
+    @media(max-width:980px){
+      .screen.reading,
+      .screen.builder{
+        grid-template-columns:1fr;
+      }
+      h1{font-size:clamp(24px,5vw,42px)}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="badge" id="badge">Reading</div>
+      <h1 id="title">Original dialogue</h1>
+      <div class="progress" id="progress">1 / 3</div>
+    </header>
+
+    <!-- SCREEN 1 -->
+    <section class="screen reading active" id="screen1">
+      <section class="panel dialogue-panel">
+        <div class="panel-top">
+          <div class="panel-title">
+            <strong>Read the dialogue</strong>
+            <span>Original version from the book</span>
+          </div>
+          <div class="characters">
+            <div class="person"><span class="avatar">👦</span>Markus</div>
+            <div class="person"><span class="avatar">🧑</span>David</div>
+          </div>
+        </div>
+
+        <div class="dialogue-list" id="originalDialogue"></div>
+
+        <div class="nav-row">
+          <button class="btn green" id="goListening" type="button">Next</button>
+        </div>
+      </section>
+
+      <aside class="panel side-card">
+        <div class="side-title">
+          <strong>Task 1</strong>
+          <span>Read and understand</span>
+        </div>
+        <div class="mini-box">
+          <div class="big">Where are the boys?</div>
+          <p>Read the exchange first. Then go to the listening task.</p>
+        </div>
+        <div></div>
+      </aside>
+    </section>
+
+    <!-- SCREEN 2 -->
+    <section class="screen listening" id="screen2">
+      <section class="panel audio-card">
+        <div class="audio-icon">🎧</div>
+        <div class="audio-title">
+          <strong>Listening</strong>
+          <span>Listen and then build the dialogue.</span>
+        </div>
+        <audio id="lessonAudio" preload="auto" src="/games/unit1b_reading_original_listening_build_dialogue_inputs.mp3"></audio>
+        <button class="btn green" id="audioPlaceholder" type="button">Play audio</button>
+        <button class="btn" id="goBuilder" type="button">Next</button>
+      </section>
+    </section>
+
+    <!-- SCREEN 3 -->
+    <section class="screen builder" id="screen3">
+      <section class="panel dialogue-panel">
+        <div class="panel-top">
+          <div class="panel-title">
+            <strong>Build your dialogue</strong>
+            <span>Type your own words and read the new dialogue</span>
+          </div>
+          <div class="characters">
+            <div class="person"><span class="avatar">👧</span><span id="person1Badge">Emma</span></div>
+            <div class="person"><span class="avatar">👦</span><span id="person2Badge">David</span></div>
+          </div>
+        </div>
+
+        <div class="dialogue-list" id="customDialogue"></div>
+
+        <div class="nav-row">
+          <button class="btn green" id="sendResult" type="button">Finish</button>
+        </div>
+      </section>
+
+      <aside class="panel builder-controls">
+        <div class="side-title">
+          <strong>Change the words</strong>
+          <span>Children type the words themselves</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label for="person1">Name 1</label>
+            <input id="person1" type="text" value="Emma" />
+          </div>
+          <div class="field">
+            <label for="person2">Name 2</label>
+            <input id="person2" type="text" value="David" />
+          </div>
+          <div class="field">
+            <label for="age">Age</label>
+            <input id="age" type="text" value="twelve" />
+          </div>
+          <div class="field">
+            <label for="lesson">Lesson</label>
+            <input id="lesson" type="text" value="science" />
+          </div>
+          <div class="field">
+            <label for="room">Room</label>
+            <input id="room" type="text" value="Room D" />
+          </div>
+          <div class="field">
+            <label for="className">Class</label>
+            <input id="className" type="text" value="Class 2E" />
+          </div>
+        </div>
+
+        <div class="complete-box" id="completeBox">Type the words to make a new dialogue.</div>
+      </aside>
+    </section>
+
+    <div class="toast" id="toast">Great!</div>
+  </main>
+
+  <script>
+    const originalLines = [
+      {speaker:"Markus", side:"left", text:"Excuse me, where is the science lesson?"},
+      {speaker:"David", side:"right", text:"It’s in Room D. Are you new to the school?"},
+      {speaker:"Markus", side:"left", text:"Yes, I am. My name’s Markus."},
+      {speaker:"David", side:"right", text:"My name’s David. Nice to meet you, Markus. Your name is strange. How do you spell it?"},
+      {speaker:"Markus", side:"left", text:"It’s M-A-R-K-U-S."},
+      {speaker:"David", side:"right", text:"I see. How old are you?"},
+      {speaker:"Markus", side:"left", text:"I’m twelve. And you?"},
+      {speaker:"David", side:"right", text:"I’m twelve too! Are you in Class 2E?"},
+      {speaker:"Markus", side:"left", text:"Yes, I am!"},
+      {speaker:"David", side:"right", text:"Me too! Let’s go to the science lesson together then!"}
+    ];
+
+    const state = {
+      person1: "Emma",
+      person2: "David",
+      age: "twelve",
+      lesson: "science",
+      room: "Room D",
+      className: "Class 2E"
+    };
+
+    const screen1 = document.getElementById("screen1");
+    const screen2 = document.getElementById("screen2");
+    const screen3 = document.getElementById("screen3");
+    const title = document.getElementById("title");
+    const badge = document.getElementById("badge");
+    const progress = document.getElementById("progress");
+    const originalDialogue = document.getElementById("originalDialogue");
+    const customDialogue = document.getElementById("customDialogue");
+    const completeBox = document.getElementById("completeBox");
+    const toast = document.getElementById("toast");
+    const person1Badge = document.getElementById("person1Badge");
+    const person2Badge = document.getElementById("person2Badge");
+    const lessonAudio = document.getElementById("lessonAudio");
+
+    const inputs = {
+      person1: document.getElementById("person1"),
+      person2: document.getElementById("person2"),
+      age: document.getElementById("age"),
+      lesson: document.getElementById("lesson"),
+      room: document.getElementById("room"),
+      className: document.getElementById("className")
+    };
+
+    function showToast(text, color = "#2c9b55"){
+      toast.textContent = text;
+      toast.style.color = color;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 850);
+    }
+
+    function switchScreen(n){
+      [screen1, screen2, screen3].forEach(s => s.classList.remove("active"));
+      document.getElementById("screen" + n).classList.add("active");
+      progress.textContent = `${n} / 3`;
+
+      if (n === 1) {
+        title.textContent = "Original dialogue";
+        badge.textContent = "Reading";
+      } else if (n === 2) {
+        title.textContent = "Listening";
+        badge.textContent = "Audio";
+      } else {
+        title.textContent = "Build your dialogue";
+        badge.textContent = "Speaking";
+        renderCustomDialogue();
+      }
+    }
+
+    function renderLine(container, line){
+      const div = document.createElement("div");
+      div.className = "line " + (line.side === "right" ? "right" : "");
+      div.innerHTML = `<span class="line-name">${line.speaker}</span>${line.text}`;
+      container.appendChild(div);
+    }
+
+    function renderOriginal(){
+      originalDialogue.innerHTML = "";
+      originalLines.forEach(line => renderLine(originalDialogue, line));
+    }
+
+    function spellName(name){
+      const clean = (name || "").trim();
+      if (!clean) return "";
+      return clean.toUpperCase().split("").join("-");
+    }
+
+    function syncStateFromInputs(){
+      state.person1 = inputs.person1.value.trim() || "Emma";
+      state.person2 = inputs.person2.value.trim() || "David";
+      state.age = inputs.age.value.trim() || "twelve";
+      state.lesson = inputs.lesson.value.trim() || "science";
+      state.room = inputs.room.value.trim() || "Room D";
+      state.className = inputs.className.value.trim() || "Class 2E";
+    }
+
+    function customLines(){
+      return [
+        {speaker:state.person1, side:"left", text:`Excuse me, where is the ${state.lesson} lesson?`},
+        {speaker:state.person2, side:"right", text:`It’s in ${state.room}. Are you new to the school?`},
+        {speaker:state.person1, side:"left", text:`Yes, I am. My name’s ${state.person1}.`},
+        {speaker:state.person2, side:"right", text:`My name’s ${state.person2}. Nice to meet you, ${state.person1}. How do you spell it?`},
+        {speaker:state.person1, side:"left", text:`It’s ${spellName(state.person1)}.`},
+        {speaker:state.person2, side:"right", text:`I see. How old are you?`},
+        {speaker:state.person1, side:"left", text:`I’m ${state.age}. And you?`},
+        {speaker:state.person2, side:"right", text:`I’m ${state.age} too! Are you in ${state.className}?`},
+        {speaker:state.person1, side:"left", text:`Yes, I am!`},
+        {speaker:state.person2, side:"right", text:`Me too! Let’s go to the ${state.lesson} lesson together then!`}
+      ];
+    }
+
+    function renderCustomDialogue(){
+      syncStateFromInputs();
+      person1Badge.textContent = state.person1;
+      person2Badge.textContent = state.person2;
+      customDialogue.innerHTML = "";
+      customLines().forEach(line => renderLine(customDialogue, line));
+      completeBox.textContent = `${state.person1} • ${state.person2} • ${state.age} • ${state.lesson} • ${state.room} • ${state.className}`;
+    }
+
+    Object.values(inputs).forEach(input => {
+      input.addEventListener("input", renderCustomDialogue);
+    });
+
+    document.getElementById("goListening").addEventListener("click", () => switchScreen(2));
+
+    document.getElementById("audioPlaceholder").addEventListener("click", () => {
+      if (lessonAudio.paused) {
+        lessonAudio.play();
+        document.getElementById("audioPlaceholder").textContent = "Pause audio";
+      } else {
+        lessonAudio.pause();
+        document.getElementById("audioPlaceholder").textContent = "Play audio";
+      }
+    });
+
+    lessonAudio.addEventListener("ended", () => {
+      document.getElementById("audioPlaceholder").textContent = "Play audio";
+    });
+
+    document.getElementById("goBuilder").addEventListener("click", () => switchScreen(3));
+
+    document.getElementById("sendResult").addEventListener("click", () => {
+      syncStateFromInputs();
+      const result = {
+        type: "custom-dialogue-complete",
+        values: {
+          person1: state.person1,
+          person2: state.person2,
+          age: state.age,
+          lesson: state.lesson,
+          room: state.room,
+          className: state.className
+        },
+        dialogue: customLines(),
+        sentAt: new Date().toISOString()
+      };
+
+      window.parent.postMessage(result, "*");
+      window.postMessage(result, "*");
+      localStorage.setItem("customDialogueLastResult", JSON.stringify(result));
+      showToast("Sent!");
+    });
+
+    renderOriginal();
+    renderCustomDialogue();
+  </script>
+</body>
+</html>

@@ -69,6 +69,7 @@ import SpotlightUnit1bPopTheNumber from './SpotlightUnit1bPopTheNumber';
 import SpotlightUnit1bHowOldAreThey from './SpotlightUnit1bHowOldAreThey';
 import SpotlightUnit1bDialogueAutoTwoCharactersLike from './SpotlightUnit1bDialogueAutoTwoCharactersLike';
 import SpotlightUnit1bBuildTheDialogue from './SpotlightUnit1bBuildTheDialogue';
+import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs';
 
 interface Props {
   activity: Activity;
@@ -157,6 +158,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1b-how-old-are-they': SpotlightUnit1bHowOldAreThey,
   'unit1b-dialogue-auto-two-characters-like': SpotlightUnit1bDialogueAutoTwoCharactersLike,
   'unit1b-build-the-dialogue': SpotlightUnit1bBuildTheDialogue,
+  'unit1b-reading-original-listening-build-dialogue-inputs': SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
