@@ -99,18 +99,20 @@
     .board-card {
       display:grid;
       place-items:center;
-      padding:clamp(4px,.6vw,8px);
+      padding:clamp(6px,.8vw,10px);
     }
 
     .board-wrap {
       position:relative;
-      width:min(860px,100%);
+      width:min(980px,100%);
       aspect-ratio:4/3;
-      max-height:min(100%, 52vh);
+      max-height:100%;
       border-radius:22px;
       overflow:hidden;
       background:#dfefff;
       box-shadow:inset 0 -8px rgba(0,0,0,.04);
+      transform:scale(.8);
+      transform-origin:center center;
     }
 
     .board-img {
@@ -118,7 +120,7 @@
       inset:0;
       width:100%;
       height:100%;
-      object-fit:contain;
+      object-fit:cover;
     }
 
     .name-tag {
@@ -318,11 +320,6 @@
     @media (max-width:900px) {
       .slide {
         grid-template-rows:minmax(0, .85fr) auto;
-      }
-
-      .board-wrap {
-        width:min(100%, 720px);
-        max-height:38vh;
       }
 
       .task-card {
