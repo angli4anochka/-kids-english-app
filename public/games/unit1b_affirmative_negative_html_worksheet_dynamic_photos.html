@@ -218,15 +218,19 @@
 
     /* PRACTICE */
     .practice-screen {
+      min-height:0;
+      overflow:hidden;
       grid-template-rows:minmax(0,1fr) auto;
-      gap:12px;
+      gap:10px;
     }
 
     .practice-layout {
       min-height:0;
       display:grid;
-      grid-template-rows:minmax(0,1fr) auto;
-      gap:10px;
+      grid-template-rows:auto auto auto;
+      gap:8px;
+      align-content:start;
+      overflow:hidden;
     }
 
     .exercise-card {
@@ -234,11 +238,12 @@
       border:4px solid #cfe5fb;
       border-radius:24px;
       background:#f9fcff;
-      padding:clamp(14px,1.4vw,20px);
+      padding:16px 20px;
       display:grid;
       grid-template-columns:300px minmax(0,1fr);
-      gap:clamp(20px,2.5vw,34px);
+      gap:24px;
       align-items:center;
+      max-height:410px;
       box-shadow:inset 0 -5px rgba(47,115,216,.04);
       overflow:hidden;
     }
@@ -309,7 +314,7 @@
     .statement {
       margin:0;
       text-align:left;
-      font-size:clamp(28px,3vw,46px);
+      font-size:clamp(24px,2.5vw,40px);
       line-height:1.08;
       font-weight:950;
       color:#111827;
@@ -317,25 +322,25 @@
 
     .make-correct {
       color:var(--blue);
-      font-size:clamp(18px,1.7vw,26px);
+      font-size:clamp(16px,1.45vw,22px);
       font-weight:950;
     }
 
     .choices {
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:10px 16px;
+      gap:10px 14px;
       width:min(100%,520px);
     }
 
     .choice {
-      min-height:clamp(54px,5.8vw,72px);
+      min-height:clamp(48px,5vw,64px);
       border-radius:14px;
       border:2px solid #9ec6f5;
       background:#fff;
       color:var(--blue);
       font-family:inherit;
-      font-size:clamp(21px,2vw,30px);
+      font-size:clamp(19px,1.8vw,26px);
       font-weight:950;
       cursor:pointer;
       transition:transform .12s ease, background .12s ease, border-color .12s ease;
@@ -386,15 +391,14 @@
       grid-template-columns:auto 1fr;
       gap:14px;
       align-items:center;
-      grid-column:2;
       position:static;
       width:min(100%,520px);
-      justify-self:start;
+      justify-self:center;
       border-radius:18px;
       border:2px solid #dbeafc;
       background:#f9fcff;
-      padding:12px 18px;
-      min-height:64px;
+      padding:10px 16px;
+      min-height:56px;
     }
 
     .feedback.good {
@@ -403,11 +407,11 @@
     }
 
     .feedback .icon {
-      font-size:30px;
+      font-size:28px;
     }
 
     .feedback-text {
-      font-size:clamp(16px,1.35vw,21px);
+      font-size:clamp(15px,1.2vw,19px);
       line-height:1.22;
     }
 
@@ -422,18 +426,18 @@
       justify-content:center;
       gap:12px;
       flex-wrap:wrap;
-      min-height:46px;
+      min-height:40px;
     }
 
     .btn {
       border:0;
       border-radius:14px;
       min-width:150px;
-      padding:12px 22px;
+      padding:10px 20px;
       background:linear-gradient(135deg,#2f7ceb,#1d67d0);
       color:#fff;
       font-family:inherit;
-      font-size:clamp(16px,1.4vw,22px);
+      font-size:clamp(15px,1.35vw,20px);
       font-weight:950;
       cursor:pointer;
       box-shadow:0 12px 24px rgba(47,115,216,.24), inset 0 -4px rgba(0,0,0,.12);
@@ -470,16 +474,16 @@
     }
 
     @media(max-width:900px) {
-      body { overflow:auto; }
-      .app { height:auto; min-height:100vh; }
-      .slide { height:auto; min-height:calc(100vh - 28px); }
+      body { overflow:hidden; }
+      .app { height:100vh; min-height:0; }
+      .slide { height:100%; min-height:0; }
       .topbar { grid-template-columns:1fr; }
       .progress { justify-self:start; }
-      .columns { grid-template-columns:1fr; gap:22px; }
+      .columns { grid-template-columns:1fr; gap:18px; }
       .exercise-card { grid-template-columns:1fr; }
       .photo-wrap { width:min(250px,100%); }
       .fact-card { width:min(250px,100%); }
-      .feedback { grid-column:auto; width:100%; }
+      .feedback { width:100%; }
     }
   </style>
 </head>
