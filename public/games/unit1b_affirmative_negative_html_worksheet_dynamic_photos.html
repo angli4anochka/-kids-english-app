@@ -224,7 +224,7 @@
       gap:10px;
     }
 
-    .practice-layout {
+    .practice-card {
       min-height:0;
       display:grid;
       grid-template-rows:auto auto auto;
@@ -386,14 +386,14 @@
       80% { transform:translateX(-3px); }
     }
 
-    .feedback {
+    .hint-box {
       display:grid;
       grid-template-columns:auto 1fr;
       gap:14px;
       align-items:center;
       position:static;
-      width:min(100%,520px);
-      justify-self:center;
+      width:100%;
+      justify-self:stretch;
       border-radius:18px;
       border:2px solid #dbeafc;
       background:#f9fcff;
@@ -483,7 +483,7 @@
       .exercise-card { grid-template-columns:1fr; }
       .photo-wrap { width:min(250px,100%); }
       .fact-card { width:min(250px,100%); }
-      .feedback { width:100%; }
+      .hint-box { width:100%; }
     }
   </style>
 </head>
@@ -531,7 +531,7 @@
       </section>
 
       <section class="screen practice-screen" id="practiceScreen">
-        <div class="practice-layout">
+        <div class="practice-card">
           <div class="exercise-card">
             <div class="photo-column">
               <div class="photo-wrap" id="photoWrap">
@@ -545,7 +545,7 @@
               <div class="make-correct">Make it correct.</div>
               <div class="choices" id="choices"></div>
             </div>
-            <div class="feedback" id="hintBox">
+            <div class="hint-box" id="hintBox">
               <div class="icon">💡</div>
               <div class="feedback-text" id="hintText">Look at the card and choose the correct form.</div>
             </div>
