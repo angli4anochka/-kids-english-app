@@ -34,46 +34,39 @@
     .app {
       width:100vw;
       height:100vh;
-      padding:clamp(10px,1vw,18px);
+      padding:clamp(8px,.8vw,14px);
       display:grid;
       grid-template-rows:auto minmax(0,1fr);
-      gap:clamp(8px,.85vw,14px);
+      gap:clamp(6px,.7vw,10px);
     }
 
-    header {
+    .topbar {
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-    }
-
-    .badge {
-      padding:7px 13px;
-      border-radius:999px;
-      background:rgba(255,255,255,.78);
-      box-shadow:0 7px 18px rgba(0,0,0,.08);
-      font-weight:950;
-      color:#244a78;
-      font-size:clamp(12px,1vw,16px);
+      gap:10px;
+      width:min(1180px,100%);
+      justify-self:center;
+      min-width:0;
     }
 
     h1 {
       margin:0;
       text-align:center;
       flex:1;
-      font-size:clamp(28px,3.2vw,54px);
+      font-size:clamp(18px,1.9vw,26px);
       color:#2f73d8;
       text-shadow:0 3px 0 rgba(255,255,255,.94);
       line-height:.95;
     }
 
     .progress {
-      padding:8px 14px;
+      padding:7px 12px;
       border-radius:999px;
       background:rgba(255,255,255,.78);
       box-shadow:0 7px 18px rgba(0,0,0,.08);
       font-weight:950;
-      font-size:clamp(12px,1vw,16px);
+      font-size:clamp(11px,.95vw,14px);
       white-space:nowrap;
     }
 
@@ -83,14 +76,14 @@
       justify-self:center;
       display:grid;
       grid-template-rows:minmax(0, 1fr) auto;
-      gap:clamp(8px,1vw,14px);
+      gap:clamp(6px,.8vw,10px);
     }
 
     .board-card, .task-card {
       min-height:0;
-      border-radius:30px;
+      border-radius:22px;
       background:rgba(255,255,255,.88);
-      border:5px solid rgba(255,255,255,.85);
+      border:4px solid rgba(255,255,255,.85);
       box-shadow:var(--shadow);
       overflow:hidden;
       position:relative;
@@ -99,14 +92,13 @@
     .board-card {
       display:grid;
       place-items:center;
-      padding:clamp(6px,.8vw,10px);
+      padding:clamp(4px,.55vw,8px);
     }
 
     .board-wrap {
       position:relative;
-      width:min(980px,100%);
-      aspect-ratio:4/3;
-      max-height:100%;
+      width:min(920px,100%);
+      height:clamp(220px,35vh,320px);
       border-radius:22px;
       overflow:hidden;
       background:#dfefff;
@@ -118,7 +110,7 @@
       inset:0;
       width:100%;
       height:100%;
-      object-fit:cover;
+      object-fit:contain;
     }
 
     .name-tag {
@@ -143,46 +135,46 @@
     }
 
     .task-card {
-      padding:clamp(10px,1vw,16px);
+      padding:clamp(8px,.8vw,12px);
       display:grid;
-      grid-template-columns:minmax(250px,.8fr) minmax(220px,.55fr) minmax(320px,1fr) auto;
+      grid-template-columns:minmax(180px,.78fr) minmax(150px,.48fr) minmax(230px,.95fr) auto;
       align-items:center;
-      gap:clamp(8px,1vw,14px);
+      gap:clamp(6px,.8vw,10px);
     }
 
     .question {
-      min-height:clamp(52px,4.6vw,70px);
+      min-height:clamp(42px,3.8vw,56px);
       display:grid;
       place-items:center;
       text-align:center;
-      padding:10px 14px;
-      border-radius:22px;
+      padding:8px 12px;
+      border-radius:16px;
       background:linear-gradient(135deg,#fff6d6,#fff);
       border:3px solid rgba(255,255,255,.9);
       box-shadow:0 8px 18px rgba(0,0,0,.08);
-      font-size:clamp(20px,2vw,32px);
+      font-size:clamp(16px,1.55vw,24px);
       font-weight:950;
       color:#244a78;
       line-height:1.05;
     }
 
     .answer {
-      min-height:clamp(50px,4.4vw,64px);
+      min-height:clamp(42px,3.8vw,54px);
       display:grid;
       grid-template-columns:1fr 1fr;
-      gap:8px;
+      gap:6px;
     }
 
     .slot {
       display:grid;
       place-items:center;
       text-align:center;
-      padding:10px 12px;
-      border-radius:18px;
+      padding:8px 10px;
+      border-radius:14px;
       background:#eff6ff;
       border:3px dashed #9fc3f1;
       color:#7893b5;
-      font-size:clamp(16px,1.55vw,24px);
+      font-size:clamp(13px,1.25vw,20px);
       font-weight:950;
       cursor:pointer;
     }
@@ -212,12 +204,12 @@
       display:grid;
       grid-template-columns:1fr 1.35fr;
       align-content:center;
-      gap:10px;
+      gap:6px;
       min-height:0;
     }
 
     .option-title {
-      font-size:clamp(15px,1.3vw,20px);
+      font-size:clamp(12px,1.05vw,16px);
       font-weight:950;
       color:#244a78;
       text-align:center;
@@ -227,19 +219,19 @@
       display:flex;
       flex-wrap:wrap;
       justify-content:center;
-      gap:9px;
+      gap:6px;
     }
 
     .choice {
-      min-width:clamp(72px,6vw,96px);
-      min-height:38px;
+      min-width:clamp(56px,4.8vw,82px);
+      min-height:34px;
       border:0;
-      border-radius:16px;
-      padding:8px 13px;
+      border-radius:14px;
+      padding:6px 10px;
       background:linear-gradient(135deg,#fff8ce,#ffd86d);
       color:#244a78;
       font-family:inherit;
-      font-size:clamp(13px,1.05vw,17px);
+      font-size:clamp(11px,.92vw,14px);
       font-weight:950;
       cursor:pointer;
       box-shadow:0 8px 16px rgba(0,0,0,.12), inset 0 -4px rgba(0,0,0,.07);
@@ -263,19 +255,19 @@
     .controls {
       display:flex;
       justify-content:center;
-      gap:8px;
+      gap:6px;
       flex-wrap:wrap;
     }
 
     .control-btn {
       border:0;
       border-radius:999px;
-      min-width:92px;
-      padding:9px 14px;
+      min-width:78px;
+      padding:8px 12px;
       background:linear-gradient(135deg,#7db7ff,#4d8bec);
       color:#fff;
       font-family:inherit;
-      font-size:clamp(14px,1.15vw,18px);
+      font-size:clamp(12px,1vw,16px);
       font-weight:950;
       cursor:pointer;
       box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
@@ -317,34 +309,45 @@
 
     @media (max-width:900px) {
       .slide {
-        grid-template-rows:minmax(0, .85fr) auto;
+        grid-template-rows:minmax(0, .95fr) auto;
       }
 
       .task-card {
         grid-template-columns:1fr;
+        align-items:stretch;
       }
 
       .options {
         grid-template-columns:1fr;
       }
 
-      header {
+      .topbar {
         display:grid;
-        grid-template-columns:auto 1fr auto;
+        grid-template-columns:1fr auto;
+        align-items:center;
       }
 
       h1 {
-        font-size:clamp(24px,5vw,42px);
+        font-size:clamp(18px,4vw,28px);
+      }
+
+      .board-wrap {
+        width:100%;
+        height:clamp(190px,34vh,280px);
+      }
+
+      .task-card {
+        padding:8px;
       }
     }
   </style>
 </head>
 <body>
   <main class="app">
-    <header>
+    <div class="topbar">
       <h1>How old are they?</h1>
       <div class="progress" id="progress">1 / 6</div>
-    </header>
+    </div>
 
     <section class="slide">
       <section class="board-card">
