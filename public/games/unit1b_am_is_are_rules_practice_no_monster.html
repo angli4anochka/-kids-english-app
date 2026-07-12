@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Am / Is / Are</title>
+  <style>
+    :root{
+      --ink:#173d68;
+      --soft:#5f7898;
+      --blue:#4d8bec;
+      --green:#35c66b;
+      --yellow:#ffd86d;
+      --red:#ff6f87;
+      --paper:rgba(255,255,255,.94);
+      --shadow:0 18px 42px rgba(28,68,118,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 14%, rgba(255,255,255,.95), transparent 18%),
+        radial-gradient(circle at 88% 16%, rgba(255,255,255,.66), transparent 18%),
+        linear-gradient(135deg,#eaf7ff 0%,#fff2c9 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:clamp(12px,1.2vw,20px);
+      display:grid;
+      place-items:center;
+    }
+
+    .card{
+      width:min(1160px,100%);
+      height:100%;
+      min-height:0;
+      border-radius:36px;
+      background:var(--paper);
+      border:5px solid rgba(255,255,255,.9);
+      box-shadow:var(--shadow);
+      padding:clamp(16px,1.6vw,26px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(12px,1.2vw,20px);
+      overflow:hidden;
+    }
+
+    .top{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:12px;
+    }
+
+    .pill{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.86);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(13px,1vw,16px);
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      text-align:center;
+      font-size:clamp(32px,4vw,68px);
+      color:#2f73d8;
+      text-shadow:0 3px 0 rgba(255,255,255,.94);
+      line-height:.95;
+    }
+
+    .screen{
+      min-height:0;
+      display:none;
+      animation:fadeIn .22s ease both;
+    }
+
+    .screen.active{display:grid}
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(10px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    /* RULES */
+    .rules{
+      min-height:0;
+      grid-template-rows:auto minmax(0,1fr);
+      gap:18px;
+    }
+
+    .intro{
+      text-align:center;
+      color:#5f7898;
+      font-size:clamp(17px,1.4vw,24px);
+      font-weight:900;
+      line-height:1.2;
+    }
+
+    .rules-grid{
+      min-height:0;
+      display:grid;
+      grid-template-columns:repeat(3, minmax(190px,1fr));
+      gap:clamp(12px,1.4vw,22px);
+      align-items:stretch;
+    }
+
+    .rule-box{
+      border-radius:32px;
+      background:
+        radial-gradient(circle at 28% 18%, rgba(255,255,255,.72), transparent 20%),
+        linear-gradient(135deg,#f8fbff,#fff7dc);
+      border:4px solid rgba(255,255,255,.82);
+      box-shadow:0 12px 26px rgba(0,0,0,.09), inset 0 -6px rgba(0,0,0,.035);
+      padding:clamp(16px,1.5vw,26px);
+      display:grid;
+      grid-template-rows:auto auto 1fr;
+      gap:12px;
+      place-items:center;
+      text-align:center;
+    }
+
+    .rule-icon{
+      width:clamp(70px,7vw,100px);
+      height:clamp(70px,7vw,100px);
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#dff0ff,#98c9ff);
+      box-shadow:0 10px 18px rgba(0,0,0,.1), inset 0 -6px rgba(0,0,0,.06);
+      font-size:clamp(34px,4vw,56px);
+    }
+
+    .rule-word{
+      font-size:clamp(42px,5vw,80px);
+      font-weight:950;
+      color:#2f73d8;
+      line-height:.9;
+    }
+
+    .rule-text{
+      display:grid;
+      gap:8px;
+      align-content:center;
+      font-size:clamp(18px,1.6vw,28px);
+      font-weight:950;
+      color:#244a78;
+      line-height:1.15;
+    }
+
+    .example{
+      padding:8px 12px;
+      border-radius:16px;
+      background:#fff;
+      box-shadow:inset 0 -3px rgba(0,0,0,.04);
+    }
+
+    /* PRACTICE */
+    .practice{
+      min-height:0;
+      grid-template-rows:minmax(0,1fr);
+      place-items:center;
+    }
+
+    .practice-inner{
+      width:min(930px,100%);
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto auto auto;
+      gap:clamp(18px,2vw,28px);
+      place-items:center;
+    }
+
+    .sentence-card{
+      width:100%;
+      min-height:clamp(190px,24vw,290px);
+      border-radius:36px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:clamp(18px,2vw,34px);
+      background:
+        radial-gradient(circle at 30% 22%, rgba(255,255,255,.82), transparent 21%),
+        linear-gradient(135deg,#fff8ce,#ffd86d);
+      box-shadow:0 22px 42px rgba(0,0,0,.15), inset 0 -9px rgba(0,0,0,.08);
+      position:relative;
+      overflow:hidden;
+      animation:popIn .22s ease both;
+    }
+
+    .sentence-card::after{
+      content:"";
+      position:absolute;
+      inset:12px;
+      border-radius:28px;
+      border:3px solid rgba(255,255,255,.48);
+      pointer-events:none;
+    }
+
+    .sentence{
+      position:relative;
+      z-index:1;
+      font-size:clamp(38px,5.2vw,86px);
+      font-weight:950;
+      color:#244a78;
+      line-height:1.08;
+    }
+
+    .blank{
+      display:inline-grid;
+      place-items:center;
+      min-width:clamp(104px,11vw,150px);
+      padding:0 10px 6px;
+      border-bottom:8px solid #2f73d8;
+      color:#2f73d8;
+    }
+
+    @keyframes popIn{
+      from{opacity:0; transform:translateY(14px) scale(.95)}
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    .choices{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:clamp(12px,1.4vw,20px);
+      width:100%;
+    }
+
+    .choice{
+      border:0;
+      border-radius:999px;
+      min-width:clamp(130px,14vw,190px);
+      min-height:clamp(66px,7vw,92px);
+      padding:10px 20px;
+      background:#fff;
+      color:#2f73d8;
+      font-family:inherit;
+      font-size:clamp(32px,3.6vw,58px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 11px 22px rgba(0,0,0,.11), inset 0 -5px rgba(0,0,0,.05);
+      transition:transform .13s ease, box-shadow .13s ease, background .13s ease;
+    }
+
+    .choice:hover{
+      transform:translateY(-3px);
+      background:#fff9dc;
+      box-shadow:0 0 0 5px rgba(255,216,109,.28),0 11px 22px rgba(0,0,0,.11), inset 0 -5px rgba(0,0,0,.05);
+    }
+
+    .choice.correct{
+      background:#eaffef;
+      color:#247a43;
+      box-shadow:0 0 0 5px rgba(53,198,107,.22),0 11px 22px rgba(0,0,0,.11), inset 0 -5px rgba(0,0,0,.05);
+    }
+
+    .choice.wrong{
+      background:#ffe9ec;
+      color:#9d2938;
+      animation:shake .34s ease;
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-8px)}
+      55%{transform:translateX(8px)}
+      80%{transform:translateX(-4px)}
+    }
+
+    .hint{
+      min-height:58px;
+      width:100%;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:10px 16px;
+      border-radius:23px;
+      background:#eff6ff;
+      color:#5f7898;
+      font-size:clamp(15px,1.25vw,20px);
+      font-weight:900;
+      line-height:1.18;
+    }
+
+    .bottom{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      border-radius:999px;
+      min-width:128px;
+      padding:11px 18px;
+      background:linear-gradient(135deg,#7db7ff,#4d8bec);
+      color:#fff;
+      font-family:inherit;
+      font-size:clamp(15px,1.1vw,18px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .btn.green{
+      background:linear-gradient(135deg,#65d782,#35b65b);
+    }
+
+    .finish{
+      display:none;
+      place-items:center;
+      text-align:center;
+      height:100%;
+      min-height:0;
+    }
+
+    .finish.show{display:grid}
+
+    .finish-card{
+      width:min(650px,100%);
+      min-height:280px;
+      border-radius:36px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      display:grid;
+      place-items:center;
+      padding:28px;
+      box-shadow:0 20px 38px rgba(0,0,0,.14), inset 0 -8px rgba(0,0,0,.08);
+      color:#244a78;
+      font-size:clamp(34px,4vw,64px);
+      font-weight:950;
+      line-height:1.08;
+    }
+
+    @media(max-width:820px){
+      .top{
+        grid-template-columns:1fr;
+      }
+      .rules-grid{
+        grid-template-columns:1fr;
+        overflow:auto;
+      }
+      h1{font-size:clamp(30px,7vw,52px)}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="card">
+      <div class="top">
+        <div class="pill" id="stepPill">Rules</div>
+        <h1>am / is / are</h1>
+        <div class="pill" id="scorePill">0 / 5</div>
+      </div>
+
+      <section class="screen rules active" id="rulesScreen">
+        <div class="intro">Remember the verb <b>to be</b>.</div>
+
+        <div class="rules-grid">
+          <div class="rule-box">
+            <div class="rule-icon">🙋</div>
+            <div class="rule-word">am</div>
+            <div class="rule-text">
+              <div class="example">I am</div>
+              <div class="example">I am twelve.</div>
+            </div>
+          </div>
+
+          <div class="rule-box">
+            <div class="rule-icon">👧</div>
+            <div class="rule-word">is</div>
+            <div class="rule-text">
+              <div class="example">he / she / it is</div>
+              <div class="example">She is new.</div>
+            </div>
+          </div>
+
+          <div class="rule-box">
+            <div class="rule-icon">👥</div>
+            <div class="rule-word">are</div>
+            <div class="rule-text">
+              <div class="example">you / we / they are</div>
+              <div class="example">We are students.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen practice" id="practiceScreen">
+        <div class="practice-inner" id="playArea">
+          <div class="sentence-card" id="sentenceCard">
+            <div class="sentence" id="sentence">I <span class="blank">___</span> twelve.</div>
+          </div>
+
+          <div class="choices" id="choices">
+            <button class="choice" data-answer="am" type="button">am</button>
+            <button class="choice" data-answer="is" type="button">is</button>
+            <button class="choice" data-answer="are" type="button">are</button>
+          </div>
+
+          <div class="hint" id="hint">Choose: am, is or are.</div>
+        </div>
+
+        <div class="finish" id="finish">
+          <div class="finish-card">Great job!<br>5 / 5</div>
+        </div>
+      </section>
+
+      <div class="bottom">
+        <button class="btn" id="backBtn" type="button" style="display:none;">Rules</button>
+        <button class="btn green" id="startBtn" type="button">Start practice</button>
+        <button class="btn" id="resetBtn" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const tasks = [
+      {
+        before:"I",
+        after:"twelve.",
+        answer:"am",
+        hint:"Use am only with I: I am twelve."
+      },
+      {
+        before:"She",
+        after:"new.",
+        answer:"is",
+        hint:"Use is with he, she and it: She is new."
+      },
+      {
+        before:"We",
+        after:"in Class 2E.",
+        answer:"are",
+        hint:"Use are with we: We are in Class 2E."
+      },
+      {
+        before:"They",
+        after:"students.",
+        answer:"are",
+        hint:"Use are with they: They are students."
+      },
+      {
+        before:"It",
+        after:"an eraser.",
+        answer:"is",
+        hint:"Use is with it: It is an eraser."
+      }
+    ];
+
+    const rulesScreen = document.getElementById("rulesScreen");
+    const practiceScreen = document.getElementById("practiceScreen");
+    const sentence = document.getElementById("sentence");
+    const sentenceCard = document.getElementById("sentenceCard");
+    const hint = document.getElementById("hint");
+    const scorePill = document.getElementById("scorePill");
+    const stepPill = document.getElementById("stepPill");
+    const startBtn = document.getElementById("startBtn");
+    const backBtn = document.getElementById("backBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const playArea = document.getElementById("playArea");
+    const finish = document.getElementById("finish");
+    const choiceButtons = Array.from(document.querySelectorAll(".choice"));
+
+    let index = 0;
+    let score = 0;
+    let locked = false;
+    let results = [];
+
+    function showRules(){
+      rulesScreen.classList.add("active");
+      practiceScreen.classList.remove("active");
+      stepPill.textContent = "Rules";
+      startBtn.textContent = "Start practice";
+      startBtn.style.display = "";
+      backBtn.style.display = "none";
+      scorePill.textContent = `${score} / ${tasks.length}`;
+    }
+
+    function showPractice(){
+      rulesScreen.classList.remove("active");
+      practiceScreen.classList.add("active");
+      stepPill.textContent = `${Math.min(index + 1, tasks.length)} / ${tasks.length}`;
+      startBtn.style.display = "none";
+      backBtn.style.display = "";
+      renderTask();
+    }
+
+    function renderTask(){
+      locked = false;
+      const task = tasks[index];
+      if (!task) return finishGame();
+
+      sentence.innerHTML = `${task.before} <span class="blank">___</span> ${task.after}`;
+      hint.textContent = "Choose: am, is or are.";
+      scorePill.textContent = `${score} / ${tasks.length}`;
+      stepPill.textContent = `${index + 1} / ${tasks.length}`;
+
+      choiceButtons.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove("correct", "wrong");
+      });
+
+      sentenceCard.style.animation = "none";
+      void sentenceCard.offsetWidth;
+      sentenceCard.style.animation = "";
+    }
+
+    function chooseAnswer(button){
+      if (locked) return;
+
+      const task = tasks[index];
+      const chosen = button.dataset.answer;
+
+      if (chosen === task.answer) {
+        locked = true;
+        button.classList.add("correct");
+        hint.textContent = task.hint;
+        sentence.innerHTML = `${task.before} <span class="blank">${task.answer}</span> ${task.after}`;
+        score += 1;
+        scorePill.textContent = `${score} / ${tasks.length}`;
+        results.push({ sentence: `${task.before} ${task.answer} ${task.after}`, answer: chosen, correct: true });
+
+        setTimeout(() => {
+          index += 1;
+          if (index >= tasks.length) {
+            finishGame();
+          } else {
+            renderTask();
+          }
+        }, 850);
+      } else {
+        button.classList.remove("wrong");
+        void button.offsetWidth;
+        button.classList.add("wrong");
+        hint.textContent = task.hint;
+        results.push({
+          sentence: `${task.before} ___ ${task.after}`,
+          chosen,
+          correctAnswer: task.answer,
+          correct: false
+        });
+      }
+    }
+
+    function finishGame(){
+      playArea.style.display = "none";
+      finish.classList.add("show");
+      stepPill.textContent = "Done";
+      scorePill.textContent = `${score} / ${tasks.length}`;
+
+      const payload = {
+        type: "am-is-are-complete",
+        score,
+        total: tasks.length,
+        results,
+        sentAt: new Date().toISOString()
+      };
+
+      window.parent.postMessage(payload, "*");
+      window.postMessage(payload, "*");
+      localStorage.setItem("amIsAreLastResult", JSON.stringify(payload));
+    }
+
+    function resetGame(){
+      index = 0;
+      score = 0;
+      locked = false;
+      results = [];
+      playArea.style.display = "";
+      finish.classList.remove("show");
+      scorePill.textContent = `0 / ${tasks.length}`;
+      showRules();
+    }
+
+    startBtn.addEventListener("click", showPractice);
+    backBtn.addEventListener("click", showRules);
+    resetBtn.addEventListener("click", resetGame);
+
+    choiceButtons.forEach(btn => {
+      btn.addEventListener("click", () => chooseAnswer(btn));
+    });
+
+    resetGame();
+  </script>
+</body>
+</html>
