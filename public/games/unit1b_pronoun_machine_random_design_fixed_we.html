@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pronouns</title>
+  <style>
+    :root{
+      --ink:#183e69;
+      --soft:#5e7897;
+      --blue:#4d8bec;
+      --yellow:#ffd86d;
+      --green:#35c66b;
+      --paper:rgba(255,255,255,.94);
+      --shadow:0 18px 42px rgba(28,68,118,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 11% 15%, rgba(255,255,255,.96), transparent 18%),
+        radial-gradient(circle at 86% 14%, rgba(255,255,255,.66), transparent 19%),
+        linear-gradient(135deg,#eaf7ff 0%,#fff2c9 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:clamp(12px,1.2vw,20px);
+      display:grid;
+      place-items:center;
+    }
+
+    .game{
+      width:min(1120px,100%);
+      height:100%;
+      min-height:0;
+      border-radius:36px;
+      background:var(--paper);
+      border:5px solid rgba(255,255,255,.9);
+      box-shadow:var(--shadow);
+      padding:clamp(14px,1.4vw,24px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(12px,1.2vw,20px);
+      overflow:hidden;
+    }
+
+    .top{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:12px;
+    }
+
+    .counter,.score{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.86);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(13px,1vw,16px);
+      white-space:nowrap;
+    }
+
+    .instruction{
+      min-height:46px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:8px 14px;
+      border-radius:20px;
+      background:#eff6ff;
+      color:#5f7898;
+      font-size:clamp(15px,1.3vw,21px);
+      font-weight:900;
+      line-height:1.15;
+    }
+
+    .machine{
+      min-height:0;
+      display:grid;
+      place-items:center;
+      position:relative;
+      border-radius:34px;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 50% 46%, rgba(255,255,255,.94) 0 18%, transparent 19%),
+        radial-gradient(circle at 24% 22%, rgba(255,255,255,.62), transparent 18%),
+        radial-gradient(circle at 80% 18%, rgba(255,255,255,.5), transparent 16%),
+        linear-gradient(135deg,#e4f4ff,#ecffe5);
+      border:4px solid rgba(255,255,255,.82);
+      box-shadow:inset 0 -7px rgba(0,0,0,.035);
+      padding:clamp(14px,1.4vw,24px);
+    }
+
+    .machine-inner{
+      width:min(920px,100%);
+      height:100%;
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(12px,1.3vw,22px);
+      place-items:center;
+    }
+
+    .item-wrap{
+      display:grid;
+      place-items:center;
+      width:100%;
+      min-height:clamp(190px,25vw,320px);
+      position:relative;
+    }
+
+    .item-glow{
+      position:absolute;
+      width:min(430px,70vw);
+      aspect-ratio:1;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,216,109,.38), transparent 62%);
+      filter:blur(3px);
+    }
+
+    .item-card{
+      position:relative;
+      width:min(420px,86%);
+      min-height:clamp(150px,17vw,230px);
+      border-radius:34px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      color:#244a78;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:22px;
+      font-size:clamp(38px,4.1vw,70px);
+      line-height:1.02;
+      font-weight:950;
+      box-shadow:
+        0 22px 40px rgba(0,0,0,.16),
+        inset 0 -9px rgba(0,0,0,.08);
+      animation:cardIn .24s ease both;
+    }
+
+    .item-card::after{
+      content:"";
+      position:absolute;
+      inset:10px;
+      border-radius:26px;
+      border:3px solid rgba(255,255,255,.48);
+      pointer-events:none;
+    }
+
+    .item-card.wrong{
+      animation:shake .34s ease;
+      background:linear-gradient(135deg,#fff,#ffd5d9);
+      color:#8a2530;
+    }
+
+    @keyframes cardIn{
+      from{opacity:0; transform:translateY(14px) scale(.95)}
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-8px)}
+      55%{transform:translateX(8px)}
+      80%{transform:translateX(-4px)}
+    }
+
+    .choices{
+      width:min(900px,100%);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:clamp(10px,1.2vw,18px);
+      padding:4px;
+    }
+
+    .pronoun-btn{
+      position:relative;
+      z-index:5;
+      border:0;
+      border-radius:999px;
+      background:#fff;
+      color:#2f73d8;
+      font-family:inherit;
+      font-size:clamp(24px,2.2vw,40px);
+      font-weight:950;
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-width:clamp(138px,12vw,190px);
+      min-height:clamp(62px,6vw,86px);
+      padding:10px 18px;
+      box-shadow:
+        0 10px 20px rgba(0,0,0,.1),
+        inset 0 -5px rgba(0,0,0,.05);
+      transition:transform .13s ease, box-shadow .13s ease, background .13s ease;
+    }
+
+    .pronoun-btn:hover{
+      transform:translateY(-3px);
+      background:#fff9dc;
+      box-shadow:
+        0 0 0 5px rgba(255,216,109,.28),
+        0 10px 20px rgba(0,0,0,.1),
+        inset 0 -5px rgba(0,0,0,.05);
+    }
+
+    .pronoun-btn.correct-flash{
+      background:#eaffef;
+      box-shadow:
+        0 0 0 5px rgba(53,198,107,.22),
+        0 10px 20px rgba(0,0,0,.1),
+        inset 0 -5px rgba(0,0,0,.05);
+    }
+
+    .pronoun-btn *{
+      pointer-events:none;
+    }
+
+    .pronoun-icon{
+      width:clamp(42px,4vw,58px);
+      height:clamp(42px,4vw,58px);
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#dff0ff,#98c9ff);
+      box-shadow:0 7px 14px rgba(0,0,0,.08), inset 0 -4px rgba(0,0,0,.06);
+      font-size:clamp(22px,2.4vw,34px);
+      flex:0 0 auto;
+    }
+
+    .hint{
+      min-height:58px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:10px 16px;
+      border-radius:23px;
+      background:#eff6ff;
+      color:#5f7898;
+      font-size:clamp(15px,1.25vw,20px);
+      font-weight:900;
+      line-height:1.18;
+      width:min(900px,100%);
+    }
+
+    .bottom{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+
+    .reset{
+      border:0;
+      border-radius:999px;
+      min-width:108px;
+      padding:11px 18px;
+      background:linear-gradient(135deg,#7db7ff,#4d8bec);
+      color:#fff;
+      font-family:inherit;
+      font-size:clamp(14px,1.05vw,18px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .finish{
+      display:none;
+      place-items:center;
+      text-align:center;
+      gap:16px;
+      height:100%;
+      min-height:0;
+    }
+
+    .finish.show{display:grid}
+
+    .finish-card{
+      width:min(620px,100%);
+      min-height:260px;
+      border-radius:34px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      display:grid;
+      place-items:center;
+      padding:28px;
+      box-shadow:0 20px 38px rgba(0,0,0,.14), inset 0 -8px rgba(0,0,0,.08);
+      color:#244a78;
+      font-size:clamp(34px,4vw,64px);
+      font-weight:950;
+      line-height:1.08;
+    }
+
+    @media(max-width:760px){
+      .top{
+        grid-template-columns:1fr;
+      }
+
+      .choices{
+        gap:9px;
+      }
+
+      .pronoun-btn{
+        min-width:130px;
+      }
+
+      .bottom{
+        grid-template-columns:1fr;
+      }
+
+      .reset{
+        justify-self:center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="game">
+      <div class="top">
+        <div class="counter" id="counter">1 / 10</div>
+        <div class="instruction">Choose the correct pronoun</div>
+        <div class="score" id="score">Score: 0</div>
+      </div>
+
+      <div class="machine" id="playArea">
+        <div class="machine-inner">
+          <div class="item-wrap">
+            <div class="item-glow"></div>
+            <div class="item-card" id="itemCard">Linda</div>
+          </div>
+
+          <div class="choices">
+            <button class="pronoun-btn" data-pronoun="she" type="button">
+              <span class="pronoun-icon">👧</span><span>she</span>
+            </button>
+
+            <button class="pronoun-btn" data-pronoun="he" type="button">
+              <span class="pronoun-icon">👦</span><span>he</span>
+            </button>
+
+            <button class="pronoun-btn" data-pronoun="we" type="button">
+              <span class="pronoun-icon">👫</span><span>we</span>
+            </button>
+
+            <button class="pronoun-btn" data-pronoun="they" type="button">
+              <span class="pronoun-icon">👥</span><span>they</span>
+            </button>
+
+            <button class="pronoun-btn" data-pronoun="it" type="button">
+              <span class="pronoun-icon">✏️</span><span>it</span>
+            </button>
+          </div>
+
+          <div class="hint" id="hint">Look at the word and choose: she, he, we, they or it.</div>
+        </div>
+      </div>
+
+      <div class="finish" id="finish">
+        <div class="finish-card">Great job!<br>10 / 10</div>
+      </div>
+
+      <div class="bottom">
+        <div></div>
+        <button class="reset" id="resetBtn" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const allItems = [
+      {
+        text: "Linda",
+        pronoun: "she",
+        hints: {
+          she: "Correct! Linda is one girl, so we say she.",
+          he: "Not he — Linda is a girl, not a boy.",
+          we: "Not we — we means I + another person.",
+          they: "Not they — Linda is one person, not two people.",
+          it: "Not it — Linda is a person, not a thing."
+        }
+      },
+      {
+        text: "Mark",
+        pronoun: "he",
+        hints: {
+          she: "Not she — Mark is a boy, not a girl.",
+          he: "Correct! Mark is one boy, so we say he.",
+          we: "Not we — we means I + another person.",
+          they: "Not they — Mark is one person, not two people.",
+          it: "Not it — Mark is a person, not a thing."
+        }
+      },
+      {
+        text: "Sue and I",
+        pronoun: "we",
+        hints: {
+          she: "Not she — there are two people here.",
+          he: "Not he — this is not one boy.",
+          we: "Correct! Sue and I means I + Sue, so we say we.",
+          they: "Not they — because the phrase includes I.",
+          it: "Not it — these are people, not a thing."
+        }
+      },
+      {
+        text: "Tom and Lyn",
+        pronoun: "they",
+        hints: {
+          she: "Not she — there are two people here.",
+          he: "Not he — this is not one boy.",
+          we: "Not we — the phrase does not include I.",
+          they: "Correct! Tom and Lyn are two people, so we say they.",
+          it: "Not it — they are people, not a thing."
+        }
+      },
+      {
+        text: "an eraser",
+        pronoun: "it",
+        hints: {
+          she: "Not she — an eraser is a thing, not a girl.",
+          he: "Not he — an eraser is a thing, not a boy.",
+          we: "Not we — we means people, including I.",
+          they: "Not they — an eraser is one thing, not many.",
+          it: "Correct! An eraser is one thing, so we say it."
+        }
+      },
+      {
+        text: "Anna",
+        pronoun: "she",
+        hints: {
+          she: "Correct! Anna is one girl, so we say she.",
+          he: "Not he — Anna is a girl.",
+          we: "Not we — Anna is one person, and it does not include I.",
+          they: "Not they — Anna is one person.",
+          it: "Not it — Anna is a person, not a thing."
+        }
+      },
+      {
+        text: "Bob",
+        pronoun: "he",
+        hints: {
+          she: "Not she — Bob is a boy.",
+          he: "Correct! Bob is one boy, so we say he.",
+          we: "Not we — Bob is one person, and it does not include I.",
+          they: "Not they — Bob is one person.",
+          it: "Not it — Bob is a person, not a thing."
+        }
+      },
+      {
+        text: "Jack and I",
+        pronoun: "we",
+        hints: {
+          she: "Not she — there are two people here.",
+          he: "Not he — this is not one boy.",
+          we: "Correct! Jack and I includes I, so we say we.",
+          they: "Not they — use we when the group includes I.",
+          it: "Not it — these are people, not a thing."
+        }
+      },
+      {
+        text: "books",
+        pronoun: "they",
+        hints: {
+          she: "Not she — books are things, not one girl.",
+          he: "Not he — books are things, not one boy.",
+          we: "Not we — books do not include I.",
+          they: "Correct! Books are plural, so we say they.",
+          it: "Not it — books means more than one thing."
+        }
+      },
+      {
+        text: "a pencil",
+        pronoun: "it",
+        hints: {
+          she: "Not she — a pencil is a thing, not a girl.",
+          he: "Not he — a pencil is a thing, not a boy.",
+          we: "Not we — a pencil is not a group with I.",
+          they: "Not they — a pencil is one thing.",
+          it: "Correct! A pencil is one thing, so we say it."
+        }
+      }
+    ];
+
+    const itemCard = document.getElementById("itemCard");
+    const counter = document.getElementById("counter");
+    const score = document.getElementById("score");
+    const hint = document.getElementById("hint");
+    const playArea = document.getElementById("playArea");
+    const finish = document.getElementById("finish");
+    const buttons = Array.from(document.querySelectorAll(".pronoun-btn"));
+
+    let deck = [];
+    let index = 0;
+    let correctCount = 0;
+    let results = [];
+    let locked = false;
+
+    function shuffle(array){
+      const copy = [...array];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function makeDeck(){
+      deck = shuffle(allItems);
+    }
+
+    function showItem(){
+      locked = false;
+      const item = deck[index];
+      itemCard.textContent = item.text;
+      itemCard.classList.remove("wrong");
+      itemCard.style.animation = "none";
+      void itemCard.offsetWidth;
+      itemCard.style.animation = "";
+      counter.textContent = `${index + 1} / ${deck.length}`;
+      score.textContent = `Score: ${correctCount}`;
+      hint.textContent = "Look at the word and choose: she, he, we, they or it.";
+      buttons.forEach(btn => btn.classList.remove("correct-flash"));
+    }
+
+    function finishGame(){
+      playArea.style.display = "none";
+      finish.classList.add("show");
+      counter.textContent = `${deck.length} / ${deck.length}`;
+      score.textContent = `Score: ${correctCount}`;
+      hint.textContent = "All cards are done.";
+
+      const payload = {
+        type: "pronoun-machine-complete",
+        score: correctCount,
+        total: deck.length,
+        results,
+        sentAt: new Date().toISOString()
+      };
+
+      window.parent.postMessage(payload, "*");
+      window.postMessage(payload, "*");
+      localStorage.setItem("pronounMachineLastResult", JSON.stringify(payload));
+    }
+
+    function choosePronoun(pronoun, button){
+      if (locked) return;
+
+      const item = deck[index];
+
+      if (pronoun === item.pronoun) {
+        locked = true;
+        button.classList.add("correct-flash");
+        hint.textContent = item.hints[pronoun];
+        results.push({ item: item.text, pronoun, correct: true });
+        correctCount += 1;
+        score.textContent = `Score: ${correctCount}`;
+
+        setTimeout(() => {
+          index += 1;
+          if (index >= deck.length) {
+            finishGame();
+          } else {
+            showItem();
+          }
+        }, 750);
+      } else {
+        itemCard.classList.remove("wrong");
+        void itemCard.offsetWidth;
+        itemCard.classList.add("wrong");
+        hint.textContent = item.hints[pronoun];
+        results.push({ item: item.text, chosen: pronoun, correctPronoun: item.pronoun, correct: false });
+      }
+    }
+
+    document.querySelector(".choices").addEventListener("click", event => {
+      const button = event.target.closest(".pronoun-btn");
+      if (!button) return;
+      choosePronoun(button.dataset.pronoun, button);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      index = 0;
+      correctCount = 0;
+      results = [];
+      locked = false;
+      makeDeck();
+      playArea.style.display = "";
+      finish.classList.remove("show");
+      showItem();
+    });
+
+    makeDeck();
+    showItem();
+  </script>
+</body>
+</html>
