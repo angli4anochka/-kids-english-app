@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pop the Number</title>
+  <style>
+    :root{
+      --purple:#5f38b8;
+      --purple-dark:#35206c;
+      --panel:rgba(255,255,255,.95);
+      --shadow:0 12px 30px rgba(41,39,86,.18);
+    }
+    *{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:"Trebuchet MS",Arial,sans-serif;user-select:none;background:#4fc0f1}
+    button{font:inherit}
+    .game{
+      position:relative;width:100%;height:100%;overflow:hidden;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.95) 0 4.5%, transparent 5%),
+        radial-gradient(circle at 18% 16%, rgba(255,255,255,.9) 0 5.5%, transparent 6%),
+        radial-gradient(circle at 84% 18%, rgba(255,255,255,.92) 0 5.5%, transparent 6%),
+        radial-gradient(circle at 89% 20%, rgba(255,255,255,.88) 0 4%, transparent 4.5%),
+        linear-gradient(#20aee3 0%, #a4e7fb 58%, #d1f6ff 100%);
+    }
+    .hill-back,.hill-front{position:absolute;left:-10%;width:120%;border-radius:50% 50% 0 0;pointer-events:none}
+    .hill-back{height:42%;bottom:-16%;background:linear-gradient(180deg,#8fdc6e,#48ad57);transform:rotate(-2deg)}
+    .hill-front{
+      height:36%;bottom:-13%;transform:rotate(2deg);
+      background:
+        radial-gradient(circle at 10% 35%, #ffd85a 0 3px, transparent 4px),
+        radial-gradient(circle at 22% 42%, #fff 0 4px, transparent 5px),
+        radial-gradient(circle at 35% 28%, #ff8ebd 0 3px, transparent 4px),
+        radial-gradient(circle at 50% 45%, #ffe364 0 3px, transparent 4px),
+        radial-gradient(circle at 66% 30%, #fff 0 4px, transparent 5px),
+        radial-gradient(circle at 82% 42%, #ff8ebd 0 3px, transparent 4px),
+        radial-gradient(circle at 94% 30%, #ffd85a 0 3px, transparent 4px),
+        linear-gradient(180deg,#a7eb64,#5cc84b);
+    }
+    .path{position:absolute;left:46%;bottom:-8%;z-index:1;width:15%;height:44%;clip-path:polygon(46% 0,59% 0,100% 100%,0 100%);background:linear-gradient(90deg,#efcf81,#fff0b4 48%,#e8c375);opacity:.9;pointer-events:none}
+    .topbar{
+      position:absolute;z-index:10;top:max(18px, env(safe-area-inset-top));left:20px;right:20px;
+      display:grid;grid-template-columns:92px minmax(300px,1fr) 150px;gap:18px;align-items:center;pointer-events:none;
+    }
+    .home,.instruction,.score,.repeat{pointer-events:auto;border:3px solid rgba(134,83,214,.42);background:var(--panel);box-shadow:var(--shadow)}
+    .home{width:76px;height:76px;border-radius:50%;color:var(--purple);cursor:pointer;display:grid;place-items:center;font-size:36px}
+    .instruction{
+      min-height:84px;border-radius:28px;padding:14px 28px;color:#28126b;font-weight:800;
+      font-size:clamp(22px,3vw,38px);display:flex;align-items:center;justify-content:center;gap:18px;text-align:center;
+    }
+    .speaker{color:var(--purple);font-size:42px;line-height:1}
+    .score{min-height:82px;border-radius:26px;text-align:center;color:var(--purple-dark);padding:10px 16px;font-weight:800}
+    .score-label{display:block;font-size:20px;margin-bottom:4px}
+    .score-value{font-size:30px}
+    .bubble-field{position:absolute;z-index:5;inset:125px 28px 110px}
+    .bubble{
+      position:absolute;aspect-ratio:1;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;
+      width:clamp(105px,12vw,165px);color:#432177;font-size:clamp(37px,5vw,64px);font-weight:900;text-shadow:0 3px 0 rgba(255,255,255,.95);
+      background:
+        radial-gradient(circle at 29% 24%, rgba(255,255,255,.95) 0 7%, transparent 8%),
+        radial-gradient(circle at 37% 34%, rgba(255,255,255,.48) 0 7%, transparent 22%),
+        radial-gradient(circle at 50% 52%, rgba(255,255,255,.22) 0 43%, transparent 44%),
+        linear-gradient(145deg, rgba(255,255,255,.7), rgba(120,214,255,.2) 48%, rgba(255,140,220,.23));
+      box-shadow:inset 0 0 12px rgba(255,255,255,.95), inset -10px -12px 18px rgba(115,190,255,.18), 0 0 0 3px rgba(255,255,255,.55), 0 8px 18px rgba(57,95,163,.22);
+      animation:float 3.2s ease-in-out infinite;
+      transition:transform .14s ease, filter .2s ease, opacity .25s ease;
+      -webkit-tap-highlight-color:transparent;
+    }
+    .bubble:nth-child(2n){animation-delay:-.8s}.bubble:nth-child(3n){animation-delay:-1.5s}
+    .bubble:hover{filter:brightness(1.07)} .bubble:active{transform:scale(.92)}
+    .bubble.wrong{animation:shake .34s ease}
+    .bubble.pop{animation:pop .35s ease forwards;pointer-events:none}
+    .bottom-controls{position:absolute;z-index:10;left:50%;bottom:max(22px, env(safe-area-inset-bottom));transform:translateX(-50%)}
+    .repeat{border-radius:20px;color:var(--purple);font-weight:800;font-size:22px;padding:14px 24px;cursor:pointer}
+    .message{position:absolute;inset:0;display:none;place-items:center;background:rgba(31,27,72,.22);backdrop-filter:blur(5px);z-index:20}
+    .message.show{display:grid}
+    .message-card{
+      width:min(520px, calc(100% - 40px));border-radius:32px;padding:34px;text-align:center;background:rgba(255,255,255,.97);
+      box-shadow:0 24px 70px rgba(31,27,72,.28);color:#34206f;
+    }
+    .message-card h2{margin:0 0 10px;font-size:42px}
+    .message-card p{margin:0 0 24px;font-size:24px}
+    .play-again{border:0;border-radius:18px;padding:14px 24px;color:#fff;background:var(--purple);font-size:22px;font-weight:800;cursor:pointer}
+    @keyframes float{0%,100%{translate:0 0}50%{translate:0 -9px}}
+    @keyframes shake{0%,100%{translate:0 0}25%{translate:-10px 0}75%{translate:10px 0}}
+    @keyframes pop{0%{transform:scale(1);opacity:1}65%{transform:scale(1.28);opacity:.72}100%{transform:scale(0);opacity:0}}
+    @media (max-width:760px){
+      .topbar{grid-template-columns:68px 1fr 108px;gap:8px;left:10px;right:10px}
+      .home{width:60px;height:60px;font-size:28px}
+      .instruction{min-height:64px;padding:8px 12px;border-radius:20px}
+      .speaker{font-size:30px}
+      .score{min-height:64px;padding:7px 8px;border-radius:20px}
+      .score-label{font-size:15px}
+      .score-value{font-size:23px}
+      .bubble-field{inset:105px 12px 92px}
+      .repeat{font-size:18px;padding:11px 17px}
+    }
+  </style>
+</head>
+<body>
+  <main class="game">
+    <div class="hill-back"></div>
+    <div class="hill-front"></div>
+    <div class="path"></div>
+
+    <header class="topbar">
+      <button class="home" id="homeButton" aria-label="Restart game">⌂</button>
+      <div class="instruction">
+        <span class="speaker">🔊</span>
+        <span>Listen and pop the bubble!</span>
+      </div>
+      <div class="score">
+        <span class="score-label">Score</span>
+        <span class="score-value" id="scoreValue">0 / 0</span>
+      </div>
+    </header>
+
+    <section class="bubble-field" id="bubbleField" aria-label="Number bubbles"></section>
+
+    <div class="bottom-controls">
+      <button class="repeat" id="repeatButton">🔊 Repeat</button>
+    </div>
+
+    <div class="message" id="message">
+      <div class="message-card">
+        <h2>Well done! 🎉</h2>
+        <p id="finalScore"></p>
+        <button class="play-again" id="playAgainButton">Play again</button>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SETTINGS = { minNumber: 11, maxNumber: 20, voiceLanguage: 'en-GB', speechRate: 0.82 };
+    const field = document.getElementById('bubbleField');
+    const scoreValue = document.getElementById('scoreValue');
+    const repeatButton = document.getElementById('repeatButton');
+    const homeButton = document.getElementById('homeButton');
+    const message = document.getElementById('message');
+    const finalScore = document.getElementById('finalScore');
+    const playAgainButton = document.getElementById('playAgainButton');
+
+    let remaining = [];
+    let target = null;
+    let score = 0;
+    let total = 0;
+    let gameLocked = false;
+    let submitted = false;
+
+    function shuffle(array) {
+      const copy = [...array];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function getNumbers() {
+      return Array.from({ length: SETTINGS.maxNumber - SETTINGS.minNumber + 1 }, (_, index) => SETTINGS.minNumber + index);
+    }
+
+    function speakNumber(number) {
+      if (!('speechSynthesis' in window) || number === null) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(String(number));
+      utterance.lang = SETTINGS.voiceLanguage;
+      utterance.rate = SETTINGS.speechRate;
+      const voices = window.speechSynthesis.getVoices();
+      utterance.voice = voices.find(v => v.lang === 'en-GB') || voices.find(v => v.lang.startsWith('en')) || null;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    function createBubble(number, index, count) {
+      const bubble = document.createElement('button');
+      bubble.className = 'bubble';
+      bubble.type = 'button';
+      bubble.textContent = number;
+      bubble.dataset.number = number;
+      bubble.setAttribute('aria-label', `Number ${number}`);
+
+      const columns = count <= 6 ? 3 : 5;
+      const rows = Math.ceil(count / columns);
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      const xStep = columns === 1 ? 0 : 82 / (columns - 1);
+      const yStep = rows === 1 ? 0 : 68 / (rows - 1);
+      const jitterX = (Math.random() - 0.5) * 5;
+      const jitterY = (Math.random() - 0.5) * 7;
+
+      bubble.style.left = `${4 + column * xStep + jitterX}%`;
+      bubble.style.top = `${4 + row * yStep + jitterY}%`;
+      bubble.addEventListener('click', () => handleBubbleClick(bubble, number));
+      return bubble;
+    }
+
+    function renderBubbles() {
+      field.replaceChildren();
+      const visibleNumbers = shuffle(remaining);
+      visibleNumbers.forEach((number, index) => field.appendChild(createBubble(number, index, visibleNumbers.length)));
+    }
+
+    function buildResults() {
+      return getNumbers().map((number, index) => ({
+        questionIndex: index,
+        studentAnswer: String(number),
+        correctAnswer: String(number),
+        isCorrect: true,
+        sentence: `Pop ${number}`
+      }));
+    }
+
+    function submitResults() {
+      if (submitted) return;
+      submitted = true;
+      const payload = {
+        type: 'unit1b-pop-the-number-done',
+        score,
+        total,
+        results: { answers: buildResults() }
+      };
+      try {
+        window.parent?.postMessage(payload, '*');
+        window.postMessage(payload, '*');
+      } catch {}
+    }
+
+    function chooseNextTarget() {
+      if (remaining.length === 0) {
+        finishGame();
+        return;
+      }
+      target = remaining[Math.floor(Math.random() * remaining.length)];
+      setTimeout(() => speakNumber(target), 420);
+    }
+
+    function handleBubbleClick(bubble, number) {
+      if (gameLocked) return;
+      if (number === target) {
+        gameLocked = true;
+        score += 1;
+        scoreValue.textContent = `${score} / ${total}`;
+        bubble.classList.add('pop');
+        remaining = remaining.filter(item => item !== number);
+        setTimeout(() => {
+          renderBubbles();
+          gameLocked = false;
+          chooseNextTarget();
+        }, 360);
+      } else {
+        bubble.classList.remove('wrong');
+        void bubble.offsetWidth;
+        bubble.classList.add('wrong');
+        setTimeout(() => speakNumber(target), 420);
+      }
+    }
+
+    function finishGame() {
+      target = null;
+      finalScore.textContent = `You popped ${score} out of ${total} bubbles.`;
+      message.classList.add('show');
+      submitResults();
+    }
+
+    function startGame() {
+      window.speechSynthesis?.cancel();
+      remaining = shuffle(getNumbers());
+      score = 0;
+      total = remaining.length;
+      target = null;
+      gameLocked = false;
+      scoreValue.textContent = `0 / ${total}`;
+      message.classList.remove('show');
+      renderBubbles();
+      chooseNextTarget();
+    }
+
+    repeatButton.addEventListener('click', () => speakNumber(target));
+    homeButton.addEventListener('click', startGame);
+    playAgainButton.addEventListener('click', startGame);
+    window.speechSynthesis?.addEventListener?.('voiceschanged', () => {});
+    startGame();
+  </script>
+</body>
+</html>

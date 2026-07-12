@@ -65,6 +65,7 @@ import SpotlightUnit1WheresLesson from './SpotlightUnit1WheresLesson';
 import SpotlightUnit1MondayTimetableDays from './SpotlightUnit1MondayTimetableDays';
 import SpotlightUnit1AAnSchoolObjects from './SpotlightUnit1AAnSchoolObjects';
 import SpotlightUnit1bADogQuiz from './SpotlightUnit1bADogQuiz';
+import SpotlightUnit1bPopTheNumber from './SpotlightUnit1bPopTheNumber';
 
 interface Props {
   activity: Activity;
@@ -149,6 +150,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1-monday-timetable-days': SpotlightUnit1MondayTimetableDays,
   'unit1-a-an-school-objects': SpotlightUnit1AAnSchoolObjects,
   'unit1b-a-an-dog-quiz': SpotlightUnit1bADogQuiz,
+  'unit1b-pop-the-number': SpotlightUnit1bPopTheNumber,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
