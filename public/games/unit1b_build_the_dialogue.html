@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 8 — Build the Dialogue</title>
+  <style>
+    :root{
+      --ink:#173d68;
+      --soft:#5f7898;
+      --blue:#4d8bec;
+      --yellow:#ffd86d;
+      --green:#35c66b;
+      --red:#ff6f87;
+      --paper:rgba(255,255,255,.92);
+      --shadow:0 18px 42px rgba(28,68,118,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 9% 14%, rgba(255,255,255,.92), transparent 18%),
+        radial-gradient(circle at 88% 12%, rgba(255,255,255,.62), transparent 18%),
+        linear-gradient(135deg,#eaf7ff 0%,#fff2c9 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:clamp(10px,1vw,18px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      gap:clamp(8px,.85vw,14px);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge,.progress{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(12px,1vw,16px);
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      flex:1;
+      text-align:center;
+      font-size:clamp(28px,3.4vw,56px);
+      color:#2f73d8;
+      text-shadow:0 3px 0 rgba(255,255,255,.94);
+      line-height:.96;
+    }
+
+    .stage{
+      min-height:0;
+      width:min(1220px,100%);
+      justify-self:center;
+      display:grid;
+      grid-template-columns:minmax(430px,1fr) minmax(300px,.43fr);
+      gap:clamp(12px,1.2vw,20px);
+    }
+
+    .dialogue-panel,.bank-panel{
+      min-height:0;
+      border-radius:34px;
+      background:var(--paper);
+      border:5px solid rgba(255,255,255,.86);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .dialogue-panel{
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+    }
+
+    .panel-top{
+      padding:clamp(12px,1.1vw,18px);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(239,248,255,.7));
+      border-bottom:3px solid rgba(255,255,255,.65);
+    }
+
+    .panel-title{
+      display:grid;
+      gap:2px;
+    }
+
+    .panel-title strong{
+      font-size:clamp(22px,2.1vw,34px);
+      color:#244a78;
+      line-height:1;
+    }
+
+    .panel-title span{
+      font-size:clamp(12px,1vw,16px);
+      color:#5f7898;
+      font-weight:850;
+    }
+
+    .characters{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      white-space:nowrap;
+    }
+
+    .person{
+      display:flex;
+      align-items:center;
+      gap:7px;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 7px 14px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(13px,1vw,16px);
+    }
+
+    .avatar{
+      width:34px;
+      height:34px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#ffd86d,#ff93bd);
+      border:2px solid #fff;
+      font-size:20px;
+      flex:0 0 auto;
+    }
+
+    .chat-area{
+      min-height:0;
+      padding:clamp(12px,1.1vw,20px);
+      display:grid;
+      gap:10px;
+      align-content:center;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(255,255,255,.36), transparent 9%),
+        radial-gradient(circle at 87% 18%, rgba(255,255,255,.32), transparent 10%),
+        linear-gradient(135deg,#e3f7df,#dff0ff);
+    }
+
+    .row{
+      display:grid;
+      grid-template-columns:42px minmax(0,1fr);
+      gap:10px;
+      align-items:center;
+    }
+
+    .row.susan{
+      grid-template-columns:minmax(0,1fr) 42px;
+    }
+
+    .row.susan .slot-wrap{
+      order:1;
+    }
+
+    .row.susan .small-avatar{
+      order:2;
+    }
+
+    .small-avatar{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#fff;
+      border:3px solid rgba(255,255,255,.92);
+      box-shadow:0 7px 14px rgba(0,0,0,.1);
+      font-size:24px;
+    }
+
+    .slot-wrap{
+      display:grid;
+      gap:5px;
+    }
+
+    .speaker{
+      font-size:clamp(12px,.95vw,15px);
+      font-weight:950;
+      color:#5f7898;
+      padding:0 8px;
+    }
+
+    .row.susan .speaker{
+      text-align:right;
+    }
+
+    .drop-slot{
+      min-height:clamp(58px,6vw,82px);
+      border:3px dashed #98bde9;
+      border-radius:22px;
+      background:rgba(255,255,255,.64);
+      display:grid;
+      align-items:center;
+      padding:10px 14px;
+      color:#7893b5;
+      font-size:clamp(18px,1.85vw,29px);
+      font-weight:950;
+      line-height:1.12;
+      cursor:pointer;
+      transition:transform .14s ease, background .14s ease, border-color .14s ease;
+    }
+
+    .drop-slot:hover{
+      transform:translateY(-1px);
+      background:rgba(255,255,255,.82);
+    }
+
+    .drop-slot.filled{
+      border-style:solid;
+      border-color:#6baaf1;
+      background:#fff;
+      color:#173d68;
+      box-shadow:0 8px 17px rgba(0,0,0,.1);
+    }
+
+    .row.susan .drop-slot{
+      background:#dcffd9;
+      border-color:#84c98b;
+      color:#174c2a;
+      text-align:right;
+    }
+
+    .row.susan .drop-slot:not(.filled){
+      background:rgba(220,255,217,.52);
+      color:#6a936c;
+    }
+
+    .drop-slot.drag-over{
+      border-color:#ffb84d;
+      box-shadow:0 0 0 5px rgba(255,216,109,.28);
+      transform:scale(1.01);
+    }
+
+    .drop-slot.wrong{
+      animation:shake .35s ease;
+      border-color:#ff7c8a;
+      background:#ffe9ec;
+    }
+
+    .drop-slot.correct{
+      border-color:#35c66b;
+      box-shadow:0 0 0 5px rgba(53,198,107,.18),0 8px 17px rgba(0,0,0,.1);
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-7px)}
+      55%{transform:translateX(7px)}
+      80%{transform:translateX(-4px)}
+    }
+
+    .controls{
+      padding:clamp(10px,1vw,16px);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+      background:rgba(255,255,255,.58);
+      border-top:3px solid rgba(255,255,255,.65);
+    }
+
+    button{
+      font-family:inherit;
+    }
+
+    .control-btn{
+      border:0;
+      border-radius:999px;
+      min-width:112px;
+      padding:10px 17px;
+      background:linear-gradient(135deg,#7db7ff,#4d8bec);
+      color:#fff;
+      font-size:clamp(14px,1.1vw,18px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .control-btn.listen{
+      background:linear-gradient(135deg,#65d782,#35b65b);
+      display:none;
+    }
+
+    .control-btn.listen.show{
+      display:inline-block;
+    }
+
+    .control-btn:disabled{
+      opacity:.35;
+      cursor:default;
+    }
+
+    .bank-panel{
+      padding:clamp(14px,1.25vw,22px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(11px,1vw,16px);
+    }
+
+    .bank-title{
+      display:grid;
+      gap:6px;
+      text-align:center;
+    }
+
+    .bank-title strong{
+      font-size:clamp(22px,2.1vw,34px);
+      color:#244a78;
+      line-height:1;
+    }
+
+    .bank-title span{
+      font-size:clamp(12px,1vw,16px);
+      color:#5f7898;
+      font-weight:850;
+    }
+
+    .cards{
+      min-height:0;
+      display:grid;
+      align-content:center;
+      gap:12px;
+    }
+
+    .card{
+      border:0;
+      width:100%;
+      min-height:clamp(54px,5.6vw,76px);
+      padding:11px 14px;
+      border-radius:20px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      color:#244a78;
+      text-align:left;
+      font-size:clamp(16px,1.38vw,23px);
+      line-height:1.12;
+      font-weight:950;
+      cursor:grab;
+      box-shadow:0 9px 18px rgba(0,0,0,.12), inset 0 -4px rgba(0,0,0,.07);
+      transition:transform .13s ease, filter .13s ease, opacity .13s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.04);
+    }
+
+    .card.selected{
+      box-shadow:0 0 0 5px rgba(77,139,236,.24), 0 9px 18px rgba(0,0,0,.12), inset 0 -4px rgba(0,0,0,.07);
+      transform:translateY(-2px);
+    }
+
+    .card.used{
+      opacity:.28;
+      pointer-events:none;
+      transform:none;
+    }
+
+    .mini-hint{
+      display:grid;
+      place-items:center;
+      min-height:42px;
+      padding:8px 12px;
+      border-radius:18px;
+      background:#eff6ff;
+      color:#5f7898;
+      text-align:center;
+      font-size:clamp(12px,1vw,16px);
+      font-weight:850;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) scale(.85);
+      padding:18px 28px;
+      border-radius:28px;
+      background:rgba(255,255,255,.96);
+      border:4px solid white;
+      box-shadow:0 22px 60px rgba(0,0,0,.22);
+      color:#2c9b55;
+      font-size:clamp(34px,5vw,76px);
+      font-weight:950;
+      opacity:0;
+      pointer-events:none;
+      z-index:20;
+      transition:opacity .2s ease, transform .2s ease;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%,-50%) scale(1);
+    }
+
+    .speaking{
+      outline:5px solid rgba(255,184,77,.72);
+      outline-offset:2px;
+    }
+
+    @media(max-width:900px){
+      .stage{
+        grid-template-columns:1fr;
+        grid-template-rows:minmax(0,1fr) auto;
+      }
+
+      .bank-panel{
+        grid-template-rows:auto auto auto;
+      }
+
+      .cards{
+        grid-template-columns:1fr 1fr;
+        align-content:start;
+      }
+
+      h1{
+        font-size:clamp(24px,5vw,42px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="badge">Slide 8</div>
+      <h1>Build the dialogue</h1>
+      <div class="progress" id="progress">0 / 4</div>
+    </header>
+
+    <section class="stage">
+      <section class="dialogue-panel">
+        <div class="panel-top">
+          <div class="panel-title">
+            <strong>Put the dialogue in order</strong>
+            <span>Click a phrase, then click the correct bubble. Or drag it. Humanity survives both methods.</span>
+          </div>
+          <div class="characters">
+            <div class="person"><span class="avatar">👧</span>Emma</div>
+            <div class="person"><span class="avatar">👩</span>Susan</div>
+          </div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+          <div class="row emma">
+            <div class="small-avatar">👧</div>
+            <div class="slot-wrap">
+              <div class="speaker">Emma</div>
+              <div class="drop-slot" data-slot="0">1. Drop the first phrase here</div>
+            </div>
+          </div>
+
+          <div class="row susan">
+            <div class="slot-wrap">
+              <div class="speaker">Susan</div>
+              <div class="drop-slot" data-slot="1">2. Drop the second phrase here</div>
+            </div>
+            <div class="small-avatar">👩</div>
+          </div>
+
+          <div class="row emma">
+            <div class="small-avatar">👧</div>
+            <div class="slot-wrap">
+              <div class="speaker">Emma</div>
+              <div class="drop-slot" data-slot="2">3. Drop the third phrase here</div>
+            </div>
+          </div>
+
+          <div class="row susan">
+            <div class="slot-wrap">
+              <div class="speaker">Susan</div>
+              <div class="drop-slot" data-slot="3">4. Drop the fourth phrase here</div>
+            </div>
+            <div class="small-avatar">👩</div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="control-btn" id="checkBtn" type="button">Check</button>
+          <button class="control-btn listen" id="listenBtn" type="button">Listen</button>
+          <button class="control-btn" id="resetBtn" type="button">Reset</button>
+        </div>
+      </section>
+
+      <aside class="bank-panel">
+        <div class="bank-title">
+          <strong>Phrase bank</strong>
+          <span>Move the replies into the chat</span>
+        </div>
+
+        <div class="cards" id="cards"></div>
+
+        <div class="mini-hint" id="miniHint">Tip: start with a greeting.</div>
+      </aside>
+    </section>
+
+    <div class="toast" id="toast">Great!</div>
+  </main>
+
+  <script>
+    const correct = [
+      "Hello! My name’s Emma.",
+      "Hi! I’m Susan.",
+      "Nice to meet you.",
+      "Nice to meet you, too."
+    ];
+
+    const shuffled = [
+      "Nice to meet you, too.",
+      "Hi! I’m Susan.",
+      "Hello! My name’s Emma.",
+      "Nice to meet you."
+    ];
+
+    const placeholders = [
+      "1. Drop the first phrase here",
+      "2. Drop the second phrase here",
+      "3. Drop the third phrase here",
+      "4. Drop the fourth phrase here"
+    ];
+
+    const cardsEl = document.getElementById("cards");
+    const slots = Array.from(document.querySelectorAll(".drop-slot"));
+    const progress = document.getElementById("progress");
+    const toast = document.getElementById("toast");
+    const listenBtn = document.getElementById("listenBtn");
+    const checkBtn = document.getElementById("checkBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const miniHint = document.getElementById("miniHint");
+
+    let selectedCard = null;
+    let slotValues = ["", "", "", ""];
+
+    function showToast(text, color = "#2c9b55"){
+      toast.textContent = text;
+      toast.style.color = color;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 850);
+    }
+
+    function updateProgress(){
+      const filled = slotValues.filter(Boolean).length;
+      progress.textContent = `${filled} / ${correct.length}`;
+    }
+
+    function renderCards(){
+      cardsEl.innerHTML = "";
+      shuffled.forEach((text, index) => {
+        const card = document.createElement("button");
+        card.className = "card";
+        card.type = "button";
+        card.textContent = text;
+        card.draggable = true;
+        card.dataset.text = text;
+        card.dataset.index = index;
+
+        card.addEventListener("click", () => {
+          document.querySelectorAll(".card").forEach(c => c.classList.remove("selected"));
+          selectedCard = card;
+          card.classList.add("selected");
+          miniHint.textContent = "Now click a bubble on the left.";
+        });
+
+        card.addEventListener("dragstart", event => {
+          selectedCard = card;
+          event.dataTransfer.setData("text/plain", text);
+          card.classList.add("selected");
+        });
+
+        card.addEventListener("dragend", () => {
+          card.classList.remove("selected");
+        });
+
+        cardsEl.appendChild(card);
+      });
+    }
+
+    function clearSlot(slot){
+      const slotIndex = Number(slot.dataset.slot);
+      const oldText = slotValues[slotIndex];
+      if (!oldText) return;
+
+      const oldCard = Array.from(document.querySelectorAll(".card")).find(card => card.dataset.text === oldText);
+      if (oldCard) oldCard.classList.remove("used");
+
+      slotValues[slotIndex] = "";
+      slot.textContent = placeholders[slotIndex];
+      slot.classList.remove("filled", "wrong", "correct");
+      listenBtn.classList.remove("show");
+      updateProgress();
+    }
+
+    function placeTextInSlot(text, slot){
+      const slotIndex = Number(slot.dataset.slot);
+
+      if (slotValues.includes(text)) {
+        const oldSlotIndex = slotValues.indexOf(text);
+        slotValues[oldSlotIndex] = "";
+        slots[oldSlotIndex].textContent = placeholders[oldSlotIndex];
+        slots[oldSlotIndex].classList.remove("filled", "wrong", "correct");
+      }
+
+      clearSlot(slot);
+
+      slotValues[slotIndex] = text;
+      slot.textContent = text;
+      slot.classList.add("filled");
+      slot.classList.remove("wrong", "correct");
+
+      document.querySelectorAll(".card").forEach(card => {
+        card.classList.toggle("used", slotValues.includes(card.dataset.text));
+        card.classList.remove("selected");
+      });
+
+      selectedCard = null;
+      miniHint.textContent = "Good. Add the next phrase.";
+      listenBtn.classList.remove("show");
+      updateProgress();
+
+      if (slotValues.every(Boolean)) {
+        checkAnswer();
+      }
+    }
+
+    slots.forEach(slot => {
+      slot.addEventListener("click", () => {
+        if (selectedCard) {
+          placeTextInSlot(selectedCard.dataset.text, slot);
+        } else if (slot.classList.contains("filled")) {
+          clearSlot(slot);
+          miniHint.textContent = "Phrase returned. Choose another one.";
+        }
+      });
+
+      slot.addEventListener("dragover", event => {
+        event.preventDefault();
+        slot.classList.add("drag-over");
+      });
+
+      slot.addEventListener("dragleave", () => {
+        slot.classList.remove("drag-over");
+      });
+
+      slot.addEventListener("drop", event => {
+        event.preventDefault();
+        slot.classList.remove("drag-over");
+        const text = event.dataTransfer.getData("text/plain");
+        if (text) placeTextInSlot(text, slot);
+      });
+    });
+
+    function checkAnswer(){
+      let ok = true;
+
+      slots.forEach((slot, index) => {
+        slot.classList.remove("wrong", "correct");
+
+        if (slotValues[index] === correct[index]) {
+          slot.classList.add("correct");
+        } else {
+          ok = false;
+          slot.classList.add("wrong");
+        }
+      });
+
+      if (ok) {
+        showToast("Great!");
+        miniHint.textContent = "Now listen to the dialogue.";
+        listenBtn.classList.add("show");
+
+        window.parent.postMessage({
+          type: "slide8-dialogue-built",
+          dialogue: slotValues,
+          correct: true,
+          sentAt: new Date().toISOString()
+        }, "*");
+      } else {
+        showToast("Try again", "#b22a38");
+        miniHint.textContent = "Some phrases are in the wrong place.";
+      }
+    }
+
+    function speakLine(text, index){
+      return new Promise(resolve => {
+        if (!("speechSynthesis" in window)) {
+          resolve();
+          return;
+        }
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "en-US";
+        utterance.rate = 0.82;
+        utterance.pitch = index % 2 === 0 ? 1.08 : 0.96;
+
+        slots.forEach(slot => slot.classList.remove("speaking"));
+        slots[index].classList.add("speaking");
+
+        utterance.onend = () => {
+          slots[index].classList.remove("speaking");
+          resolve();
+        };
+
+        utterance.onerror = () => {
+          slots[index].classList.remove("speaking");
+          resolve();
+        };
+
+        window.speechSynthesis.speak(utterance);
+      });
+    }
+
+    async function listenDialogue(){
+      if (!slotValues.every((value, index) => value === correct[index])) {
+        checkAnswer();
+        return;
+      }
+
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+
+      for (let i = 0; i < correct.length; i++) {
+        await speakLine(correct[i], i);
+        await new Promise(resolve => setTimeout(resolve, 180));
+      }
+
+      slots.forEach(slot => slot.classList.remove("speaking"));
+    }
+
+    function resetGame(){
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+      slotValues = ["", "", "", ""];
+      slots.forEach((slot, index) => {
+        slot.textContent = placeholders[index];
+        slot.classList.remove("filled", "wrong", "correct", "speaking", "drag-over");
+      });
+
+      document.querySelectorAll(".card").forEach(card => {
+        card.classList.remove("used", "selected");
+      });
+
+      selectedCard = null;
+      listenBtn.classList.remove("show");
+      miniHint.textContent = "Tip: start with a greeting.";
+      updateProgress();
+    }
+
+    checkBtn.addEventListener("click", checkAnswer);
+    resetBtn.addEventListener("click", resetGame);
+    listenBtn.addEventListener("click", listenDialogue);
+
+    renderCards();
+    updateProgress();
+  </script>
+</body>
+</html>
