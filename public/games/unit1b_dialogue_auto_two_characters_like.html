@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Slide 7 — Meet the Characters</title>
+  <style>
+    :root{
+      --ink:#173d68;
+      --soft:#5f7898;
+      --green:#35c66b;
+      --blue:#4d8bec;
+      --paper:rgba(255,255,255,.92);
+      --shadow:0 18px 42px rgba(28,68,118,.18);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 11% 12%, rgba(255,255,255,.95), transparent 18%),
+        radial-gradient(circle at 88% 15%, rgba(255,255,255,.62), transparent 18%),
+        linear-gradient(135deg,#eaf7ff 0%,#fff2c9 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:clamp(10px,1vw,18px);
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      gap:clamp(8px,.8vw,14px);
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .badge,.progress{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(12px,1vw,16px);
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      flex:1;
+      text-align:center;
+      font-size:clamp(28px,3.4vw,56px);
+      color:#2f73d8;
+      text-shadow:0 3px 0 rgba(255,255,255,.94);
+      line-height:.96;
+    }
+
+    .stage{
+      min-height:0;
+      width:min(1120px,100%);
+      justify-self:center;
+      display:grid;
+      grid-template-columns:minmax(300px,.58fr) minmax(360px,.42fr);
+      gap:clamp(12px,1.3vw,20px);
+    }
+
+    .phone{
+      min-height:0;
+      border-radius:34px;
+      background:#101a23;
+      box-shadow:var(--shadow);
+      padding:14px;
+      display:grid;
+    }
+
+    .phone-inner{
+      min-height:0;
+      border-radius:25px;
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      background:
+        radial-gradient(circle at 12% 15%, rgba(255,255,255,.36), transparent 9%),
+        radial-gradient(circle at 87% 18%, rgba(255,255,255,.32), transparent 10%),
+        linear-gradient(135deg,#e3f7df,#dff0ff);
+      position:relative;
+    }
+
+    .chat-header{
+      min-height:70px;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 16px;
+      background:#0f8758;
+      color:white;
+      box-shadow:0 5px 14px rgba(0,0,0,.12);
+    }
+
+    .avatar{
+      width:48px;
+      height:48px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(135deg,#ffd86d,#ff93bd);
+      border:3px solid rgba(255,255,255,.88);
+      font-size:28px;
+      box-shadow:0 5px 12px rgba(0,0,0,.15);
+      flex:0 0 auto;
+    }
+
+    .chat-title{
+      display:grid;
+      gap:2px;
+      min-width:0;
+    }
+
+    .chat-title strong{
+      font-size:clamp(20px,2vw,30px);
+      line-height:1;
+    }
+
+    .chat-title span{
+      font-size:clamp(12px,1vw,15px);
+      opacity:.9;
+      font-weight:800;
+    }
+
+    .messages{
+      min-height:0;
+      overflow:hidden;
+      padding:18px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      justify-content:flex-end;
+    }
+
+    .bubble{
+      max-width:min(84%,620px);
+      padding:12px 15px;
+      border-radius:20px;
+      color:#173d68;
+      font-size:clamp(18px,1.85vw,29px);
+      font-weight:900;
+      line-height:1.22;
+      box-shadow:0 7px 16px rgba(0,0,0,.1);
+      animation:messageIn .24s ease both;
+      position:relative;
+    }
+
+    .bubble.left{
+      align-self:flex-start;
+      background:#fff;
+    }
+
+    .bubble.left::before{
+      content:"";
+      position:absolute;
+      left:-7px;
+      bottom:6px;
+      width:18px;
+      height:18px;
+      background:#fff;
+      clip-path:polygon(100% 0,0 55%,100% 100%);
+    }
+
+    .bubble.right{
+      align-self:flex-end;
+      background:#dcffd9;
+      color:#174c2a;
+    }
+
+    .bubble.right::before{
+      content:"";
+      position:absolute;
+      right:-7px;
+      bottom:6px;
+      width:18px;
+      height:18px;
+      background:#dcffd9;
+      clip-path:polygon(0 0,100% 55%,0 100%);
+    }
+
+    @keyframes messageIn{
+      from{opacity:0; transform:translateY(12px) scale(.98)}
+      to{opacity:1; transform:translateY(0) scale(1)}
+    }
+
+    .typing{
+      width:78px;
+      height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      border-radius:20px;
+      background:#fff;
+      box-shadow:0 7px 16px rgba(0,0,0,.1);
+      animation:messageIn .2s ease both;
+    }
+
+    .typing span{
+      width:9px;
+      height:9px;
+      border-radius:50%;
+      background:#8aa0b8;
+      animation:dot 1s infinite ease-in-out;
+    }
+
+    .typing span:nth-child(2){animation-delay:.15s}
+    .typing span:nth-child(3){animation-delay:.3s}
+
+    @keyframes dot{
+      0%,80%,100%{transform:translateY(0); opacity:.45}
+      40%{transform:translateY(-6px); opacity:1}
+    }
+
+    .chat-footer{
+      min-height:62px;
+      display:flex;
+      align-items:center;
+      padding:10px 14px;
+      gap:10px;
+      background:rgba(255,255,255,.55);
+      backdrop-filter:blur(5px);
+    }
+
+    .fake-input{
+      flex:1;
+      min-height:42px;
+      border-radius:999px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      padding:0 16px;
+      color:#8ba0b7;
+      font-weight:850;
+      font-size:clamp(13px,1.1vw,17px);
+      box-shadow:inset 0 -3px rgba(0,0,0,.035);
+    }
+
+    .send-circle{
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#0f8758;
+      color:#fff;
+      font-weight:950;
+      box-shadow:0 6px 12px rgba(0,0,0,.16);
+    }
+
+    .task-panel{
+      min-height:0;
+      border-radius:34px;
+      background:var(--paper);
+      border:5px solid rgba(255,255,255,.86);
+      box-shadow:var(--shadow);
+      padding:clamp(16px,1.6vw,28px);
+      display:grid;
+      grid-template-rows:auto auto minmax(0,1fr);
+      gap:clamp(12px,1.2vw,18px);
+    }
+
+    .task-title{
+      display:grid;
+      gap:8px;
+      text-align:center;
+    }
+
+    .task-title h2{
+      margin:0;
+      font-size:clamp(24px,2.7vw,44px);
+      color:#244a78;
+      line-height:1.05;
+    }
+
+    .task-title p{
+      margin:0;
+      color:#5f7898;
+      font-size:clamp(14px,1.2vw,18px);
+      font-weight:850;
+    }
+
+    .answer-preview{
+      min-height:62px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      padding:12px 16px;
+      border-radius:22px;
+      background:linear-gradient(135deg,#fff6d6,#fff);
+      border:3px solid rgba(255,255,255,.9);
+      box-shadow:0 8px 18px rgba(0,0,0,.08);
+      font-size:clamp(19px,2vw,32px);
+      font-weight:950;
+      color:#244a78;
+    }
+
+    .options{
+      min-height:0;
+      display:grid;
+      align-content:start;
+      gap:12px;
+    }
+
+    .choice{
+      width:100%;
+      min-height:58px;
+      border:0;
+      border-radius:20px;
+      padding:12px 16px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      color:#244a78;
+      font-family:inherit;
+      font-size:clamp(17px,1.55vw,25px);
+      font-weight:950;
+      text-align:left;
+      cursor:pointer;
+      box-shadow:0 9px 18px rgba(0,0,0,.12), inset 0 -4px rgba(0,0,0,.07);
+      transition:transform .12s ease, filter .12s ease;
+    }
+
+    .choice:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.04);
+    }
+
+    .choice.correct{
+      background:linear-gradient(135deg,#c8ffd1,#54d87d);
+      color:#164f2c;
+    }
+
+    .choice.wrong{
+      animation:shake .34s ease;
+      background:linear-gradient(135deg,#fff,#ffd5d9);
+      color:#8a2530;
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-7px)}
+      55%{transform:translateX(7px)}
+      80%{transform:translateX(-4px)}
+    }
+
+    .type-card{
+      display:grid;
+      gap:12px;
+      align-content:start;
+      padding:14px;
+      border-radius:24px;
+      background:rgba(235,246,255,.8);
+      border:3px solid rgba(255,255,255,.78);
+    }
+
+    .type-card label{
+      font-size:clamp(17px,1.55vw,24px);
+      font-weight:950;
+      color:#244a78;
+    }
+
+    .type-row{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border-radius:18px;
+      background:#fff;
+      box-shadow:inset 0 -4px rgba(0,0,0,.035);
+    }
+
+    .type-row span{
+      font-size:clamp(18px,1.7vw,26px);
+      font-weight:950;
+      color:#244a78;
+      white-space:nowrap;
+    }
+
+    .type-row input{
+      width:100%;
+      min-width:0;
+      border:0;
+      border-bottom:3px dotted #9fc3f1;
+      background:transparent;
+      color:#244a78;
+      font-family:inherit;
+      font-size:clamp(18px,1.65vw,25px);
+      font-weight:950;
+      outline:none;
+      padding:5px 4px;
+    }
+
+    .type-row input:focus{
+      border-bottom-color:#4d8bec;
+    }
+
+    .send-btn{
+      border:0;
+      border-radius:999px;
+      padding:9px 15px;
+      background:linear-gradient(135deg,#65d782,#35b65b);
+      color:#fff;
+      font-family:inherit;
+      font-size:clamp(14px,1.15vw,18px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 8px 16px rgba(0,0,0,.13), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%) scale(.85);
+      padding:18px 28px;
+      border-radius:28px;
+      background:rgba(255,255,255,.96);
+      border:4px solid white;
+      box-shadow:0 22px 60px rgba(0,0,0,.22);
+      color:#2c9b55;
+      font-size:clamp(34px,5vw,76px);
+      font-weight:950;
+      opacity:0;
+      pointer-events:none;
+      z-index:20;
+      transition:opacity .2s ease, transform .2s ease;
+      text-align:center;
+    }
+
+    .toast.show{
+      opacity:1;
+      transform:translate(-50%,-50%) scale(1);
+    }
+
+    @media(max-width:900px){
+      .stage{
+        grid-template-columns:1fr;
+        grid-template-rows:minmax(0,1fr) auto;
+      }
+
+      .task-panel{
+        grid-template-rows:auto auto auto;
+      }
+
+      .options{
+        grid-template-columns:1fr;
+      }
+
+      h1{
+        font-size:clamp(24px,5vw,42px);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="badge">Slide 7</div>
+      <h1>Meet the characters</h1>
+      <div class="progress" id="progress">1 / 2</div>
+    </header>
+
+    <section class="stage">
+      <section class="phone">
+        <div class="phone-inner">
+          <div class="chat-header">
+            <div class="avatar" id="avatar">👧</div>
+            <div class="chat-title">
+              <strong id="chatName">Susan Wilson</strong>
+              <span>online</span>
+            </div>
+          </div>
+
+          <div class="messages" id="messages"></div>
+
+          <div class="chat-footer">
+            <div class="fake-input">Choose or type your message →</div>
+            <div class="send-circle">➤</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="task-panel">
+        <div class="task-title">
+          <h2 id="taskTitle">Choose the answer</h2>
+          <p id="taskHint">Read the message. What should you say?</p>
+        </div>
+
+        <div class="answer-preview" id="answerPreview">Wait for the message…</div>
+
+        <div class="options" id="options"></div>
+      </section>
+    </section>
+
+    <div class="toast" id="toast">Great!</div>
+  </main>
+
+  <script>
+    const characters = [
+      { name: "Susan Wilson", avatar: "👧" },
+      { name: "Bob Green", avatar: "👦" }
+    ];
+
+    const dialogueSteps = [
+      {
+        type: "choice",
+        characterMessage: person => `Hi! I’m ${person.name}.`,
+        prompt: "Say hello",
+        hint: "Choose a polite greeting.",
+        correct: "Hi! Nice to meet you.",
+        options: ["Hi! Nice to meet you.", "I’m in Class 2E.", "No, she isn’t."]
+      },
+      {
+        type: "choice",
+        characterMessage: () => "What class are you in?",
+        prompt: "Answer the class question",
+        hint: "Tell the character your class.",
+        correct: "I’m in Class 2E.",
+        options: ["Nice to meet you, too.", "I’m in Class 2E.", "I’m twelve."]
+      },
+      {
+        type: "choice",
+        characterMessage: () => "How old are you?",
+        prompt: "Answer the age question",
+        hint: "Tell the character your age.",
+        correct: "I’m twelve.",
+        options: ["I’m twelve.", "I’m in Class 2E.", "No, she isn’t."]
+      },
+      {
+        type: "write",
+        characterMessage: () => "What do you like?",
+        prompt: "Write your answer",
+        hint: "Type your own idea.",
+        prefix: "I like"
+      }
+    ];
+
+    const messagesEl = document.getElementById("messages");
+    const optionsEl = document.getElementById("options");
+    const answerPreview = document.getElementById("answerPreview");
+    const progress = document.getElementById("progress");
+    const avatar = document.getElementById("avatar");
+    const chatName = document.getElementById("chatName");
+    const toast = document.getElementById("toast");
+    const taskTitle = document.getElementById("taskTitle");
+    const taskHint = document.getElementById("taskHint");
+
+    let characterIndex = 0;
+    let stepIndex = 0;
+    let isPlaying = false;
+    let results = [];
+
+    function showToast(text){
+      toast.textContent = text;
+      toast.classList.add("show");
+      clearTimeout(showToast.timer);
+      showToast.timer = setTimeout(() => toast.classList.remove("show"), 820);
+    }
+
+    function sleep(ms){
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function addTyping(){
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.innerHTML = "<span></span><span></span><span></span>";
+      messagesEl.appendChild(typing);
+      return typing;
+    }
+
+    function addMessage(text, side = "left"){
+      const bubble = document.createElement("div");
+      bubble.className = "bubble " + side;
+      bubble.textContent = text;
+      messagesEl.appendChild(bubble);
+    }
+
+    function clearPanel(){
+      optionsEl.innerHTML = "";
+      answerPreview.textContent = "Wait for the message…";
+    }
+
+    function setCharacterHeader(){
+      const person = characters[characterIndex];
+      avatar.textContent = person.avatar;
+      chatName.textContent = person.name;
+      progress.textContent = `${characterIndex + 1} / ${characters.length}`;
+    }
+
+    async function playCurrentStep(resetChat = false){
+      isPlaying = true;
+      const person = characters[characterIndex];
+      const step = dialogueSteps[stepIndex];
+
+      if (resetChat) messagesEl.innerHTML = "";
+      clearPanel();
+      setCharacterHeader();
+
+      taskTitle.textContent = step.prompt;
+      taskHint.textContent = step.hint;
+
+      await sleep(250);
+      const typing = addTyping();
+      await sleep(570);
+      typing.remove();
+      addMessage(step.characterMessage(person), "left");
+
+      isPlaying = false;
+
+      if (step.type === "choice") {
+        renderChoiceOptions(step);
+      } else {
+        renderWriteAnswer(step);
+      }
+    }
+
+    function renderChoiceOptions(step){
+      answerPreview.textContent = "Choose your reply";
+      optionsEl.innerHTML = "";
+
+      step.options.forEach(answer => {
+        const btn = document.createElement("button");
+        btn.className = "choice";
+        btn.type = "button";
+        btn.textContent = answer;
+
+        btn.addEventListener("click", async () => {
+          if (isPlaying) return;
+
+          if (answer === step.correct) {
+            btn.classList.add("correct");
+            answerPreview.textContent = answer;
+            addMessage(answer, "right");
+            results.push({
+              character: characters[characterIndex].name,
+              question: step.characterMessage(characters[characterIndex]),
+              answer
+            });
+            showToast("Great!");
+            Array.from(optionsEl.children).forEach(item => {
+              if (item !== btn) item.disabled = true;
+            });
+            await sleep(760);
+            goNext();
+          } else {
+            btn.classList.remove("wrong");
+            void btn.offsetWidth;
+            btn.classList.add("wrong");
+            answerPreview.textContent = "Try again";
+          }
+        });
+
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    function renderWriteAnswer(step){
+      answerPreview.textContent = "Type your reply";
+      optionsEl.innerHTML = `
+        <div class="type-card">
+          <label for="likeInput">What do you like?</label>
+          <div class="type-row">
+            <span>${step.prefix}</span>
+            <input id="likeInput" type="text" autocomplete="off" placeholder="football / music / pizza..." />
+            <button class="send-btn" id="sendLikeBtn" type="button">Send</button>
+          </div>
+        </div>
+      `;
+
+      const input = document.getElementById("likeInput");
+      const sendBtn = document.getElementById("sendLikeBtn");
+
+      function sendTypedAnswer(){
+        const value = input.value.trim();
+        if (!value) {
+          input.focus();
+          showToast("Write first!");
+          return;
+        }
+
+        const answer = `${step.prefix} ${value}.`;
+        answerPreview.textContent = answer;
+        addMessage(answer, "right");
+        results.push({
+          character: characters[characterIndex].name,
+          question: step.characterMessage(characters[characterIndex]),
+          answer
+        });
+        showToast("Sent!");
+
+        window.parent.postMessage({
+          type: "slide7-dialogue-answer",
+          character: characters[characterIndex].name,
+          answer,
+          results,
+          allResults: results,
+          score: results.length,
+          total: characters.length * dialogueSteps.length
+        }, "*");
+
+        setTimeout(goNext, 850);
+      }
+
+      sendBtn.addEventListener("click", sendTypedAnswer);
+      input.addEventListener("keydown", event => {
+        if (event.key === "Enter") sendTypedAnswer();
+      });
+
+      setTimeout(() => input.focus(), 100);
+    }
+
+    function startCharacter(){
+      stepIndex = 0;
+      setCharacterHeader();
+      playCurrentStep(true);
+    }
+
+    function goNext(){
+      stepIndex += 1;
+
+      if (stepIndex < dialogueSteps.length) {
+        playCurrentStep(false);
+        return;
+      }
+
+      characterIndex += 1;
+
+      if (characterIndex >= characters.length) {
+        messagesEl.innerHTML = "";
+        addMessage("Great job! You met everyone.", "left");
+        answerPreview.textContent = "You finished the dialogues!";
+        optionsEl.innerHTML = "";
+        progress.textContent = `${characters.length} / ${characters.length}`;
+        taskTitle.textContent = "Great job!";
+        taskHint.textContent = "Dialogue practice finished.";
+        window.parent.postMessage({
+          type: "slide7-dialogue-complete",
+          results,
+          score: results.length,
+          total: characters.length * dialogueSteps.length
+        }, "*");
+        return;
+      }
+
+      startCharacter();
+    }
+
+    startCharacter();
+  </script>
+</body>
+</html>

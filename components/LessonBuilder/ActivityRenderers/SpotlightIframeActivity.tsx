@@ -66,7 +66,7 @@ export default function SpotlightIframeActivity({
           sessionId: sessionId || null,
           studentId: user?.id,
           studentName: user?.displayName || 'Ученик',
-          results: data.results || data.result || [],
+          results: data.results || data.result || data.allResults || [],
           score: Number(data.score ?? 0),
           total: Number(data.total ?? data.totalItems ?? 0),
         }),
