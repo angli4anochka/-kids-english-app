@@ -571,6 +571,8 @@
     const person1Badge = document.getElementById("person1Badge");
     const person2Badge = document.getElementById("person2Badge");
     const lessonAudio = document.getElementById("lessonAudio");
+    const role = new URLSearchParams(window.location.search).get("role") || "student";
+    const audioButton = document.getElementById("audioPlaceholder");
 
     const inputs = {
       person1: document.getElementById("person1"),
@@ -664,18 +666,26 @@
 
     document.getElementById("goListening").addEventListener("click", () => switchScreen(2));
 
-    document.getElementById("audioPlaceholder").addEventListener("click", () => {
+    if (role !== "teacher") {
+      audioButton.disabled = true;
+      audioButton.textContent = "Teacher plays audio";
+      audioButton.style.opacity = "0.55";
+      audioButton.style.cursor = "not-allowed";
+    }
+
+    audioButton.addEventListener("click", () => {
+      if (role !== "teacher") return;
       if (lessonAudio.paused) {
         lessonAudio.play();
-        document.getElementById("audioPlaceholder").textContent = "Pause audio";
+        audioButton.textContent = "Pause audio";
       } else {
         lessonAudio.pause();
-        document.getElementById("audioPlaceholder").textContent = "Play audio";
+        audioButton.textContent = "Play audio";
       }
     });
 
     lessonAudio.addEventListener("ended", () => {
-      document.getElementById("audioPlaceholder").textContent = "Play audio";
+      if (role === "teacher") audioButton.textContent = "Play audio";
     });
 
     document.getElementById("goBuilder").addEventListener("click", () => switchScreen(3));
