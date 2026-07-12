@@ -32,12 +32,14 @@
     }
 
     .app {
-      width:100vw;
-      height:100vh;
+      width:125vw;
+      height:125vh;
       padding:clamp(10px,1vw,18px);
       display:grid;
       grid-template-rows:auto minmax(0,1fr);
       gap:clamp(8px,.85vw,14px);
+      transform:scale(.8);
+      transform-origin:top center;
     }
 
     header {
@@ -111,8 +113,6 @@
       overflow:hidden;
       background:#dfefff;
       box-shadow:inset 0 -8px rgba(0,0,0,.04);
-      transform:scale(.8);
-      transform-origin:center center;
     }
 
     .board-img {
