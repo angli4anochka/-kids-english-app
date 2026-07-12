@@ -37,40 +37,12 @@
       height:100vh;
       padding:clamp(10px,1vw,18px);
       display:grid;
-      grid-template-rows:auto minmax(0,1fr);
-      gap:clamp(8px,.85vw,14px);
-    }
-
-    header{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-    }
-
-    .badge,.progress{
-      padding:8px 14px;
-      border-radius:999px;
-      background:rgba(255,255,255,.78);
-      box-shadow:0 7px 18px rgba(0,0,0,.08);
-      font-weight:950;
-      color:#244a78;
-      font-size:clamp(12px,1vw,16px);
-      white-space:nowrap;
-    }
-
-    h1{
-      margin:0;
-      flex:1;
-      text-align:center;
-      font-size:clamp(28px,3.4vw,56px);
-      color:#2f73d8;
-      text-shadow:0 3px 0 rgba(255,255,255,.94);
-      line-height:.96;
+      grid-template-rows:minmax(0,1fr);
     }
 
     .stage{
       min-height:0;
+      height:100%;
       width:min(1220px,100%);
       justify-self:center;
       display:grid;
@@ -100,6 +72,17 @@
       gap:12px;
       background:linear-gradient(135deg,rgba(255,255,255,.78),rgba(239,248,255,.7));
       border-bottom:3px solid rgba(255,255,255,.65);
+    }
+
+    .progress{
+      padding:8px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.78);
+      box-shadow:0 7px 18px rgba(0,0,0,.08);
+      font-weight:950;
+      color:#244a78;
+      font-size:clamp(12px,1vw,16px);
+      white-space:nowrap;
     }
 
     .panel-title{
@@ -440,20 +423,11 @@
         align-content:start;
       }
 
-      h1{
-        font-size:clamp(24px,5vw,42px);
-      }
     }
   </style>
 </head>
 <body>
   <main class="app">
-    <header>
-      <div class="badge">Slide 8</div>
-      <h1>Build the dialogue</h1>
-      <div class="progress" id="progress">0 / 4</div>
-    </header>
-
     <section class="stage">
       <section class="dialogue-panel">
         <div class="panel-top">
@@ -465,6 +439,7 @@
             <div class="person"><span class="avatar">👧</span>Emma</div>
             <div class="person"><span class="avatar">👩</span>Susan</div>
           </div>
+          <div class="progress" id="progress">0 / 4</div>
         </div>
 
         <div class="chat-area" id="chatArea">
