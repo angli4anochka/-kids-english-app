@@ -48,9 +48,8 @@
       border:5px solid rgba(255,255,255,.9);
       box-shadow:var(--shadow);
       padding:clamp(14px,1.4vw,24px);
-      padding-bottom:clamp(22px,2vw,32px);
       display:grid;
-      grid-template-rows:auto minmax(0,1fr) auto;
+      grid-template-rows:auto minmax(0,1fr);
       gap:clamp(12px,1.2vw,20px);
       overflow:hidden;
     }
@@ -89,8 +88,9 @@
 
     .machine{
       min-height:0;
-      display:grid;
-      place-items:center;
+      display:flex;
+      align-items:stretch;
+      justify-content:center;
       position:relative;
       border-radius:34px;
       overflow:hidden;
@@ -101,7 +101,7 @@
         linear-gradient(135deg,#e4f4ff,#ecffe5);
       border:4px solid rgba(255,255,255,.82);
       box-shadow:inset 0 -7px rgba(0,0,0,.035);
-      padding:clamp(14px,1.4vw,24px);
+      padding:clamp(12px,1.2vw,20px);
     }
 
     .machine-inner{
@@ -109,16 +109,18 @@
       height:100%;
       min-height:0;
       display:grid;
-      grid-template-rows:auto minmax(0,1fr) auto;
-      gap:clamp(10px,1vw,18px);
-      place-items:center;
+      grid-template-rows:auto minmax(0,1fr) auto auto;
+      gap:clamp(10px,1vw,16px);
+      align-items:center;
+      justify-items:center;
+      padding-bottom:4px;
     }
 
     .item-wrap{
       display:grid;
       place-items:center;
       width:100%;
-      min-height:clamp(190px,25vw,320px);
+      min-height:clamp(170px,22vw,280px);
       position:relative;
     }
 
@@ -185,7 +187,7 @@
       align-items:center;
       flex-wrap:wrap;
       gap:clamp(8px,1vw,14px);
-      padding:2px 4px 0;
+      padding:0 4px;
     }
 
     .pronoun-btn{
@@ -246,26 +248,18 @@
     }
 
     .hint{
-      min-height:58px;
+      min-height:40px;
       display:grid;
       place-items:center;
       text-align:center;
-      padding:10px 16px;
-      border-radius:23px;
-      background:#eff6ff;
+      padding:8px 14px;
+      border-radius:18px;
+      background:rgba(239,246,255,.75);
       color:#5f7898;
-      font-size:clamp(15px,1.25vw,20px);
+      font-size:clamp(13px,1.1vw,17px);
       font-weight:900;
       line-height:1.18;
       width:min(900px,100%);
-    }
-
-    .bottom{
-      display:grid;
-      grid-template-columns:1fr auto;
-      gap:12px;
-      align-items:center;
-      padding-top:4px;
     }
 
     .reset{
@@ -280,6 +274,7 @@
       font-weight:950;
       cursor:pointer;
       box-shadow:0 9px 18px rgba(0,0,0,.14), inset 0 -4px rgba(0,0,0,.12);
+      justify-self:end;
     }
 
     .finish{
@@ -320,10 +315,6 @@
       .pronoun-btn{
         min-width:118px;
         font-size:18px;
-      }
-
-      .bottom{
-        grid-template-columns:1fr;
       }
 
       .reset{
@@ -371,16 +362,13 @@
           </div>
 
           <div class="hint" id="hint">Look at the word and choose: she, he, we, they or it.</div>
+
+          <button class="reset" id="resetBtn" type="button">Reset</button>
         </div>
       </div>
 
       <div class="finish" id="finish">
         <div class="finish-card">Great job!<br>10 / 10</div>
-      </div>
-
-      <div class="bottom">
-        <div></div>
-        <button class="reset" id="resetBtn" type="button">Reset</button>
       </div>
     </section>
   </main>
