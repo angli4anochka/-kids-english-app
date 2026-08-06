@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Listening — Greetings</title>
+  <style>
+    :root{--navy:#102a56;--blue:#3976e8;--purple:#7657dd;--green:#14845e;--red:#d74655}*{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:Inter,ui-rounded,"Nunito Sans",system-ui,sans-serif;color:var(--navy);background:radial-gradient(circle at 7% 0,#dceaff 0,transparent 34%),linear-gradient(145deg,#fbfdff,#edf3ff)}
+    .app{width:min(1180px,100%);height:100dvh;margin:auto;padding:8px 14px;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:7px;overflow:hidden}
+    header{display:flex;align-items:center;gap:9px;min-height:40px}.badge{width:38px;aspect-ratio:1;display:grid;place-items:center;border:2px solid #fff;border-radius:12px;color:#fff;background:linear-gradient(145deg,#6096f3,#355fc5);box-shadow:0 6px 18px #315fc733;font-size:1.2rem;font-weight:900}h1,p{margin:0}h1{font-size:clamp(1.15rem,1.8vw,1.55rem);letter-spacing:-.02em;line-height:1.22}.eyebrow{color:#6d83a5;font-size:.6rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;line-height:1.2}
+    .audio-card,.picture-card,.answer-panel{border:3px solid #fff;background:#ffffffdf;box-shadow:0 14px 36px #284e8b1a}.audio-card{padding:5px 9px;border-radius:15px}.audio-card audio{width:100%;height:28px;display:block}.work-area{min-height:0;display:grid;grid-template-columns:minmax(280px,390px) minmax(320px,1fr);gap:14px;align-items:start;justify-content:center}.picture-card{width:min(100%,390px);aspect-ratio:632/814;display:grid;place-items:center;overflow:visible;padding:6px;border-radius:18px;align-self:start;justify-self:end}.picture-card img{width:auto;height:100%;max-width:100%;display:block;object-fit:contain;border-radius:10px}
+    .answer-panel{align-self:start;display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:9px 11px;padding:12px 14px;border-radius:18px}.answer-panel h2{width:100%;margin:0;font-size:clamp(.98rem,1.35vw,1.12rem);line-height:1.2}.answer{display:flex;align-items:center;gap:7px}.answer label{width:30px;height:30px;display:grid;place-items:center;border-radius:9px;color:#fff;background:#173d7b;font-size:1rem;font-weight:950}.answer input{width:44px;height:38px;border:2px solid #c7d7ee;border-radius:11px;text-align:center;color:var(--navy);background:#fff;font:inherit;font-size:1.08rem;font-weight:950;outline:none}.answer input:focus{border-color:var(--blue);box-shadow:0 0 0 4px #3976e81c}.answer input.correct{border-color:var(--green);background:#e9faf4;color:var(--green)}.answer input.wrong{border-color:var(--red);background:#fff0f2;color:var(--red)}
+    .button{height:40px;border:0;border-radius:12px;padding:0 16px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 8px 18px #526cd630;font:inherit;font-weight:900;cursor:pointer}.button.send{display:none;background:linear-gradient(135deg,#12815c,#22a978)}.button:disabled{opacity:.55;cursor:not-allowed}.feedback{width:100%;min-height:20px;font-size:.95rem;font-weight:900}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+    @media(max-width:760px){html,body{overflow:auto}.app{height:auto;min-height:100dvh;padding:9px;overflow:visible}.work-area{grid-template-columns:1fr}.picture-card{width:min(100%,430px);justify-self:center}.picture-card img{width:auto;height:100%}.answer-panel{justify-content:center}.answer-panel h2{text-align:center}.feedback{text-align:center}.button{flex:1}.answer input{width:48px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><span class="badge">3</span><div><p class="eyebrow">Listening</p><h1>Listen and match</h1></div></header>
+    <section class="audio-card" aria-label="Listening audio"><audio controls preload="metadata" src="https://storage.yandexcloud.net/kids-app/audio/unit1-english-in-use/07-42-ex-2-p-32.mp3"></audio></section>
+    <div class="work-area">
+      <section class="picture-card"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-listening-match-abc/match-abc-01-e5c9f39700ad6e42.webp" alt="Three scenes labelled A, B and C"></section>
+      <form class="answer-panel" novalidate>
+        <h2>Write your answers</h2>
+        <div class="answer"><label for="answer-a">A</label><input id="answer-a" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Answer for picture A"></div>
+        <div class="answer"><label for="answer-b">B</label><input id="answer-b" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Answer for picture B"></div>
+        <div class="answer"><label for="answer-c">C</label><input id="answer-c" inputmode="numeric" autocomplete="off" maxlength="1" aria-label="Answer for picture C"></div>
+        <button class="button check" type="submit">Check</button>
+        <button class="button send" type="button">Send to teacher</button>
+        <p class="feedback" aria-live="polite"></p>
+      </form>
+    </div>
+  </main>
+  <script>
+    const form=document.querySelector('.answer-panel'),inputs=[...form.querySelectorAll('input')],checkButton=document.querySelector('.check'),sendButton=document.querySelector('.send'),feedback=document.querySelector('.feedback'),correct=['1','3','2'];let lastResult=null;
+    inputs.forEach((input,index)=>{input.addEventListener('input',()=>{input.value=input.value.replace(/[^123]/g,'').slice(0,1);input.classList.remove('correct','wrong');feedback.textContent='';sendButton.style.display='none';if(input.value&&index<inputs.length-1)inputs[index+1].focus()});input.addEventListener('keydown',event=>{if(event.key==='Backspace'&&!input.value&&index>0)inputs[index-1].focus()})});
+    form.addEventListener('submit',event=>{event.preventDefault();if(inputs.some(input=>!input.value)){feedback.textContent='Fill in A, B and C.';feedback.className='feedback bad';return}let score=0;inputs.forEach((input,index)=>{const ok=input.value===correct[index];input.classList.toggle('correct',ok);input.classList.toggle('wrong',!ok);if(ok)score++});lastResult={activityId:'greetings-listening-match',answers:{A:inputs[0].value,B:inputs[1].value,C:inputs[2].value},correctAnswers:{A:'1',B:'3',C:'2'},score,maxScore:3,completed:true,timestamp:new Date().toISOString()};feedback.textContent=score===3?'Perfect! 3/3':`${score}/3 — try the red boxes again.`;feedback.className=`feedback ${score===3?'good':'bad'}`;sendButton.style.display='inline-block'});
+    sendButton.addEventListener('click',()=>{if(!lastResult)return;window.parent.postMessage({type:'UNIPLAY_ACTIVITY_RESULT',payload:lastResult},'*');window.parent.postMessage({type:'lesson-result',...lastResult},'*');try{localStorage.setItem('greetings-listening-match-result',JSON.stringify(lastResult))}catch{}sendButton.textContent='Sent ✓';sendButton.disabled=true;feedback.textContent='Result sent to teacher.';feedback.className='feedback good'});
+  </script>
+</body>
+</html>

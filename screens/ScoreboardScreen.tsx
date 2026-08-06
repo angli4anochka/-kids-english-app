@@ -247,7 +247,7 @@ const ScoreboardScreen = () => {
     <div
       className="min-h-screen w-full relative overflow-hidden p-[15px] bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: 'url(/img/background.webp)',
+        backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)',
         transform: 'scale(0.67)',
         transformOrigin: 'top left',
         width: '149.25%',  // 100% / 0.67 = 149.25% чтобы компенсировать масштаб

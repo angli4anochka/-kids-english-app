@@ -15,7 +15,7 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
   const getIslandImagePath = (id: string) => {
     const n = id.replace('island-', '');
     const valid = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    return `/img/island-${valid.includes(n) ? n : '1'}.webp`;
+    return `https://storage.yandexcloud.net/kids-app/public-assets/img/island-${valid.includes(n) ? n : '1'}.webp`;
   };
 
   // Размер острова на карте (он же width/height для <img>)
@@ -77,7 +77,8 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
           alt={island.title}
           width={getIslandSize(island.id)}
           height={getIslandSize(island.id)}
-          loading="lazy"
+          loading={isAvailable || isCompleted ? 'eager' : 'lazy'}
+          fetchPriority={isAvailable ? 'high' : 'auto'}
           decoding="async"
           className="object-contain"
           style={{

@@ -40,7 +40,7 @@ const MapScreen = () => {
   };
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.webp)' }}>
+    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)' }}>
       {/* Welcome message */}
       {user && (
         <div className="absolute top-8 left-8 z-20">

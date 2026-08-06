@@ -198,7 +198,7 @@ export default function SpotlightEx1({ isTeacher, lessonId, activityId, sessionI
       {/* Right: house image */}
       <div className="flex items-center justify-center shrink-0 py-3 pr-3" style={{ width: '35%' }}>
         <img
-          src="/spotlight/u1/house.png"
+          src="https://storage.yandexcloud.net/kids-app/public-assets/spotlight/u1/house.png"
           alt="house"
           className="max-h-full max-w-full object-contain"
           style={{ borderRadius: 12, maxHeight: '100%' }}

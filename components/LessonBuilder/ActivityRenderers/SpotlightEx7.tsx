@@ -10,10 +10,10 @@ interface Props {
 }
 
 const TASKS = [
-  { n: 1, subject: 'He',  answer: 'is thirsty', accept: ['is thirsty', "'s thirsty", 'thirsty'],   img: '/spotlight/ex7-task1-thirsty.png' },
-  { n: 2, subject: 'She', answer: 'is cold',    accept: ['is cold',    "'s cold",    'cold'],        img: '/spotlight/ex7-task2-cold-woman.png' },
-  { n: 3, subject: 'He',  answer: 'is hot',     accept: ['is hot',     "'s hot"],                   img: '/spotlight/ex7-task3-hot.png' },
-  { n: 4, subject: 'It',  answer: 'is cold',    accept: ['is cold',    "'s cold",    'cold'],        img: '/spotlight/ex7-task4-cold-thermo.png' },
+  { n: 1, subject: 'He',  answer: 'is thirsty', accept: ['is thirsty', "'s thirsty", 'thirsty'],   img: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex7-task1-thirsty.png' },
+  { n: 2, subject: 'She', answer: 'is cold',    accept: ['is cold',    "'s cold",    'cold'],        img: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex7-task2-cold-woman.png' },
+  { n: 3, subject: 'He',  answer: 'is hot',     accept: ['is hot',     "'s hot"],                   img: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex7-task3-hot.png' },
+  { n: 4, subject: 'It',  answer: 'is cold',    accept: ['is cold',    "'s cold",    'cold'],        img: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex7-task4-cold-thermo.png' },
 ];
 
 const normalize = (s: string) =>
@@ -140,7 +140,7 @@ export default function SpotlightEx7({ isTeacher, lessonId, activityId, sessionI
             {/* example card */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 0 }}>
               <div style={{ width: '100%', height: 'clamp(110px,18vh,220px)', display: 'flex', alignItems: 'flex-end', justifyContent: 'center' }}>
-                <img src="/spotlight/ex7-example-hungry.png" alt="" draggable={false}
+                <img src="https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex7-example-hungry.png" alt="" draggable={false}
                   style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', userSelect: 'none', pointerEvents: 'none' }} />
               </div>
               <div style={{ display: 'flex', alignItems: 'baseline', gap: 6, marginTop: 'clamp(4px,1vh,10px)', fontFamily: FONT_SENTENCE, fontSize: 'clamp(16px,1.8vw,26px)', color: '#1f1f1f', paddingLeft: 4 }}>

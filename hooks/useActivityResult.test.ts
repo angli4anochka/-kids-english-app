@@ -69,11 +69,14 @@ describe('useActivityResult', () => {
       activityId: 'act-1', sessionId: 'sess-1', groupId: 4, isTeacher: true,
     }));
     await act(async () => { await result.current({ score: 50 }); });
-    expect((global as any).fetch).not.toHaveBeenCalled();
+    expect((global as any).fetch).toHaveBeenCalledWith(
+      '/kids-api/live-sessions/none/results',
+      expect.objectContaining({ method: 'POST' }),
+    );
     expect(mockEmit).not.toHaveBeenCalled();
   });
 
-  it('does not POST when sessionId is missing (offline play), but still emits via socket', async () => {
+  it('stores self-study results when sessionId is missing and still emits via socket', async () => {
     const { result } = renderHook(() => useActivityResult({
       activityId: 'act-1', groupId: 4, isTeacher: false,
     }));

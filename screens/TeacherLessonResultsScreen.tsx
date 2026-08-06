@@ -30,24 +30,40 @@ export default function TeacherLessonResultsScreen() {
   const [students, setStudents] = useState<StudentSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [lessonId, setLessonId] = useState<string | null>(null);
+  const [groupId, setGroupId] = useState<string | null>(null);
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setSessionId(params.get('sessionId'));
+      setLessonId(params.get('lessonId'));
+      setGroupId(params.get('groupId'));
     }
   }, []);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId && !lessonId) return;
     const load = async () => {
       try {
-        const res = await fetch(`/kids-api/spotlight/session-all-results?sessionId=${sessionId}`);
+        const url = sessionId
+          ? `/kids-api/spotlight/session-all-results?sessionId=${encodeURIComponent(sessionId)}`
+          : `/kids-api/lessons/${encodeURIComponent(lessonId!)}/results${groupId ? `?groupId=${encodeURIComponent(groupId)}` : ''}`;
+        const res = await fetch(url);
         const data = await res.json();
         if (data.success) {
           const byStudent: Record<string, StudentSummary> = {};
-          for (const row of data.data as ActivityResult[]) {
+          for (const raw of data.data as any[]) {
+            const details = typeof raw.details === 'string' ? JSON.parse(raw.details) : raw.details;
+            const row: ActivityResult = {
+              ...raw,
+              activity_title: raw.activity_title || raw.activity_id,
+              order_index: raw.order_index || 0,
+              results: raw.results || details?.results || details?.answers || details || [],
+              total: raw.total ?? details?.total ?? details?.maxScore ?? details?.max_score ?? 0,
+              score: raw.score ?? 0,
+            };
             const key = row.student_id || row.student_name;
             if (!byStudent[key]) {
               byStudent[key] = {
@@ -71,7 +87,7 @@ export default function TeacherLessonResultsScreen() {
       setIsLoading(false);
     };
     load();
-  }, [sessionId]);
+  }, [sessionId, lessonId, groupId]);
 
   if (isLoading) {
     return (

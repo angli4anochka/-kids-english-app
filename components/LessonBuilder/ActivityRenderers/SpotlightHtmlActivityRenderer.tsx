@@ -73,6 +73,17 @@ import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './Spotli
 import SpotlightUnit1bPronounMachine from './SpotlightUnit1bPronounMachine';
 import SpotlightUnit1bAmIsAreRulesPracticeNoMonster from './SpotlightUnit1bAmIsAreRulesPracticeNoMonster';
 import SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos from './SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos';
+import SpotlightUnit1EnglishInUseGreetings from './SpotlightUnit1EnglishInUseGreetings';
+import SpotlightUnit1EnglishInUseListeningMatchAbc from './SpotlightUnit1EnglishInUseListeningMatchAbc';
+import SpotlightUnit1EnglishInUseSpeakingSituationCards from './SpotlightUnit1EnglishInUseSpeakingSituationCards';
+import SpotlightUnit1EnglishInUseSchoolObjects from './SpotlightUnit1EnglishInUseSchoolObjects';
+import SpotlightUnit1EnglishInUseArticlesAAn from './SpotlightUnit1EnglishInUseArticlesAAn';
+import SpotlightUnit1EnglishInUsePersonalPronouns from './SpotlightUnit1EnglishInUsePersonalPronouns';
+import SpotlightUnit1EnglishInUseToBeForms from './SpotlightUnit1EnglishInUseToBeForms';
+import SpotlightUnit1EnglishInUseProfileReadingSally from './SpotlightUnit1EnglishInUseProfileReadingSally';
+import SpotlightUnit1EnglishInUseQuestionWordsAboutMe from './SpotlightUnit1EnglishInUseQuestionWordsAboutMe';
+import SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame from './SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame';
+import SpotlightUnit1EnglishInUseProgressCheck1Opening from './SpotlightUnit1EnglishInUseProgressCheck1Opening';
 
 interface Props {
   activity: Activity;
@@ -165,6 +176,17 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1b-pronoun-machine': SpotlightUnit1bPronounMachine,
   'unit1b-am-is-are-rules-practice-no-monster': SpotlightUnit1bAmIsAreRulesPracticeNoMonster,
   'unit1b-affirmative-negative-html-worksheet-dynamic-photos': SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos,
+  'unit1-english-in-use-greetings': SpotlightUnit1EnglishInUseGreetings,
+  'unit1-english-in-use-listening-match-abc': SpotlightUnit1EnglishInUseListeningMatchAbc,
+  'unit1-english-in-use-speaking-situation-cards': SpotlightUnit1EnglishInUseSpeakingSituationCards,
+  'unit1-english-in-use-school-objects': SpotlightUnit1EnglishInUseSchoolObjects,
+  'unit1-english-in-use-articles-a-an': SpotlightUnit1EnglishInUseArticlesAAn,
+  'unit1-english-in-use-personal-pronouns': SpotlightUnit1EnglishInUsePersonalPronouns,
+  'unit1-english-in-use-to-be-forms': SpotlightUnit1EnglishInUseToBeForms,
+  'unit1-english-in-use-profile-reading-sally': SpotlightUnit1EnglishInUseProfileReadingSally,
+  'unit1-english-in-use-question-words-about-me': SpotlightUnit1EnglishInUseQuestionWordsAboutMe,
+  'unit1-english-in-use-translators-corner-team-game': SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame,
+  'progress-check-1-opening': SpotlightUnit1EnglishInUseProgressCheck1Opening,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {

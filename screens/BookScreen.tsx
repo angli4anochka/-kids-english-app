@@ -29,13 +29,18 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { socket, isConnected } = useSocket();
+  const isHskCourse = courseId === 'c0d6ff9f-5e50-44f3-b33f-991dd8f57901';
 
   const [book, setBook] = useState<CourseBook | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-  const [lessonProgress, setLessonProgress] = useState<Record<string, { is_completed: boolean; progress_percent: number }>>({});
+  const [lessonProgress, setLessonProgress] = useState<Record<string, {
+    is_completed: boolean;
+    progress_percent: number;
+    last_session_id?: string | null;
+  }>>({});
   const [startingLessonId, setStartingLessonId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
@@ -79,11 +84,16 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
       .then(r => r.json())
       .then(d => {
         if (d.success) {
-          const map: Record<string, { is_completed: boolean; progress_percent: number }> = {};
+          const map: Record<string, {
+            is_completed: boolean;
+            progress_percent: number;
+            last_session_id?: string | null;
+          }> = {};
           d.data.forEach((item: any) => {
             map[item.lesson_id] = {
               is_completed: item.is_completed,
               progress_percent: item.progress_percent || 0,
+              last_session_id: item.last_session_id || null,
             };
           });
           setLessonProgress(map);
@@ -175,13 +185,13 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Group consecutive lessons with the same unit_number into blocks (preserves order)
-  const grouped: { unitNumber: number | null; lessons: Lesson[] }[] = [];
+  // Group consecutive lessons with the same unit_name into blocks (preserves order)
+  const grouped: { unitName: string | null; lessons: Lesson[] }[] = [];
   for (const lesson of lessons) {
-    const u = lesson.unit_number ?? null;
+    const u = lesson.unit_name ? lesson.unit_name.trim().toLowerCase() : null;
     const last = grouped[grouped.length - 1];
-    if (last && last.unitNumber === u) last.lessons.push(lesson);
-    else grouped.push({ unitNumber: u, lessons: [lesson] });
+    if (last && last.unitName === u) last.lessons.push(lesson);
+    else grouped.push({ unitName: u, lessons: [lesson] });
   }
 
   return (
@@ -235,13 +245,13 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {grouped.map(({ unitNumber, lessons: unitLessons }) => {
-                    const unitLabel = unitNumber !== null
-                      ? (unitLessons[0]?.unit_name || `Unit ${unitNumber}`)
+                  {grouped.map(({ unitName, lessons: unitLessons }) => {
+                    const unitLabel = unitName !== null
+                      ? (unitLessons[0]?.unit_name || unitName.charAt(0).toUpperCase() + unitName.slice(1))
                       : null;
                     return (
-                    <div key={unitNumber ?? 'ungrouped'}>
-                      {unitNumber !== null && (
+                    <div key={unitName ?? 'ungrouped'}>
+                      {unitName !== null && (
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 px-3 py-1 rounded-full">
                             {unitLabel}
@@ -249,7 +259,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                           <div className="flex-1 h-px bg-purple-100" />
                         </div>
                       )}
-                      <div className={`space-y-2 ${unitNumber !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
+                      <div className={`space-y-2 ${unitName !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
                         {unitLessons.map((lesson, _idx) => {
                           const prog = lessonProgress[lesson.id];
                           const done = prog?.is_completed ?? false;
@@ -288,17 +298,34 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                                     : null
                                 }
                                 <button
+                                  onClick={() => navigate('/teacher/lesson-results?lessonId=' + encodeURIComponent(lesson.id) + '&groupId=' + (selectedGroupId || ''))}
+                                  className={'shrink-0 px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition text-xs font-bold'}
+                                  title={'Посмотреть результаты урока'}
+                                >
+                                  📊 Результаты
+                                </button>
+                                <button
                                   onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}&bookId=${bookId}&courseId=${courseId}`)}
                                   className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
                                 >
                                   ✏️
                                 </button>
+                                {isHskCourse && (
+                                  <button
+                                    onClick={() => navigate(`/teacher/self-study/${lesson.id}`)}
+                                    title={'Самообучение'}
+                                    aria-label={'Самообучение'}
+                                    className={'shrink-0 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition text-xs font-bold'}
+                                  >
+                                    ◉
+                                  </button>
+                                )}
                                 <button
                                   onClick={() => handleStartLesson(lesson)}
                                   disabled={startingLessonId === lesson.id}
                                   className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
                                 >
-                                  {startingLessonId === lesson.id ? '⏳' : '▶ Начать'}
+                                  {startingLessonId === lesson.id ? '⏳' : '▶'}
                                 </button>
                               </div>
                               {pct > 0 && (
@@ -312,9 +339,9 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             </div>
                           );
                         })}
-                        {unitNumber !== null && (
+                        {unitName !== null && (
                           <button
-                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=${unitNumber}`)}
+                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitName=${encodeURIComponent(unitLabel || '')}`)}
                             className="w-full mt-1 px-3 py-2 border-2 border-dashed border-purple-300 hover:border-purple-500 text-purple-500 hover:text-purple-700 rounded-xl transition text-xs font-semibold"
                           >
                             + Добавить урок в {unitLabel}

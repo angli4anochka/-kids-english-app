@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spotlight — Lesson 1: Greetings</title>
+  <style>
+    :root{--ink:#102a56;--blue:#3976e8;--muted:#6a7f9f}*{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden}
+    body{font-family:Inter,ui-rounded,"Nunito Sans",system-ui,sans-serif;color:var(--ink);background:radial-gradient(circle at 12% 0%,#dceaff 0,transparent 32%),linear-gradient(145deg,#f8fbff,#edf4ff)}
+    button{font:inherit}.app{height:100dvh;min-height:420px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:clamp(10px,1.4vw,18px);padding:clamp(12px,1.6vw,24px)}
+    header,footer,.stage{width:min(1500px,100%)}header,footer{margin:0 auto}header{display:flex;align-items:center;justify-content:space-between;gap:16px}.title{display:flex;align-items:center;gap:12px}
+    .badge{width:clamp(44px,4vw,58px);aspect-ratio:1;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#5e94f6,#315fc7);border:3px solid #fff;border-radius:17px;box-shadow:0 8px 22px #315fc740;font-size:clamp(1.35rem,2vw,1.8rem);font-weight:800}
+    .eyebrow,h1{margin:0}.eyebrow{color:#6d83a5;font-size:.72rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase}h1{font-size:clamp(1.4rem,2.6vw,2.2rem);line-height:1.05;letter-spacing:-.035em}
+    .tools{display:flex;align-items:center;gap:10px}.counter,.full{border:1px solid #5175af2e;background:#ffffffd1;box-shadow:0 8px 24px #3051861a;backdrop-filter:blur(12px)}.counter{min-width:70px;padding:10px 15px;border-radius:999px;text-align:center;font-weight:800}.full{width:43px;height:43px;border-radius:14px;color:var(--ink);cursor:pointer;font-size:1.35rem}
+    .stage{position:relative;min-height:0;margin:0 auto;overflow:hidden;border:5px solid #fffffff2;border-radius:clamp(20px,2.4vw,34px);background:#dbe6f4;box-shadow:0 28px 70px #2241702e,0 4px 15px #22417017;touch-action:pan-y}.stage:fullscreen{width:100vw;height:100vh;max-width:none;border:0;border-radius:0;background:#10213b}
+    .slides,.slide{position:absolute;inset:0}.slide{margin:0;opacity:0;visibility:hidden;transform:scale(1.018);transition:opacity .36s ease,transform .52s ease,visibility .36s}.slide.active{opacity:1;visibility:visible;transform:scale(1)}.slide img{width:100%;height:100%;display:block;object-fit:contain;user-select:none}
+    .arrow{position:absolute;z-index:3;top:50%;width:clamp(48px,5vw,68px);height:clamp(48px,5vw,68px);display:grid;place-items:center;border:2px solid #ffffffd9;border-radius:50%;color:#fff;background:#0c264f9e;box-shadow:0 10px 28px #05152f40;backdrop-filter:blur(10px);cursor:pointer;font-size:clamp(2.2rem,4vw,3.2rem);line-height:1;transform:translateY(-50%);transition:.16s}.arrow:hover{background:#1a4e9fd9;transform:translateY(-50%) scale(1.07)}.prev{left:clamp(10px,2vw,28px)}.next{right:clamp(10px,2vw,28px)}
+    button:focus-visible{outline:4px solid #ffca54;outline-offset:3px}footer{display:flex;align-items:center;gap:18px}footer p{margin:0;color:var(--muted);font-size:clamp(.72rem,1.2vw,.9rem);font-weight:700;white-space:nowrap}.progress{width:100%;height:7px;overflow:hidden;border-radius:99px;background:#d6e3f6}.progress span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#4b87ef,#7b66e9);transition:width .3s}
+    @media(max-width:640px){.app{min-height:380px;padding:10px}.eyebrow,footer p{display:none}.stage{border-width:3px;border-radius:18px}.arrow{width:44px;height:44px;font-size:2rem}}
+    @media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header>
+      <div class="title"><span class="badge">1</span><div><p class="eyebrow">Spotlight</p><h1>Greetings</h1></div></div>
+      <div class="tools"><span class="counter" aria-live="polite">1 / 5</span><button class="full" type="button" aria-label="Открыть урок на весь экран" title="На весь экран">⛶</button></div>
+    </header>
+    <section class="stage" aria-label="Слайды урока Greetings">
+      <div class="slides" aria-live="polite">
+        <figure class="slide active"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-greetings/slide-01-da90ebc08bf56857.webp" alt="Hello! Hi!" draggable="false"></figure>
+        <figure class="slide"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-greetings/slide-02-a2ed986efc8645f7.webp" alt="Good morning!" draggable="false"></figure>
+        <figure class="slide"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-greetings/slide-03-4ea4eec4e585b038.webp" alt="Good afternoon!" draggable="false"></figure>
+        <figure class="slide"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-greetings/slide-04-50f86a4ad590e427.webp" alt="Good evening!" draggable="false"></figure>
+        <figure class="slide"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-greetings/slide-05-1cc7cdeea88f194a.webp" alt="Good night!" draggable="false"></figure>
+      </div>
+      <button class="arrow prev" type="button" aria-label="Предыдущий слайд">‹</button>
+      <button class="arrow next" type="button" aria-label="Следующий слайд">›</button>
+    </section>
+    <footer><p>Use ← → or swipe to change the slide</p><div class="progress" aria-hidden="true"><span></span></div></footer>
+  </main>
+  <script>
+    const slides=[...document.querySelectorAll('.slide')],counter=document.querySelector('.counter'),bar=document.querySelector('.progress span'),stage=document.querySelector('.stage');let current=0,startX=null;
+    function show(index){current=(index+slides.length)%slides.length;slides.forEach((slide,i)=>{slide.classList.toggle('active',i===current);slide.setAttribute('aria-hidden',String(i!==current))});counter.textContent=`${current+1} / ${slides.length}`;bar.style.width=`${(current+1)/slides.length*100}%`}
+    document.querySelector('.prev').addEventListener('click',()=>show(current-1));document.querySelector('.next').addEventListener('click',()=>show(current+1));
+    document.querySelector('.full').addEventListener('click',async()=>document.fullscreenElement?document.exitFullscreen():stage.requestFullscreen());
+    addEventListener('keydown',e=>{if(e.key==='ArrowLeft')show(current-1);if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();show(current+1)}});
+    stage.addEventListener('touchstart',e=>startX=e.touches[0].clientX,{passive:true});stage.addEventListener('touchend',e=>{if(startX===null)return;const distance=e.changedTouches[0].clientX-startX;if(Math.abs(distance)>50)show(current+(distance>0?-1:1));startX=null},{passive:true});
+    show(0);
+  </script>
+</body>
+</html>

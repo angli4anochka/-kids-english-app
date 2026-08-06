@@ -326,7 +326,7 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
 
   // Экран с RulesMaps и кликабельным лисенком (только для студентов или новых уроков)
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(/img/RulesMaps.jpg)` }}>
+    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(https://storage.yandexcloud.net/kids-app/public-assets/img/RulesMaps.jpg)` }}>
 
       {/* Navigation buttons */}
       <div className="absolute top-8 left-8 z-20 flex gap-3">
