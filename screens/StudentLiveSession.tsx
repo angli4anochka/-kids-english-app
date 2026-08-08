@@ -79,12 +79,8 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     // Listen for session end — show overlay, then redirect by course
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
-      const cn = (session?.course_name || '').toLowerCase();
-      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       const activeSessionId = data.sessionId || sessionId;
-      const url = isSpotlight
-        ? `/student/lesson-results?sessionId=${activeSessionId}`
-        : '/scoreboard';
+      const url = `/student/lesson-results?sessionId=${activeSessionId}`;
       setRedirectUrl(url);
       setIsSessionEnded(true);
       setTimeout(() => router.push(url), 3000);

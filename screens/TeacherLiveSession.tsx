@@ -285,11 +285,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       }
 
       setShowTutorDeskCompletion(false);
-      const cn = (session?.course_name || '').toLowerCase();
-      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
-      const teacherRedirect = isSpotlight
-        ? `/teacher/lesson-results?sessionId=${sessionId}`
-        : `/scoreboard`;
+      const teacherRedirect = `/teacher/lesson-results?sessionId=${sessionId}`;
       setIsSessionEnded(true);
       setTimeout(() => router.push(teacherRedirect), 1500);
     } catch {
