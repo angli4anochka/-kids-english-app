@@ -169,7 +169,7 @@ const ScoreboardScreen = () => {
   const selectedGroup = groups.find(g => g.id === selectedGroupId);
 
   // Convert students to display format with real points from database
-  const groupStudents = selectedGroup?.students.map((student, index) => ({
+  const groupStudents = (selectedGroup?.students ?? []).map((student) => ({
     id: student.id.toString(),
     name: student.student_name,
     avatar: student.student_name.charAt(0).toUpperCase(),
