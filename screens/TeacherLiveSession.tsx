@@ -5,6 +5,7 @@ import { useRouter } from '@/utils/routing-adapter';
 import { useSocket } from '../hooks/useSocket';
 import ActivityRenderer from '../components/LessonBuilder/ActivityRenderer';
 import type { Activity } from '../types';
+import TutorDeskCompletionModal from '../components/TutorDeskCompletionModal';
 
 interface TeacherLiveSessionProps {
   sessionId: string;
@@ -66,6 +67,7 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
   const [results, setResults] = useState<ActivityResult[]>([]);
   const [spotlightResults, setSpotlightResults] = useState<SpotlightResult[]>([]);
   const [isSessionEnded, setIsSessionEnded] = useState(false);
+  const [showTutorDeskCompletion, setShowTutorDeskCompletion] = useState(false);
 
   useEffect(() => {
     loadSession();
@@ -274,35 +276,31 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
     }
   };
 
-  const endSession = async () => {
-    if (!confirm('Завершить урок?')) return;
-
+  const finishSession = async () => {
     try {
-      await fetch(`/kids-api/live-sessions/${sessionId}`, {
-        method: 'DELETE',
-      });
+      await fetch(`/kids-api/live-sessions/${sessionId}`, { method: 'DELETE' });
 
-      // Notify students via WebSocket
       if (socket && isConnected && session?.group_id) {
-        console.log('[Teacher] Broadcasting session end to group:', session.group_id);
-        socket.emit('session:ended', {
-          sessionId: sessionId,
-          groupId: session.group_id,
-        });
+        socket.emit('session:ended', { sessionId, groupId: session.group_id });
       }
 
+      setShowTutorDeskCompletion(false);
       const cn = (session?.course_name || '').toLowerCase();
       const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       const teacherRedirect = isSpotlight
         ? `/teacher/lesson-results?sessionId=${sessionId}`
         : `/scoreboard`;
       setIsSessionEnded(true);
-      setTimeout(() => router.push(teacherRedirect), 3000);
-    } catch (err) {
-      alert('Failed to end session');
+      setTimeout(() => router.push(teacherRedirect), 1500);
+    } catch {
+      alert('Не удалось завершить урок');
     }
   };
 
+  const endSession = () => {
+    if (!session?.group_id) return;
+    setShowTutorDeskCompletion(true);
+  };
 
   const handleEditActivity = async (updatedActivity: Activity) => {
     // Update local state
@@ -411,6 +409,14 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
             <p className="text-gray-600">{((session?.course_name || '').toLowerCase().includes('spotlight') || (session?.course_name || '').toLowerCase().includes('спотлайт')) ? 'Переход к разбору ошибок...' : 'Возврат к урокам...'}</p>
           </div>
         </div>
+      )}
+      {showTutorDeskCompletion && session?.group_id && (
+        <TutorDeskCompletionModal
+          groupId={session.group_id}
+          topic={session.course_name || 'Урок на UniPlay'}
+          onDone={finishSession}
+          onCancel={() => setShowTutorDeskCompletion(false)}
+        />
       )}
       {/* Top Control Bar */}
       <div className="bg-white shadow-lg border-b-4 border-purple-300">
