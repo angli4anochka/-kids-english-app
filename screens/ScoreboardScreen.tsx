@@ -245,17 +245,13 @@ const ScoreboardScreen = () => {
 
   return (
     <div
-      className="min-h-screen w-full relative overflow-hidden p-[15px] bg-cover bg-center bg-no-repeat"
+      className="min-h-screen w-full relative overflow-x-hidden p-4 sm:p-6 bg-cover bg-center bg-no-repeat"
       style={{
-        backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)',
-        transform: 'scale(0.67)',
-        transformOrigin: 'top left',
-        width: '149.25%',  // 100% / 0.67 = 149.25% чтобы компенсировать масштаб
-        height: '149.25%'
+        backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)'
       }}
     >
       {/* Основной контейнер на весь экран с отступом 15px */}
-      <div className="w-full h-full overflow-y-auto relative">
+      <div className="w-full relative">
         {/* Тропические элементы фона */}
         <div className="absolute inset-0 pointer-events-none">
           {/* Облака */}
@@ -287,7 +283,7 @@ const ScoreboardScreen = () => {
           <div className="absolute bottom-16 right-16 text-7xl">💰</div>
         </div>
 
-        <div className="relative z-10 w-full p-8 space-y-6">
+        <div className="relative z-10 w-full max-w-[1800px] mx-auto p-2 sm:p-4 lg:p-8 space-y-6">
         {/* Header - Деревянная табличка с короной */}
         <div className="text-center">
           <div className="inline-block relative">
@@ -297,8 +293,8 @@ const ScoreboardScreen = () => {
             </div>
 
             {/* Деревянная табличка */}
-            <div className="bg-gradient-to-br from-amber-600 via-yellow-700 to-amber-700 px-12 py-6 rounded-3xl shadow-2xl border-4 border-amber-800">
-              <h1 className="text-5xl font-bold text-white drop-shadow-lg mb-2">
+            <div className="bg-gradient-to-br from-amber-600 via-yellow-700 to-amber-700 px-6 sm:px-12 py-5 sm:py-6 rounded-3xl shadow-2xl border-4 border-amber-800">
+              <h1 className="text-3xl sm:text-5xl font-bold text-white drop-shadow-lg mb-2">
                 Чемпион сезона 🏆
               </h1>
               <p className="text-xl text-amber-100">Очки и награды по группам</p>
@@ -371,7 +367,7 @@ const ScoreboardScreen = () => {
                 {groupStudents.map((student, index) => (
                   <div
                     key={student.id}
-                    className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-4 shadow-lg border-2 border-amber-300 flex items-center gap-4"
+                    className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-4 shadow-lg border-2 border-amber-300 flex flex-wrap items-center gap-4"
                   >
                     {/* Имя */}
                     <div className="flex-1">
@@ -400,7 +396,7 @@ const ScoreboardScreen = () => {
                       {getUnlockedBadges(student.points, student.id).map((slot, i) => (
                         <div
                           key={i}
-                          className={`w-20 h-20 rounded-full flex items-center justify-center text-3xl border-4 transition-all ${
+                          className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-2xl sm:text-3xl border-4 transition-all ${
                             slot.unlocked && slot.prize
                               ? 'bg-gradient-to-br from-yellow-200 to-amber-300 border-amber-400 scale-100 animate-pulse'
                               : 'bg-gray-300 border-gray-500 opacity-50'
@@ -497,7 +493,7 @@ const ScoreboardScreen = () => {
         {!isLoading && globalLeader && (
           <div className="text-center">
             <div className="inline-block bg-gradient-to-br from-yellow-200 via-amber-200 to-orange-200 px-10 py-4 rounded-full shadow-2xl border-4 border-amber-600">
-              <div className="flex items-center gap-3 text-2xl font-bold text-amber-900">
+              <div className="flex flex-wrap items-center justify-center gap-3 text-xl sm:text-2xl font-bold text-amber-900">
                 <span className="text-3xl">👑</span>
                 <span>Лидер сезона: {globalLeader.student_name}</span>
                 <span className="text-lg text-amber-700">({globalLeader.group_name})</span>
@@ -509,7 +505,7 @@ const ScoreboardScreen = () => {
         )}
 
         {/* Кнопки навигации */}
-        <div className="flex justify-center gap-4">
+        <div className="flex flex-wrap justify-center gap-4">
           <button
             onClick={handleBackToMap}
             className="px-10 py-4 bg-gradient-to-br from-blue-500 to-blue-600 text-white font-bold text-xl rounded-2xl shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95 transform transition-all border-4 border-blue-700"
