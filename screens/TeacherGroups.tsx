@@ -122,6 +122,7 @@ export default function TeacherGroups() {
       }
 
       // Create students (they're automatically added to the group by the backend)
+      const createdCredentials: string[] = [];
       for (const student of students) {
         try {
           const createResponse = await fetch('/kids-api/students', {
@@ -142,6 +143,10 @@ export default function TeacherGroups() {
           if (!createData.success) {
             throw new Error(createData.error || 'Failed to create student');
           }
+
+          if (createData.generatedPin) {
+            createdCredentials.push(`${student.name}: логин ${student.login}, PIN ${createData.generatedPin}`);
+          }
         } catch (err) {
           console.error('Error creating student:', err);
           alert(`Ошибка при создании ученика "${student.name}": ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -149,7 +154,7 @@ export default function TeacherGroups() {
         }
       }
 
-      alert('Ученики успешно созданы и добавлены в группу!');
+      alert(`Ученики успешно созданы и добавлены в группу!${createdCredentials.length ? `\n\nДанные для входа:\n${createdCredentials.join('\n')}` : ''}`);
       setShowAddStudentModal(false);
       setStudents([{ name: '', login: '', password: '' }]);
       fetchGroups(); // Refresh groups list
