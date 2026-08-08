@@ -84,6 +84,8 @@ import SpotlightUnit1EnglishInUseProfileReadingSally from './SpotlightUnit1Engli
 import SpotlightUnit1EnglishInUseQuestionWordsAboutMe from './SpotlightUnit1EnglishInUseQuestionWordsAboutMe';
 import SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame from './SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame';
 import SpotlightUnit1EnglishInUseProgressCheck1Opening from './SpotlightUnit1EnglishInUseProgressCheck1Opening';
+import SpotlightStarlightGrade8Revision from './SpotlightStarlightGrade8Revision';
+import StarlightGrade8Stage from './StarlightGrade8Stage';
 
 interface Props {
   activity: Activity;
@@ -187,11 +189,26 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1-english-in-use-question-words-about-me': SpotlightUnit1EnglishInUseQuestionWordsAboutMe,
   'unit1-english-in-use-translators-corner-team-game': SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame,
   'progress-check-1-opening': SpotlightUnit1EnglishInUseProgressCheck1Opening,
+  'starlight-grade8-scrapbook-v5': SpotlightStarlightGrade8Revision,
 };
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
   const activityData = (activity as any).content_data || (activity as any).contentData || {};
   const lessonKey = activityData.lessonKey || (activity as any).lessonKey || 'verb-be';
+  const starlightStage = /^starlight-grade8-stage-(\d+)$/.exec(lessonKey);
+  if (starlightStage) {
+    return (
+      <div className="w-full h-full">
+        <StarlightGrade8Stage
+          stage={Number(starlightStage[1])}
+          isTeacher={isTeacher}
+          lessonId={lessonId}
+          activityId={activity.id}
+          sessionId={sessionId}
+        />
+      </div>
+    );
+  }
   const Component = SPOTLIGHT_COMPONENTS[lessonKey];
 
   if (!Component) {
@@ -215,3 +232,4 @@ const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lesson
 };
 
 export default SpotlightHtmlActivityRenderer;
+

@@ -32,6 +32,7 @@ export default function TeacherLessonResultsScreen() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [lessonId, setLessonId] = useState<string | null>(null);
   const [groupId, setGroupId] = useState<string | null>(null);
+  const [isSelfStudy, setIsSelfStudy] = useState(false);
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
 
   useEffect(() => {
@@ -40,6 +41,7 @@ export default function TeacherLessonResultsScreen() {
       setSessionId(params.get('sessionId'));
       setLessonId(params.get('lessonId'));
       setGroupId(params.get('groupId'));
+      setIsSelfStudy(params.get('mode') === 'self-study');
     }
   }, []);
 
@@ -54,7 +56,10 @@ export default function TeacherLessonResultsScreen() {
         const data = await res.json();
         if (data.success) {
           const byStudent: Record<string, StudentSummary> = {};
-          for (const raw of data.data as any[]) {
+          const rows = isSelfStudy
+            ? (data.data as any[]).filter(raw => raw.session_id == null && raw.group_id == null)
+            : data.data as any[];
+          for (const raw of rows) {
             const details = typeof raw.details === 'string' ? JSON.parse(raw.details) : raw.details;
             const row: ActivityResult = {
               ...raw,
@@ -87,7 +92,7 @@ export default function TeacherLessonResultsScreen() {
       setIsLoading(false);
     };
     load();
-  }, [sessionId, lessonId, groupId]);
+  }, [sessionId, lessonId, groupId, isSelfStudy]);
 
   if (isLoading) {
     return (

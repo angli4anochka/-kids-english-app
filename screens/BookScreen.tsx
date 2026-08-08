@@ -30,6 +30,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const { user } = useAuth();
   const { socket, isConnected } = useSocket();
   const isHskCourse = courseId === 'c0d6ff9f-5e50-44f3-b33f-991dd8f57901';
+  const isStarlightCourse = courseId === '9dbfb70d-8650-4cf0-8edd-f67d79d90ea9';
 
   const [book, setBook] = useState<CourseBook | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
@@ -44,6 +45,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const [startingLessonId, setStartingLessonId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const load = async () => {
@@ -66,7 +68,6 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
           const groupsData = await groupsRes.json();
           if (groupsData.success && groupsData.data.length > 0) {
             setGroups(groupsData.data);
-            setSelectedGroupId(groupsData.data[0].id);
           }
         }
       } catch {
@@ -79,7 +80,10 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   }, [bookId, user?.id]);
 
   useEffect(() => {
-    if (!selectedGroupId) return;
+    if (!selectedGroupId) {
+      setLessonProgress({});
+      return;
+    }
     fetch(`/kids-api/groups/${selectedGroupId}/progress`)
       .then(r => r.json())
       .then(d => {
@@ -185,13 +189,16 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Group consecutive lessons with the same unit_name into blocks (preserves order)
+  // Kids Box sections are defined by unit_number: 0 Trial, 1 Phonics, 2 Kids Box 1.
   const grouped: { unitName: string | null; lessons: Lesson[] }[] = [];
   for (const lesson of lessons) {
-    const u = lesson.unit_name ? lesson.unit_name.trim().toLowerCase() : null;
+    const isKidsBoxOne = book?.title.trim().toLowerCase() === 'kids box 1';
+    const unitName = isKidsBoxOne && lesson.unit_number != null
+      ? `unit-${lesson.unit_number}`
+      : (lesson.unit_name ? lesson.unit_name.trim().toLowerCase() : null);
     const last = grouped[grouped.length - 1];
-    if (last && last.unitName === u) last.lessons.push(lesson);
-    else grouped.push({ unitName: u, lessons: [lesson] });
+    if (last && last.unitName === unitName) last.lessons.push(lesson);
+    else grouped.push({ unitName, lessons: [lesson] });
   }
 
   return (
@@ -249,16 +256,22 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                     const unitLabel = unitName !== null
                       ? (unitLessons[0]?.unit_name || unitName.charAt(0).toUpperCase() + unitName.slice(1))
                       : null;
+                    const isExpanded = unitName === null || expandedUnits.has(unitName);
                     return (
                     <div key={unitName ?? 'ungrouped'}>
                       {unitName !== null && (
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 px-3 py-1 rounded-full">
-                            {unitLabel}
-                          </span>
+                        <button type="button" onClick={() => setExpandedUnits(previous => {
+                          const next = new Set(previous);
+                          if (next.has(unitName)) next.delete(unitName); else next.add(unitName);
+                          return next;
+                        })} aria-expanded={isExpanded} className="flex items-center gap-[5px] mb-2 w-full min-h-0 text-left">
+                          <span className="text-purple-500 text-xs">{isExpanded ? '▼' : '▶'}</span>
+                          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 p-[5px] rounded-full">{unitLabel}</span>
                           <div className="flex-1 h-px bg-purple-100" />
-                        </div>
+                          <span className="text-xs text-gray-400">{unitLessons.length}</span>
+                        </button>
                       )}
+                      {isExpanded && (
                       <div className={`space-y-2 ${unitName !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
                         {unitLessons.map((lesson, _idx) => {
                           const prog = lessonProgress[lesson.id];
@@ -298,24 +311,24 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                                     : null
                                 }
                                 <button
-                                  onClick={() => navigate('/teacher/lesson-results?lessonId=' + encodeURIComponent(lesson.id) + '&groupId=' + (selectedGroupId || ''))}
-                                  className={'shrink-0 px-3 py-1.5 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition text-xs font-bold'}
+                                  onClick={() => navigate('/teacher/lesson-results?lessonId=' + encodeURIComponent(lesson.id) + (selectedGroupId ? '&groupId=' + selectedGroupId : '&mode=self-study'))}
+                                  className={'shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition text-xs font-bold'}
                                   title={'Посмотреть результаты урока'}
                                 >
-                                  📊 Результаты
+                                  📊
                                 </button>
                                 <button
                                   onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}&bookId=${bookId}&courseId=${courseId}`)}
-                                  className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
+                                  className="shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
                                 >
                                   ✏️
                                 </button>
-                                {isHskCourse && (
+                                {(isHskCourse || isStarlightCourse) && (
                                   <button
                                     onClick={() => navigate(`/teacher/self-study/${lesson.id}`)}
                                     title={'Самообучение'}
                                     aria-label={'Самообучение'}
-                                    className={'shrink-0 px-3 py-1.5 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition text-xs font-bold'}
+                                    className={'shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition text-xs font-bold'}
                                   >
                                     ◉
                                   </button>
@@ -323,7 +336,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                                 <button
                                   onClick={() => handleStartLesson(lesson)}
                                   disabled={startingLessonId === lesson.id}
-                                  className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
+                                  className="shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
                                 >
                                   {startingLessonId === lesson.id ? '⏳' : '▶'}
                                 </button>
@@ -339,15 +352,8 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             </div>
                           );
                         })}
-                        {unitName !== null && (
-                          <button
-                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitName=${encodeURIComponent(unitLabel || '')}`)}
-                            className="w-full mt-1 px-3 py-2 border-2 border-dashed border-purple-300 hover:border-purple-500 text-purple-500 hover:text-purple-700 rounded-xl transition text-xs font-semibold"
-                          >
-                            + Добавить урок в {unitLabel}
-                          </button>
-                        )}
                       </div>
+                      )}
                     </div>
                     );
                   })}
@@ -397,6 +403,18 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
               ) : (
                 <>
                   <div className="space-y-2">
+                    {(isHskCourse || isStarlightCourse) && (
+                      <button
+                        onClick={() => setSelectedGroupId(null)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
+                          selectedGroupId === null
+                            ? 'border-cyan-400 bg-cyan-50 text-cyan-800'
+                            : 'border-gray-200 hover:border-cyan-300 text-gray-700'
+                        }`}
+                      >
+                        ◉ Самообучение
+                      </button>
+                    )}
                     {groups.map(g => (
                       <button
                         key={g.id}
@@ -442,3 +460,4 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
     </div>
   );
 }
+
