@@ -285,7 +285,10 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       }
 
       setShowTutorDeskCompletion(false);
-      const teacherRedirect = `/teacher/lesson-results?sessionId=${encodeURIComponent(sessionId)}`;
+      const isSpotlight = (session?.course_name || '').trim().toLowerCase() === 'spotlight';
+      const teacherRedirect = isSpotlight
+        ? `/teacher/lesson-results?sessionId=${encodeURIComponent(sessionId)}`
+        : '/scoreboard';
       setIsSessionEnded(true);
       window.location.replace(teacherRedirect);
     } catch {

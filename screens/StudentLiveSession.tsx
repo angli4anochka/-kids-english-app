@@ -80,7 +80,10 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
       const activeSessionId = data.sessionId || sessionId;
-      const url = `/student/lesson-results?sessionId=${activeSessionId}`;
+      const isSpotlight = (session?.course_name || '').trim().toLowerCase() === 'spotlight';
+      const url = isSpotlight
+        ? `/student/lesson-results?sessionId=${encodeURIComponent(activeSessionId)}`
+        : '/scoreboard';
       setRedirectUrl(url);
       setIsSessionEnded(true);
       window.location.replace(url);
