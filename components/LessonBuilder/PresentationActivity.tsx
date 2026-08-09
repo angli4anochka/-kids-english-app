@@ -33,6 +33,19 @@ const PresentationActivity = ({
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [inputUrl, setInputUrl] = useState(activity.presentationUrl || '');
   const [previewUrl, setPreviewUrl] = useState(activity.presentationUrl || '');
+
+  // Live sessions first load a slim activity and enrich it asynchronously.
+  // Keep local presentation state in sync when the full activity arrives.
+  useEffect(() => {
+    const nextUrl = activity.presentationUrl || '';
+    const nextType = activity.presentationType
+      || (/youtube\.com|youtu\.be/.test(nextUrl) ? 'youtube-broadcast' : 'google-slides');
+    setPresentationType(nextType);
+    setPresentationUrl(nextUrl);
+    setInputUrl(nextUrl);
+    setPreviewUrl(nextUrl);
+  }, [activity.presentationType, activity.presentationUrl]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
