@@ -70,26 +70,36 @@ export default function SpotlightIframeActivity({
     if (!messageTypes.has(data.type)) return;
     if (submitted || isTeacher || !lessonId) return;
 
+    const payload = {
+      lessonId,
+      activityId,
+      sessionId: sessionId || null,
+      studentId: user?.id ?? null,
+      studentName: user?.displayName || user?.username || '??????',
+      results: data.results || data.result || data.allResults || [],
+      score: Number(data.score ?? 0),
+      total: Number(data.total ?? data.totalItems ?? 0),
+      status: 'completed',
+      timeSeconds: data.timeSeconds == null ? null : Number(data.timeSeconds),
+      details: data.details || { completed: true },
+      groupId,
+    };
+
     try {
       await fetch('/kids-api/spotlight/results', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lessonId,
-          activityId,
-          sessionId: sessionId || null,
-          studentId: user?.id,
-          studentName: user?.displayName || 'Ученик',
-          results: data.results || data.result || data.allResults || [],
-          score: Number(data.score ?? 0),
-          total: Number(data.total ?? data.totalItems ?? 0),
-        }),
+        body: JSON.stringify(payload),
       });
-      setSubmitted(true);
     } catch {
       // Keep the activity playable if result submission fails.
     }
-  }, [activityId, isTeacher, lessonId, messageTypes, sessionId, submitted, user]);
+
+    if (socket && isConnected && groupId != null) {
+      socket.emit('activity-result', payload);
+    }
+    setSubmitted(true);
+  }, [activityId, groupId, isConnected, isTeacher, lessonId, messageTypes, sessionId, socket, submitted, user]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);

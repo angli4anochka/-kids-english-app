@@ -483,11 +483,6 @@ footer{
 
       <div class="keyboard" id="keyboard"></div>
 
-      <div class="hints">
-        <strong>Starter clues</strong>
-        <p>Three letters are already cracked so the puzzle does not begin as a beige wall of despair.</p>
-        <div class="hint-row" id="hintRow"></div>
-      </div>
     </aside>
   </main>
 
@@ -528,7 +523,6 @@ footer{
   let pages = [];
   let currentPage = 0;
   let guesses = {};
-  let starterLetters = [];
   let selectedNum = null;
   let solvedWords = new Set();
   let wrongAttempts = 0;
@@ -543,7 +537,6 @@ footer{
   const progress = document.getElementById("progress");
   const solvedCount = document.getElementById("solvedCount");
   const pageTitle = document.getElementById("pageTitle");
-  const hintRow = document.getElementById("hintRow");
   const roundDots = document.getElementById("roundDots");
   const overlay = document.getElementById("overlay");
   const finishTitle = document.getElementById("finishTitle");
@@ -575,13 +568,8 @@ footer{
     for(let i=0;i<4;i++) pages.push(mixed.slice(i*8,i*8+8));
   }
 
-  function chooseStarterLetters(){
-    const usedLetters=[...new Set(vocabulary.flatMap(v=>v.word.toUpperCase().replace(/[^A-Z]/g,"").split("")))];
-    starterLetters=shuffle(usedLetters).slice(0,3);
+  function clearGuesses(){
     guesses={};
-    starterLetters.forEach(letter=>{
-      guesses[codeMap[letter]]=letter;
-    });
   }
 
   function buildKeyboard(){
@@ -602,16 +590,6 @@ footer{
     const values=new Set(Object.values(guesses));
     keyboardEl.querySelectorAll(".key").forEach(k=>{
       k.classList.toggle("used",values.has(k.dataset.letter));
-    });
-  }
-
-  function renderHints(){
-    hintRow.innerHTML="";
-    starterLetters.forEach(letter=>{
-      const chip=document.createElement("div");
-      chip.className="hint-chip";
-      chip.textContent=`${codeMap[letter]} = ${letter}`;
-      hintRow.appendChild(chip);
     });
   }
 
@@ -817,13 +795,11 @@ footer{
 
   function restartKeepCode(){
     guesses={};
-    starterLetters.forEach(letter=>guesses[codeMap[letter]]=letter);
     solvedWords.clear();
     currentPage=0;
     updateKeyboard();
-    renderHints();
     renderPage();
-    feedback.textContent="Code restarted. Your three starter clues are still here.";
+    feedback.textContent="Code restarted. Decode every letter from the picture clues.";
   }
 
   function newGame(){
@@ -831,11 +807,10 @@ footer{
     resultSubmitted=false;
     makeCode();
     makePages();
-    chooseStarterLetters();
+    clearGuesses();
     solvedWords.clear();
     currentPage=0;
     buildKeyboard();
-    renderHints();
     renderPage();
     feedback.textContent="New secret code created. Same number always means the same letter.";
   }

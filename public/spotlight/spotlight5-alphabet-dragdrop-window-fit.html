@@ -633,6 +633,7 @@
         type: "spotlight5-alphabet-done",
         score,
         total: 26,
+        timeSeconds: Math.max(0, Math.floor((Date.now() - startTime) / 1000)),
         results,
       }, "*");
     }
