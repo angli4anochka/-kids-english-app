@@ -24,9 +24,10 @@ const PresentationActivity = ({
   isTeacher = false
 }: PresentationActivityProps) => {
   const [presentationType, setPresentationType] = useState(() => {
+    // Legacy YouTube mode replaced the original teacher screen broadcast.
+    // Open those activities as real WebRTC screen sharing again.
+    if (activity.presentationType === 'youtube-broadcast') return 'screen-share' as const;
     if (activity.presentationType) return activity.presentationType;
-    const url = activity.presentationUrl || '';
-    if (/youtube\.com|youtu\.be/.test(url)) return 'youtube-broadcast' as const;
     return 'google-slides' as const;
   });
   const [presentationUrl, setPresentationUrl] = useState(activity.presentationUrl || '');
@@ -566,7 +567,7 @@ const PresentationActivity = ({
           <label className="block text-sm font-semibold text-gray-700 mb-3">
             Выберите способ показа презентации:
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <button
               onClick={() => handleTypeChange('google-slides')}
               className={`p-4 rounded-lg border-2 transition-all ${presentationType === 'google-slides' ? 'border-purple-500 bg-purple-50' : 'border-gray-300 hover:border-purple-300'}`}
@@ -582,14 +583,6 @@ const PresentationActivity = ({
               <div className="text-2xl mb-2">🖥️</div>
               <div className="font-semibold">Демонстрация экрана</div>
               <div className="text-xs text-gray-600 mt-1">Показать с компьютера</div>
-            </button>
-            <button
-              onClick={() => handleTypeChange('youtube-broadcast')}
-              className={`p-4 rounded-lg border-2 transition-all ${presentationType === 'youtube-broadcast' ? 'border-purple-500 bg-purple-50' : 'border-gray-300 hover:border-purple-300'}`}
-            >
-              <div className="text-2xl mb-2">📺</div>
-              <div className="font-semibold">YouTube + трансляция</div>
-              <div className="text-xs text-gray-600 mt-1">Ссылка + screen-share</div>
             </button>
             <button
               onClick={() => handleTypeChange('upload')}
@@ -644,30 +637,6 @@ const PresentationActivity = ({
                 2. Нажмите "Поделиться экраном"<br />
                 3. Выберите окно с презентацией<br />
                 4. Ученики увидят ваш экран с видео и аудио
-              </p>
-            </div>
-          </div>
-        )}
-
-        {presentationType === 'youtube-broadcast' && (
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Ссылка на YouTube видео:
-            </label>
-            <input
-              type="text"
-              placeholder="https://www.youtube.com/watch?v=..."
-              value={presentationUrl}
-              onChange={(e) => handleUrlChange(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none mb-3"
-            />
-            <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mt-2">
-              <p className="text-sm text-blue-800">
-                <strong>Как это работает на уроке:</strong><br />
-                1. Учитель нажимает «Открыть YouTube и начать трансляцию»<br />
-                2. Видео откроется в новой вкладке<br />
-                3. Браузер спросит какое окно/вкладку расшарить — выберите YouTube-вкладку, обязательно с галочкой <em>«Поделиться звуком вкладки»</em><br />
-                4. Ученики увидят видео и услышат звук через WebRTC (одна копия плеера, нет рассинхрона)
               </p>
             </div>
           </div>
