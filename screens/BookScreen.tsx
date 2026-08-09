@@ -260,16 +260,29 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                     return (
                     <div key={unitName ?? 'ungrouped'}>
                       {unitName !== null && (
-                        <button type="button" onClick={() => setExpandedUnits(previous => {
-                          const next = new Set(previous);
-                          if (next.has(unitName)) next.delete(unitName); else next.add(unitName);
-                          return next;
-                        })} aria-expanded={isExpanded} className="flex items-center gap-[5px] mb-2 w-full min-h-0 text-left">
-                          <span className="text-purple-500 text-xs">{isExpanded ? '▼' : '▶'}</span>
-                          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 p-[5px] rounded-full">{unitLabel}</span>
-                          <div className="flex-1 h-px bg-purple-100" />
-                          <span className="text-xs text-gray-400">{unitLessons.length}</span>
-                        </button>
+                        <div className="flex items-center gap-2 mb-2 w-full">
+                          <button type="button" onClick={() => setExpandedUnits(previous => {
+                            const next = new Set(previous);
+                            if (next.has(unitName)) next.delete(unitName); else next.add(unitName);
+                            return next;
+                          })} aria-expanded={isExpanded} className="flex flex-1 items-center gap-[5px] min-h-0 text-left">
+                            <span className="text-purple-500 text-xs">{isExpanded ? '▼' : '▶'}</span>
+                            <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 p-[5px] rounded-full">{unitLabel}</span>
+                            <div className="flex-1 h-px bg-purple-100" />
+                            <span className="text-xs text-gray-400">{unitLessons.length}</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const unitNumber = unitName.startsWith('unit-') ? unitName.slice(5) : '';
+                              navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}${unitNumber ? `&unitNumber=${unitNumber}` : ''}`);
+                            }}
+                            className="shrink-0 rounded-lg bg-purple-600 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-purple-700"
+                            title={`Добавить урок в ${unitLabel}`}
+                          >
+                            + Добавить
+                          </button>
+                        </div>
                       )}
                       {isExpanded && (
                       <div className={`space-y-2 ${unitName !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
