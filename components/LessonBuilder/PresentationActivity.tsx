@@ -661,31 +661,6 @@ const PresentationActivity = ({
               onChange={(e) => handleUrlChange(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-purple-500 focus:outline-none mb-3"
             />
-            <div className="mb-4 flex flex-wrap items-center gap-3">
-              {!isScreenSharing ? (
-                <button
-                  type="button"
-                  onClick={startScreenShare}
-                  disabled={!presentationUrl}
-                  className="px-6 py-3 bg-red-600 hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl font-bold shadow-lg transition-colors"
-                >
-                  ?? ?????? ???????????? ??????
-                </button>
-              ) : (
-                <>
-                  <span className="px-4 py-2 bg-green-100 text-green-700 rounded-lg font-semibold">
-                    ?? ???? ?????????? ????????
-                  </span>
-                  <button
-                    type="button"
-                    onClick={stopScreenShare}
-                    className="px-5 py-2 bg-gray-800 hover:bg-black text-white rounded-lg font-semibold"
-                  >
-                    ?????????? ??????????
-                  </button>
-                </>
-              )}
-            </div>
             <div className="bg-blue-50 border border-blue-300 rounded-lg p-4 mt-2">
               <p className="text-sm text-blue-800">
                 <strong>Как это работает на уроке:</strong><br />
