@@ -260,7 +260,6 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                     return (
                     <div key={unitName ?? 'ungrouped'}>
                       {unitName !== null && (
-                        <div className="flex items-center gap-2 mb-2 w-full">
                           <button type="button" onClick={() => setExpandedUnits(previous => {
                             const next = new Set(previous);
                             if (next.has(unitName)) next.delete(unitName); else next.add(unitName);
@@ -271,18 +270,6 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             <div className="flex-1 h-px bg-purple-100" />
                             <span className="text-xs text-gray-400">{unitLessons.length}</span>
                           </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const unitNumber = unitName.startsWith('unit-') ? unitName.slice(5) : '';
-                              navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}${unitNumber ? `&unitNumber=${unitNumber}` : ''}`);
-                            }}
-                            className="shrink-0 rounded-lg bg-purple-600 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-purple-700"
-                            title={`Добавить урок в ${unitLabel}`}
-                          >
-                            + Добавить
-                          </button>
-                        </div>
                       )}
                       {isExpanded && (
                       <div className={`space-y-2 ${unitName !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
@@ -365,6 +352,16 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             </div>
                           );
                         })}
+                        {unitName === 'unit-1' && (
+                          <button
+                            type="button"
+                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=1`)}
+                            className="mt-2 w-full rounded-xl border-2 border-dashed border-purple-300 bg-purple-50 px-4 py-3 text-sm font-bold text-purple-700 hover:border-purple-500 hover:bg-purple-100"
+                            title="Добавить урок в Phonics"
+                          >
+                            + Добавить урок в Phonics
+                          </button>
+                        )}
                       </div>
                       )}
                     </div>
