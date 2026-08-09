@@ -3,6 +3,8 @@ import SpotlightVerbBeSlides from './SpotlightVerbBeSlides';
 import SpotlightS5Alphabet from './SpotlightS5Alphabet';
 import SpotlightS5AlphabetWindowFit from './SpotlightS5AlphabetWindowFit';
 import KidsBoxMatchMemory from './KidsBoxMatchMemory';
+import KidsBoxAlphabetTrainKR from './KidsBoxAlphabetTrainKR';
+import KidsBoxAlphabetCodebreakerSZ from './KidsBoxAlphabetCodebreakerSZ';
 import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
 import SpotlightS5UkUsa from './SpotlightS5UkUsa';
 import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
@@ -110,6 +112,8 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'spotlight5-alphabet': SpotlightS5Alphabet,
   'spotlight5-alphabet-window-fit': SpotlightS5AlphabetWindowFit,
   'kidsbox-match-memory': KidsBoxMatchMemory,
+  'kidsbox-alphabet-train-k-r': KidsBoxAlphabetTrainKR,
+  'kidsbox-alphabet-codebreaker-s-z': KidsBoxAlphabetCodebreakerSZ,
   'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
   'spotlight5-uk-usa': SpotlightS5UkUsa,
   'spotlight5-australia-nz': SpotlightS5AustraliaNz,
