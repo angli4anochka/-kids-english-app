@@ -1,6 +1,7 @@
 import type { Activity } from '../../../types';
 import SpotlightVerbBeSlides from './SpotlightVerbBeSlides';
 import SpotlightS5Alphabet from './SpotlightS5Alphabet';
+import SpotlightS5AlphabetWindowFit from './SpotlightS5AlphabetWindowFit';
 import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
 import SpotlightS5UkUsa from './SpotlightS5UkUsa';
 import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
@@ -106,6 +107,7 @@ interface SlideProps {
 const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'verb-be': SpotlightVerbBeSlides,
   'spotlight5-alphabet': SpotlightS5Alphabet,
+  'spotlight5-alphabet-window-fit': SpotlightS5AlphabetWindowFit,
   'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
   'spotlight5-uk-usa': SpotlightS5UkUsa,
   'spotlight5-australia-nz': SpotlightS5AustraliaNz,
