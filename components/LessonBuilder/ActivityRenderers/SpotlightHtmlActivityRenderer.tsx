@@ -196,7 +196,22 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
 
 const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
   const activityData = (activity as any).content_data || (activity as any).contentData || {};
-  const lessonKey = activityData.lessonKey || (activity as any).lessonKey || 'verb-be';
+  const lessonKey = activityData.lessonKey || (activity as any).lessonKey || null;
+
+  // Live sessions load a slim activity first and enrich content_data afterwards.
+  // Never render an unrelated default lesson while the real lessonKey is loading.
+  if (!lessonKey) {
+    return isViewMode ? (
+      <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-400">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-purple-500" />
+      </div>
+    ) : (
+      <div className="flex h-full items-center justify-center p-8 text-gray-500">
+        Select a Spotlight activity
+      </div>
+    );
+  }
+
   const starlightStage = /^starlight-grade8-stage-(\d+)$/.exec(lessonKey);
   if (starlightStage) {
     return (
