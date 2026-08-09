@@ -83,7 +83,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
       const url = `/student/lesson-results?sessionId=${activeSessionId}`;
       setRedirectUrl(url);
       setIsSessionEnded(true);
-      setTimeout(() => router.push(url), 3000);
+      window.location.replace(url);
     };
 
     socket.on('session:activity-changed', handleActivityChanged);

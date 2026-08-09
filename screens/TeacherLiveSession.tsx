@@ -285,9 +285,9 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
       }
 
       setShowTutorDeskCompletion(false);
-      const teacherRedirect = `/teacher/lesson-results?sessionId=${sessionId}`;
+      const teacherRedirect = `/teacher/lesson-results?sessionId=${encodeURIComponent(sessionId)}`;
       setIsSessionEnded(true);
-      setTimeout(() => router.push(teacherRedirect), 1500);
+      window.location.replace(teacherRedirect);
     } catch {
       alert('Не удалось завершить урок');
     }
