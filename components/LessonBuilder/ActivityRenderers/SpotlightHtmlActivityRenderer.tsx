@@ -5,6 +5,7 @@ import SpotlightS5AlphabetWindowFit from './SpotlightS5AlphabetWindowFit';
 import KidsBoxMatchMemory from './KidsBoxMatchMemory';
 import KidsBoxAlphabetTrainKR from './KidsBoxAlphabetTrainKR';
 import KidsBoxAlphabetCodebreakerSZ from './KidsBoxAlphabetCodebreakerSZ';
+import KidsBoxForestAlphabetBoard from './KidsBoxForestAlphabetBoard';
 import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
 import SpotlightS5UkUsa from './SpotlightS5UkUsa';
 import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
@@ -97,6 +98,9 @@ interface Props {
   isTeacher: boolean;
   lessonId?: string;
   sessionId?: string;
+  groupId?: number;
+  socket?: any;
+  isConnected?: boolean;
   onEdit: (activity: Activity) => void;
 }
 
@@ -105,6 +109,9 @@ interface SlideProps {
   lessonId?: string;
   activityId?: string;
   sessionId?: string;
+  groupId?: number;
+  socket?: any;
+  isConnected?: boolean;
 }
 
 const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
@@ -114,6 +121,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'kidsbox-match-memory': KidsBoxMatchMemory,
   'kidsbox-alphabet-train-k-r': KidsBoxAlphabetTrainKR,
   'kidsbox-alphabet-codebreaker-s-z': KidsBoxAlphabetCodebreakerSZ,
+  'kidsbox-forest-alphabet-board': KidsBoxForestAlphabetBoard,
   'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
   'spotlight5-uk-usa': SpotlightS5UkUsa,
   'spotlight5-australia-nz': SpotlightS5AustraliaNz,
@@ -200,7 +208,7 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'starlight-grade8-scrapbook-v5': SpotlightStarlightGrade8Revision,
 };
 
-const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
+const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, groupId, socket, isConnected, onEdit }: Props) => {
   const activityData = (activity as any).content_data || (activity as any).contentData || {};
   const lessonKey = activityData.lessonKey || (activity as any).lessonKey || null;
 
@@ -249,6 +257,9 @@ const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lesson
         lessonId={lessonId}
         activityId={activity.id}
         sessionId={sessionId}
+        groupId={groupId}
+        socket={socket}
+        isConnected={isConnected}
       />
     </div>
   );

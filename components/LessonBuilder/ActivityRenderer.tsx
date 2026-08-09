@@ -262,7 +262,10 @@ const ActivityRenderer = ({
         isViewMode={isViewMode}
         isTeacher={isTeacher}
         lessonId={lessonId}
+        groupId={groupId}
         sessionId={sessionId}
+        socket={socket}
+        isConnected={isConnected}
         onEdit={onEdit}
       />
     );
