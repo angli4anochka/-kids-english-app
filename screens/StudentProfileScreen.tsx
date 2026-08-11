@@ -17,6 +17,13 @@ const BADGES = [
   { threshold: 1000, emoji: '👑', name: 'Легенда' },
 ];
 
+const SCORE_PRIZES = [
+  { emoji: '💰', name: '+10 баллов' },
+  { emoji: '🏝️', name: 'Картинка острова' },
+  { emoji: '📝', name: 'Пропуск домашки' },
+  { emoji: '⭐', name: 'Супер-значок' },
+];
+
 export default function StudentProfileScreen() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -43,7 +50,7 @@ export default function StudentProfileScreen() {
       .then((d) => {
         if (d.success && d.data) {
           setPoints(d.data.points || 0);
-          setAchievements(Array.isArray(d.data.achievements) ? d.data.achievements.filter((item: any) => !String(item.achievement_key || '').startsWith('score-prize-')) : []);
+          setAchievements(Array.isArray(d.data.achievements) ? d.data.achievements : []);
         }
       })
       .catch(() => {})
@@ -86,6 +93,17 @@ export default function StudentProfileScreen() {
   const islandPct = totalIslands ? Math.round((completedIslands / totalIslands) * 100) : 0;
 
   const avatar = (user?.displayName || '?').charAt(0).toUpperCase();
+  const earnedScorePrizeCount = Math.min(5, Math.floor(points / 50));
+  const savedScorePrizes = achievements.filter((item) => item.achievement_key.startsWith('score-prize-'));
+  const otherAchievements = achievements.filter((item) => !item.achievement_key.startsWith('score-prize-'));
+  const collectionAchievements = [
+    ...Array.from({ length: earnedScorePrizeCount }, (_, index) => savedScorePrizes[index] || {
+      achievement_key: 'score-prize-' + (index + 1),
+      ...SCORE_PRIZES[(Number(user?.id) + index) % SCORE_PRIZES.length],
+      earned_at: '',
+    }),
+    ...otherAchievements,
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 p-4">
@@ -271,7 +289,7 @@ export default function StudentProfileScreen() {
           </p>
           <div className="grid grid-cols-3 gap-3">
             {Array.from({ length: 15 }, (_, index) => {
-              const achievement = achievements[index];
+              const achievement = collectionAchievements[index];
               return (
                 <div
                   key={achievement?.achievement_key || index}
