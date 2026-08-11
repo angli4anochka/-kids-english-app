@@ -1,5 +1,5 @@
 export type HskVocabularyWord = { word: string; pinyin: string; translation: string; lesson: number };
-const IDS: Record<number,string>={1:'30be144f-b6e7-4e92-a0ea-cb910e7b3dda',2:'49a8746c-9112-4977-a75b-b010ed7aa38c',3:'16337e33-6d3f-41f1-8b79-d8d2b730eb32'};
+const IDS: Record<number,string>={1:'30be144f-b6e7-4e92-a0ea-cb910e7b3dda',2:'49a8746c-9112-4977-a75b-b010ed7aa38c',3:'16337e33-6d3f-41f1-8b79-d8d2b730eb32',4:'15c7ad64-3be1-4961-8df8-8edc4dc5a127'};
 const make=(lesson:number,rows:string[][]):HskVocabularyWord[]=>rows.map(([word,pinyin,translation])=>({word,pinyin,translation,lesson}));
 export const HSK_VOCABULARY=[
 ...make(1,[['周末','zhōumò','выходные'],['打算','dǎsuàn','планировать'],['啊','a','модальная частица'],['跟','gēn','с; вместе с'],['一直','yìzhí','всё время'],['游戏','yóuxì','игра'],['作业','zuòyè','домашняя работа'],['着急','zháojí','беспокоиться; спешить'],['复习','fùxí','повторять'],['南方','nánfāng','юг'],['北方','běifāng','север'],['面包','miànbāo','хлеб'],['带','dài','брать с собой'],['地图','dìtú','карта'],['搬','bān','переносить; переезжать']]),
