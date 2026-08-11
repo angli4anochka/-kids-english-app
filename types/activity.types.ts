@@ -22,6 +22,7 @@ export type ActivityType =
   | 'abc-quest'
   | 'letter-jump'
   | 'bubble-grammar'
+  | 'flashlight'
   // Legacy types for backward compatibility
   | 'meet-family'
   | 'speaking'
@@ -142,7 +143,7 @@ export interface LetterMazeActivity extends BaseActivity {
 }
 
 export interface GameActivity extends BaseActivity {
-  type: 'secret-key-quest' | 'abc-quest' | 'letter-jump' | 'bubble-grammar';
+  type: 'secret-key-quest' | 'abc-quest' | 'letter-jump' | 'bubble-grammar' | 'flashlight';
   gameUrl?: string;
 }
 

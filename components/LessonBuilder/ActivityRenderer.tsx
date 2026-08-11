@@ -14,6 +14,9 @@ import DragWordsActivityRenderer from './ActivityRenderers/DragWordsActivityRend
 import SecretKeyQuestActivityRenderer from './ActivityRenderers/SecretKeyQuestActivityRenderer';
 import AbcQuestActivityRenderer from './ActivityRenderers/AbcQuestActivityRenderer';
 import SpotlightHtmlActivityRenderer from './ActivityRenderers/SpotlightHtmlActivityRenderer';
+import LetterJumpActivityRenderer from './ActivityRenderers/LetterJumpActivityRenderer';
+import BubbleActivityRenderer from './ActivityRenderers/BubbleActivityRenderer';
+import FlashlightActivityRenderer from './ActivityRenderers/FlashlightActivityRenderer';
 
 interface ActivityRendererProps {
   activity: Activity;
@@ -252,6 +255,18 @@ const ActivityRenderer = ({
         onEdit={onEdit}
       />
     );
+  }
+
+  if (activity.type === 'letter-jump') {
+    return <LetterJumpActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
+  }
+
+  if (activity.type === 'bubble-grammar') {
+    return <BubbleActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
+  }
+
+  if (activity.type === 'flashlight') {
+    return <FlashlightActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
   }
 
   // Spotlight HTML page (embedded static rule/task pages)
