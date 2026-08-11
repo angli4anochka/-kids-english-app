@@ -154,8 +154,11 @@ export const useLessonMutations = ({
       subtitle: activity.subtitle,
       points: activity.points,
       contentUrl: activity.imageUrl || activity.audioUrl || (activity as any).videoUrl || (activity as any).content_url,
+      audioUrl: activity.audioUrl || null,
       contentData: {
         ...activity.contentData,
+        imageUrl: activity.imageUrl,
+        audioUrl: activity.audioUrl,
         letterTraceConfig: activity.letterTraceConfig,
         letterRaceConfig: activity.letterRaceConfig,
         letterMazeConfig: activity.letterMazeConfig,

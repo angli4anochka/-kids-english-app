@@ -300,9 +300,13 @@ export default function StudentProfileScreen() {
                   }`}
                   title={achievement?.name || `Закрытая ачивка ${index + 1}`}
                 >
-                  <span className={`text-4xl ${achievement ? '' : 'opacity-45'}`}>
-                    {achievement?.emoji || '🔒'}
-                  </span>
+                  {achievement?.emoji?.startsWith('http') ? (
+                    <img src={achievement.emoji} alt={achievement.name} className="h-16 w-16 rounded-xl object-cover shadow" />
+                  ) : (
+                    <span className={`text-4xl ${achievement ? '' : 'opacity-45'}`}>
+                      {achievement?.emoji || '🔒'}
+                    </span>
+                  )}
                   <span className={`mt-1 text-[11px] font-bold ${
                     achievement ? 'text-amber-700' : 'text-purple-300'
                   }`}>

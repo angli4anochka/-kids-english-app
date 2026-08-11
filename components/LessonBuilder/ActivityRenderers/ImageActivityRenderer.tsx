@@ -37,13 +37,13 @@ const ImageActivityRenderer = ({
 
   // Режим редактирования
   return (
-    <div className="flex flex-col items-center h-full justify-center p-6 gap-6">
+    <div className="flex h-full flex-col items-center gap-6 overflow-y-auto p-6">
       {activity.imageUrl ? (
-        <div className="w-full flex-1 flex flex-col gap-4">
+        <div className="flex w-full flex-col gap-4">
           <img
             src={activity.imageUrl}
             alt="Uploaded"
-            className="w-full flex-1 object-contain"
+            className="max-h-[55vh] w-full object-contain"
           />
           {!isViewMode && (
             <div className="flex gap-3">
