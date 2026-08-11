@@ -43,7 +43,7 @@ export default function StudentProfileScreen() {
       .then((d) => {
         if (d.success && d.data) {
           setPoints(d.data.points || 0);
-          setAchievements(Array.isArray(d.data.achievements) ? d.data.achievements : []);
+          setAchievements(Array.isArray(d.data.achievements) ? d.data.achievements.filter((item: any) => !String(item.achievement_key || '').startsWith('score-prize-')) : []);
         }
       })
       .catch(() => {})
