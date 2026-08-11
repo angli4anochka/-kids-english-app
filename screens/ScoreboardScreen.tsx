@@ -373,12 +373,12 @@ const ScoreboardScreen = () => {
                     className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-2.5 shadow-md border-2 border-amber-300 flex flex-wrap items-center gap-2"
                   >
                     {/* Имя */}
-                    <div className="flex-1">
+                    <div className="order-1 min-w-28">
                       <div className="text-base font-bold text-gray-800">{student.name}</div>
                     </div>
 
                     {/* Баллы */}
-                    <div className="flex items-center gap-1 bg-amber-200 px-3 py-1.5 rounded-lg border-2 border-amber-400">
+                    <div className="order-3 ml-auto flex items-center gap-1 bg-amber-200 px-3 py-1.5 rounded-lg border-2 border-amber-400">
                       <span className="text-2xl">🌟</span>
                       <span className="text-base font-bold text-amber-900">{student.points}</span>
                     </div>
@@ -387,7 +387,7 @@ const ScoreboardScreen = () => {
                     {user?.role === 'teacher' && (
                       <button
                         onClick={() => handleEditPoints(student.id, student.name, student.points)}
-                        className="px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95"
+                        className="order-4 px-3 py-2 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-lg shadow-md hover:shadow-lg transition-all active:scale-95"
                         title="Изменить баллы"
                       >
                         ✏️
@@ -395,15 +395,11 @@ const ScoreboardScreen = () => {
                     )}
 
                     {/* Призы в кружочках - открываются по мере набора баллов */}
-                    <div className="flex flex-wrap gap-1.5">
+                    <div className="order-2 flex flex-wrap gap-1.5">
                       {(student.id === '12' || (user?.role === 'student' && String(user.id) === student.id && progress.completedIslands.includes('island-1'))) ? (<>
-                        <div className="flex h-12 min-w-28 items-center justify-center gap-2 rounded-xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-100 to-green-200 px-3 shadow" title="Остров 1 пройден — награды собраны">
-                          <span className="text-2xl">🏝️</span>
-                          <span className="text-left leading-tight"><b className="block text-xs text-emerald-900">Остров 1</b><small className="text-[10px] font-bold text-emerald-700">{getUnlockedBadges(student.points, student.id).filter(slot => slot.unlocked).length} наград</small></span>
-                        </div>
                         {getUnlockedBadges(student.points, student.id, undefined, 250).slice(0, 5).map((slot, i) => (
                           <div key={`island-2-${i}`} className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-xl shadow ${slot.unlocked ? 'border-cyan-400 bg-gradient-to-br from-cyan-100 to-blue-200' : 'border-slate-300 bg-white/70 text-slate-300'}`} title={slot.unlocked ? `${slot.prize?.name || 'Награда'} острова 2 (${slot.pointsRequired} баллов)` : `Награда острова 2: нужно ${slot.pointsRequired} баллов`}>
-                            {slot.unlocked ? slot.prize?.emoji : '○'}
+                            {slot.unlocked ? slot.prize?.emoji : '?'}
                           </div>
                         ))}
                       </>) : getUnlockedBadges(student.points, student.id).map((slot, i) => (
@@ -412,6 +408,12 @@ const ScoreboardScreen = () => {
                         </div>
                       ))}
                     </div>
+                    {(student.id === '12' || (user?.role === 'student' && String(user.id) === student.id && progress.completedIslands.includes('island-1'))) && (
+                      <div className="order-5 flex h-12 min-w-28 items-center justify-center gap-2 rounded-xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-100 to-green-200 px-3 shadow" title="Остров 1 пройден — награды собраны">
+                        <span className="text-2xl">🏝️</span>
+                        <span className="text-left leading-tight"><b className="block text-xs text-emerald-900">Остров 1</b><small className="text-[10px] font-bold text-emerald-700">{getUnlockedBadges(student.points, student.id).filter(slot => slot.unlocked).length} наград</small></span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
