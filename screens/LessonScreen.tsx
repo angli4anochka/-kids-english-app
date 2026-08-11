@@ -149,7 +149,7 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
         setIsCheckingLesson(true);
 
         // Если есть lessonId в URL - используем его напрямую
-        if (lessonIdFromUrl && user?.role === 'teacher') {
+        if (lessonIdFromUrl) {
           console.log('Loading lesson by ID:', lessonIdFromUrl);
           const lesson = await lessonService.getLesson(lessonIdFromUrl);
           setLessonExists(true);
@@ -160,7 +160,7 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
           // Send navigate-to-lesson event to students
           console.log('[LessonScreen] Checking navigate conditions - socket:', !!socket, 'isConnected:', isConnected, 'lesson.groupId:', lesson.groupId, 'hasNavigatedStudents:', hasNavigatedStudents);
 
-          if (socket && isConnected && lesson.groupId && !hasNavigatedStudents) {
+          if (user?.role === 'teacher' && socket && isConnected && lesson.groupId && !hasNavigatedStudents) {
             const currentPath = window.location.pathname + window.location.search;
             console.log('[LessonScreen] ✅ Sending navigate-to-lesson to students:', currentPath, 'groupId:', lesson.groupId);
 

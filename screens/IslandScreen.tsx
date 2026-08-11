@@ -14,6 +14,7 @@ import { lessonService } from '../services/lessonService';
 
 import LessonFlag from '../components/Island/LessonFlag';
 import { lessonFlagsData } from '../data/lessonFlags';
+import { kidsBoxIslandTwoLessonIds } from '../data/kidsBoxIslandLessons';
 import { getIslandImage } from '../utils/lazyImages';
 import type { Activity } from '../types';
 interface IslandScreenProps {
@@ -327,7 +328,8 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     soundManager.playClick();
 
     // Build the lesson path
-    const path = `/island/${island.id}/lesson/${lessonNumber}`;
+const linkedLessonId = island.id === 'island-2' ? kidsBoxIslandTwoLessonIds[lessonNumber - 1] : undefined;
+    const path = `/island/${island.id}/lesson/${lessonNumber}${linkedLessonId ? `?lessonId=${linkedLessonId}` : ''}`;
     
     // Teachers send navigate command to students via WebSocket
     if (role === 'teacher' && socket && isConnected) {
