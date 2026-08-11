@@ -11,8 +11,12 @@ const MapScreen = () => {
   const { user, logout } = useAuth();
 
   // Определяем статус каждого острова на основе прогресса
+  const isMarusya = String(user?.id) === '12';
+
   const getIslandStatus = (islandId: string, index: number) => {
     // Первый остров всегда доступен
+    if (isMarusya && islandId === 'island-1') return 'completed';
+    if (isMarusya && islandId === 'island-2') return 'available';
     if (index === 0) return 'available';
 
     // Если остров завершён
