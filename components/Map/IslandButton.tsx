@@ -94,9 +94,6 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
         {isCompleted && (
           <div className="absolute top-0 left-0 text-5xl">⭐</div>
         )}
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-white bg-amber-400 px-4 py-1 text-lg font-black text-amber-950 shadow-lg">
-          +5 баллов
-        </div>
       </button>
     </div>
   );

@@ -48,6 +48,9 @@ const LessonFlag = ({ number, x, y, status, onClick }: LessonFlagProps) => {
       }}
     >
       {/* Флаговый шест */}
+      <div className="absolute -top-8 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-white bg-amber-400 px-3 py-0.5 text-sm font-black text-amber-950 shadow-lg">
+        +5 баллов
+      </div>
       <div className="relative flex flex-col items-center">
         {/* Флаг */}
         <div className={`relative bg-yellow-400 rounded-sm shadow-lg transform ${
