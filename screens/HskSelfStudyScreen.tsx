@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
 import { useAuth } from '../contexts/AuthContext';
 import ActivityRenderer from '../components/LessonBuilder/ActivityRenderer';
+import HskDictionary from '../components/HskDictionary';
+import { HSK_LESSON_NUMBER } from '../data/hskVocabulary';
 import type { Activity } from '../types';
 
 interface Props { lessonId: string }
@@ -38,11 +40,19 @@ export default function HskSelfStudyScreen({ lessonId }: Props) {
   const [showReport, setShowReport] = useState(false);
   const [analysing, setAnalysing] = useState(false);
   const [analysis, setAnalysis] = useState('');
+  const [showDictionary, setShowDictionary] = useState(false);
+  const [showInitialReview, setShowInitialReview] = useState(false);
   const storageKey = `hsk-self-study:${lessonId}:stage`;
   const resultsKey = `hsk-self-study:${lessonId}:results`;
   const isLesson2 = lessonId === '49a8746c-9112-4977-a75b-b010ed7aa38c';
   const isLesson3 = lessonId === '16337e33-6d3f-41f1-8b79-d8d2b730eb32';
   const sharedResultsKey = isLesson3 ? 'hsk3-l3-stage-results' : isLesson2 ? 'hsk3-l2-stage-results' : 'hsk3-l1-stage-results';
+
+  useEffect(() => {
+    if (!user || (HSK_LESSON_NUMBER[lessonId] || 1) <= 1) return;
+    const key = `hsk-review-opened:${(user as any).id}:${lessonId}`;
+    if (!sessionStorage.getItem(key)) setShowInitialReview(true);
+  }, [lessonId, user]);
 
   useEffect(() => {
     try {
@@ -210,6 +220,7 @@ export default function HskSelfStudyScreen({ lessonId }: Props) {
             <div className="mt-1 h-1 overflow-hidden rounded bg-white/10"><div className="h-full bg-cyan-400 transition-all" style={{ width: `${progress}%` }} /></div>
           </div>
           <span className="text-xs text-white/70">{index + 1} / {activities.length}</span>
+          <button onClick={() => setShowDictionary(true)} className="rounded-lg bg-cyan-500 px-3 py-2 text-xs font-black text-slate-950">📖 Словарь</button>
         </div>
       </header>
 
@@ -237,6 +248,8 @@ export default function HskSelfStudyScreen({ lessonId }: Props) {
           <button onClick={() => go(index + 1)} className="rounded-lg bg-cyan-500 px-4 py-2 text-sm font-bold text-slate-950">Дальше →</button>
         )}
       </footer>
+
+      {(showDictionary || showInitialReview) && user && <HskDictionary lessonId={lessonId} userId={(user as any).id || (user as any).email || 'teacher'} review={showInitialReview} onClose={() => { sessionStorage.setItem(`hsk-review-opened:${(user as any).id}:${lessonId}`, '1'); setShowInitialReview(false); setShowDictionary(false); }} />}
 
       {showReport && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-3">
