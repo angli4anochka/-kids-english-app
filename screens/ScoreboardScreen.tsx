@@ -245,7 +245,7 @@ const ScoreboardScreen = () => {
 
   return (
     <div
-      className="min-h-screen w-full relative overflow-x-hidden p-4 sm:p-6 bg-cover bg-center bg-no-repeat"
+      className="min-h-screen w-full relative overflow-x-hidden p-2 sm:p-3 bg-cover bg-center bg-no-repeat"
       style={{
         backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)'
       }}
@@ -283,21 +283,21 @@ const ScoreboardScreen = () => {
           <div className="absolute bottom-16 right-16 text-7xl">💰</div>
         </div>
 
-        <div className="relative z-10 w-full max-w-[1800px] mx-auto p-2 sm:p-4 lg:p-8 space-y-6">
+        <div className="relative z-10 w-full max-w-[1500px] mx-auto p-1 sm:p-2 lg:p-4 space-y-3">
         {/* Header - Деревянная табличка с короной */}
         <div className="text-center">
           <div className="inline-block relative">
             {/* Корона над табличкой */}
-            <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 text-6xl">
+            <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 text-4xl">
               👑
             </div>
 
             {/* Деревянная табличка */}
-            <div className="bg-gradient-to-br from-amber-600 via-yellow-700 to-amber-700 px-6 sm:px-12 py-5 sm:py-6 rounded-3xl shadow-2xl border-4 border-amber-800">
-              <h1 className="text-3xl sm:text-5xl font-bold text-white drop-shadow-lg mb-2">
+            <div className="bg-gradient-to-br from-amber-600 via-yellow-700 to-amber-700 px-5 sm:px-8 py-3 sm:py-4 rounded-2xl shadow-xl border-4 border-amber-800">
+              <h1 className="text-2xl sm:text-4xl font-bold text-white drop-shadow-lg mb-1">
                 Чемпион сезона 🏆
               </h1>
-              <p className="text-xl text-amber-100">Очки и награды по группам</p>
+              <p className="text-base text-amber-100">Очки и награды по группам</p>
             </div>
 
             {/* Цветы */}
@@ -338,7 +338,7 @@ const ScoreboardScreen = () => {
                   setSelectedGroupId(group.id);
                   soundManager.playClick();
                 }}
-                className={`px-6 py-3 rounded-xl font-bold text-lg transition-all transform hover:scale-105 ${
+                className={`px-4 py-2 rounded-xl font-bold text-base transition-all transform hover:scale-105 ${
                   selectedGroupId === group.id
                     ? 'bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg scale-105'
                     : 'bg-gradient-to-br from-amber-200 to-yellow-300 text-amber-900 shadow-md'
@@ -352,32 +352,32 @@ const ScoreboardScreen = () => {
 
         {/* Основная панель - две колонки: 2/3 и 1/3 */}
         {!isLoading && selectedGroup && (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           {/* Левая панель - Ученики (2/3) */}
           <div className="relative lg:col-span-2">
             {/* Деревянная рамка */}
-            <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-3xl shadow-2xl border-8 border-amber-700 p-6">
+            <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-2xl shadow-xl border-4 border-amber-700 p-3">
               {/* Заголовок */}
-              <div className="bg-gradient-to-r from-amber-600 to-yellow-700 rounded-2xl px-6 py-3 mb-6 text-center border-4 border-amber-800">
-                <h2 className="text-3xl font-bold text-white drop-shadow-lg">Ученики</h2>
+              <div className="bg-gradient-to-r from-amber-600 to-yellow-700 rounded-xl px-4 py-2 mb-3 text-center border-2 border-amber-800">
+                <h2 className="text-2xl font-bold text-white drop-shadow-lg">Ученики</h2>
               </div>
 
               {/* Список учеников */}
-              <div className="space-y-4">
+              <div className="space-y-2">
                 {groupStudents.map((student, index) => (
                   <div
                     key={student.id}
-                    className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-2xl p-4 shadow-lg border-2 border-amber-300 flex flex-wrap items-center gap-4"
+                    className="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-xl p-2.5 shadow-md border-2 border-amber-300 flex flex-wrap items-center gap-2"
                   >
                     {/* Имя */}
                     <div className="flex-1">
-                      <div className="text-xl font-bold text-gray-800">{student.name}</div>
+                      <div className="text-base font-bold text-gray-800">{student.name}</div>
                     </div>
 
                     {/* Баллы */}
-                    <div className="flex items-center gap-2 bg-amber-200 px-4 py-2 rounded-xl border-2 border-amber-400">
+                    <div className="flex items-center gap-1 bg-amber-200 px-3 py-1.5 rounded-lg border-2 border-amber-400">
                       <span className="text-2xl">🌟</span>
-                      <span className="text-xl font-bold text-amber-900">{student.points}</span>
+                      <span className="text-base font-bold text-amber-900">{student.points}</span>
                     </div>
 
                     {/* Кнопка редактирования баллов - только для учителей */}
@@ -392,21 +392,14 @@ const ScoreboardScreen = () => {
                     )}
 
                     {/* Призы в кружочках - открываются по мере набора баллов */}
-                    <div className="flex flex-wrap gap-2">
-                      {getUnlockedBadges(student.points, student.id).map((slot, i) => (
-                        <div
-                          key={i}
-                          className={`w-14 h-14 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-2xl sm:text-3xl border-4 transition-all ${
-                            slot.unlocked && slot.prize
-                              ? 'bg-gradient-to-br from-yellow-200 to-amber-300 border-amber-400 scale-100 animate-pulse'
-                              : 'bg-gray-300 border-gray-500 opacity-50'
-                          }`}
-                          title={
-                            slot.unlocked && slot.prize
-                              ? `${slot.prize.name} (${slot.pointsRequired} баллов)`
-                              : `Заблокировано: нужно ${slot.pointsRequired} баллов`
-                          }
-                        >
+                    <div className="flex flex-wrap gap-1.5">
+                      {(student.id === '12' || (user?.role === 'student' && String(user.id) === student.id && progress.completedIslands.includes('island-1'))) ? (
+                        <div className="flex h-12 min-w-28 items-center justify-center gap-2 rounded-xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-100 to-green-200 px-3 shadow" title="Остров 1 пройден — награды собраны">
+                          <span className="text-2xl">🏝️</span>
+                          <span className="text-left leading-tight"><b className="block text-xs text-emerald-900">Остров 1</b><small className="text-[10px] font-bold text-emerald-700">{getUnlockedBadges(student.points, student.id).filter(slot => slot.unlocked).length} наград</small></span>
+                        </div>
+                      ) : getUnlockedBadges(student.points, student.id).map((slot, i) => (
+                        <div key={i} className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-xl transition-all ${slot.unlocked && slot.prize ? 'border-amber-400 bg-gradient-to-br from-yellow-200 to-amber-300' : 'border-gray-400 bg-gray-300 opacity-45'}`} title={slot.unlocked && slot.prize ? `${slot.prize.name} (${slot.pointsRequired} баллов)` : `Заблокировано: нужно ${slot.pointsRequired} баллов`}>
                           {slot.unlocked && slot.prize ? slot.prize.emoji : '❓'}
                         </div>
                       ))}
@@ -424,14 +417,14 @@ const ScoreboardScreen = () => {
           {/* Правая панель - Рейтинг (1/3) */}
           <div className="relative lg:col-span-1">
             {/* Деревянная рамка */}
-            <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-3xl shadow-2xl border-8 border-amber-700 p-6 h-full">
+            <div className="bg-gradient-to-br from-amber-100 to-yellow-100 rounded-2xl shadow-xl border-4 border-amber-700 p-3 h-full">
               {/* Заголовок */}
-              <div className="bg-gradient-to-r from-amber-600 to-yellow-700 rounded-2xl px-6 py-3 mb-6 text-center border-4 border-amber-800">
-                <h2 className="text-3xl font-bold text-white drop-shadow-lg">Рейтинг</h2>
+              <div className="bg-gradient-to-r from-amber-600 to-yellow-700 rounded-xl px-4 py-2 mb-3 text-center border-2 border-amber-800">
+                <h2 className="text-2xl font-bold text-white drop-shadow-lg">Рейтинг</h2>
               </div>
 
               {/* Топ-3 места */}
-              <div className="space-y-6">
+              <div className="space-y-3">
                 {top3.map((student, index) => {
                   const rank = index + 1;
                   let bgColor = '';
@@ -455,21 +448,21 @@ const ScoreboardScreen = () => {
                   return (
                     <div
                       key={student.id}
-                      className={`${bgColor} rounded-2xl p-6 shadow-xl border-4 ${rank === 1 ? 'border-yellow-500 scale-105' : rank === 2 ? 'border-gray-500' : 'border-orange-600'}`}
+                      className={`${bgColor} rounded-xl p-3 shadow-lg border-2 ${rank === 1 ? 'border-yellow-500 scale-105' : rank === 2 ? 'border-gray-500' : 'border-orange-600'}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="text-6xl">{icon}</div>
+                          <div className="text-4xl">{icon}</div>
                           <div>
-                            <div className={`text-3xl font-bold ${textColor}`}>
+                            <div className={`text-xl font-bold ${textColor}`}>
                               {rank} место
                             </div>
-                            <div className={`text-xl ${textColor} opacity-80`}>
+                            <div className={`text-base ${textColor} opacity-80`}>
                               {student.name}
                             </div>
                           </div>
                         </div>
-                        <div className={`text-4xl font-bold ${textColor}`}>
+                        <div className={`text-2xl font-bold ${textColor}`}>
                           {student.points} 🌟
                         </div>
                       </div>
