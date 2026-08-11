@@ -198,7 +198,7 @@ const ScoreboardScreen = () => {
   };
 
   // Calculate which badge slots are unlocked and assign random prizes
-  const getUnlockedBadges = (points: number, studentId: string, savedPrizes?: string) => {
+  const getUnlockedBadges = (points: number, studentId: string, savedPrizes?: string, pointsOffset = 0) => {
     // Parse saved prizes or create empty array
     let prizes: Array<{position: number, prize: typeof PRIZE_OPTIONS[0]} | null> = [];
 
@@ -211,7 +211,7 @@ const ScoreboardScreen = () => {
     }
 
     return BADGE_SLOTS.map((slot, index) => {
-      const unlocked = points >= slot.pointsRequired;
+      const unlocked = points >= slot.pointsRequired + pointsOffset;
 
       // If unlocked but no prize assigned yet, randomly select one
       if (unlocked && !prizes[index]) {
@@ -222,6 +222,7 @@ const ScoreboardScreen = () => {
 
         return {
           ...slot,
+          pointsRequired: slot.pointsRequired + pointsOffset,
           unlocked: true,
           prize,
         };
@@ -229,6 +230,7 @@ const ScoreboardScreen = () => {
         // Use saved prize
         return {
           ...slot,
+          pointsRequired: slot.pointsRequired + pointsOffset,
           unlocked: true,
           prize: prizes[index]?.prize || PRIZE_OPTIONS[0],
         };
@@ -236,6 +238,7 @@ const ScoreboardScreen = () => {
         // Locked slot
         return {
           ...slot,
+          pointsRequired: slot.pointsRequired + pointsOffset,
           unlocked: false,
           prize: null,
         };
@@ -393,12 +396,15 @@ const ScoreboardScreen = () => {
 
                     {/* Призы в кружочках - открываются по мере набора баллов */}
                     <div className="flex flex-wrap gap-1.5">
-                      {(student.id === '12' || (user?.role === 'student' && String(user.id) === student.id && progress.completedIslands.includes('island-1'))) ? (
+                      {(student.id === '12' || (user?.role === 'student' && String(user.id) === student.id && progress.completedIslands.includes('island-1'))) ? (<>
                         <div className="flex h-12 min-w-28 items-center justify-center gap-2 rounded-xl border-2 border-emerald-500 bg-gradient-to-br from-emerald-100 to-green-200 px-3 shadow" title="Остров 1 пройден — награды собраны">
                           <span className="text-2xl">🏝️</span>
                           <span className="text-left leading-tight"><b className="block text-xs text-emerald-900">Остров 1</b><small className="text-[10px] font-bold text-emerald-700">{getUnlockedBadges(student.points, student.id).filter(slot => slot.unlocked).length} наград</small></span>
                         </div>
-                      ) : getUnlockedBadges(student.points, student.id).map((slot, i) => (
+                        {getUnlockedBadges(student.points, student.id, undefined, 250).filter(slot => slot.unlocked).map((slot, i) => (
+                          <div key={`island-2-${i}`} className="flex h-10 w-10 items-center justify-center rounded-full border-2 border-cyan-400 bg-gradient-to-br from-cyan-100 to-blue-200 text-xl shadow" title={`${slot.prize?.name || 'Награда'} острова 2 (${slot.pointsRequired} баллов)`}>{slot.prize?.emoji}</div>
+                        ))}
+                      </>) : getUnlockedBadges(student.points, student.id).map((slot, i) => (
                         <div key={i} className={`flex h-10 w-10 items-center justify-center rounded-full border-2 text-xl transition-all ${slot.unlocked && slot.prize ? 'border-amber-400 bg-gradient-to-br from-yellow-200 to-amber-300' : 'border-gray-400 bg-gray-300 opacity-45'}`} title={slot.unlocked && slot.prize ? `${slot.prize.name} (${slot.pointsRequired} баллов)` : `Заблокировано: нужно ${slot.pointsRequired} баллов`}>
                           {slot.unlocked && slot.prize ? slot.prize.emoji : '❓'}
                         </div>
