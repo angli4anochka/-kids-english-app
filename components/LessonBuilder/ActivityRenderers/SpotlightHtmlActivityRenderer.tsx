@@ -78,6 +78,9 @@ import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './Spotli
 import SpotlightUnit1bPronounMachine from './SpotlightUnit1bPronounMachine';
 import SpotlightUnit1bAmIsAreRulesPracticeNoMonster from './SpotlightUnit1bAmIsAreRulesPracticeNoMonster';
 import SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos from './SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos';
+import SpotlightUnit1bToBeSixForms10SentencesRandom from './SpotlightUnit1bToBeSixForms10SentencesRandom';
+import SpotlightUnit1bQuestionBuilder from './SpotlightUnit1bQuestionBuilder';
+import SpotlightUnit1bFinalOpenProfile from './SpotlightUnit1bFinalOpenProfile';
 import SpotlightUnit1EnglishInUseGreetings from './SpotlightUnit1EnglishInUseGreetings';
 import SpotlightUnit1EnglishInUseListeningMatchAbc from './SpotlightUnit1EnglishInUseListeningMatchAbc';
 import SpotlightUnit1EnglishInUseSpeakingSituationCards from './SpotlightUnit1EnglishInUseSpeakingSituationCards';
@@ -194,6 +197,9 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1b-pronoun-machine': SpotlightUnit1bPronounMachine,
   'unit1b-am-is-are-rules-practice-no-monster': SpotlightUnit1bAmIsAreRulesPracticeNoMonster,
   'unit1b-affirmative-negative-html-worksheet-dynamic-photos': SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos,
+  'unit1b-to-be-six-forms-10-sentences-random': SpotlightUnit1bToBeSixForms10SentencesRandom,
+  'unit1b-question-builder': SpotlightUnit1bQuestionBuilder,
+  'unit1b-final-open-profile': SpotlightUnit1bFinalOpenProfile,
   'unit1-english-in-use-greetings': SpotlightUnit1EnglishInUseGreetings,
   'unit1-english-in-use-listening-match-abc': SpotlightUnit1EnglishInUseListeningMatchAbc,
   'unit1-english-in-use-speaking-situation-cards': SpotlightUnit1EnglishInUseSpeakingSituationCards,

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Question builder</title>
+  <style>
+    :root{
+      --ink:#17233b;
+      --muted:#63748d;
+      --blue:#2f73d8;
+      --blue-dark:#1d67d0;
+      --blue-soft:#eef7ff;
+      --green:#178c3b;
+      --green-soft:#eaf8ef;
+      --red:#d84545;
+      --red-soft:#ffe9ec;
+      --yellow:#ffd86d;
+      --shadow:0 18px 42px rgba(31,80,140,.16);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Trebuchet MS","Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 12%, rgba(255,255,255,.95), transparent 18%),
+        radial-gradient(circle at 88% 16%, rgba(255,255,255,.68), transparent 18%),
+        linear-gradient(135deg,#f8fbff 0%,#eef7ff 100%);
+      user-select:none;
+    }
+
+    .app{
+      width:100vw;
+      height:100vh;
+      padding:clamp(6px,1vh,12px);
+      display:grid;
+      place-items:center;
+    }
+
+    .slide{
+      width:min(1080px,100%);
+      height:100%;
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(7px,1vh,12px);
+      border-radius:22px;
+      background:rgba(255,255,255,.96);
+      border:2px solid #dfeeff;
+      box-shadow:var(--shadow);
+      padding:clamp(8px,1.2vh,14px);
+      overflow:hidden;
+    }
+
+    .top{
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:12px;
+    }
+
+    .tab{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:17px;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      color:#fff;
+      font-weight:950;
+      font-size:clamp(15px,2.2vh,21px);
+      padding:8px 14px;
+      box-shadow:0 10px 22px rgba(47,115,216,.24), inset 0 -4px rgba(0,0,0,.12);
+      white-space:nowrap;
+    }
+
+    h1{
+      margin:0;
+      text-align:center;
+      font-size:clamp(24px,4.5vh,42px);
+      line-height:1;
+      color:var(--blue);
+      text-shadow:0 3px 0 rgba(255,255,255,.9);
+    }
+
+    .progress{
+      justify-self:end;
+      padding:7px 13px;
+      border-radius:19px;
+      color:var(--blue);
+      background:#f8fbff;
+      border:2px solid #dbeafc;
+      font-size:clamp(15px,2vh,20px);
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .screen{
+      min-height:0;
+      display:none;
+      overflow:hidden;
+    }
+
+    .screen.active{
+      display:grid;
+      animation:fadeIn .2s ease both;
+    }
+
+    @keyframes fadeIn{
+      from{opacity:0; transform:translateY(10px)}
+      to{opacity:1; transform:translateY(0)}
+    }
+
+    /* THEORY */
+    .theory{
+      grid-template-rows:auto minmax(0,1fr);
+      gap:clamp(8px,1.2vh,12px);
+    }
+
+    .lead{
+      margin:0;
+      text-align:center;
+      color:var(--muted);
+      font-size:clamp(14px,2vh,19px);
+      font-weight:900;
+      line-height:1.2;
+    }
+
+    .theory-grid{
+      min-height:0;
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:clamp(10px,1.5vh,16px);
+      align-items:stretch;
+    }
+
+    .theory-card{
+      min-height:0;
+      border-radius:20px;
+      border:3px solid #dbeafc;
+      background:#fff;
+      box-shadow:0 12px 28px rgba(31,80,140,.09);
+      padding:clamp(10px,1.6vh,16px);
+      display:grid;
+      gap:clamp(8px,1.2vh,12px);
+      align-content:center;
+    }
+
+    .formula{
+      display:grid;
+      grid-template-columns:1fr auto 1fr;
+      gap:8px;
+      align-items:center;
+      padding:9px;
+      border-radius:16px;
+      background:#f8fbff;
+      border:2px solid #dbeafc;
+      text-align:center;
+    }
+
+    .formula-part{
+      min-height:clamp(44px,7vh,58px);
+      border-radius:14px;
+      background:#fff;
+      display:grid;
+      place-items:center;
+      padding:7px 10px;
+      color:#244a78;
+      font-size:clamp(17px,3vh,24px);
+      font-weight:950;
+      box-shadow:inset 0 -3px rgba(0,0,0,.04);
+    }
+
+    .formula-part.blue{
+      background:linear-gradient(135deg,#e8f3ff,#d7ebff);
+      color:var(--blue);
+    }
+
+    .arrow{
+      font-size:clamp(22px,4vh,34px);
+      color:var(--blue);
+      font-weight:950;
+    }
+
+    .examples{
+      display:grid;
+      gap:7px;
+    }
+
+    .example{
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:9px;
+      align-items:center;
+      padding:8px 10px;
+      border-radius:14px;
+      background:#f8fbff;
+      border:2px solid #e2efff;
+      font-size:clamp(15px,2.5vh,20px);
+      font-weight:900;
+      color:#244a78;
+      line-height:1.18;
+    }
+
+    .example span:first-child{
+      display:grid;
+      place-items:center;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      color:#fff;
+      font-weight:950;
+    }
+
+    .answers{
+      display:grid;
+      gap:7px;
+    }
+
+    .answer-rule{
+      border-radius:14px;
+      background:#fff;
+      border:2px solid #dbeafc;
+      padding:8px 10px;
+      display:grid;
+      grid-template-columns:auto 1fr;
+      gap:10px;
+      align-items:center;
+      font-size:clamp(14px,2.35vh,18px);
+      color:#244a78;
+      font-weight:900;
+      line-height:1.18;
+    }
+
+    .answer-rule b{
+      color:var(--green);
+    }
+
+    .answer-rule .no b{
+      color:var(--red);
+    }
+
+    /* PRACTICE */
+    .practice{
+      grid-template-rows:minmax(0,1fr);
+    }
+
+    .practice-layout{
+      min-height:0;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) minmax(240px,.32fr);
+      gap:clamp(9px,1.4vh,14px);
+      align-items:stretch;
+      overflow:hidden;
+    }
+
+    .builder-panel{
+      min-height:0;
+      border:4px solid #cfe5fb;
+      border-radius:20px;
+      background:
+        radial-gradient(circle at 28% 18%, rgba(255,255,255,.78), transparent 22%),
+        linear-gradient(135deg,#f9fcff,#eef8ff);
+      padding:clamp(9px,1.6vh,15px);
+      display:grid;
+      grid-template-rows:auto auto auto minmax(0,1fr) auto;
+      gap:clamp(7px,1.25vh,12px);
+      overflow:hidden;
+      box-shadow:inset 0 -5px rgba(47,115,216,.04);
+    }
+
+    .task-label{
+      text-align:center;
+      color:var(--muted);
+      font-size:clamp(13px,1.9vh,17px);
+      font-weight:900;
+    }
+
+    .target-answer{
+      justify-self:center;
+      min-width:min(520px,100%);
+      min-height:clamp(40px,6vh,50px);
+      display:none;
+      place-items:center;
+      text-align:center;
+      border-radius:999px;
+      background:#eaffef;
+      border:2px solid #cfeeda;
+      color:var(--green);
+      font-size:clamp(17px,3vh,24px);
+      font-weight:950;
+      padding:7px 17px;
+    }
+
+    .target-answer.show{
+      display:grid;
+    }
+
+    .slots{
+      min-height:clamp(78px,17vh,126px);
+      border-radius:20px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      box-shadow:0 16px 30px rgba(0,0,0,.12), inset 0 -7px rgba(0,0,0,.08);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:7px;
+      padding:11px;
+      position:relative;
+    }
+
+    .slot{
+      min-width:clamp(74px,12vh,112px);
+      min-height:clamp(40px,6.4vh,54px);
+      border-radius:12px;
+      background:rgba(255,255,255,.8);
+      border:3px dashed #9ec6f5;
+      color:#9ab0c9;
+      display:grid;
+      place-items:center;
+      padding:6px 9px;
+      font-size:clamp(17px,3.5vh,27px);
+      font-weight:950;
+      line-height:1;
+    }
+
+    .slot.filled{
+      background:#fff;
+      border-style:solid;
+      color:#244a78;
+      box-shadow:0 7px 15px rgba(0,0,0,.08);
+    }
+
+    .word-bank{
+      display:flex;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:7px;
+      min-height:clamp(56px,11vh,78px);
+      align-content:center;
+    }
+
+    .word{
+      border:0;
+      border-radius:999px;
+      min-width:clamp(74px,12vh,112px);
+      min-height:clamp(39px,6vh,52px);
+      padding:7px 12px;
+      background:#fff;
+      color:var(--blue);
+      border:2px solid #9ec6f5;
+      font-family:inherit;
+      font-size:clamp(17px,3.3vh,25px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 7px 16px rgba(47,115,216,.1), inset 0 -4px rgba(0,0,0,.04);
+      transition:transform .12s ease, opacity .12s ease, background .12s ease;
+    }
+
+    .word:hover{
+      transform:translateY(-2px);
+      background:#f3f9ff;
+    }
+
+    .word.used{
+      opacity:.25;
+      pointer-events:none;
+      transform:none;
+    }
+
+    .answer-buttons{
+      display:none;
+      justify-content:center;
+      flex-wrap:wrap;
+      gap:7px;
+      min-height:clamp(54px,10vh,72px);
+      align-content:center;
+    }
+
+    .answer-buttons.show{
+      display:flex;
+    }
+
+    .answer-btn{
+      border:0;
+      border-radius:14px;
+      min-width:clamp(132px,20vh,190px);
+      min-height:clamp(40px,6vh,54px);
+      padding:7px 13px;
+      background:#fff;
+      color:var(--blue);
+      border:2px solid #9ec6f5;
+      font-family:inherit;
+      font-size:clamp(15px,2.5vh,20px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 7px 16px rgba(47,115,216,.1), inset 0 -4px rgba(0,0,0,.04);
+    }
+
+    .answer-btn.correct{
+      border-color:#3bae5c;
+      background:var(--green-soft);
+      color:var(--green);
+    }
+
+    .answer-btn.wrong{
+      border-color:#ef8a94;
+      background:var(--red-soft);
+      color:#b6303b;
+      animation:shake .28s ease;
+    }
+
+    .side-panel{
+      min-height:0;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      gap:clamp(7px,1.1vh,10px);
+    }
+
+    .mini-card{
+      border-radius:17px;
+      background:#fff;
+      border:2px solid #dbeafc;
+      box-shadow:0 10px 24px rgba(31,80,140,.08);
+      padding:10px;
+    }
+
+    .mini-title{
+      margin:0 0 7px;
+      color:#244a78;
+      font-size:clamp(15px,2.4vh,19px);
+      font-weight:950;
+      text-align:center;
+    }
+
+    .mini-rule{
+      display:grid;
+      gap:6px;
+      color:#244a78;
+      font-size:clamp(12px,1.8vh,15px);
+      line-height:1.2;
+      font-weight:900;
+    }
+
+    .hint{
+      min-height:clamp(56px,11vh,78px);
+      display:grid;
+      align-content:center;
+      text-align:center;
+      border-radius:17px;
+      background:#eff6ff;
+      color:#5f7898;
+      font-size:clamp(12px,1.8vh,15px);
+      font-weight:900;
+      line-height:1.2;
+      padding:10px;
+      border:2px solid #dbeafc;
+    }
+
+    .controls{
+      display:flex;
+      justify-content:center;
+      gap:7px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      border:0;
+      border-radius:12px;
+      min-width:112px;
+      padding:9px 16px;
+      background:linear-gradient(135deg,#2f7ceb,#1d67d0);
+      color:#fff;
+      font-family:inherit;
+      font-size:clamp(15px,2vh,19px);
+      font-weight:950;
+      cursor:pointer;
+      box-shadow:0 12px 24px rgba(47,115,216,.24), inset 0 -4px rgba(0,0,0,.12);
+    }
+
+    .btn.secondary{
+      background:linear-gradient(135deg,#8bbcf6,#5c9eee);
+    }
+
+    .finish{
+      display:none;
+      place-items:center;
+      text-align:center;
+      min-height:0;
+    }
+
+    .finish.show{
+      display:grid;
+    }
+
+    .finish-card{
+      width:min(650px,100%);
+      min-height:210px;
+      border-radius:24px;
+      background:linear-gradient(135deg,#fff8ce,#ffd86d);
+      display:grid;
+      place-items:center;
+      padding:28px;
+      box-shadow:0 20px 38px rgba(0,0,0,.14), inset 0 -8px rgba(0,0,0,.08);
+      color:#244a78;
+      font-size:clamp(30px,7vh,54px);
+      font-weight:950;
+      line-height:1.08;
+    }
+
+    @keyframes shake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-6px)}
+      55%{transform:translateX(6px)}
+      80%{transform:translateX(-3px)}
+    }
+
+    @media(max-width:900px){
+      html,body{overflow:auto}
+      .app{height:auto;min-height:100vh}
+      .slide{height:auto;min-height:calc(100vh - 28px)}
+      .top{grid-template-columns:1fr}
+      .progress{justify-self:start}
+      .theory-grid{grid-template-columns:1fr}
+      .practice-layout{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="slide">
+      <div class="top">
+        <div class="tab" id="tab">📖 Theory</div>
+        <h1>Question builder</h1>
+        <div class="progress" id="progress">Theory</div>
+      </div>
+
+      <section class="screen theory active" id="theoryScreen">
+        <p class="lead">To make a question with <b>to be</b>, move <b>am / is / are</b> to the beginning.</p>
+
+        <div class="theory-grid">
+          <div class="theory-card">
+            <div class="formula">
+              <div class="formula-part">You are new.</div>
+              <div class="arrow">→</div>
+              <div class="formula-part blue">Are you new?</div>
+            </div>
+
+            <div class="examples">
+              <div class="example"><span>1</span><div><b>Am</b> I late?</div></div>
+              <div class="example"><span>2</span><div><b>Is</b> he twelve?</div></div>
+              <div class="example"><span>3</span><div><b>Are</b> they students?</div></div>
+            </div>
+          </div>
+
+          <div class="theory-card">
+            <div class="answers">
+              <div class="answer-rule">
+                <span>✅</span>
+                <div><b>Yes, I am.</b><br>Use a short answer.</div>
+              </div>
+              <div class="answer-rule">
+                <span>✅</span>
+                <div><b>Yes, he is.</b><br><b>Yes, they are.</b></div>
+              </div>
+              <div class="answer-rule">
+                <span>❌</span>
+                <div class="no"><b>No, I am not.</b><br><b>No, they aren’t.</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen practice" id="practiceScreen">
+        <div class="practice-layout" id="practiceLayout">
+          <div class="builder-panel">
+            <div class="task-label">Build the question from the words.</div>
+            <div class="target-answer" id="targetAnswer">Choose the short answer.</div>
+
+            <div class="slots" id="slots"></div>
+
+            <div class="word-bank" id="wordBank"></div>
+
+            <div class="answer-buttons" id="answerButtons"></div>
+          </div>
+
+          <aside class="side-panel">
+            <div class="mini-card">
+              <p class="mini-title">Question order</p>
+              <div class="mini-rule">
+                <div><b>Am / Is / Are</b></div>
+                <div>+</div>
+                <div><b>subject</b></div>
+                <div>+</div>
+                <div><b>rest of the sentence</b></div>
+                <div>+</div>
+                <div><b>?</b></div>
+              </div>
+            </div>
+
+            <div class="hint" id="hint">Start with Am, Is or Are.</div>
+
+            <div class="controls">
+              <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+              <button class="btn secondary" id="resetBtn" type="button">Reset</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="screen finish" id="finishScreen">
+        <div class="finish-card" id="finishCard">Great job!<br>10 / 10</div>
+      </section>
+
+      <div class="controls">
+        <button class="btn secondary" id="theoryBtn" type="button" style="display:none;">Theory</button>
+        <button class="btn" id="startBtn" type="button">Start practice</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const baseTasks = [
+      {
+        words:["you","Are","new","?"],
+        correct:["Are","you","new","?"],
+        question:"Are you new?",
+        answers:["Yes, I am.","No, I am not.","Yes, you are."],
+        shortAnswer:"Yes, I am."
+      },
+      {
+        words:["I","Am","in Class 2E","?"],
+        correct:["Am","I","in Class 2E","?"],
+        question:"Am I in Class 2E?",
+        answers:["Yes, you are.","Yes, I am.","No, he isn’t."],
+        shortAnswer:"Yes, you are."
+      },
+      {
+        words:["he","Is","twelve","?"],
+        correct:["Is","he","twelve","?"],
+        question:"Is he twelve?",
+        answers:["No, he isn’t.","Yes, I am.","No, they aren’t."],
+        shortAnswer:"No, he isn’t."
+      },
+      {
+        words:["she","Is","new","?"],
+        correct:["Is","she","new","?"],
+        question:"Is she new?",
+        answers:["Yes, she is.","Yes, he is.","No, I am not."],
+        shortAnswer:"Yes, she is."
+      },
+      {
+        words:["they","Are","students","?"],
+        correct:["Are","they","students","?"],
+        question:"Are they students?",
+        answers:["Yes, they are.","Yes, she is.","No, he isn’t."],
+        shortAnswer:"Yes, they are."
+      },
+      {
+        words:["it","Is","an eraser","?"],
+        correct:["Is","it","an eraser","?"],
+        question:"Is it an eraser?",
+        answers:["Yes, it is.","Yes, they are.","No, I am not."],
+        shortAnswer:"Yes, it is."
+      },
+      {
+        words:["we","Are","in Room D","?"],
+        correct:["Are","we","in Room D","?"],
+        question:"Are we in Room D?",
+        answers:["No, we aren’t.","No, he isn’t.","Yes, I am."],
+        shortAnswer:"No, we aren’t."
+      },
+      {
+        words:["you","Are","in Class 3B","?"],
+        correct:["Are","you","in Class 3B","?"],
+        question:"Are you in Class 3B?",
+        answers:["No, I am not.","No, she isn’t.","Yes, they are."],
+        shortAnswer:"No, I am not."
+      },
+      {
+        words:["Mark","Is","your friend","?"],
+        correct:["Is","Mark","your friend","?"],
+        question:"Is Mark your friend?",
+        answers:["Yes, he is.","Yes, it is.","No, they aren’t."],
+        shortAnswer:"Yes, he is."
+      },
+      {
+        words:["Tom and Lyn","Are","teachers","?"],
+        correct:["Are","Tom and Lyn","teachers","?"],
+        question:"Are Tom and Lyn teachers?",
+        answers:["No, they aren’t.","No, he isn’t.","Yes, it is."],
+        shortAnswer:"No, they aren’t."
+      }
+    ];
+
+    const theoryScreen = document.getElementById("theoryScreen");
+    const practiceScreen = document.getElementById("practiceScreen");
+    const finishScreen = document.getElementById("finishScreen");
+    const progress = document.getElementById("progress");
+    const tab = document.getElementById("tab");
+    const slotsEl = document.getElementById("slots");
+    const wordBank = document.getElementById("wordBank");
+    const answerButtons = document.getElementById("answerButtons");
+    const targetAnswer = document.getElementById("targetAnswer");
+    const hint = document.getElementById("hint");
+    const startBtn = document.getElementById("startBtn");
+    const theoryBtn = document.getElementById("theoryBtn");
+    const practiceLayout = document.getElementById("practiceLayout");
+    const finishCard = document.getElementById("finishCard");
+
+    let tasks = [];
+    let index = 0;
+    let score = 0;
+    let selected = [];
+    let results = [];
+    let questionDone = false;
+
+    function shuffle(array){
+      const copy = [...array];
+      for(let i = copy.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function showTheory(){
+      theoryScreen.classList.add("active");
+      practiceScreen.classList.remove("active");
+      finishScreen.classList.remove("active");
+      tab.textContent = "📖 Theory";
+      progress.textContent = "Theory";
+      startBtn.style.display = "";
+      theoryBtn.style.display = "none";
+    }
+
+    function startPractice(){
+      tasks = shuffle(baseTasks);
+      index = 0;
+      score = 0;
+      selected = [];
+      results = [];
+      practiceLayout.style.display = "";
+      finishScreen.classList.remove("active");
+      theoryScreen.classList.remove("active");
+      practiceScreen.classList.add("active");
+      tab.textContent = "✎ Practice";
+      startBtn.style.display = "none";
+      theoryBtn.style.display = "";
+      renderTask();
+    }
+
+    function renderTask(){
+      const task = tasks[index];
+      selected = [];
+      questionDone = false;
+      progress.textContent = `${index + 1} / ${tasks.length}`;
+      targetAnswer.classList.remove("show");
+      targetAnswer.textContent = "Choose the short answer.";
+      answerButtons.classList.remove("show");
+      answerButtons.innerHTML = "";
+      hint.textContent = "Start with Am, Is or Are.";
+
+      slotsEl.innerHTML = "";
+      task.correct.forEach((_, i) => {
+        const slot = document.createElement("div");
+        slot.className = "slot";
+        slot.textContent = i + 1;
+        slotsEl.appendChild(slot);
+      });
+
+      wordBank.innerHTML = "";
+      shuffle(task.words).forEach((word, i) => {
+        const btn = document.createElement("button");
+        btn.className = "word";
+        btn.type = "button";
+        btn.textContent = word;
+        btn.dataset.word = word;
+        btn.dataset.id = String(i);
+        btn.addEventListener("click", () => chooseWord(btn));
+        wordBank.appendChild(btn);
+      });
+    }
+
+    function updateSlots(){
+      const slots = Array.from(slotsEl.children);
+      slots.forEach((slot, i) => {
+        if (selected[i]) {
+          slot.textContent = selected[i].word;
+          slot.classList.add("filled");
+        } else {
+          slot.textContent = i + 1;
+          slot.classList.remove("filled");
+        }
+      });
+    }
+
+    function chooseWord(btn){
+      if (questionDone || btn.classList.contains("used")) return;
+
+      selected.push({ word: btn.dataset.word, id: btn.dataset.id });
+      btn.classList.add("used");
+      updateSlots();
+
+      const task = tasks[index];
+      if (selected.length === task.correct.length) {
+        checkQuestion();
+      }
+    }
+
+    function checkQuestion(){
+      const task = tasks[index];
+      const built = selected.map(item => item.word);
+      const ok = built.join(" ") === task.correct.join(" ");
+
+      if (ok) {
+        questionDone = true;
+        hint.textContent = `Great! ${task.question}`;
+        targetAnswer.textContent = task.question;
+        targetAnswer.classList.add("show");
+        showAnswers();
+      } else {
+        hint.textContent = "Not quite. Remember: Am / Is / Are + subject + rest + ?";
+        setTimeout(clearWords, 850);
+      }
+    }
+
+    function showAnswers(){
+      const task = tasks[index];
+      answerButtons.innerHTML = "";
+      answerButtons.classList.add("show");
+
+      shuffle(task.answers).forEach(answer => {
+        const btn = document.createElement("button");
+        btn.className = "answer-btn";
+        btn.type = "button";
+        btn.textContent = answer;
+        btn.dataset.answer = answer;
+        btn.addEventListener("click", () => chooseAnswer(btn));
+        answerButtons.appendChild(btn);
+      });
+    }
+
+    function chooseAnswer(btn){
+      const task = tasks[index];
+
+      if (btn.dataset.answer === task.shortAnswer) {
+        btn.classList.add("correct");
+        hint.textContent = "Correct short answer!";
+        score += 1;
+        results.push({
+          question: task.question,
+          answer: task.shortAnswer,
+          correct: true
+        });
+
+        setTimeout(() => {
+          index += 1;
+          if (index >= tasks.length) {
+            finishGame();
+          } else {
+            renderTask();
+          }
+        }, 850);
+      } else {
+        btn.classList.remove("wrong");
+        void btn.offsetWidth;
+        btn.classList.add("wrong");
+        hint.textContent = "Check the subject in the question and choose the matching short answer.";
+        results.push({
+          question: task.question,
+          chosen: btn.dataset.answer,
+          correctAnswer: task.shortAnswer,
+          correct: false
+        });
+      }
+    }
+
+    function clearWords(){
+      selected = [];
+      Array.from(wordBank.children).forEach(btn => btn.classList.remove("used"));
+      updateSlots();
+    }
+
+    function finishGame(){
+      practiceScreen.classList.remove("active");
+      finishScreen.classList.add("active");
+      tab.textContent = "✅ Done";
+      progress.textContent = `${score} / ${tasks.length}`;
+      finishCard.innerHTML = `Great job!<br>${score} / ${tasks.length}`;
+      startBtn.style.display = "";
+      startBtn.textContent = "Play again";
+      theoryBtn.style.display = "none";
+
+      const payload = {
+        type:"question-builder-complete",
+        score,
+        total:tasks.length,
+        results,
+        sentAt:new Date().toISOString()
+      };
+
+      window.parent.postMessage(payload, "*");
+      window.postMessage(payload, "*");
+      localStorage.setItem("questionBuilderLastResult", JSON.stringify(payload));
+    }
+
+    document.getElementById("clearBtn").addEventListener("click", clearWords);
+    document.getElementById("resetBtn").addEventListener("click", startPractice);
+    startBtn.addEventListener("click", startPractice);
+    theoryBtn.addEventListener("click", showTheory);
+
+    showTheory();
+  </script>
+</body>
+</html>
