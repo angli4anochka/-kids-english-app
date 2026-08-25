@@ -6,6 +6,7 @@ import Card from '../components/ui/Card';
 export default function TeacherDashboard() {
   const { user, logout, isLoading: isAuthLoading } = useAuth();
   const navigate = useNavigate();
+  const teacherName = user?.displayName?.trim() || user?.email?.split('@')[0] || '';
   const [showGroupModal, setShowGroupModal] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -204,11 +205,11 @@ export default function TeacherDashboard() {
                 className="w-16 h-16 rounded-full flex items-center justify-center text-white text-2xl font-bold"
                 style={{ backgroundColor: user?.avatarColor }}
               >
-                {user?.displayName?.charAt(0).toUpperCase()}
+                {teacherName.charAt(0).toUpperCase()}
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">
-                  Добро пожаловать{isAuthLoading ? '...' : `, ${user?.displayName}`}!
+                  Добро пожаловать{isAuthLoading ? '...' : teacherName ? `, ${teacherName}` : ''}!
                 </h1>
                 <p className="text-gray-600">{isAuthLoading ? '' : user?.email}</p>
               </div>

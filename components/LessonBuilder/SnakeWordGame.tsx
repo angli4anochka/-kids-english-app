@@ -584,18 +584,14 @@ const SnakeWordGame = ({
             )}
 
             {gameStatus === 'playing' && (
-              <div className="flex-1 min-h-0 overflow-hidden flex items-center justify-center">
+              <div className="flex-1 min-h-0 overflow-hidden">
                 <canvas
                   ref={canvasRef}
                   width={GRID_WIDTH * CELL_SIZE}
                   height={GRID_HEIGHT * CELL_SIZE}
-                  className="block max-w-full max-h-full rounded-xl shadow-inner"
+                  className="block w-full h-full rounded-xl shadow-inner"
                   style={{
                     imageRendering: 'pixelated',
-                    width: 'auto',
-                    height: 'auto',
-                    maxWidth: '100%',
-                    maxHeight: '100%',
                     objectFit: 'contain'
                   }}
                 />

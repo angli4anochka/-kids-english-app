@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAuth } from '../../contexts/AuthContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login, loginStudent } = useAuth();
   const [userType, setUserType] = useState<'teacher' | 'student'>('student');
   const [email, setEmail] = useState('');
   const [studentLogin, setStudentLogin] = useState('');
@@ -34,26 +36,7 @@ export default function LoginPage() {
       }
 
       if (userType === 'teacher') {
-        const response = await fetch('/kids-api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-
-        const data = await response.json();
-        console.log('Teacher login response:', data);
-
-        if (!data.success) {
-          throw new Error(data.error || 'Login failed');
-        }
-
-        const { token, user } = data.data;
-        console.log('Teacher user:', user);
-        
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('authToken', token);
-          localStorage.setItem('authUser', JSON.stringify(user));
-        }
+        const user = await login(email, password);
         
         if (user.role === 'teacher') {
           router.push('/teacher/dashboard');
@@ -61,26 +44,7 @@ export default function LoginPage() {
           throw new Error('Invalid user role');
         }
       } else {
-        const response = await fetch('/kids-api/auth/student-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ login: studentLogin, password }),
-        });
-
-        const data = await response.json();
-        console.log('Student login response:', data);
-
-        if (!data.success) {
-          throw new Error(data.error || 'Login failed');
-        }
-
-        const { token, user } = data.data;
-        console.log('Student user:', user);
-        
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('authToken', token);
-          localStorage.setItem('authUser', JSON.stringify(user));
-        }
+        const user = await loginStudent(studentLogin, password);
         
         if (user.role === 'student') {
           router.push('/map');

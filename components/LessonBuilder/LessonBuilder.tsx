@@ -677,11 +677,11 @@ const LessonBuilder = ({ lessonId: lessonIdProp }: LessonBuilderProps = {}) => {
       </div>
 
       {/* Right Panel - Activity Content (70%) */}
-      <div className="flex-1 p-8">
-        <div className="h-full bg-white rounded-2xl shadow-xl p-8 overflow-y-auto">
+      <div className={`flex-1 min-w-0 ${selectedActivity?.type === 'snake-word' && isViewMode ? 'p-2' : 'p-8'}`}>
+        <div className={`h-full bg-white rounded-2xl shadow-xl overflow-y-auto ${selectedActivity?.type === 'snake-word' && isViewMode ? 'p-2' : 'p-8'}`}>
           {selectedActivity ? (
             <div>
-              <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center gap-3">
+              <h2 className={`text-3xl font-bold text-gray-800 flex items-center gap-3 ${selectedActivity.type === 'snake-word' && isViewMode ? 'sr-only' : 'mb-6'}`}>
                 <span className={`text-4xl ${getActivityColor(selectedActivity.type)} p-3 rounded-full`}>
                   {getActivityIcon(selectedActivity.type)}
                 </span>
@@ -689,7 +689,10 @@ const LessonBuilder = ({ lessonId: lessonIdProp }: LessonBuilderProps = {}) => {
               </h2>
 
               {/* Content Area */}
-              <div className="bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl overflow-hidden" style={{ height: '65vh' }}>
+              <div
+                className={`bg-gradient-to-br from-blue-50 to-purple-50 rounded-xl overflow-hidden ${selectedActivity.type === 'snake-word' && isViewMode ? 'h-[calc(100vh-1rem)] min-h-[520px]' : ''}`}
+                style={selectedActivity.type === 'snake-word' && isViewMode ? undefined : { height: '65vh' }}
+              >
                 {renderActivityContent(selectedActivity)}
               </div>
             </div>
