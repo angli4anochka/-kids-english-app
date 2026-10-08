@@ -14,6 +14,9 @@ import DragWordsActivityRenderer from './ActivityRenderers/DragWordsActivityRend
 import SecretKeyQuestActivityRenderer from './ActivityRenderers/SecretKeyQuestActivityRenderer';
 import AbcQuestActivityRenderer from './ActivityRenderers/AbcQuestActivityRenderer';
 import SpotlightHtmlActivityRenderer from './ActivityRenderers/SpotlightHtmlActivityRenderer';
+import LetterJumpActivityRenderer from './ActivityRenderers/LetterJumpActivityRenderer';
+import BubbleActivityRenderer from './ActivityRenderers/BubbleActivityRenderer';
+import FlashlightActivityRenderer from './ActivityRenderers/FlashlightActivityRenderer';
 
 interface ActivityRendererProps {
   activity: Activity;
@@ -176,9 +179,12 @@ const ActivityRenderer = ({
 
   // Interactive activity
   if (activity.type === 'interactive') {
+    const interactiveData = (activity as any).content_data || (activity as any).contentData || {};
+    if (interactiveData.classroomGameKind === 'find-monster') return <FindMonsterActivity isTeacher={isTeacher} lessonId={lessonId} activityId={activity.id} sessionId={sessionId} groupId={groupId} socket={socket} isConnected={isConnected} />;
     return (
       <InteractiveActivityRenderer
         activity={activity}
+        sessionId={sessionId}
         isViewMode={isViewMode}
         isTeacher={isTeacher}
         onEdit={onEdit}
@@ -254,6 +260,18 @@ const ActivityRenderer = ({
     );
   }
 
+  if (activity.type === 'letter-jump') {
+    return <LetterJumpActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
+  }
+
+  if (activity.type === 'bubble-grammar') {
+    return <BubbleActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
+  }
+
+  if (activity.type === 'flashlight') {
+    return <FlashlightActivityRenderer activity={activity} isViewMode={isViewMode} isTeacher={isTeacher} lessonId={lessonId} groupId={groupId} sessionId={sessionId} onEdit={onEdit} />;
+  }
+
   // Spotlight HTML page (embedded static rule/task pages)
   if (activity.type === 'spotlight-html') {
     return (
@@ -262,7 +280,10 @@ const ActivityRenderer = ({
         isViewMode={isViewMode}
         isTeacher={isTeacher}
         lessonId={lessonId}
+        groupId={groupId}
         sessionId={sessionId}
+        socket={socket}
+        isConnected={isConnected}
         onEdit={onEdit}
       />
     );

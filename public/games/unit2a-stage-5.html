@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — About you</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --ink:#25324a;
+      --muted:#6e7582;
+      --line:#eadfd6;
+      --blue:#4f82d2;
+      --blue-dark:#3567af;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --cream:#fff9f3;
+      --shadow:0 20px 55px rgba(53,39,27,.12);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 9% 8%,rgba(255,188,137,.23),transparent 25%),
+        radial-gradient(circle at 90% 14%,rgba(123,191,255,.18),transparent 24%),
+        #f5f1ec;
+    }
+
+    button,input,select{font:inherit}
+
+    .app{
+      width:min(1260px,calc(100vw - 24px));
+      min-height:calc(100vh - 24px);
+      margin:12px auto;
+      border:1px solid rgba(220,205,190,.75);
+      border-radius:28px;
+      background:rgba(255,255,255,.97);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 22px 15px;
+      border-bottom:1px solid #efe7df;
+    }
+
+    .badge{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:22px;
+      font-weight:900;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.26);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .step{
+      margin-left:auto;
+      padding:10px 14px;
+      border-radius:16px;
+      color:var(--orange-dark);
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      font-weight:900;
+    }
+
+    main{
+      padding:20px;
+      display:grid;
+      grid-template-columns:minmax(300px,.85fr) minmax(420px,1.35fr);
+      gap:20px;
+      align-items:start;
+    }
+
+    .panel{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      overflow:hidden;
+    }
+
+    .panel-head{
+      padding:18px 20px 12px;
+      border-bottom:1px solid #f0e8e1;
+    }
+
+    .eyebrow{
+      margin:0 0 6px;
+      color:var(--orange-dark);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .panel h2{
+      margin:0;
+      font-size:26px;
+      letter-spacing:-.02em;
+    }
+
+    .example{
+      padding:20px;
+      background:linear-gradient(180deg,#fff,#fffaf6);
+    }
+
+    .example-card{
+      border-radius:22px;
+      padding:18px;
+      background:
+        radial-gradient(circle at 82% 12%,rgba(255,255,255,.30),transparent 28%),
+        linear-gradient(145deg,#ffad73,#ff7a33);
+      color:#fff;
+      min-height:350px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .example-card::after{
+      content:"";
+      position:absolute;
+      width:180px;
+      height:180px;
+      border-radius:50%;
+      background:rgba(255,255,255,.13);
+      right:-55px;
+      bottom:-60px;
+    }
+
+    .avatar{
+      width:92px;
+      height:92px;
+      border-radius:24px;
+      background:#fff;
+      display:grid;
+      place-items:center;
+      color:var(--orange-dark);
+      font-size:40px;
+      font-weight:900;
+      box-shadow:0 10px 25px rgba(108,54,20,.18);
+      margin-bottom:18px;
+    }
+
+    .example-name{
+      font-size:30px;
+      font-weight:900;
+      margin-bottom:12px;
+    }
+
+    .example-text{
+      font-size:18px;
+      line-height:1.7;
+      font-weight:750;
+      position:relative;
+      z-index:1;
+    }
+
+    .tip{
+      margin:16px 0 0;
+      padding:12px 14px;
+      border-radius:16px;
+      background:#fff5ec;
+      color:#8b4b20;
+      border:1px solid #ffd8bd;
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    .form-wrap{
+      padding:20px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .field{
+      display:grid;
+      gap:7px;
+    }
+
+    .field.full{
+      grid-column:1/-1;
+    }
+
+    label{
+      color:#485266;
+      font-size:13px;
+      font-weight:900;
+    }
+
+    input,select{
+      width:100%;
+      border:1px solid #d7dde6;
+      border-radius:14px;
+      padding:12px 13px;
+      color:var(--ink);
+      background:#fff;
+      outline:none;
+    }
+
+    input:focus,select:focus{
+      border-color:#ff9d60;
+      box-shadow:0 0 0 4px rgba(255,122,51,.13);
+    }
+
+    .languages{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:2px 0 4px;
+    }
+
+    .chip{
+      border:1px solid #d7dde6;
+      border-radius:999px;
+      background:#fff;
+      padding:9px 13px;
+      color:#445067;
+      font-weight:800;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .chip:hover{
+      border-color:#ffae78;
+    }
+
+    .chip.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .custom-language{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:8px;
+      margin-top:8px;
+    }
+
+    .small-btn{
+      border:0;
+      border-radius:13px;
+      padding:0 15px;
+      background:#eef3fa;
+      color:#355c8e;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .form-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:20px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 19px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){
+      transform:translateY(-2px);
+    }
+
+    .primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .secondary{
+      color:#475467;
+      background:#f1f3f6;
+    }
+
+    .profile{
+      display:none;
+      padding:20px;
+    }
+
+    .profile.show{
+      display:block;
+    }
+
+    .profile-card{
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid #dfe6ef;
+      box-shadow:0 14px 32px rgba(55,74,99,.10);
+    }
+
+    .profile-cover{
+      min-height:150px;
+      padding:20px;
+      color:#fff;
+      background:
+        radial-gradient(circle at 85% 15%,rgba(255,255,255,.22),transparent 25%),
+        linear-gradient(135deg,#5c8fd9,#3d6eb6);
+      position:relative;
+    }
+
+    .flag{
+      position:absolute;
+      right:20px;
+      top:20px;
+      font-size:46px;
+    }
+
+    .profile-avatar{
+      width:88px;
+      height:88px;
+      border-radius:24px;
+      background:#fff;
+      display:grid;
+      place-items:center;
+      color:#3d6eb6;
+      font-size:38px;
+      font-weight:900;
+      box-shadow:0 10px 24px rgba(26,53,90,.18);
+    }
+
+    .profile-body{
+      padding:20px;
+      background:#fff;
+    }
+
+    .profile-title{
+      margin:0 0 12px;
+      font-size:30px;
+      font-weight:900;
+    }
+
+    .profile-copy{
+      font-size:18px;
+      line-height:1.75;
+      font-weight:750;
+      color:#35415a;
+    }
+
+    .success{
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:15px;
+      background:var(--green-bg);
+      color:#256b48;
+      border:1px solid #a8ddbf;
+      font-weight:800;
+    }
+
+    .error{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:15px;
+      background:#fff0ef;
+      color:#97362f;
+      border:1px solid #efb0ac;
+      font-weight:800;
+    }
+
+    .error.show{display:block}
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      padding:12px 20px 16px;
+      border-top:1px solid #efe7df;
+      background:#fff;
+    }
+
+    .footer-note{
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .continue{
+      margin-left:auto;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(61,112,181,.20);
+    }
+
+    .continue:disabled{
+      background:#d5d8de;
+      color:#8a909b;
+      box-shadow:none;
+      cursor:not-allowed;
+    }
+
+    @media(max-width:900px){
+      main{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:600px){
+      header{padding:14px}
+      .step{display:none}
+      main{padding:14px}
+      .grid{grid-template-columns:1fr}
+      .field.full{grid-column:auto}
+      .example-card{min-height:310px}
+      .custom-language{grid-template-columns:1fr}
+      .small-btn{padding:11px}
+    }
+
+    /* Lesson iframe: keep the complete profile form in one viewport. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);min-height:0}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Tell us about yourself</h1>
+        <p class="subtitle">Create a short profile about your country, nationality and languages.</p>
+      </div>
+      <div class="step">About you</div>
+    </header>
+
+    <main>
+      <section class="panel">
+        <div class="panel-head">
+          <p class="eyebrow">Example</p>
+          <h2>Meet Alex</h2>
+        </div>
+
+        <div class="example">
+          <div class="example-card">
+            <div class="avatar">A</div>
+            <div class="example-name">Alex</div>
+            <div class="example-text">
+              Hello! I’m Alex.<br>
+              I’m from Spain.<br>
+              I’m Spanish.<br>
+              I can speak Spanish and English.<br>
+              I can’t speak Japanese.
+            </div>
+          </div>
+
+          <div class="tip">
+            Country and nationality words begin with a capital letter:
+            <strong>Spain, Spanish, Japan, Japanese.</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <p class="eyebrow">Your turn</p>
+          <h2>Create your profile</h2>
+        </div>
+
+        <div id="formWrap" class="form-wrap">
+          <div class="grid">
+            <div class="field full">
+              <label for="name">My name is...</label>
+              <input id="name" type="text" placeholder="Anna">
+            </div>
+
+            <div class="field">
+              <label for="country">I’m from...</label>
+              <select id="country">
+                <option value="">Choose a country</option>
+                <option data-nationality="Russian" data-flag="🇷🇺">Russia</option>
+                <option data-nationality="Austrian" data-flag="🇦🇹">Austria</option>
+                <option data-nationality="Serbian" data-flag="🇷🇸">Serbia</option>
+                <option data-nationality="Spanish" data-flag="🇪🇸">Spain</option>
+                <option data-nationality="French" data-flag="🇫🇷">France</option>
+                <option data-nationality="Italian" data-flag="🇮🇹">Italy</option>
+                <option data-nationality="German" data-flag="🇩🇪">Germany</option>
+                <option data-nationality="British" data-flag="🇬🇧">the UK</option>
+                <option data-nationality="American" data-flag="🇺🇸">the USA</option>
+                <option data-nationality="Canadian" data-flag="🇨🇦">Canada</option>
+                <option data-nationality="Japanese" data-flag="🇯🇵">Japan</option>
+                <option data-nationality="Thai" data-flag="🇹🇭">Thailand</option>
+                <option data-nationality="Portuguese" data-flag="🇵🇹">Portugal</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="nationality">I’m...</label>
+              <input id="nationality" type="text" placeholder="Russian">
+            </div>
+
+            <div class="field full">
+              <label>I can speak...</label>
+              <div id="speakLanguages" class="languages">
+                <button class="chip" data-value="English">English</button>
+                <button class="chip" data-value="Russian">Russian</button>
+                <button class="chip" data-value="German">German</button>
+                <button class="chip" data-value="Spanish">Spanish</button>
+                <button class="chip" data-value="French">French</button>
+                <button class="chip" data-value="Chinese">Chinese</button>
+                <button class="chip" data-value="Japanese">Japanese</button>
+                <button class="chip" data-value="Serbian">Serbian</button>
+              </div>
+
+              <div class="custom-language">
+                <input id="customSpeak" type="text" placeholder="Add another language">
+                <button id="addSpeak" class="small-btn">Add</button>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label>I can’t speak...</label>
+              <div id="cantLanguages" class="languages">
+                <button class="chip" data-value="English">English</button>
+                <button class="chip" data-value="Russian">Russian</button>
+                <button class="chip" data-value="German">German</button>
+                <button class="chip" data-value="Spanish">Spanish</button>
+                <button class="chip" data-value="French">French</button>
+                <button class="chip" data-value="Chinese">Chinese</button>
+                <button class="chip" data-value="Japanese">Japanese</button>
+                <button class="chip" data-value="Serbian">Serbian</button>
+              </div>
+
+              <div class="custom-language">
+                <input id="customCant" type="text" placeholder="Add another language">
+                <button id="addCant" class="small-btn">Add</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="error" class="error"></div>
+
+          <div class="form-actions">
+            <button id="createBtn" class="btn primary">Create my profile</button>
+          </div>
+        </div>
+
+        <div id="profile" class="profile">
+          <div class="profile-card">
+            <div class="profile-cover">
+              <div id="flag" class="flag">🌍</div>
+              <div id="profileAvatar" class="profile-avatar">A</div>
+            </div>
+            <div class="profile-body">
+              <h3 id="profileTitle" class="profile-title">Anna</h3>
+              <div id="profileCopy" class="profile-copy"></div>
+              <div class="success">Your profile is ready.</div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button id="editBtn" class="btn secondary">Edit</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Complete the form and create your profile.</div>
+      <button id="continueBtn" class="btn continue" disabled>Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const nameInput = document.getElementById('name');
+    const countrySelect = document.getElementById('country');
+    const nationalityInput = document.getElementById('nationality');
+    const errorBox = document.getElementById('error');
+    const formWrap = document.getElementById('formWrap');
+    const profile = document.getElementById('profile');
+    const continueBtn = document.getElementById('continueBtn');
+    const footerNote = document.getElementById('footerNote');
+
+    function capitalise(value){
+      const clean = value.trim();
+      return clean ? clean.charAt(0).toUpperCase() + clean.slice(1) : '';
+    }
+
+    function selectedValues(containerId){
+      return [...document.querySelectorAll(`#${containerId} .chip.selected`)]
+        .map(chip => chip.dataset.value);
+    }
+
+    function joinLanguages(items){
+      if(items.length === 1) return items[0];
+      if(items.length === 2) return `${items[0]} and ${items[1]}`;
+      return `${items.slice(0,-1).join(', ')} and ${items.at(-1)}`;
+    }
+
+    function setupChips(containerId){
+      document.getElementById(containerId).addEventListener('click', e => {
+        if(!e.target.classList.contains('chip')) return;
+        e.preventDefault();
+        e.target.classList.toggle('selected');
+      });
+    }
+
+    setupChips('speakLanguages');
+    setupChips('cantLanguages');
+
+    function addCustomLanguage(inputId, containerId){
+      const input = document.getElementById(inputId);
+      const value = capitalise(input.value);
+      if(!value) return;
+
+      const existing = [...document.querySelectorAll(`#${containerId} .chip`)]
+        .some(chip => chip.dataset.value.toLowerCase() === value.toLowerCase());
+
+      if(!existing){
+        const button = document.createElement('button');
+        button.className = 'chip selected';
+        button.dataset.value = value;
+        button.textContent = value;
+        document.getElementById(containerId).appendChild(button);
+      }
+
+      input.value = '';
+    }
+
+    document.getElementById('addSpeak').addEventListener('click', () => {
+      addCustomLanguage('customSpeak','speakLanguages');
+    });
+
+    document.getElementById('addCant').addEventListener('click', () => {
+      addCustomLanguage('customCant','cantLanguages');
+    });
+
+    countrySelect.addEventListener('change', () => {
+      const option = countrySelect.selectedOptions[0];
+      nationalityInput.value = option?.dataset.nationality || '';
+    });
+
+    document.getElementById('createBtn').addEventListener('click', () => {
+      const name = capitalise(nameInput.value);
+      const country = countrySelect.value;
+      const nationality = capitalise(nationalityInput.value);
+      const speaks = selectedValues('speakLanguages');
+      const cant = selectedValues('cantLanguages');
+
+      const errors = [];
+
+      if(!name) errors.push('Enter your name.');
+      if(!country) errors.push('Choose your country.');
+      if(!nationality) errors.push('Enter your nationality.');
+      if(!speaks.length) errors.push('Choose at least one language you can speak.');
+      if(!cant.length) errors.push('Choose at least one language you can’t speak.');
+
+      const overlap = speaks.filter(language => cant.includes(language));
+      if(overlap.length){
+        errors.push(`${overlap.join(', ')} cannot be in both language lists.`);
+      }
+
+      if(errors.length){
+        errorBox.classList.add('show');
+        errorBox.innerHTML = errors.join('<br>');
+        return;
+      }
+
+      errorBox.classList.remove('show');
+
+      const option = countrySelect.selectedOptions[0];
+      const flag = option?.dataset.flag || '🌍';
+
+      document.getElementById('profileAvatar').textContent = name.charAt(0);
+      document.getElementById('profileTitle').textContent = name;
+      document.getElementById('flag').textContent = flag;
+      document.getElementById('profileCopy').innerHTML = `
+        Hello! I’m ${name}.<br>
+        I’m from ${country}.<br>
+        I’m ${nationality}.<br>
+        I can speak ${joinLanguages(speaks)}.<br>
+        I can’t speak ${joinLanguages(cant)}.
+      `;
+
+      formWrap.style.display = 'none';
+      profile.classList.add('show');
+      continueBtn.disabled = false;
+      footerNote.textContent = 'Your profile is ready. Read it aloud before you continue.';
+
+      localStorage.setItem('aboutYouProfile', JSON.stringify({
+        name,
+        country,
+        nationality,
+        speaks,
+        cant
+      }));
+    });
+
+    document.getElementById('editBtn').addEventListener('click', () => {
+      profile.classList.remove('show');
+      formWrap.style.display = 'block';
+      continueBtn.disabled = true;
+      footerNote.textContent = 'Edit the form and create your profile again.';
+    });
+
+    continueBtn.addEventListener('click', () => {
+      const saved = JSON.parse(localStorage.getItem('aboutYouProfile') || '{}');
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'about-you',
+        profile:saved
+      }, '*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+  </script>
+</body>
+</html>

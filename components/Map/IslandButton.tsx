@@ -15,7 +15,7 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
   const getIslandImagePath = (id: string) => {
     const n = id.replace('island-', '');
     const valid = ['1', '2', '3', '4', '5', '6', '7', '8', '9'];
-    return `/img/island-${valid.includes(n) ? n : '1'}.webp`;
+    return `https://storage.yandexcloud.net/kids-app/public-assets/img/island-${valid.includes(n) ? n : '1'}.webp`;
   };
 
   // Размер острова на карте (он же width/height для <img>)
@@ -30,7 +30,7 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
     if (isCompleted) {
       // Зеленый флажок для пройденных островов
       return (
-        <div className="absolute -top-8 right-8 transform animate-bounce">
+        <div className="absolute left-[58%] top-[42%] -translate-x-1/2 -translate-y-full animate-bounce">
           <div className="relative">
             <div className="w-2 h-20 bg-gray-700 rounded-full"></div>
             <div className="absolute -top-1 -right-1 w-12 h-8 bg-green-500 rounded-sm"
@@ -58,8 +58,8 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
     <div
       className="absolute transform -translate-x-1/2 -translate-y-1/2"
       style={{
-        left: `${island.position.x}%`,
-        top: `${island.position.y}%`,
+        left: `${Math.min(89, Math.max(11, island.position.x))}%`,
+        top: `${Math.min(88, Math.max(12, island.position.y))}%`,
         zIndex: 10,
       }}
     >
@@ -77,13 +77,11 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
           alt={island.title}
           width={getIslandSize(island.id)}
           height={getIslandSize(island.id)}
-          loading="lazy"
+          loading={isAvailable || isCompleted ? 'eager' : 'lazy'}
+          fetchPriority={isAvailable ? 'high' : 'auto'}
           decoding="async"
-          className="object-contain"
-          style={{
-            width: getIslandSize(island.id),
-            height: getIslandSize(island.id),
-          }}
+          className="object-contain w-[min(var(--island-size),30vw,34dvh)] h-auto xl:w-[min(var(--island-size),32vw,48dvh)]"
+          style={{ '--island-size': `${getIslandSize(island.id)}px` } as React.CSSProperties}
         />
 
         {/* Флажок или замок */}
@@ -91,7 +89,7 @@ const IslandButton = ({ island, onClick }: IslandButtonProps) => {
 
         {/* Звездочка для пройденных островов */}
         {isCompleted && (
-          <div className="absolute top-0 left-0 text-5xl">⭐</div>
+          <div className="absolute left-1/2 top-[48%] -translate-x-1/2 -translate-y-1/2 text-5xl drop-shadow-xl">⭐</div>
         )}
       </button>
     </div>

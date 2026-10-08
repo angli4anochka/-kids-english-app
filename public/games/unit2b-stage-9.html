@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plural Endings</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#6b7e90;
+  --blue:#4a8fd8;
+  --blue-dark:#2f6ca4;
+  --green:#49b36d;
+  --orange:#f39a4b;
+  --red:#d96565;
+  --line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:1vh;
+  padding:1.5vh 1.6vw;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255,208,139,.38), transparent 23%),
+    radial-gradient(circle at 92% 12%, rgba(130,198,255,.32), transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec);
+}
+
+.header,
+.rules,
+.board,
+.footer {
+  width:100%;
+  max-width:1380px;
+  margin:0 auto;
+}
+
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.65rem .95rem;
+  border-radius:20px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+}
+
+.badge {
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);
+  font-size:1.55rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.5rem,2.5vw,2.45rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.2rem;
+  color:var(--muted);
+  font-weight:700;
+  font-size:.9rem;
+}
+
+.score {
+  padding:.5rem .85rem;
+  border-radius:999px;
+  background:#fff0b8;
+  color:#8b5a00;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.rules {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.7rem;
+}
+
+.rule {
+  padding:.6rem .75rem;
+  border-radius:17px;
+  background:rgba(255,255,255,.92);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+
+.rule strong {
+  display:block;
+  color:var(--blue-dark);
+  font-size:1.05rem;
+}
+
+.rule span {
+  display:block;
+  margin-top:.18rem;
+  color:var(--muted);
+  font-size:.78rem;
+  font-weight:700;
+}
+
+.board {
+  min-height:0;
+  display:grid;
+  grid-template-columns:340px 1fr;
+  gap:.9rem;
+}
+
+.word-bank,
+.columns {
+  min-height:0;
+  border-radius:22px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--shadow);
+}
+
+.word-bank {
+  padding:.8rem;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:.6rem;
+}
+
+.bank-title {
+  font-weight:900;
+  font-size:1rem;
+}
+
+.words {
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.55rem;
+  align-content:center;
+}
+
+.word {
+  cursor:pointer;
+  border:2px solid var(--line);
+  border-radius:14px;
+  background:#fbfdff;
+  padding:.6rem .5rem;
+  color:var(--ink);
+  font-weight:900;
+  text-align:center;
+  transition:.15s ease;
+}
+
+.word:hover {
+  transform:translateY(-2px);
+  border-color:#9ec8e5;
+}
+
+.word.selected {
+  border-color:var(--orange);
+  background:#fff4e7;
+  box-shadow:0 0 0 3px rgba(243,154,75,.12);
+}
+
+.word.placed {
+  opacity:.28;
+  pointer-events:none;
+}
+
+.columns {
+  padding:.8rem;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.7rem;
+}
+
+.column {
+  min-width:0;
+  border:2px dashed #bdd3e1;
+  border-radius:18px;
+  background:#f8fcff;
+  padding:.65rem;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:.55rem;
+  cursor:pointer;
+}
+
+.column:hover {
+  border-color:var(--blue);
+}
+
+.column-head {
+  text-align:center;
+}
+
+.sound {
+  font-size:1.45rem;
+  font-weight:900;
+  color:var(--blue-dark);
+}
+
+.example {
+  margin-top:.15rem;
+  color:var(--muted);
+  font-size:.76rem;
+  font-weight:700;
+}
+
+.placed-list {
+  min-height:0;
+  display:flex;
+  flex-direction:column;
+  gap:.45rem;
+  justify-content:flex-start;
+}
+
+.placed-word {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.4rem;
+  padding:.52rem .6rem;
+  border-radius:12px;
+  background:#fff;
+  border:2px solid #dce8ef;
+  font-weight:900;
+}
+
+.remove {
+  cursor:pointer;
+  border:0;
+  background:transparent;
+  color:#9aabb7;
+  font-weight:900;
+}
+
+.footer {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.6rem .9rem;
+  border-radius:18px;
+  background:rgba(255,255,255,.88);
+  box-shadow:var(--shadow);
+}
+
+.status {
+  color:var(--muted);
+  font-weight:800;
+  font-size:.88rem;
+}
+
+.actions {
+  display:flex;
+  gap:.65rem;
+}
+
+.action-btn {
+  cursor:pointer;
+  border:0;
+  border-radius:13px;
+  padding:.65rem 1rem;
+  color:#fff;
+  font-weight:900;
+}
+
+.listen-btn {
+  background:#72879a;
+}
+
+.check-btn {
+  background:var(--green);
+  box-shadow:0 5px 0 #2f8050;
+}
+
+.check-btn:disabled {
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+}
+
+.correct {
+  border-color:var(--green) !important;
+  background:#eaf8ef !important;
+  color:#267544;
+}
+
+.wrong {
+  border-color:var(--red) !important;
+  background:#ffecec !important;
+  color:#9e3434;
+}
+
+@media (max-width:980px) {
+  .board {
+    grid-template-columns:280px 1fr;
+  }
+  .words {
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">🔊</div>
+      <div>
+        <h1>Plural endings</h1>
+        <div class="subtitle">Sort the words by the final sound.</div>
+      </div>
+    </div>
+    <div id="score" class="score">0 / 12</div>
+  </header>
+
+  <section class="rules">
+    <div class="rule">
+      <strong>/s/</strong>
+      <span>after voiceless sounds: cap → caps</span>
+    </div>
+    <div class="rule">
+      <strong>/z/</strong>
+      <span>after vowels and voiced sounds: glove → gloves</span>
+    </div>
+    <div class="rule">
+      <strong>/ɪz/</strong>
+      <span>after s, sh, ch, x, z: watch → watches</span>
+    </div>
+  </section>
+
+  <main class="board">
+    <section class="word-bank">
+      <div class="bank-title">Choose a word</div>
+      <div id="words" class="words"></div>
+    </section>
+
+    <section class="columns">
+      <div class="column" data-sound="/s/">
+        <div class="column-head">
+          <div class="sound">/s/</div>
+          <div class="example">caps, bikes</div>
+        </div>
+        <div class="placed-list"></div>
+      </div>
+
+      <div class="column" data-sound="/z/">
+        <div class="column-head">
+          <div class="sound">/z/</div>
+          <div class="example">gloves, cameras</div>
+        </div>
+        <div class="placed-list"></div>
+      </div>
+
+      <div class="column" data-sound="/ɪz/">
+        <div class="column-head">
+          <div class="sound">/ɪz/</div>
+          <div class="example">watches, boxes</div>
+        </div>
+        <div class="placed-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div id="status" class="status">Select a word, then choose a sound column.</div>
+    <div class="actions">
+      <button id="listenBtn" class="action-btn listen-btn">LISTEN</button>
+      <button id="checkBtn" class="action-btn check-btn" disabled>CHECK</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const wordsData = [{"word": "caps", "sound": "/s/"}, {"word": "bikes", "sound": "/s/"}, {"word": "helmets", "sound": "/s/"}, {"word": "watches", "sound": "/ɪz/"}, {"word": "boxes", "sound": "/ɪz/"}, {"word": "cameras", "sound": "/z/"}, {"word": "gloves", "sound": "/z/"}, {"word": "trainers", "sound": "/z/"}, {"word": "scarves", "sound": "/z/"}, {"word": "handbags", "sound": "/z/"}, {"word": "teddy bears", "sound": "/z/"}, {"word": "bicycles", "sound": "/z/"}];
+const wordsBox = document.getElementById("words");
+const columns = [...document.querySelectorAll(".column")];
+const checkBtn = document.getElementById("checkBtn");
+const listenBtn = document.getElementById("listenBtn");
+const status = document.getElementById("status");
+const score = document.getElementById("score");
+
+let selectedWord = null;
+const placements = new Map();
+
+function speak(text) {
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-GB";
+  utterance.rate = .8;
+  window.speechSynthesis.speak(utterance);
+}
+
+function updateState() {
+  score.textContent = `${placements.size} / ${wordsData.length}`;
+  checkBtn.disabled = placements.size !== wordsData.length;
+}
+
+function renderWords() {
+  wordsBox.innerHTML = "";
+
+  wordsData.forEach(item => {
+    const button = document.createElement("button");
+    button.className = "word";
+    button.textContent = item.word;
+    button.dataset.word = item.word;
+
+    if (placements.has(item.word)) {
+      button.classList.add("placed");
+    }
+
+    button.addEventListener("click", () => {
+      document.querySelectorAll(".word").forEach(el => el.classList.remove("selected"));
+      selectedWord = item.word;
+      button.classList.add("selected");
+      speak(item.word);
+      status.textContent = `Now choose the sound for “${item.word}”.`;
+    });
+
+    wordsBox.appendChild(button);
+  });
+}
+
+function addPlacedWord(word, sound) {
+  const column = document.querySelector(`.column[data-sound="${sound}"]`);
+  const list = column.querySelector(".placed-list");
+
+  const row = document.createElement("div");
+  row.className = "placed-word";
+  row.dataset.word = word;
+  row.innerHTML = `<span>${word}</span><button class="remove" title="Remove">×</button>`;
+
+  row.querySelector(".remove").addEventListener("click", event => {
+    event.stopPropagation();
+    placements.delete(word);
+    row.remove();
+    selectedWord = null;
+    renderWords();
+    updateState();
+    status.textContent = "Select a word, then choose a sound column.";
+  });
+
+  list.appendChild(row);
+}
+
+columns.forEach(column => {
+  column.addEventListener("click", () => {
+    if (!selectedWord) {
+      status.textContent = "Choose a word first.";
+      return;
+    }
+
+    const sound = column.dataset.sound;
+    placements.set(selectedWord, sound);
+    addPlacedWord(selectedWord, sound);
+
+    selectedWord = null;
+    renderWords();
+    updateState();
+    status.textContent = "Good. Choose the next word.";
+  });
+});
+
+listenBtn.addEventListener("click", () => {
+  const sequence = wordsData.map(item => item.word);
+  let index = 0;
+
+  function next() {
+    if (index >= sequence.length) return;
+    const utterance = new SpeechSynthesisUtterance(sequence[index]);
+    utterance.lang = "en-GB";
+    utterance.rate = .78;
+    utterance.onend = () => {
+      index += 1;
+      next();
+    };
+    window.speechSynthesis.speak(utterance);
+  }
+
+  window.speechSynthesis.cancel();
+  next();
+});
+
+checkBtn.addEventListener("click", () => {
+  let correct = 0;
+
+  document.querySelectorAll(".placed-word").forEach(row => {
+    row.classList.remove("correct","wrong");
+    const word = row.dataset.word;
+    const actual = wordsData.find(item => item.word === word).sound;
+    const chosen = placements.get(word);
+
+    if (actual === chosen) {
+      row.classList.add("correct");
+      correct += 1;
+    } else {
+      row.classList.add("wrong");
+    }
+  });
+
+  score.textContent = `${correct} / ${wordsData.length}`;
+
+  if (correct === wordsData.length) {
+    status.textContent = "Perfect! All plural endings are correct.";
+    status.style.color = "#267544";
+    const result = { score:correct, total:wordsData.length, placements:Object.fromEntries(placements) };
+    localStorage.setItem("unit2bPluralEndingsResult", JSON.stringify(result));
+    window.parent?.postMessage({ type:"lesson-step-complete", lesson:"2b", step:"plural-endings-pronunciation", result }, "*");
+    checkBtn.disabled = true;
+    checkBtn.textContent = "COMPLETED ✓";
+  } else {
+    status.textContent = `${correct} correct. Move the red words and check again.`;
+    status.style.color = "#9e3434";
+  }
+});
+
+renderWords();
+updateState();
+</script>
+</body>
+</html>

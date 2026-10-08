@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ОГЭ 2027 • Английский • Интерактивная демоверсия</title>
+<style>[hidden]{display:none!important}
+:root{
+  --bg:#f4f6fb; --panel:#ffffff; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb;
+  --accent:#6d5dfc; --accent2:#00a7a7; --ok:#15803d; --bad:#b91c1c; --soft:#f8fafc;
+}
+*{box-sizing:border-box}
+html,body{height:100%; margin:0}
+body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.app{height:100vh;display:grid;grid-template-rows:auto 1fr auto;gap:8px;padding:10px 12px}
+.top{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;color:#fff;font-weight:800}
+h1{font-size:clamp(16px,1.4vw,22px);margin:0;line-height:1.1}
+.sub{font-size:12px;color:var(--muted);margin-top:3px}
+.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.mode{
+  display:flex;align-items:center;gap:7px;background:var(--panel);border:1px solid var(--line);
+  padding:6px 8px;border-radius:12px;font-size:12px
+}
+.switch{position:relative;width:42px;height:24px;display:inline-block}
+.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;border-radius:999px;background:#cbd5e1;transition:.2s}
+.slider:before{content:"";position:absolute;width:18px;height:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s}
+.switch input:checked + .slider{background:var(--accent)}
+.switch input:checked + .slider:before{transform:translateX(18px)}
+.smallbtn{
+  border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 10px;font-weight:700;font-size:12px
+}
+.smallbtn:hover{border-color:#c7cbd4}
+
+.tabs{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px
+}
+.tab{
+  border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:8px 10px;
+  display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:800;color:#475569
+}
+.tab.active{border-color:var(--accent);color:var(--accent);background:#f7f5ff}
+.tab span{font-weight:600;color:var(--muted);font-size:11px}
+
+.stage{
+  min-height:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;
+  overflow:hidden;position:relative
+}
+.screen{display:none;height:100%;min-height:0;padding:12px}
+.screen.active{display:grid}
+.screen.one{grid-template-rows:auto 1fr}
+.screen.two{grid-template-rows:auto 1fr;gap:10px}
+.screen.two .content{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr);gap:10px;min-height:0}
+.screen.wide .content{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;min-height:0}
+
+.head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.head h2{margin:0;font-size:clamp(15px,1.2vw,20px)}
+.instruction{font-size:12px;color:var(--muted);max-width:820px}
+.badge{white-space:nowrap;border-radius:999px;padding:5px 9px;background:#eef2ff;color:#4f46e5;font-size:11px;font-weight:800}
+
+.panel{
+  min-height:0;border:1px solid var(--line);border-radius:14px;background:var(--soft);
+  padding:10px;overflow:auto
+}
+.panel::-webkit-scrollbar{width:8px}
+.panel::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:8px}
+.question{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:8px}
+.qtitle{font-weight:800;font-size:13px;margin-bottom:7px}
+.options{display:grid;gap:6px}
+.opt{
+  display:flex;align-items:center;gap:8px;border:1px solid var(--line);background:white;border-radius:10px;
+  padding:8px 9px;font-size:12px;min-height:38px
+}
+.opt:has(input:checked){border-color:var(--accent);background:#f7f5ff}
+.opt input{accent-color:var(--accent)}
+.checkrow{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.primary{border:none;background:var(--accent);color:white;border-radius:10px;padding:8px 12px;font-weight:800}
+.secondary{border:1px solid var(--line);background:white;border-radius:10px;padding:8px 12px;font-weight:700}
+.result{font-size:12px;font-weight:800;min-height:18px}
+.ok{color:var(--ok)} .bad{color:var(--bad)}
+.script{display:none;margin-top:8px;padding:9px;border-radius:10px;background:#fff;border:1px dashed #cbd5e1;font-size:12px;line-height:1.45}
+.teacher .script{display:block}
+.teacher-answer{display:none;font-size:11px;color:var(--ok);font-weight:800;margin-top:5px}
+.teacher .teacher-answer{display:block}
+
+.match-list{display:grid;gap:7px}
+.match-row{display:grid;grid-template-columns:32px 1fr 88px;gap:7px;align-items:center}
+.match-row select,.answer-input{
+  width:100%;border:1px solid var(--line);border-radius:9px;padding:8px;background:white
+}
+.longtext{font-size:12px;line-height:1.45}
+.longtext p{margin:0 0 8px}
+.longtext b{font-weight:900}
+.tiny{font-size:11px;color:var(--muted)}
+
+.inline-gap{
+  display:grid;grid-template-columns:34px 1fr 110px;gap:8px;align-items:center;
+  padding:8px;border:1px solid var(--line);border-radius:10px;background:#fff;margin-bottom:7px;font-size:12px
+}
+.inline-gap input{min-width:0;width:100%;border:1px solid #d5d9e2;border-radius:8px;padding:7px}
+.baseword{font-weight:900;color:#475569;text-align:center}
+
+.emailbox{display:grid;grid-template-rows:auto 1fr auto;gap:8px;height:100%;min-height:0}
+.emailprompt{font-size:12px;line-height:1.45;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px}
+textarea{
+  width:100%;height:100%;min-height:0;resize:none;border:1px solid var(--line);border-radius:12px;padding:10px;line-height:1.45;background:white
+}
+.counter{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px}
+.wordcount{font-weight:900}
+.wordcount.good{color:var(--ok)} .wordcount.warn{color:#b45309} .wordcount.bad{color:var(--bad)}
+
+.footer{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px}
+.navbtn{border:1px solid var(--line);background:var(--panel);border-radius:11px;padding:9px 14px;font-weight:800}
+.navbtn:disabled{opacity:.4;cursor:not-allowed}
+.progress{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.25s}
+.step{font-size:12px;font-weight:800;color:#475569}
+
+.compact-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;min-height:0}
+.compact-grid .question{margin:0}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{font-size:11px;border:1px solid var(--line);border-radius:999px;padding:5px 8px;background:white}
+.scorebox{font-size:12px;font-weight:800;color:#475569}
+
+@media (max-width:900px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100vh}
+  .tabs{grid-template-columns:repeat(2,1fr)}
+  .screen.two .content,.screen.wide .content{grid-template-columns:1fr}
+  .stage{min-height:70vh}
+}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <div class="top">
+    <div class="brand">
+      <div class="logo">9</div>
+      <div>
+        <h1>ОГЭ 2027 · Английский язык</h1>
+        <div class="sub">Письмо · 1 вариант 2027</div>
+      </div>
+    </div>
+    <div class="actions">
+      <label class="mode" hidden>Режим учителя
+        <span class="switch"><input id="teacherMode" type="checkbox"><span class="slider"></span></span>
+      </label>
+      <span id="saveStatus">Предпросмотр</span><button class="primary" id="finish">Отправить письмо</button>
+    </div>
+  </div>
+
+  
+
+  <main class="stage">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <section class="screen two" data-section="writing">
+      <div class="head">
+        <div><h2>Задание 35 · электронное письмо</h2><div class="instruction">Напишите 100–120 слов и ответьте на три вопроса.</div></div>
+        <div class="badge">Письмо · до 10 баллов</div>
+      </div>
+      <div class="content">
+        <div class="panel emailprompt">
+          <b>From:</b> Mary@mail.uk<br>
+          <b>To:</b> Russian_friend@oge.ru<br>
+          <b>Subject:</b> Russian towns
+          <hr style="border:0;border-top:1px solid var(--line);margin:8px 0">
+          …My teacher told me that Russia has many beautiful small towns. I’d love to travel and see some of them.<br><br>
+          <b>1.</b> What small Russian towns would you recommend visiting and why?<br>
+          <b>2.</b> What is the best way to travel around Russia?<br>
+          <b>3.</b> Where would you prefer to live, in a big city or in a town, and why?
+          <div class="teacher-answer" style="margin-top:10px">
+            Критерии: содержание — 3; организация — 2; лексика/грамматика — 3; орфография/пунктуация — 2.
+            Объём менее 90 слов = 0 баллов; свыше 132 слов проверяются только первые 120 слов.
+          </div>
+        </div>
+        <div class="panel emailbox">
+          <div class="pills">
+            <span class="pill">обращение</span><span class="pill">благодарность</span><span class="pill">3 ответа</span>
+            <span class="pill">завершающая фраза</span><span class="pill">подпись</span>
+          </div>
+          <textarea id="emailText" placeholder="Hi Mary,&#10;&#10;Thanks for your email..."></textarea>
+          <div class="counter">
+            <span>Цель демоверсии: <b>100–120 слов</b></span>
+            <span class="wordcount bad" id="wc">0 слов</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footer">
+    <button class="navbtn" id="prev">← Назад</button>
+    <div class="progress"><i id="bar"></i></div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="step" id="step">1 / 8</span>
+      <button class="navbtn" id="next">Дальше →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(()=> {
+  const root = document.getElementById('app');
+  const screens = [...root.querySelectorAll('.screen')];
+  const tabs = [...root.querySelectorAll('.tab')];
+  let current = 0;
+
+  const answers = {
+    q1:['2'], q2:['1'], q3:['3'], q4:['2'],
+    '5A':['3'],'5B':['2'],'5C':['6'],'5D':['1'],'5E':['4'],
+    '6':['librarian'],'7':['twelve'],'8':['chinese'],'9':['travelling','traveling'],'10':['piano'],'11':['jogging'],
+    '12A':['5'],'12B':['7'],'12C':['4'],'12D':['1'],'12E':['6'],'12F':['2'],
+    '13':['1'],'14':['1'],'15':['3'],'16':['2'],'17':['3'],'18':['2'],'19':['1'],
+    '20':['went'],'21':['most famous','mostfamous'],'22':['knows'],'23':['began'],
+    '24':['did not mind',"didn't mind",'didnt mind'],'25':['were'],'26':['its'],'27':['was designed','wasdesigned'],'28':['had'],
+    '29':['sleepy'],'30':['cheerful'],'31':['information'],'32':['harmless'],'33':['appearance'],'34':['absolutely']
+  };
+
+  const sets = {
+    '1-4':['q1','q2','q3','q4'],
+    '5':['5A','5B','5C','5D','5E'],
+    '6-11':['6','7','8','9','10','11'],
+    '12':['12A','12B','12C','12D','12E','12F'],
+    '13-19':['13','14','15','16','17','18','19'],
+    '20-28':['20','21','22','23','24','25','26','27','28'],
+    '29-34':['29','30','31','32','33','34']
+  };
+
+  function norm(v){return (v||'').trim().toLowerCase().replace(/[’]/g,"'").replace(/\s+/g,' ')}
+  function getVal(q){
+    const radio = root.querySelector(`input[name="${q}"]:checked`);
+    if(radio) return radio.value;
+    const el = root.querySelector(`[data-q="${q}"]`);
+    return el ? el.value : '';
+  }
+
+  function show(n){
+    current = Math.max(0, Math.min(screens.length-1,n));
+    screens.forEach((s,i)=>s.classList.toggle('active',i===current));
+    const sec=screens[current].dataset.section;
+    tabs.forEach(t=>t.classList.toggle('active',
+      (sec==='listening' && +t.dataset.go===0) ||
+      (sec==='reading' && +t.dataset.go===3) ||
+      (sec==='grammar' && +t.dataset.go===5) ||
+      (sec==='writing' && +t.dataset.go===7)
+    ));
+    document.getElementById('prev').disabled=current===0;
+    document.getElementById('next').disabled=current===screens.length-1;
+    document.getElementById('step').textContent=`${current+1} / ${screens.length}`;
+    document.getElementById('bar').style.width=`${((current+1)/screens.length)*100}%`;
+  }
+
+  root.querySelectorAll('.check').forEach(btn=>{
+    btn.remove(); return;
+    btn.addEventListener('click',()=>{
+      const id=btn.dataset.set, qs=sets[id];
+      let score=0, filled=0;
+      qs.forEach(q=>{
+        const v=norm(getVal(q));
+        if(v) filled++;
+        if(answers[q].some(a=>norm(a)===v)) score++;
+      });
+      const r=document.getElementById('r'+id);
+      if(!filled){r.className='result bad';r.textContent='Сначала введи ответы.';return;}
+      r.className='result '+(score===qs.length?'ok':'bad');
+      r.textContent=`${score} / ${qs.length} верно`;
+    });
+  });
+
+  document.getElementById('teacherMode').addEventListener('change',e=>{
+    root.classList.toggle('teacher',e.target.checked);
+  });
+
+  document.getElementById('prev').addEventListener('click',()=>show(current-1));
+  document.getElementById('next').addEventListener('click',()=>show(current+1));
+  tabs.forEach(t=>t.addEventListener('click',()=>show(+t.dataset.go)));
+
+
+
+  const email=document.getElementById('emailText'), wc=document.getElementById('wc');
+  function updateCount(){
+    if(!email || !wc) return;
+    const words=email.value.trim()?email.value.trim().split(/\s+/).length:0;
+    wc.textContent=words+' '+(words===1?'слово':'слов');
+    wc.className='wordcount '+(words>=100&&words<=120?'good':(words>=90&&words<=132?'warn':'bad'));
+  }
+  email?.addEventListener('input',updateCount);
+  const part="writing", total=0;
+﻿  let context=null, completed=false, revision=0, timer, started=Date.now();
+  const status=document.getElementById('saveStatus'), finish=document.getElementById('finish');
+  const controls=[...root.querySelectorAll('input[data-q],select[data-q],input[type=radio],textarea')];
+  const ids=[...new Set(controls.map(el=>el.dataset.q||el.name||'35'))];
+  function values(){return Object.fromEntries(ids.map(q=>[q,q==='35'?email.value:getVal(q)]))}
+  function rows(){return ids.map((q,i)=>{
+    const el=root.querySelector(`[data-q="${q}"],input[name="${q}"]`);
+    const v=q==='35'?email.value:getVal(q);
+    const prompt=q==='35'?'Письмо Mary: Russian towns':el?.closest('.question,.match-row,.inline-gap')?.innerText.trim();
+    return {questionIndex:i,questionLabel:q.replace(/^q/,''),prompt,studentAnswer:v,correctAnswer:q==='35'?'Проверяет учитель':answers[q].join(' / '),isCorrect:q==='35'?null:answers[q].some(a=>norm(a)===norm(v)),pendingReview:q==='35',answered:!!v.trim()};
+  })}
+  function snapshot(){const results=rows();return {type:'oge-reading-progress',revision:++revision,results,score:results.filter(r=>r.isCorrect===true).length,total,completed,status:completed?'completed':'in_progress',timeSeconds:Math.round((Date.now()-started)/1000),pendingReview:part==='writing',answers:values()}}
+  function localSave(unsynced){try{localStorage.setItem('oge2027:'+context.storageKey,JSON.stringify({answers:values(),completed,started,unsynced}))}catch{}}
+  function persist(){if(!context||context.isTeacher)return;const data=snapshot();localSave(true);status.textContent='Сохранение…';parent.postMessage(data,location.origin)}
+  function review(){root.querySelectorAll('[data-oge-review]').forEach(el=>el.remove());if(!completed||part==='writing')return;for(const result of rows()){
+    const q=ids[result.questionIndex],el=root.querySelector(`[data-q="${q}"],input[name="${q}"]`),container=el?.closest('.question,.match-row,.inline-gap');if(!container)continue;
+    const box=document.createElement('div');box.dataset.ogeReview=q;box.style.cssText='grid-column:1/-1;font-size:12px;padding:6px;border-radius:6px;white-space:normal;';box.style.color=result.isCorrect?'#15803d':'#b91c1c';
+    box.textContent=result.isCorrect?'✓ Верно':'✗ Ваш ответ: '+(result.studentAnswer||'нет ответа')+' · Правильный ответ: '+result.correctAnswer;container.append(box);
+  }}
+  function lock(){controls.forEach(el=>el.disabled=!context||completed);finish.disabled=!context||completed;finish.textContent=completed?(part==='writing'?'Отправлено на проверку':'Часть завершена'):(part==='writing'?'Отправить письмо':'Завершить часть');review()}
+  status.textContent=window.parent===window?'Откройте задание внутри урока':'Загрузка сохранённых ответов…';lock();
+  root.addEventListener('input',()=>{if(completed||!context)return;localSave(true);clearTimeout(timer);timer=setTimeout(persist,350)});
+  root.addEventListener('change',()=>{if(completed||!context)return;clearTimeout(timer);persist()});
+  finish.addEventListener('click',()=>{if(!controls.some(el=>el.type==='radio'?el.checked:el.value.trim())){status.textContent='Сначала введите ответы';return}completed=true;clearTimeout(timer);persist();lock()});
+  window.addEventListener('message',event=>{
+    if(event.source!==parent||event.origin!==location.origin)return;
+    const data=event.data;
+    if(data?.type==='oge-reading-context'){
+      if(context?.storageKey===data.storageKey)return;
+      context=data;completed=false;started=Date.now();
+      controls.forEach(el=>{if(el.type==='radio')el.checked=false;else el.value=''});
+      document.querySelector('.mode').hidden=!context.isTeacher;
+      let local=null;try{local=JSON.parse(localStorage.getItem('oge2027:'+context.storageKey)||'null')}catch{}
+      const server=data.saved;
+      const useLocal=!context.isTeacher&&local&&(!server||local.unsynced&&!server.completed);
+      const saved=context.isTeacher?null:useLocal?local:server;
+      if(saved){
+        const selected=saved.answers||Object.fromEntries((saved.results||[]).map(r=>[Number(r.questionLabel)<=4?'q'+r.questionLabel:r.questionLabel,r.studentAnswer]));
+        for(const el of controls){const q=el.dataset.q||el.name||'35';if(el.type==='radio')el.checked=String(selected[q])===el.value;else el.value=selected[q]||''}
+        completed=!!saved.completed;started=saved.started||Date.now()-(saved.timeSeconds||0)*1000;
+      }
+      status.textContent=context.isTeacher?'Предпросмотр учителя':completed?(part==='writing'?'Письмо сохранено · ожидает проверки':rows().filter(r=>r.isCorrect).length+' / '+total+' верно · сохранено'):'Ответы сохраняются автоматически';
+      lock();updateCount();
+      if(useLocal&&(!server||local.unsynced)&&controls.some(el=>el.type==='radio'?el.checked:el.value))persist();
+      else if(!context.isTeacher)localSave(false);
+    }
+    if(data?.type==='oge-reading-save-status'&&data.revision===revision){if(data.ok)localSave(false);status.textContent=data.ok?(completed?(part==='writing'?'Письмо сохранено · ожидает проверки':rows().filter(r=>r.isCorrect).length+' / '+total+' верно · сохранено'):'Ответы сохранены'):'Не удалось сохранить · повторяем…'}
+  });
+  window.addEventListener('pagehide',()=>{if(!context||context.isTeacher)return;clearTimeout(timer);let local;try{local=JSON.parse(localStorage.getItem('oge2027:'+context.storageKey)||'null')}catch{}if(local?.unsynced)persist()});
+  parent.postMessage({type:'oge-reading-ready'},location.origin);
+
+  updateCount(); show(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Countries and nationalities</title>
+  <style>
+    :root {
+      --orange:#ff7a33;
+      --orange-dark:#e95d16;
+      --ink:#25324a;
+      --muted:#6d7482;
+      --cream:#fbf7f2;
+      --line:#eadfd5;
+      --green:#35a96f;
+      --green-bg:#eaf8f0;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --blue:#4e86d7;
+      --blue-bg:#eef5ff;
+      --shadow:0 20px 55px rgba(53,39,27,.12);
+    }
+
+    * { box-sizing:border-box; }
+    html, body {
+      margin:0;
+      min-height:100%;
+      font-family:Inter, ui-rounded, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(255,185,133,.23), transparent 26%),
+        radial-gradient(circle at 90% 12%, rgba(119,190,255,.18), transparent 25%),
+        #f5f1ec;
+    }
+
+    button, select { font:inherit; }
+
+    .app {
+      width:min(1380px, calc(100vw - 24px));
+      min-height:calc(100vh - 24px);
+      margin:12px auto;
+      background:rgba(255,255,255,.97);
+      border:1px solid rgba(220,205,190,.75);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    header {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 22px 15px;
+      border-bottom:1px solid #efe7df;
+      background:rgba(255,255,255,.93);
+      position:sticky;
+      top:0;
+      z-index:5;
+    }
+
+    .badge {
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:900;
+      font-size:22px;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.26);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1 {
+      margin:0;
+      font-size:clamp(26px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle {
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .score {
+      margin-left:auto;
+      min-width:125px;
+      padding:10px 14px;
+      border-radius:16px;
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      color:var(--orange-dark);
+      font-weight:900;
+      text-align:center;
+    }
+
+    main {
+      padding:18px 20px 16px;
+      display:grid;
+      gap:18px;
+    }
+
+    .instruction {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 14px;
+      border-radius:18px;
+      background:#fff9f4;
+      border:1px solid #ffe0ca;
+      color:#8a451c;
+      font-weight:750;
+    }
+
+    .instruction .dot {
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background:var(--orange);
+      flex:none;
+    }
+
+    .cards {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(0,1fr));
+      gap:14px;
+    }
+
+    .card {
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:22px;
+      padding:12px;
+      box-shadow:0 10px 24px rgba(48,34,25,.07);
+      transition:.2s ease;
+      position:relative;
+      min-width:0;
+    }
+
+    .card.correct {
+      border-color:#88d2aa;
+      background:linear-gradient(180deg,#fff,#f7fdf9);
+    }
+
+    .card.incorrect {
+      border-color:#efaaa6;
+      background:linear-gradient(180deg,#fff,#fff8f7);
+    }
+
+    .status {
+      position:absolute;
+      top:10px;
+      right:10px;
+      width:30px;
+      height:30px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      background:#fff;
+      border:1px solid #e6ddd5;
+      font-weight:900;
+      z-index:2;
+      color:#9b928b;
+    }
+
+    .card.correct .status {
+      background:var(--green);
+      color:#fff;
+      border-color:var(--green);
+    }
+
+    .card.incorrect .status {
+      background:var(--red);
+      color:#fff;
+      border-color:var(--red);
+    }
+
+    .portrait {
+      height:175px;
+      border-radius:16px;
+      overflow:hidden;
+      background:#eef0f4;
+      border:1px solid #ebedf0;
+    }
+
+    .portrait img {
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    .name {
+      margin:10px 2px 10px;
+      font-weight:900;
+      font-size:17px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+
+    .field-label {
+      display:block;
+      margin:9px 2px 5px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.06em;
+    }
+
+    select {
+      width:100%;
+      border:1px solid #d9dee7;
+      border-radius:13px;
+      background:#fff;
+      color:var(--ink);
+      padding:10px 11px;
+      font-weight:750;
+      outline:none;
+      cursor:pointer;
+    }
+
+    select:focus {
+      border-color:#ff9a5c;
+      box-shadow:0 0 0 4px rgba(255,122,51,.14);
+    }
+
+    .card.correct select {
+      border-color:#7bc99e;
+      background:#f1fbf5;
+      color:#236a47;
+    }
+
+    .card.incorrect select {
+      border-color:#e58e89;
+      background:#fff4f3;
+      color:#9a312d;
+    }
+
+    .answer {
+      margin-top:10px;
+      padding:10px 11px;
+      min-height:58px;
+      border-radius:14px;
+      background:var(--blue-bg);
+      color:#28527d;
+      font-size:13px;
+      font-weight:750;
+      line-height:1.4;
+      display:none;
+    }
+
+    .card.checked .answer { display:block; }
+
+    .controls {
+      display:flex;
+      gap:10px;
+      justify-content:flex-end;
+      align-items:center;
+      flex-wrap:wrap;
+      padding:12px 20px 17px;
+      border-top:1px solid #efe7df;
+      background:#fff;
+      position:sticky;
+      bottom:0;
+      z-index:5;
+    }
+
+    .progress-note {
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .btn {
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled) { transform:translateY(-2px); }
+
+    .check {
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .retry {
+      color:#475467;
+      background:#f1f3f6;
+      display:none;
+    }
+
+    .continue {
+      color:#fff;
+      background:linear-gradient(135deg,#4e86d7,#3568b2);
+      box-shadow:0 9px 20px rgba(61,112,181,.20);
+    }
+
+    .continue:disabled {
+      background:#d5d8de;
+      color:#8a909b;
+      box-shadow:none;
+      cursor:not-allowed;
+    }
+
+    .result-banner {
+      display:none;
+      padding:13px 15px;
+      border-radius:17px;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .result-banner.show { display:block; }
+    .result-banner.success {
+      background:var(--green-bg);
+      border:1px solid #a7ddbf;
+      color:#256b48;
+    }
+    .result-banner.partial {
+      background:#fff6e8;
+      border:1px solid #f2cd8e;
+      color:#8b5a16;
+    }
+
+    @media (max-width:1100px) {
+      .cards { grid-template-columns:repeat(3,minmax(0,1fr)); }
+    }
+
+    @media (max-width:720px) {
+      .cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      header { padding:14px; }
+      .score { display:none; }
+      main { padding:14px; }
+      .portrait { height:160px; }
+      .controls { padding:11px 14px 14px; }
+    }
+
+    @media (max-width:480px) {
+      .cards { grid-template-columns:1fr; }
+      .portrait { height:220px; }
+    }
+
+    /* Lesson iframe: keep the whole activity inside one screen without scrolling. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);min-height:0}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Countries and nationalities</h1>
+        <p class="subtitle">Match each person or character with the correct country and nationality.</p>
+      </div>
+      <div class="score"><span id="score">0</span> / 5 correct</div>
+    </header>
+
+    <main>
+      <div class="instruction">
+        <span class="dot"></span>
+        Choose one country and one nationality for every card, then press <strong>Check</strong>.
+      </div>
+
+      <div id="resultBanner" class="result-banner"></div>
+
+      <div class="cards">
+        <article class="card" data-id="wednesday">
+          <div class="status">?</div>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-12ea4a9aa1d9896e.png" alt="Wednesday Addams"></div>
+          <div class="name">Wednesday Addams</div>
+          <label class="field-label">Country</label>
+          <select class="country">
+            <option value="">Choose a country</option>
+            <option>the USA</option>
+            <option>France</option>
+            <option>Japan</option>
+            <option>Portugal</option>
+            <option>Thailand</option>
+          </select>
+          <label class="field-label">Nationality</label>
+          <select class="nationality">
+            <option value="">Choose a nationality</option>
+            <option>American</option>
+            <option>French</option>
+            <option>Japanese</option>
+            <option>Portuguese</option>
+            <option>Thai</option>
+          </select>
+          <div class="answer"></div>
+        </article>
+
+        <article class="card" data-id="ladybug">
+          <div class="status">?</div>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-10be8a0456e3a35e.png" alt="Ladybug"></div>
+          <div class="name">Ladybug</div>
+          <label class="field-label">Country</label>
+          <select class="country">
+            <option value="">Choose a country</option>
+            <option>the USA</option>
+            <option>France</option>
+            <option>Japan</option>
+            <option>Portugal</option>
+            <option>Thailand</option>
+          </select>
+          <label class="field-label">Nationality</label>
+          <select class="nationality">
+            <option value="">Choose a nationality</option>
+            <option>American</option>
+            <option>French</option>
+            <option>Japanese</option>
+            <option>Portuguese</option>
+            <option>Thai</option>
+          </select>
+          <div class="answer"></div>
+        </article>
+
+        <article class="card" data-id="tanjiro">
+          <div class="status">?</div>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-6290dcd74f820412.png" alt="Tanjiro Kamado"></div>
+          <div class="name">Tanjiro Kamado</div>
+          <label class="field-label">Country</label>
+          <select class="country">
+            <option value="">Choose a country</option>
+            <option>the USA</option>
+            <option>France</option>
+            <option>Japan</option>
+            <option>Portugal</option>
+            <option>Thailand</option>
+          </select>
+          <label class="field-label">Nationality</label>
+          <select class="nationality">
+            <option value="">Choose a nationality</option>
+            <option>American</option>
+            <option>French</option>
+            <option>Japanese</option>
+            <option>Portuguese</option>
+            <option>Thai</option>
+          </select>
+          <div class="answer"></div>
+        </article>
+
+        <article class="card" data-id="ronaldo">
+          <div class="status">?</div>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-762fe3485cbc5061.png" alt="Cristiano Ronaldo"></div>
+          <div class="name">Cristiano Ronaldo</div>
+          <label class="field-label">Country</label>
+          <select class="country">
+            <option value="">Choose a country</option>
+            <option>the USA</option>
+            <option>France</option>
+            <option>Japan</option>
+            <option>Portugal</option>
+            <option>Thailand</option>
+          </select>
+          <label class="field-label">Nationality</label>
+          <select class="nationality">
+            <option value="">Choose a nationality</option>
+            <option>American</option>
+            <option>French</option>
+            <option>Japanese</option>
+            <option>Portuguese</option>
+            <option>Thai</option>
+          </select>
+          <div class="answer"></div>
+        </article>
+
+        <article class="card" data-id="lisa">
+          <div class="status">?</div>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-99c9e2175aaff3d6.png" alt="Lisa from BLACKPINK"></div>
+          <div class="name">Lisa</div>
+          <label class="field-label">Country</label>
+          <select class="country">
+            <option value="">Choose a country</option>
+            <option>the USA</option>
+            <option>France</option>
+            <option>Japan</option>
+            <option>Portugal</option>
+            <option>Thailand</option>
+          </select>
+          <label class="field-label">Nationality</label>
+          <select class="nationality">
+            <option value="">Choose a nationality</option>
+            <option>American</option>
+            <option>French</option>
+            <option>Japanese</option>
+            <option>Portuguese</option>
+            <option>Thai</option>
+          </select>
+          <div class="answer"></div>
+        </article>
+      </div>
+    </main>
+
+    <div class="controls">
+      <div class="progress-note" id="progressNote">Complete all five cards.</div>
+      <button class="btn retry" id="retryBtn">Try again</button>
+      <button class="btn check" id="checkBtn">Check</button>
+      <button class="btn continue" id="continueBtn" disabled>Continue</button>
+    </div>
+  </section>
+
+  <script>
+    const answers = {
+      wednesday: {
+        country:'the USA',
+        nationality:'American',
+        sentence:'Wednesday is from the USA. She is American.'
+      },
+      ladybug: {
+        country:'France',
+        nationality:'French',
+        sentence:'Ladybug is from France. She is French.'
+      },
+      tanjiro: {
+        country:'Japan',
+        nationality:'Japanese',
+        sentence:'Tanjiro is from Japan. He is Japanese.'
+      },
+      ronaldo: {
+        country:'Portugal',
+        nationality:'Portuguese',
+        sentence:'Cristiano Ronaldo is from Portugal. He is Portuguese.'
+      },
+      lisa: {
+        country:'Thailand',
+        nationality:'Thai',
+        sentence:'Lisa is from Thailand. She is Thai.'
+      }
+    };
+
+    const cards = [...document.querySelectorAll('.card')];
+    const checkBtn = document.getElementById('checkBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const scoreEl = document.getElementById('score');
+    const progressNote = document.getElementById('progressNote');
+    const resultBanner = document.getElementById('resultBanner');
+
+    let checked = false;
+
+    function allCompleted() {
+      return cards.every(card => {
+        return card.querySelector('.country').value && card.querySelector('.nationality').value;
+      });
+    }
+
+    function updateReadyState() {
+      if (checked) return;
+      const done = cards.filter(card =>
+        card.querySelector('.country').value &&
+        card.querySelector('.nationality').value
+      ).length;
+      progressNote.textContent = `${done} of 5 cards completed.`;
+    }
+
+    cards.forEach(card => {
+      card.querySelectorAll('select').forEach(select => {
+        select.addEventListener('change', updateReadyState);
+      });
+    });
+
+    checkBtn.addEventListener('click', () => {
+      if (!allCompleted()) {
+        resultBanner.className = 'result-banner show partial';
+        resultBanner.textContent = 'Choose a country and a nationality for every card first.';
+        return;
+      }
+
+      checked = true;
+      let score = 0;
+
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const country = card.querySelector('.country').value;
+        const nationality = card.querySelector('.nationality').value;
+        const correct = country === answers[id].country && nationality === answers[id].nationality;
+
+        card.classList.add('checked');
+        card.classList.toggle('correct', correct);
+        card.classList.toggle('incorrect', !correct);
+        card.querySelector('.status').textContent = correct ? '✓' : '×';
+        card.querySelector('.answer').textContent = answers[id].sentence;
+        card.querySelectorAll('select').forEach(select => select.disabled = true);
+
+        if (correct) score++;
+      });
+
+      scoreEl.textContent = score;
+      checkBtn.style.display = 'none';
+      retryBtn.style.display = score === 5 ? 'none' : 'inline-block';
+      continueBtn.disabled = false;
+
+      if (score === 5) {
+        resultBanner.className = 'result-banner show success';
+        resultBanner.textContent = 'Perfect! All five matches are correct.';
+        progressNote.textContent = 'All answers are correct.';
+      } else {
+        resultBanner.className = 'result-banner show partial';
+        resultBanner.textContent = `${score} of 5 are correct. The correct sentences are shown on the cards.`;
+        progressNote.textContent = 'Review the answers or try again.';
+      }
+
+      localStorage.setItem('countriesNationalitiesResult', JSON.stringify({
+        score,
+        completed:true
+      }));
+    });
+
+    retryBtn.addEventListener('click', () => {
+      checked = false;
+      cards.forEach(card => {
+        card.classList.remove('checked','correct','incorrect');
+        card.querySelector('.status').textContent = '?';
+        card.querySelector('.answer').textContent = '';
+        card.querySelectorAll('select').forEach(select => {
+          select.disabled = false;
+          select.value = '';
+        });
+      });
+
+      scoreEl.textContent = '0';
+      resultBanner.className = 'result-banner';
+      resultBanner.textContent = '';
+      retryBtn.style.display = 'none';
+      checkBtn.style.display = 'inline-block';
+      continueBtn.disabled = true;
+      progressNote.textContent = 'Complete all five cards.';
+    });
+
+    continueBtn.addEventListener('click', () => {
+      const studentAnswers = {};
+      cards.forEach(card => {
+        studentAnswers[card.dataset.id] = {
+          country:card.querySelector('.country').value,
+          nationality:card.querySelector('.nationality').value
+        };
+      });
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'countries-nationalities',
+        answers:studentAnswers
+      }, '*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    updateReadyState();
+  </script>
+</body>
+</html>

@@ -33,6 +33,19 @@ const PresentationActivity = ({
   const [isScreenSharing, setIsScreenSharing] = useState(false);
   const [inputUrl, setInputUrl] = useState(activity.presentationUrl || '');
   const [previewUrl, setPreviewUrl] = useState(activity.presentationUrl || '');
+
+  // Live sessions first load a slim activity and enrich it asynchronously.
+  // Keep local presentation state in sync when the full activity arrives.
+  useEffect(() => {
+    const nextUrl = activity.presentationUrl || '';
+    const nextType = activity.presentationType
+      || (/youtube\.com|youtu\.be/.test(nextUrl) ? 'youtube-broadcast' : 'google-slides');
+    setPresentationType(nextType);
+    setPresentationUrl(nextUrl);
+    setInputUrl(nextUrl);
+    setPreviewUrl(nextUrl);
+  }, [activity.presentationType, activity.presentationUrl]);
+
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const ytIframeRef = useRef<HTMLIFrameElement>(null);
@@ -710,10 +723,10 @@ const PresentationActivity = ({
           />
         </TVFrame>
       ) : presentationType === 'youtube-broadcast' ? (
-        <div className="w-full flex flex-col">
+        <div className="w-full h-full min-h-0 flex flex-col">
           {isTeacher ? (
             <>
-              <div className="w-full aspect-video bg-black rounded-xl overflow-hidden">
+              <div className="w-full flex-1 min-h-0 bg-black rounded-xl overflow-hidden">
                 {presentationUrl && extractYoutubeId(presentationUrl) ? (
                   <iframe
                     ref={ytIframeRef}
@@ -728,7 +741,7 @@ const PresentationActivity = ({
                   </div>
                 )}
               </div>
-              <div className="mt-3 flex justify-center">
+              <div className="mt-3 flex flex-shrink-0 justify-center">
                 {!isScreenSharing ? (
                   <button
                     onClick={startScreenShare}
@@ -751,7 +764,7 @@ const PresentationActivity = ({
                   </div>
                 )}
               </div>
-              <p className="text-gray-500 text-xs text-center mt-2 max-w-xl mx-auto">
+              <p className="flex-shrink-0 text-gray-500 text-xs text-center mt-2 max-w-xl mx-auto">
                 Браузер предложит <em>«Поделиться этой вкладкой»</em> — нажмите «Поделиться» и убедитесь, что включён <em>«звук вкладки»</em>. Отдельную вкладку с YouTube открывать не нужно.
               </p>
             </>

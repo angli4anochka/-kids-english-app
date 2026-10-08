@@ -1,0 +1,6 @@
+﻿(() => {
+ let context=null,key=null,revision=0,handlers=null;
+ function send(){if(!handlers)return;const snapshot=handlers.snapshot();if(key)try{localStorage.setItem(key,JSON.stringify(snapshot.state))}catch{}if(context&&!context.isTeacher)parent.postMessage({type:'classroom-game-progress',revision:++revision,...snapshot.details},location.origin)}
+ window.ClassroomBridge={get context(){return context},publish:send,command(action){if(context?.isTeacher)parent.postMessage({type:'classroom-game-command',action},location.origin)},init(value){handlers=value;parent.postMessage({type:'classroom-game-ready'},location.origin)}};
+ addEventListener('message',e=>{if(e.source!==parent||e.origin!==location.origin||!handlers)return;const d=e.data;if(d?.type==='classroom-game-context'){const nextKey='classroom-game:'+d.storageKey;if(key===nextKey)return;context=d;key=nextKey;let saved=null;try{saved=JSON.parse(localStorage.getItem(key)||'null')}catch{}handlers.restore(saved,d);send()}if(d?.type==='classroom-game-shared')handlers.shared?.(d.state);if(d?.type==='classroom-game-save-status'&&d.revision===revision){const el=document.getElementById('saveStatus');if(el)el.textContent=d.ok?'✓ Saved':'Saving failed · retrying…'}});
+})();

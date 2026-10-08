@@ -172,6 +172,20 @@ const ACTIVITY_TEMPLATES: Template[] = [
     )
   },
   {
+    id: 'build-phrase',
+    title: 'Build the phrase',
+    description: 'Собрать любую введённую фразу по буквам',
+    category: 'games',
+    preview: (
+      <div className="p-3 w-full">
+        <div className="w-full h-24 bg-gradient-to-br from-sky-400 to-cyan-600 rounded-lg mb-2 flex flex-col items-center justify-center text-white">
+          <div className="text-4xl mb-1">🔤</div>
+          <div className="font-bold tracking-widest">B U I L D</div>
+        </div>
+        <div className="text-sm font-medium text-center text-gray-700">Введи фразу → собери буквы</div>
+      </div>
+    )
+  },  {
     id: 'interactive-iframe',
     title: 'Интерактивное упражнение',
     description: 'Umaigra, LearningApps и др.',
@@ -194,6 +208,23 @@ const ACTIVITY_TEMPLATES: Template[] = [
           <span className="text-xs bg-indigo-500 text-white px-2 py-0.5 rounded">LearningApps</span>
           <span className="text-xs bg-blue-500 text-white px-2 py-0.5 rounded">Quizlet</span>
         </div>
+      </div>
+    )
+  },
+  {
+    id: 'flashlight',
+    title: 'Фонарик',
+    description: 'Ищи нужные слова лучом фонарика',
+    category: 'games',
+    preview: (
+      <div className="p-3">
+        <div className="mb-2 flex h-24 items-center justify-center rounded-lg bg-gradient-to-br from-slate-950 via-indigo-950 to-violet-900 text-white">
+          <div className="text-center">
+            <div className="mb-1 text-4xl">🔦</div>
+            <div className="text-xs font-bold">Найди спрятанные слова</div>
+          </div>
+        </div>
+        <div className="text-center text-xs text-gray-500">Води фонариком по экрану</div>
       </div>
     )
   },

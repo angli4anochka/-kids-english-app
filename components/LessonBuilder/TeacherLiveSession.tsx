@@ -162,6 +162,9 @@ export default function TeacherLiveSession({ sessionId }: TeacherLiveSessionProp
             geniallyUrl: activity.type === 'genially' ? activity.content_url : contentData.geniallyUrl,
             videoUrl: (activity.type === 'video' || activity.type === 'internal-video') ? activity.content_url : contentData.videoUrl,
             imageUrl: activity.type === 'image' ? activity.content_url : contentData.imageUrl,
+            externalUrl: activity.type === 'interactive' ? activity.content_url : contentData.externalUrl,
+            embedUrl: activity.type === 'interactive' ? activity.content_url : (contentData.embedUrl || contentData.externalUrl),
+            contentData,
           };
         });
 

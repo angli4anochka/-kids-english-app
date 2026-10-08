@@ -42,7 +42,7 @@ const LessonPlan = ({ role, onActivitySelect, currentActivity, lessonId, islandI
     try {
       const [lessonData, activitiesData] = await Promise.all([
         lessonService.getLesson(lessonId),
-        lessonService.getActivities(lessonId),
+        lessonService.getActivities(lessonId, true),
       ]);
 
       setLessonTitle(lessonData.title);

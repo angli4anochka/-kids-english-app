@@ -1,0 +1,667 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Better Safe Than Sorry — A2</title>
+<style>
+:root{
+ --bg:#f4f6fb;--card:#fff;--ink:#172033;--muted:#687386;--line:#e4e8f0;
+ --red:#ef5b62;--blue:#4a7cf0;--green:#21a06b;--yellow:#f4c44f;--violet:#7357e8;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden}
+body{font-family:Inter,Segoe UI,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{height:100vh;display:flex;flex-direction:column;min-height:0}
+.top{height:48px;flex:0 0 48px;background:#fff;border-bottom:1px solid var(--line);
+ display:flex;align-items:center;gap:12px;padding:0 14px}
+.brand{font-weight:950;font-size:18px;white-space:nowrap}
+.progress{height:7px;background:#edf0f5;flex:1;border-radius:20px;overflow:hidden}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--red),var(--violet));width:11.11%}
+.count{font-weight:900;color:var(--muted);font-size:13px}
+.stage{flex:1;min-height:0;padding:8px 12px}
+.screen{display:none;height:100%;min-height:0}
+.screen.active{display:block}
+.panel{height:100%;min-height:0;background:#fff;border:1px solid var(--line);border-radius:20px;
+ box-shadow:0 8px 26px rgba(35,45,70,.07);padding:11px;overflow:hidden}
+.head{height:52px;display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+h1{margin:0;font-size:clamp(23px,3.2vh,34px);line-height:1}
+.sub{font-size:clamp(11px,1.6vh,14px);color:var(--muted);margin-top:4px}
+.tag{font-size:11px;font-weight:900;background:#fff4df;border:1px solid #f5d08b;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.body{height:calc(100% - 52px);min-height:0}
+.two{height:100%;display:grid;grid-template-columns:1fr 1fr;gap:9px;min-height:0}
+.visual{height:100%;min-height:0;border:1px solid var(--line);background:#f7f9fc;border-radius:16px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.visual img{width:100%;height:100%;object-fit:contain}
+.card{border:1px solid var(--line);border-radius:16px;background:#fff;padding:10px}
+.soft{background:#f8faff}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#edf3ff;color:#345d9a;font-size:11px;font-weight:900}
+.prompt{font-size:clamp(22px,4vh,42px);font-weight:950;line-height:1.05;text-align:center;margin:14px 0}
+.btn{border:0;border-radius:12px;padding:8px 12px;font-weight:900;background:#edf1f7;color:var(--ink)}
+.btn.dark{background:var(--ink);color:#fff}.btn.good{background:#e8f7ef;color:#146947}.btn.bad{background:#fff0f0;color:#ad343b}
+.speak{background:#fff6d9;border:1px solid #eed06a;border-radius:14px;padding:9px;font-size:clamp(11px,1.6vh,14px)}
+.feedback{min-height:25px;font-weight:900;padding-top:6px}
+.nav{height:44px;flex:0 0 44px;background:#fff;border-top:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 14px}
+.nav button{border:0;border-radius:11px;padding:7px 15px;font-weight:900;background:#edf1f6}
+.nav .next{background:var(--ink);color:#fff}.nav button:disabled{opacity:.35}
+.navtitle{font-size:12px;color:var(--muted);font-weight:800}
+
+/* vocabulary */
+.vocabbar{height:38px;display:flex;gap:6px;align-items:center}
+.tab{border:1px solid var(--line);background:#f7f9fc;border-radius:10px;padding:6px 10px;font-weight:900;font-size:11px}
+.tab.on{background:#eee9ff;border-color:#c8baff;color:#5538c6}
+.vgrid{height:calc(100% - 38px);display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(2,1fr);gap:7px}
+.vcard{border:1px solid var(--line);background:#fff;border-radius:14px;padding:7px;text-align:center;
+ display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+.vcard:hover{border-color:#cbbdff}.vicon{font-size:clamp(29px,6vh,54px);line-height:1}
+.vword{font-size:clamp(13px,1.9vh,17px);font-weight:950;margin-top:4px;line-height:1.08}
+.vmeaning{display:none;font-size:clamp(10px,1.4vh,12px);color:var(--muted);margin-top:4px;line-height:1.15}
+.vcard.open{background:#f8f5ff}.vcard.open .vmeaning{display:block}
+.quizlist{height:100%;display:grid;grid-template-rows:repeat(5,1fr);gap:5px}
+.quizrow{border:1px solid var(--line);border-radius:12px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:clamp(11px,1.6vh,14px)}
+.opts{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}.mini{border:0;border-radius:9px;padding:5px 8px;font-size:11px;font-weight:900;background:#edf1f6}
+.mini.ok{outline:2px solid #43b47a}.mini.no{outline:2px solid #f06a70}
+
+/* dialogue */
+.audioBox{display:flex;gap:7px;align-items:center}.audioBox audio{height:30px;width:250px}
+.dialogue{height:100%;display:flex;flex-direction:column;gap:4px}
+.line{display:flex;gap:6px;font-size:clamp(10px,1.4vh,13px);line-height:1.16}
+.name{width:30px;flex:0 0 30px;font-weight:950;color:var(--violet)}.bubble{background:#f6f8fb;padding:4px 6px;border-radius:9px;flex:1}
+.qgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}.q{border:1px solid var(--line);border-radius:10px;padding:5px;font-size:clamp(10px,1.35vh,12px);font-weight:800}
+
+/* grammar */
+.rule{font-size:clamp(12px,1.7vh,15px);line-height:1.28}.yes{color:#13835a;font-weight:950}.nope{color:#bd4046;font-weight:950}
+.gtabs{display:flex;gap:6px;margin-bottom:6px}.gbody{height:calc(100% - 36px)}
+.advicegrid{height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(2,1fr);gap:6px}
+.adv{border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;display:flex;flex-direction:column;justify-content:center;font-size:clamp(11px,1.5vh,13px)}
+.extra6{height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:6px}
+.ex{border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;font-size:clamp(10px,1.4vh,12px);display:flex;flex-direction:column;justify-content:center}.ex b{font-size:clamp(11px,1.6vh,14px)}
+
+/* Alex */
+.alex{height:100%;display:grid;grid-template-columns:.85fr 1.15fr;gap:9px}.alexpic{background:#f4efff;border:1px solid #ded3ff;border-radius:16px;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.bigemoji{font-size:clamp(65px,14vh,120px)}.problem{font-size:clamp(21px,3.6vh,34px);font-weight:950;line-height:1.08}
+.frames{display:grid;gap:6px;margin-top:10px}.frame{background:#f7f9fc;border:1px solid var(--line);border-radius:11px;padding:7px;font-weight:850;font-size:clamp(11px,1.55vh,14px)}
+.stepper{display:flex;justify-content:space-between;align-items:center;margin-top:9px}
+
+/* screen 7 */
+.runbody{height:100%}.runpanel{height:calc(100% - 38px)}
+.rungrid{height:58%;display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.runcard{border:1px solid var(--line);border-radius:14px;padding:7px;text-align:center}.runemoji{font-size:clamp(35px,7vh,62px)}
+.runopts{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-top:5px}.personal{height:calc(42% - 7px);margin-top:7px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.pq{background:#fff6d9;border:1px solid #eed06a;border-radius:12px;padding:7px;display:flex;align-items:center;font-size:clamp(10px,1.45vh,12px);font-weight:850}
+.wfgrid{height:100%;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);gap:7px}.wf{border:1px solid var(--line);border-radius:13px;padding:8px;text-align:center;display:flex;flex-direction:column;justify-content:center}.wf b{font-size:clamp(15px,2.1vh,20px)}.arrow{color:var(--violet);font-weight:950}
+.listenwrap{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:8px}.listenleft{display:flex;flex-direction:column;gap:7px}.listenleft audio{width:100%;height:34px}.gaplist{display:grid;gap:5px}.gap{border:1px solid var(--line);border-radius:10px;padding:6px;font-size:clamp(10px,1.45vh,13px);font-weight:800}.bank{display:flex;flex-wrap:wrap;gap:5px}.bank span{background:#edf3ff;padding:5px 8px;border-radius:9px;font-weight:900;font-size:11px}
+
+/* hotline */
+.hotline{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:9px}.call{background:#fff1f1;border:1px solid #ffc1c4;border-radius:15px;padding:10px}.callno{font-size:11px;font-weight:950;color:#ad3c42}.calltext{font-size:clamp(20px,3.3vh,31px);font-weight:950;line-height:1.08;margin-top:5px}.banks{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px}.bankbox{border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff}.bankbox b{font-size:11px}.bankbox div{font-size:clamp(10px,1.4vh,12px);margin-top:3px}
+.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-top:6px}.check{background:#f7f9fc;border:1px solid var(--line);border-radius:10px;padding:6px;font-size:10px;font-weight:900}
+
+/* final */
+.final{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:9px}.leaf{border:2px solid #f0cf58;background:#fffdf4;border-radius:16px;padding:9px;display:flex;flex-direction:column}.leaf h2{text-align:center;margin:0 0 5px;font-size:clamp(23px,3.5vh,34px)}
+.inrow{display:grid;grid-template-columns:115px 1fr;gap:6px;align-items:center;margin:3px 0}.inrow label{font-size:clamp(10px,1.5vh,13px);font-weight:950}.inrow input{border:0;border-bottom:2px dashed #c7b356;background:transparent;outline:none;padding:5px;font-size:clamp(11px,1.5vh,13px)}
+
+@media(max-height:700px){
+ .top{height:42px;flex-basis:42px}.nav{height:40px;flex-basis:40px}.stage{padding:6px 9px}
+ .panel{padding:8px;border-radius:16px}.head{height:44px}.body{height:calc(100% - 44px)}
+ .audioBox audio{height:26px}.prompt{margin:8px 0}.vocabbar{height:33px}.vgrid{height:calc(100% - 33px)}
+}
+
+.exbank{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:5px}
+.exbank span{background:#eef3ff;border:1px solid #dce6ff;border-radius:8px;padding:4px 7px;font-size:10px;font-weight:900}
+.exlist{height:calc(100% - 31px);display:grid;grid-template-rows:repeat(8,1fr);gap:4px}
+.exrow{border:1px solid var(--line);border-radius:9px;padding:4px 7px;display:grid;grid-template-columns:1fr 180px;align-items:center;gap:7px;font-size:clamp(10px,1.3vh,12px);background:#fff}
+.exrow select{width:100%;border:1px solid #d9dfeb;border-radius:7px;padding:4px 5px;background:#f8faff;font-size:10px;font-weight:800;color:var(--ink)}
+.exrow.ok{border-color:#58bd88;background:#f0fbf5}.exrow.no{border-color:#ef7f85;background:#fff3f3}
+.wfTop{height:42%;display:grid;grid-template-columns:1.08fr .92fr;gap:7px;min-height:0}
+.wfExplain{display:grid;grid-template-columns:1fr 44px 1fr;gap:6px;align-items:center;margin-top:6px}
+.wfBox{border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;text-align:center}
+.wfBox b{font-size:clamp(14px,2vh,18px)}.wfArrow{text-align:center;font-size:28px;font-weight:950;color:var(--violet)}
+.wfRule{margin-top:6px;border:1px dashed #cdbdff;border-radius:11px;padding:6px;background:#faf8ff;font-size:clamp(10px,1.45vh,12px);line-height:1.25}
+.wfPractice{height:58%;display:grid;grid-template-rows:auto 1fr;gap:5px;min-height:0}
+.wfChoices{display:grid;grid-template-columns:repeat(2,1fr);grid-template-rows:repeat(3,1fr);gap:5px;min-height:0}
+.wfQ{border:1px solid var(--line);border-radius:10px;padding:6px;background:#fff;display:flex;flex-direction:column;justify-content:center;font-size:clamp(10px,1.4vh,12px)}
+.wfQ b{margin-bottom:4px}
+.wfQ .opts{justify-content:flex-start}
+
+
+.vsplit{height:100%;display:grid;grid-template-columns:.9fr 1.1fr;gap:8px;min-height:0}
+.words4{height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:7px;min-height:0}
+.word4{border:1px solid var(--line);border-radius:14px;background:#fff;padding:8px;
+ display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow:hidden}
+.word4 .ico{font-size:clamp(30px,6vh,52px);line-height:1}
+.word4 .term{font-size:clamp(13px,1.9vh,17px);font-weight:950;margin-top:4px;line-height:1.05}
+.word4 .ru{font-size:clamp(9px,1.25vh,11px);color:var(--muted);margin-top:3px}
+.practice4{height:100%;display:grid;grid-template-rows:auto repeat(4,1fr);gap:6px;min-height:0}
+.p4row{border:1px solid var(--line);border-radius:11px;background:#fff;padding:6px 8px;
+ display:grid;grid-template-columns:1fr 155px;align-items:center;gap:7px;font-size:clamp(10px,1.4vh,12px)}
+.p4row select{width:100%;border:1px solid #d8deea;border-radius:8px;background:#f8faff;padding:5px;font-size:10px;font-weight:800}
+.p4row.ok{border-color:#54b981;background:#effaf4}.p4row.no{border-color:#ef7b82;background:#fff3f3}
+.groupnote{font-size:clamp(10px,1.4vh,12px);color:var(--muted)}
+
+</style>
+<style>.app{visibility:hidden}html[data-ready="true"] .app{visibility:visible}</style></head>
+<body>
+<div class="app">
+<div class="top"><div class="brand">Better safe than sorry</div><div class="progress"><span id="bar"></span></div><div class="count"><span id="counter">1</span>/<span id="totalCount">14</span></div></div>
+<main class="stage">
+
+<!-- 1 -->
+<section class="screen" data-title="Safe or risky?">
+<div class="panel"><div class="head"><div><h1>1. Safe or risky?</h1><div class="sub">Choose, explain WHY, then give one piece of advice.</div></div><div class="tag">5 min</div></div>
+<div class="body two">
+ <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+   <div class="badge">Situation <span id="safeNo">1</span>/6</div>
+   <div class="prompt" id="safeText"></div>
+   <div style="display:flex;gap:7px;justify-content:center"><button class="btn good" onclick="safePick('safe')">✅ SAFE</button><button class="btn bad" onclick="safePick('risky')">⚠️ RISKY</button></div>
+   <div class="feedback" id="safeFeed"></div>
+   <div class="speak"><b>Speak:</b> I think it’s safe/risky because…<br>You should… / You shouldn’t…</div>
+ </div>
+ <div class="visual"><img data-media-src="assets/image-d6d187b31c837e19.webp"></div>
+</div></div>
+</section>
+
+<!-- 2-7: vocabulary distributed across six screens -->
+<section class="screen" data-title="Home safety · Set 1">
+<div class="panel">
+  <div class="head">
+    <div><h1>2. Home safety · Set 1</h1><div class="sub">Learn 4 words, then use every one of them.</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">🚪👁️</div><div class="term">peephole</div><div class="ru">дверной глазок</div></div>
+<div class="word4"><div class="ico">⛓️</div><div class="term">door chain</div><div class="ru">дверная цепочка</div></div>
+<div class="word4"><div class="ico">📱</div><div class="term">mobile phone</div><div class="ru">мобильный телефон</div></div>
+<div class="word4"><div class="ico">🔛</div><div class="term">switched on</div><div class="ru">включённый</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> Before you open the door, look through the ___.</span>
+            <select onchange="checkSplit(this,'peephole')"><option value="">choose…</option><option value="peephole">peephole</option><option value="door chain">door chain</option><option value="mobile phone">mobile phone</option><option value="switched on">switched on</option></select></div><div class="p4row"><span><b>2.</b> Put the ___ on before you answer the door.</span>
+            <select onchange="checkSplit(this,'door chain')"><option value="">choose…</option><option value="peephole">peephole</option><option value="door chain">door chain</option><option value="mobile phone">mobile phone</option><option value="switched on">switched on</option></select></div><div class="p4row"><span><b>3.</b> Take your ___ with you when you go out.</span>
+            <select onchange="checkSplit(this,'mobile phone')"><option value="">choose…</option><option value="peephole">peephole</option><option value="door chain">door chain</option><option value="mobile phone">mobile phone</option><option value="switched on">switched on</option></select></div><div class="p4row"><span><b>4.</b> Keep your phone ___ at night.</span>
+            <select onchange="checkSplit(this,'switched on')"><option value="">choose…</option><option value="peephole">peephole</option><option value="door chain">door chain</option><option value="mobile phone">mobile phone</option><option value="switched on">switched on</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+<section class="screen" data-title="Home safety · Set 2">
+<div class="panel">
+  <div class="head">
+    <div><h1>3. Home safety · Set 2</h1><div class="sub">Four more home-safety words, then immediate practice.</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">🧍❓</div><div class="term">stranger</div><div class="ru">незнакомец</div></div>
+<div class="word4"><div class="ico">🪪</div><div class="term">ID</div><div class="ru">удостоверение личности</div></div>
+<div class="word4"><div class="ico">🔑</div><div class="term">leave your keys</div><div class="ru">оставлять ключи</div></div>
+<div class="word4"><div class="ico">🚨</div><div class="term">alarm system</div><div class="ru">сигнализация</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> Never let a ___ into your home without checking.</span>
+            <select onchange="checkSplit(this,'stranger')"><option value="">choose…</option><option value="stranger">stranger</option><option value="ID">ID</option><option value="leave your keys">leave your keys</option><option value="alarm system">alarm system</option></select></div><div class="p4row"><span><b>2.</b> Ask to see the visitor’s ___.</span>
+            <select onchange="checkSplit(this,'ID')"><option value="">choose…</option><option value="stranger">stranger</option><option value="ID">ID</option><option value="leave your keys">leave your keys</option><option value="alarm system">alarm system</option></select></div><div class="p4row"><span><b>3.</b> Don’t ___ near a window.</span>
+            <select onchange="checkSplit(this,'leave your keys')"><option value="">choose…</option><option value="stranger">stranger</option><option value="ID">ID</option><option value="leave your keys">leave your keys</option><option value="alarm system">alarm system</option></select></div><div class="p4row"><span><b>4.</b> They decided to fit an ___.</span>
+            <select onchange="checkSplit(this,'alarm system')"><option value="">choose…</option><option value="stranger">stranger</option><option value="ID">ID</option><option value="leave your keys">leave your keys</option><option value="alarm system">alarm system</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+<section class="screen" data-title="Crime & actions · Set 1">
+<div class="panel">
+  <div class="head">
+    <div><h1>4. Crime & actions · Set 1</h1><div class="sub">Learn 4 crime words and use them straight away.</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">🦹</div><div class="term">burglar</div><div class="ru">взломщик</div></div>
+<div class="word4"><div class="ico">💰➡️</div><div class="term">steal</div><div class="ru">красть</div></div>
+<div class="word4"><div class="ico">🏙️⚠️</div><div class="term">crime</div><div class="ru">преступность</div></div>
+<div class="word4"><div class="ico">🚪💥</div><div class="term">break in</div><div class="ru">вломиться</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> A ___ broke into the house last night.</span>
+            <select onchange="checkSplit(this,'burglar')"><option value="">choose…</option><option value="burglar">burglar</option><option value="steal">steal</option><option value="crime">crime</option><option value="break in">break in</option></select></div><div class="p4row"><span><b>2.</b> Thieves sometimes ___ phones and bags.</span>
+            <select onchange="checkSplit(this,'steal')"><option value="">choose…</option><option value="burglar">burglar</option><option value="steal">steal</option><option value="crime">crime</option><option value="break in">break in</option></select></div><div class="p4row"><span><b>3.</b> There is more ___ in some big cities.</span>
+            <select onchange="checkSplit(this,'crime')"><option value="">choose…</option><option value="burglar">burglar</option><option value="steal">steal</option><option value="crime">crime</option><option value="break in">break in</option></select></div><div class="p4row"><span><b>4.</b> Someone tried to ___ through the back door.</span>
+            <select onchange="checkSplit(this,'break in')"><option value="">choose…</option><option value="burglar">burglar</option><option value="steal">steal</option><option value="crime">crime</option><option value="break in">break in</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+<section class="screen" data-title="Crime & actions · Set 2">
+<div class="panel">
+  <div class="head">
+    <div><h1>5. Crime & actions · Set 2</h1><div class="sub">What should you do in a dangerous situation?</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">🥊🚫</div><div class="term">put up a fight</div><div class="ru">оказывать сопротивление</div></div>
+<div class="word4"><div class="ico">💎➡️</div><div class="term">hand over valuables</div><div class="ru">отдать ценности</div></div>
+<div class="word4"><div class="ico">🏃‍♀️➡️</div><div class="term">run after</div><div class="ru">бежать за / преследовать</div></div>
+<div class="word4"><div class="ico">👮</div><div class="term">call the police</div><div class="ru">вызвать полицию</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> If a burglar enters, don’t ___.</span>
+            <select onchange="checkSplit(this,'put up a fight')"><option value="">choose…</option><option value="put up a fight">put up a fight</option><option value="hand over valuables">hand over valuables</option><option value="run after">run after</option><option value="call the police">call the police</option></select></div><div class="p4row"><span><b>2.</b> If necessary, ___ and stay safe.</span>
+            <select onchange="checkSplit(this,'hand over valuables')"><option value="">choose…</option><option value="put up a fight">put up a fight</option><option value="hand over valuables">hand over valuables</option><option value="run after">run after</option><option value="call the police">call the police</option></select></div><div class="p4row"><span><b>3.</b> Never ___ a burglar.</span>
+            <select onchange="checkSplit(this,'run after')"><option value="">choose…</option><option value="put up a fight">put up a fight</option><option value="hand over valuables">hand over valuables</option><option value="run after">run after</option><option value="call the police">call the police</option></select></div><div class="p4row"><span><b>4.</b> Get somewhere safe and ___.</span>
+            <select onchange="checkSplit(this,'call the police')"><option value="">choose…</option><option value="put up a fight">put up a fight</option><option value="hand over valuables">hand over valuables</option><option value="run after">run after</option><option value="call the police">call the police</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+<section class="screen" data-title="Street & home protection · Set 1">
+<div class="panel">
+  <div class="head">
+    <div><h1>6. Street & home protection · Set 1</h1><div class="sub">Security equipment and how it should work.</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">🛠️</div><div class="term">fit / install</div><div class="ru">установить / закрепить</div></div>
+<div class="word4"><div class="ico">✅⚙️</div><div class="term">work properly</div><div class="ru">работать исправно</div></div>
+<div class="word4"><div class="ico">🌙💡</div><div class="term">dusk-to-dawn outside lights</div><div class="ru">освещение от заката до рассвета</div></div>
+<div class="word4"><div class="ico">💡🛣️</div><div class="term">well-lit area</div><div class="ru">хорошо освещённое место</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> They want to ___ a new alarm system.</span>
+            <select onchange="checkSplit(this,'fit / install')"><option value="">choose…</option><option value="fit / install">fit / install</option><option value="work properly">work properly</option><option value="dusk-to-dawn outside lights">dusk-to-dawn outside lights</option><option value="well-lit area">well-lit area</option></select></div><div class="p4row"><span><b>2.</b> Check that the security lights ___.</span>
+            <select onchange="checkSplit(this,'work properly')"><option value="">choose…</option><option value="fit / install">fit / install</option><option value="work properly">work properly</option><option value="dusk-to-dawn outside lights">dusk-to-dawn outside lights</option><option value="well-lit area">well-lit area</option></select></div><div class="p4row"><span><b>3.</b> ___ turn on automatically when it gets dark.</span>
+            <select onchange="checkSplit(this,'dusk-to-dawn outside lights')"><option value="">choose…</option><option value="fit / install">fit / install</option><option value="work properly">work properly</option><option value="dusk-to-dawn outside lights">dusk-to-dawn outside lights</option><option value="well-lit area">well-lit area</option></select></div><div class="p4row"><span><b>4.</b> At night, walk in a ___.</span>
+            <select onchange="checkSplit(this,'well-lit area')"><option value="">choose…</option><option value="fit / install">fit / install</option><option value="work properly">work properly</option><option value="dusk-to-dawn outside lights">dusk-to-dawn outside lights</option><option value="well-lit area">well-lit area</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+<section class="screen" data-title="Street & home protection · Set 2">
+<div class="panel">
+  <div class="head">
+    <div><h1>7. Street & home protection · Set 2</h1><div class="sub">Money, valuables and community safety.</div></div>
+    <div class="tag">Vocabulary + practice</div>
+  </div>
+  <div class="body vsplit">
+    <div class="words4"><div class="word4"><div class="ico">💵</div><div class="term">cash / money</div><div class="ru">наличные / деньги</div></div>
+<div class="word4"><div class="ico">👜⌚</div><div class="term">expensive items</div><div class="ru">дорогие вещи</div></div>
+<div class="word4"><div class="ico">🏘️👀</div><div class="term">Neighbourhood Watch</div><div class="ru">соседское наблюдение</div></div>
+<div class="word4"><div class="ico">🚨🏠</div><div class="term">burglar alarm</div><div class="ru">сигнализация от взлома</div></div></div>
+    <div class="practice4">
+      <div>
+        <div class="badge">USE ALL 4 WORDS</div>
+        <div class="groupnote">Choose the correct word, then read the full sentence aloud.</div>
+      </div>
+      <div class="p4row"><span><b>1.</b> Don’t carry a lot of ___.</span>
+            <select onchange="checkSplit(this,'cash / money')"><option value="">choose…</option><option value="cash / money">cash / money</option><option value="expensive items">expensive items</option><option value="Neighbourhood Watch">Neighbourhood Watch</option><option value="burglar alarm">burglar alarm</option></select></div><div class="p4row"><span><b>2.</b> Don’t leave ___ visible in your car.</span>
+            <select onchange="checkSplit(this,'expensive items')"><option value="">choose…</option><option value="cash / money">cash / money</option><option value="expensive items">expensive items</option><option value="Neighbourhood Watch">Neighbourhood Watch</option><option value="burglar alarm">burglar alarm</option></select></div><div class="p4row"><span><b>3.</b> Our street has a ___.</span>
+            <select onchange="checkSplit(this,'Neighbourhood Watch')"><option value="">choose…</option><option value="cash / money">cash / money</option><option value="expensive items">expensive items</option><option value="Neighbourhood Watch">Neighbourhood Watch</option><option value="burglar alarm">burglar alarm</option></select></div><div class="p4row"><span><b>4.</b> A ___ can help protect your home.</span>
+            <select onchange="checkSplit(this,'burglar alarm')"><option value="">choose…</option><option value="cash / money">cash / money</option><option value="expensive items">expensive items</option><option value="Neighbourhood Watch">Neighbourhood Watch</option><option value="burglar alarm">burglar alarm</option></select></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 8 -->
+<section class="screen" data-title="Predict the story">
+<div class="panel"><div class="head"><div><h1>8. Predict the story</h1><div class="sub">Don’t read the dialogue yet.</div></div><div class="tag">3 min</div></div>
+<div class="body two">
+ <div class="visual"><img data-media-src="assets/image-8d850e3ead3f2e74.webp"></div>
+ <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+   <div class="badge">Jo’s dad is installing an alarm system.</div>
+   <h2 style="font-size:clamp(21px,3vh,30px);margin:9px 0">Why?</h2>
+   <button class="btn" style="margin:3px 0;text-align:left" onclick="pred(this,false)">A. They bought a new dog.</button>
+   <button class="btn" style="margin:3px 0;text-align:left" onclick="pred(this,true)">B. There were burglaries near their house.</button>
+   <button class="btn" style="margin:3px 0;text-align:left" onclick="pred(this,false)">C. They are going on holiday.</button>
+   <div class="speak" style="margin-top:8px"><b>Predict 2 ideas:</b> What advice will Jo give Dan?</div>
+ </div>
+</div></div>
+</section>
+
+<!-- 4 -->
+<section class="screen" data-title="Dan & Jo — read and listen">
+<div class="panel"><div class="head"><div><h1>9. Dan & Jo</h1><div class="sub">Read / listen. Find 3 pieces of advice.</div></div>
+ <div class="audioBox"><audio controls data-media-src="assets/audio-d0eecffe9c414170.mp3"></audio><div class="tag">7 min</div></div></div>
+<div class="body two" style="grid-template-columns:.74fr 1.26fr">
+ <div style="display:grid;grid-template-rows:58% 1fr;gap:7px;min-height:0"><div class="visual"><img data-media-src="assets/image-0f062699798501ef.webp"></div><div class="speak"><b>Listen for:</b> Why is Jo’s dad installing an alarm?<br><b>Find:</b> 3 pieces of advice.</div></div>
+ <div class="dialogue">
+  <div class="line"><div class="name">Dan</div><div class="bubble">Hi, Jo. What’s your dad doing?</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">He’s installing an alarm system.</div></div>
+  <div class="line"><div class="name">Dan</div><div class="bubble">What for?</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">There are burglars around here. They’re stealing things from people’s houses.</div></div>
+  <div class="line"><div class="name">Dan</div><div class="bubble">Really?</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">Yes, you should tell your parents.</div></div>
+  <div class="line"><div class="name">Dan</div><div class="bubble">They should probably install an alarm, too.</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">You should be careful with your keys. Don’t lose them or leave them near an open window.</div></div>
+  <div class="line"><div class="name">Dan</div><div class="bubble">I didn’t think of that.</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">There’s a lot of crime in cities these days.</div></div>
+  <div class="line"><div class="name">Dan</div><div class="bubble">We should be careful.</div></div>
+  <div class="line"><div class="name">Jo</div><div class="bubble">Better safe than sorry!</div></div>
+  <div class="qgrid"><div class="q">What is Jo’s dad doing?</div><div class="q">What problems do burglars cause?</div><div class="q">What advice does Jo give Dan?</div><div class="q">Do you agree with Jo? Why?</div></div>
+ </div>
+</div></div>
+</section>
+
+<!-- 5 -->
+<section class="screen" data-title="Should / shouldn’t">
+<div class="panel"><div class="head"><div><h1>10. SHOULD / SHOULDN’T</h1><div class="sub">Rule + all advice practice from the handouts.</div></div><div class="tag">7 min</div></div>
+<div class="body two">
+ <div style="display:grid;grid-template-rows:44% 1fr;gap:7px;min-height:0">
+   <div class="visual"><img data-media-src="assets/image-8a877a919ccb0d58.webp"></div>
+   <div class="card rule">
+    <div class="badge">SHOULD + base verb = advice</div><br><br>
+    <span class="yes">✓ You should lock the door.</span><br>
+    <span class="nope">✗ You should to lock the door.</span><br>
+    <span class="nope">✗ You should locks the door.</span><br><br>
+    <b>SHOULDN’T + base verb:</b> You shouldn’t open the door.<br>
+    <span style="color:var(--muted)">should = совет · must = необходимость / обязанность</span>
+   </div>
+ </div>
+ <div class="card soft">
+   <div class="gtabs"><button class="tab on" onclick="showGTab(0,this)">Matt’s wallet</button><button class="tab" onclick="showGTab(1,this)">More advice</button></div>
+   <div id="grammarPractice" class="gbody"></div>
+ </div>
+</div></div>
+</section>
+
+<!-- 6 -->
+<section class="screen" data-title="What should Alex do?">
+<div class="panel"><div class="head"><div><h1>11. What should Alex do?</h1><div class="sub">Give one piece of advice. Change the structure each time.</div></div><div class="tag">7 min</div></div>
+<div class="body alex">
+ <div class="alexpic"><div class="bigemoji" id="alexEmoji">💵</div><div class="badge">Alex is travelling alone.</div></div>
+ <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+   <div class="problem" id="alexProblem"></div>
+   <div class="frames"><div class="frame">He should…</div><div class="frame">I don’t think he should…</div><div class="frame">Why doesn’t he…?</div></div>
+   <div class="stepper"><button class="btn" onclick="alexStep(-1)">← Previous</button><div class="badge"><span id="alexNo">1</span>/5</div><button class="btn dark" onclick="alexStep(1)">Next problem →</button></div>
+ </div>
+</div></div>
+</section>
+
+<!-- 7 -->
+<section class="screen" data-title="RUN + word formation + listening">
+<div class="panel"><div class="head"><div><h1>12. Language Lab</h1><div class="sub">First: clear схемы и объяснение. Then: practice.</div></div><div class="tag">8 min</div></div>
+<div class="body runbody">
+ <div class="vocabbar">
+   <button class="tab on" onclick="showLab(0,this)">RUN: rule + practice</button>
+   <button class="tab" onclick="showLab(1,this)">Word formation: rule + practice</button>
+   <button class="tab" onclick="showLab(2,this)">🎧 Listening</button>
+ </div>
+ <div id="labContent" class="runpanel"></div>
+</div></div>
+</section>
+
+<!-- 8 -->
+<section class="screen" data-title="Safety Hotline">
+<div class="panel"><div class="head"><div><h1>13. Safety Hotline 📞</h1><div class="sub">Ask 1 question + give 2 pieces of advice using different structures.</div></div><div class="tag">8 min</div></div>
+<div class="body hotline">
+ <div class="visual"><img data-media-src="assets/image-eeb2d169cb3b68f5.webp"></div>
+ <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+   <div class="call"><div class="callno">CALL <span id="callNo">1</span></div><div class="calltext" id="callText"></div></div>
+   <div class="banks">
+    <div class="bankbox"><b>ASKING FOR ADVICE</b><div>What should I/we do…?</div><div>What’s the best way to…?</div><div>How can I/we…?</div><div>Have you got any advice?</div></div>
+    <div class="bankbox"><b>GIVING ADVICE</b><div>I think / don’t think you should…</div><div>You should (not)…</div><div>How about …-ing?</div><div>Why don’t you…?</div></div>
+   </div>
+   <div class="checks"><div class="check">① Ask 1 question</div><div class="check">② Give 2 pieces of advice</div><div class="check">③ Use 2 structures</div></div>
+   <div class="stepper"><button class="btn" onclick="callStep(-1)">← Previous</button><div class="badge"><span id="callCount">1</span>/4</div><button class="btn dark" onclick="callStep(1)">Next call →</button></div>
+ </div>
+</div></div>
+</section>
+
+<!-- 9 -->
+<section class="screen" data-title="Final Challenge">
+<div class="panel"><div class="head"><div><h1>14. Final Challenge</h1><div class="sub">Create 5 rules to stay safe. Say them first, then write them.</div></div><div class="tag">4 min</div></div>
+<div class="body final">
+ <div class="visual"><img data-media-src="assets/image-1407689986b3e71d.webp"></div>
+ <div class="leaf">
+  <h2>🛡️ STAY SAFE!</h2>
+  <div class="inrow"><label>1. Always…</label><input placeholder="your rule"></div>
+  <div class="inrow"><label>2. Never…</label><input placeholder="your rule"></div>
+  <div class="inrow"><label>3. You should…</label><input placeholder="your rule"></div>
+  <div class="inrow"><label>4. You shouldn’t…</label><input placeholder="your rule"></div>
+  <div class="inrow"><label>5. If…, you should…</label><input placeholder="your rule"></div>
+  <div class="speak" style="margin-top:7px"><b>Final speaking:</b> Say all 5 rules without reading.</div>
+ </div>
+</div></div>
+</section>
+
+</main>
+<div class="nav"><button id="prev" onclick="go(-1)">← Back</button><div class="navtitle" id="navtitle"></div><button id="next" class="next" onclick="go(1)">Next →</button></div>
+</div>
+
+<script>
+const counter = document.getElementById('counter');
+const totalCount = document.getElementById('totalCount');
+const bar = document.getElementById('bar');
+const prev = document.getElementById('prev');
+const next = document.getElementById('next');
+const navtitle = document.getElementById('navtitle');
+
+const safeNo = document.getElementById('safeNo');
+const safeText = document.getElementById('safeText');
+const safeFeed = document.getElementById('safeFeed');
+
+const grammarPractice = document.getElementById('grammarPractice');
+const alexEmoji = document.getElementById('alexEmoji');
+const alexProblem = document.getElementById('alexProblem');
+const alexNo = document.getElementById('alexNo');
+
+const labContent = document.getElementById('labContent');
+
+const callNo = document.getElementById('callNo');
+const callCount = document.getElementById('callCount');
+const callText = document.getElementById('callText');
+const screens=[...document.querySelectorAll('.screen')];
+const requestedStage=Number(new URLSearchParams(location.search).get('stage'));
+const embeddedStage=Number.isInteger(requestedStage)&&requestedStage>=1&&requestedStage<=screens.length;
+let cur=embeddedStage?requestedStage-1:0;
+if(embeddedStage)document.querySelector('.nav').style.display='none';
+function render(){screens.forEach((s,i)=>s.classList.toggle('active',i===cur));counter.textContent=cur+1;totalCount.textContent=screens.length;bar.style.width=((cur+1)/screens.length*100)+'%';prev.disabled=cur===0;next.disabled=cur===screens.length-1;navtitle.textContent=screens[cur].dataset.title}
+function go(n){if(embeddedStage)return;document.querySelectorAll('audio').forEach(a=>a.pause());cur=Math.max(0,Math.min(screens.length-1,cur+n));render()}
+document.addEventListener('keydown',e=>{if(embeddedStage || /INPUT|TEXTAREA|SELECT/.test(e.target.tagName) || e.target.isContentEditable)return;if(e.key==='ArrowRight')go(1);if(e.key==='ArrowLeft')go(-1)});
+
+/* 1 */
+const safe=[
+ ['You leave your keys under the doormat.','risky'],
+ ['You walk home alone at 1 a.m.','risky'],
+ ['You lock the door when you leave.','safe'],
+ ['A stranger asks to enter your building.','risky'],
+ ['You keep your phone in your back pocket.','risky'],
+ ['You leave your window open when you go out.','risky']
+];let si=0;
+function drawSafe(){safeNo.textContent=si+1;safeText.textContent=safe[si][0];safeFeed.textContent=''}
+function safePick(x){safeFeed.textContent=(x===safe[si][1]?'✓ Correct. ':'Think again. ')+'Now explain WHY and use should / shouldn’t.';setTimeout(()=>{si=(si+1)%safe.length;drawSafe()},1400)} drawSafe();
+
+/* 2-7 */
+function checkSplit(sel,answer){
+ const row=sel.closest('.p4row');
+ row.classList.remove('ok','no');
+ if(!sel.value)return;
+ row.classList.add(sel.value===answer?'ok':'no');
+}
+
+/* 8 */
+function pred(btn,ok){[...btn.parentElement.querySelectorAll('.btn')].forEach(x=>x.classList.remove('good','bad'));btn.classList.add(ok?'good':'bad')}
+
+/* 5 */
+function showGTab(n,btn){
+ [...btn.parentElement.children].forEach(x=>x.classList.remove('on'));btn.classList.add('on');
+ if(n===0){
+  document.getElementById('grammarPractice').innerHTML=`<div class="advicegrid">
+   <div class="adv"><b>carry a lot of money with you</b><span>→ He shouldn’t carry a lot of money.</span></div>
+   <div class="adv"><b>use a belt bag</b><span>→ He should use a belt bag.</span></div>
+   <div class="adv"><b>keep your wallet in your back pocket</b><span>→ He shouldn’t keep it there.</span></div>
+   <div class="adv"><b>be careful in crowded places</b><span>→ He should be careful.</span></div>
+  </div>`;
+ }else{
+  document.getElementById('grammarPractice').innerHTML=`<div class="extra6">
+   <div class="ex"><b>splitting headache</b><span>take a painkiller</span></div>
+   <div class="ex"><b>feels tired</b><span>go to bed</span></div>
+   <div class="ex"><b>toothache</b><span>see a dentist</span></div>
+   <div class="ex"><b>always loses his keys</b><span>not keep them in your pocket</span></div>
+   <div class="ex"><b>nervous about exams</b><span>not worry so much</span></div>
+   <div class="ex"><b>feet hurt</b><span>take off your shoes</span></div>
+  </div>`;
+ }
+}
+const grammarFirstTab = document.querySelector('.gtabs .tab');
+if (grammarFirstTab) showGTab(0, grammarFirstTab);
+
+/* 6 */
+const alex=[['💵','He carries a lot of cash.'],['👛','He keeps his wallet in his back pocket.'],['🌙','He walks alone at night.'],['👜☕','He leaves his bag on a café chair.'],['👥','He is in a crowded place.']];let ai=0;
+function drawAlex(){alexEmoji.textContent=alex[ai][0];alexProblem.textContent=alex[ai][1];alexNo.textContent=ai+1}
+function alexStep(n){ai=(ai+n+alex.length)%alex.length;drawAlex()}drawAlex();
+
+/* 7 */
+function showLab(n,btn){
+ [...btn.parentElement.children].forEach(x=>x.classList.remove('on'));btn.classList.add('on');
+ if(n===0){
+ document.getElementById('labContent').innerHTML=`<div style="height:100%;display:grid;grid-template-rows:42% 58%;gap:7px">
+   <div style="display:grid;grid-template-columns:1.05fr .95fr;gap:7px;min-height:0">
+     <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+       <div class="badge">STEP 1 · EXPLANATION</div>
+       <h3 style="margin:8px 0 6px;font-size:clamp(19px,2.6vh,27px)">RUN phrasal verbs</h3>
+       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+         <div style="border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;text-align:center">
+           <div style="font-size:28px">👫✨</div>
+           <b>run into</b><br><span style="font-size:12px;color:var(--muted)">meet by chance</span><br>
+           <span style="font-size:11px">I ran into my friend.</span>
+         </div>
+         <div style="border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;text-align:center">
+           <div style="font-size:28px">🐕🏃</div>
+           <b>run after</b><br><span style="font-size:12px;color:var(--muted)">chase / go after</span><br>
+           <span style="font-size:11px">The dog ran after me.</span>
+         </div>
+         <div style="border:1px solid var(--line);border-radius:12px;padding:7px;background:#fff;text-align:center">
+           <div style="font-size:28px">🥛🚫</div>
+           <b>run out of</b><br><span style="font-size:12px;color:var(--muted)">have no more</span><br>
+           <span style="font-size:11px">We ran out of milk.</span>
+         </div>
+       </div>
+     </div>
+     <div class="visual"><img data-media-src="assets/image-0f062699798501ef.webp"></div>
+   </div>
+   <div style="display:grid;grid-template-rows:auto 1fr auto;gap:6px;min-height:0">
+     <div class="badge">STEP 2 · PRACTICE</div>
+     <div class="rungrid">
+       <div class="runcard"><div class="runemoji">🐕🏃</div><b>A dog is chasing a boy.</b><div class="runopts"><button class="mini" onclick="labPick(this,false)">run into</button><button class="mini" onclick="labPick(this,true)">run after</button><button class="mini" onclick="labPick(this,false)">run out of</button></div></div>
+       <div class="runcard"><div class="runemoji">👩‍🤝‍👨✨</div><b>Two people meet by chance.</b><div class="runopts"><button class="mini" onclick="labPick(this,true)">run into</button><button class="mini" onclick="labPick(this,false)">run after</button><button class="mini" onclick="labPick(this,false)">run out of</button></div></div>
+       <div class="runcard"><div class="runemoji">🥛🚫</div><b>There is no milk left.</b><div class="runopts"><button class="mini" onclick="labPick(this,false)">run into</button><button class="mini" onclick="labPick(this,false)">run after</button><button class="mini" onclick="labPick(this,true)">run out of</button></div></div>
+     </div>
+     <div class="personal"><div class="pq">Have you ever run into a teacher outside school?</div><div class="pq">What do you often run out of at home?</div><div class="pq">Have you ever run after a bus?</div></div>
+   </div>
+  </div>`;
+  } else if(n===1){
+  document.getElementById('labContent').innerHTML=`<div style="height:100%;display:grid;grid-template-rows:42% 58%;gap:7px">
+    <div class="wfTop">
+      <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+        <div class="badge">STEP 1 · UNDERSTAND THE DIFFERENCE</div>
+        <div class="wfExplain">
+          <div class="wfBox">
+            <b>ADJECTIVE</b><br>
+            <span style="font-size:11px;color:var(--muted)">описывает предмет / человека</span><br>
+            <span style="font-size:12px"><b>какой?</b></span><br>
+            <span style="font-size:11px">a <b>safe</b> street</span>
+          </div>
+          <div class="wfArrow">→</div>
+          <div class="wfBox">
+            <b>ADVERB</b><br>
+            <span style="font-size:11px;color:var(--muted)">описывает действие</span><br>
+            <span style="font-size:12px"><b>как?</b></span><br>
+            <span style="font-size:11px">drive <b>safely</b></span>
+          </div>
+        </div>
+        <div class="wfRule">
+          <b>Схема:</b> adjective + <b>-ly</b> → adverb<br>
+          careful → carefully · proper → properly · safe → safely<br>
+          <b>Spelling:</b> real → really · bad → badly · sure → surely
+        </div>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;justify-content:center">
+        <div class="badge">LOOK AT THE WORD AFTER IT</div>
+        <div style="margin-top:7px;font-size:clamp(11px,1.55vh,13px);line-height:1.38">
+          <b>1. Before a noun → adjective</b><br>
+          a <u>careful</u> driver · a <u>real</u> problem<br><br>
+          <b>2. After a verb/action → adverb</b><br>
+          drive <u>carefully</u> · work <u>properly</u><br><br>
+          <b>3. After BE → adjective</b><br>
+          The street is <u>safe</u>. · I am <u>sure</u>.
+        </div>
+      </div>
+    </div>
+    <div class="wfPractice">
+      <div class="badge">STEP 2 · CHOOSE THE CORRECT FORM</div>
+      <div class="wfChoices">
+        <div class="wfQ"><b>1. Read the leaflet ___.</b><div class="opts"><button class="mini" onclick="labPick(this,false)">careful</button><button class="mini" onclick="labPick(this,true)">carefully</button></div></div>
+        <div class="wfQ"><b>2. He behaved ___.</b><div class="opts"><button class="mini" onclick="labPick(this,false)">bad</button><button class="mini" onclick="labPick(this,true)">badly</button></div></div>
+        <div class="wfQ"><b>3. Is this street ___ at night?</b><div class="opts"><button class="mini" onclick="labPick(this,true)">safe</button><button class="mini" onclick="labPick(this,false)">safely</button></div></div>
+        <div class="wfQ"><b>4. Make sure the lights work ___.</b><div class="opts"><button class="mini" onclick="labPick(this,false)">proper</button><button class="mini" onclick="labPick(this,true)">properly</button></div></div>
+        <div class="wfQ"><b>5. Is that a ___ story?</b><div class="opts"><button class="mini" onclick="labPick(this,true)">real</button><button class="mini" onclick="labPick(this,false)">really</button></div></div>
+        <div class="wfQ"><b>6. They will ___ come back.</b><div class="opts"><button class="mini" onclick="labPick(this,false)">sure</button><button class="mini" onclick="labPick(this,true)">surely</button></div></div>
+      </div>
+    </div>
+   </div>`;
+ } else {
+  document.getElementById('labContent').innerHTML=`<div style="height:100%;display:grid;grid-template-rows:34% 66%;gap:7px">
+    <div class="card soft" style="display:flex;flex-direction:column;justify-content:center">
+      <div class="badge">STEP 1 · BEFORE LISTENING</div>
+      <div style="font-size:clamp(18px,2.7vh,28px);font-weight:950;margin:6px 0">Stop Crime Now!</div>
+      <div style="font-size:13px;line-height:1.3">Listen for 5 key words. First just listen. Second time complete the gaps.</div>
+      <div class="bank" style="margin-top:6px"><span>areas</span><span>mobile phone</span><span>money</span><span>items</span><span>burglar</span></div>
+    </div>
+    <div class="listenwrap">
+      <div class="listenleft">
+        <div class="card soft"><b>STEP 2 · LISTEN AND CHECK</b><br><span style="font-size:12px;color:var(--muted)">Use the word bank and fill the gaps.</span></div>
+        <audio controls data-media-src="assets/audio-805006ed22b1697e.mp3"></audio>
+      </div>
+      <div class="gaplist">
+        <div class="gap">1. Walk in well-lit ______.</div>
+        <div class="gap">2. Always have your ______ with you.</div>
+        <div class="gap">3. Keep your ______ close and don’t carry a lot of cash.</div>
+        <div class="gap">4. Don’t leave expensive ______ or bags visible in your car.</div>
+        <div class="gap">5. Get a ______ alarm for your home.</div>
+      </div>
+    </div>
+   </div>`;
+ }
+}
+function labPick(btn,ok){[...btn.parentElement.children].forEach(x=>x.classList.remove('ok','no'));btn.classList.add(ok?'ok':'no')}
+const languageLabFirstTab = document.querySelector('[data-title="RUN + word formation + listening"] .vocabbar .tab');
+if (languageLabFirstTab) showLab(0, languageLabFirstTab);
+
+/* 8 */
+const calls=[
+ "I’m home alone and somebody is knocking at the door.",
+ "I think somebody is following me.",
+ "I lost my phone in a crowded place.",
+ "I’m travelling and I’ve run out of money."
+];let ci=0;
+function drawCall(){
+  document.getElementById('callNo').textContent=ci+1;
+  document.getElementById('callCount').textContent=ci+1;
+  document.getElementById('callText').textContent=calls[ci];
+}
+function callStep(n){ci=(ci+n+calls.length)%calls.length;drawCall()}
+try { drawCall(); } catch(e) { console.error('CALL init:', e); }
+try { render(); } catch(e) { console.error('Render init:', e); }
+</script>
+<script>
+(() => {
+ const hydrate=()=>document.querySelectorAll('.screen.active [data-media-src]').forEach(el=>{
+  if(el.tagName==='AUDIO')el.preload='none';
+  el.src=el.getAttribute('data-media-src');el.removeAttribute('data-media-src');
+ });
+ const priorRender=render;
+ render=function(){priorRender();hydrate()};
+ new MutationObserver(hydrate).observe(document.querySelector('.stage'),{subtree:true,childList:true,attributes:true,attributeFilter:['class']});
+ hydrate();document.documentElement.dataset.ready='true';
+})();
+</script></body></html>

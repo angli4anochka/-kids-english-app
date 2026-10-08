@@ -1,0 +1,882 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Hillside Secondary School</title>
+  <style>
+    :root{
+      --ink:#17366f;
+      --muted:#6b7da7;
+      --blue:#5f7fe8;
+      --purple:#8f7de8;
+      --green:#67b95e;
+      --orange:#ef8d54;
+      --line:#dce6fb;
+      --ok:#219a70;
+      --bad:#d75464;
+      --panel:rgba(255,255,255,.96);
+      --shadow:0 22px 60px rgba(37,57,110,.16);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      width:100%;
+      height:100%;
+      margin:0;
+      overflow:hidden;
+    }
+
+    body{
+      font-family:Inter,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%,rgba(108,145,238,.22),transparent 28%),
+        radial-gradient(circle at 92% 10%,rgba(154,132,236,.18),transparent 24%),
+        linear-gradient(135deg,#f8fbff 0%,#eef4ff 54%,#f8f5ff 100%);
+    }
+
+    button,input{font:inherit}
+
+    .app{
+      width:100%;
+      height:100%;
+      min-height:0;
+      padding:clamp(8px,1.2vw,16px);
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:6px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .title h1{
+      margin:0;
+      font-size:clamp(23px,2.25vw,36px);
+      line-height:1;
+      letter-spacing:0;
+    }
+
+    .title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:clamp(13px,1vw,16px);
+      font-weight:750;
+    }
+
+    .progress{
+      min-width:min(340px,40vw);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .audio-button{
+      display:none;
+      align-items:center;
+      gap:8px;
+      border:0;
+      border-radius:999px;
+      padding:10px 16px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 10px 20px rgba(73,96,207,.22);
+      font-weight:950;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .teacher-mode .audio-button{display:flex}
+
+    .track{
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background:#dfe8fb;
+      overflow:hidden;
+    }
+
+    .fill{
+      width:33.333%;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--blue),var(--purple));
+      transition:width .25s ease;
+    }
+
+    .progress-text{
+      min-width:96px;
+      text-align:right;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .workspace{
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      padding:clamp(8px,1.2vw,14px);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.88);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .stage{
+      display:none;
+      width:min(1180px,100%);
+      height:100%;
+      margin:0 auto;
+      min-height:0;
+    }
+
+    .stage.active{
+      display:flex;
+      flex-direction:column;
+      animation:fade .22s ease;
+    }
+
+    @keyframes fade{
+      from{opacity:0;transform:translateY(8px)}
+    }
+
+    .stage-head{
+      margin-bottom:8px;
+      flex:0 0 auto;
+    }
+
+    .stage-head h2{
+      margin:0;
+      font-size:clamp(20px,1.9vw,30px);
+      letter-spacing:0;
+    }
+
+    .stage-head p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .school-card{
+      overflow:hidden;
+      border:2px solid #efd1ca;
+      border-radius:17px;
+      background:#fff;
+    }
+
+    .school-title{
+      padding:7px 12px;
+      color:#b65d59;
+      background:#fff8f6;
+      text-align:center;
+      font-size:17px;
+      font-weight:950;
+    }
+
+    .school-table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+
+    .school-table th,
+    .school-table td{
+      padding:7px 9px;
+      border-right:1px solid #e3e9f8;
+      border-bottom:1px solid #e3e9f8;
+      text-align:center;
+      font-size:14px;
+    }
+
+    .school-table th:last-child,
+    .school-table td:last-child{border-right:0}
+
+    .school-table tbody tr:last-child td{border-bottom:0}
+
+    .school-table th{
+      color:#fff;
+      font-size:14px;
+      font-weight:950;
+    }
+
+    .teacher-head{background:var(--green)}
+    .lesson-head{background:var(--blue)}
+    .room-head{background:var(--orange)}
+
+    .answer-input{
+      width:100%;
+      border:0;
+      border-bottom:3px solid #cbd8f3;
+      outline:none;
+      padding:5px 4px 4px;
+      color:#24458e;
+      background:transparent;
+      text-align:center;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .answer-input:focus{
+      border-color:#7e99eb;
+    }
+
+    td.correct{
+      background:#effaf6;
+      box-shadow:inset 0 0 0 2px #7ed0b1;
+    }
+
+    td.wrong{
+      background:#fff3f5;
+      box-shadow:inset 0 0 0 2px #eca0ab;
+    }
+
+    .question-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(320px,1fr));
+      gap:8px;
+      min-height:0;
+    }
+
+    .question-card{
+      padding:11px 13px;
+      border:2px solid var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+      transition:border-color .15s ease,background .15s ease;
+    }
+
+    .question-card.correct{
+      border-color:#7ed0b1;
+      background:#effaf6;
+    }
+
+    .question-card.wrong{
+      border-color:#eca0ab;
+      background:#fff3f5;
+    }
+
+    .question-card label{
+      display:block;
+      margin-bottom:6px;
+      font-size:15px;
+      line-height:1.3;
+      font-weight:950;
+    }
+
+    .question-card input{
+      width:100%;
+      border:0;
+      border-bottom:3px solid #cbd8f3;
+      outline:none;
+      padding:6px 3px 5px;
+      color:#24458e;
+      background:transparent;
+      font-size:15px;
+      font-weight:850;
+    }
+
+    .interview-list{
+      display:grid;
+      gap:7px;
+      min-height:0;
+      flex:1 1 auto;
+    }
+
+    .interview-row{
+      display:grid;
+      grid-template-columns:minmax(260px,.9fr) minmax(320px,1.1fr) 46px;
+      gap:9px;
+      align-items:center;
+      padding:8px 10px;
+      border:2px solid var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+    }
+
+    .interview-row label{
+      font-size:14px;
+      line-height:1.3;
+      font-weight:950;
+    }
+
+    .interview-row input{
+      width:100%;
+      border:0;
+      border-bottom:3px solid #cbd8f3;
+      outline:none;
+      padding:6px 3px 5px;
+      color:#24458e;
+      background:transparent;
+      font-size:15px;
+      font-weight:850;
+    }
+
+    .mic{
+      width:42px;
+      height:42px;
+      border:0;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      cursor:pointer;
+      font-size:19px;
+      box-shadow:0 8px 17px rgba(73,96,207,.2);
+    }
+
+    .mic.listening{
+      animation:pulse 1s ease-in-out infinite;
+      background:linear-gradient(135deg,#dc5f6f,#ef8d54);
+    }
+
+    @keyframes pulse{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.08)}
+    }
+
+    .feedback{
+      min-height:20px;
+      margin-top:8px;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .feedback.ok{color:var(--ok)}
+    .feedback.bad{color:var(--bad)}
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:9px;
+      flex:0 0 auto;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:8px 15px;
+      font-size:14px;
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    .btn.primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 10px 20px rgba(73,96,207,.22);
+    }
+
+    .btn.secondary{
+      color:var(--ink);
+      background:#edf3ff;
+    }
+
+    .result{
+      padding:28px;
+      border-radius:22px;
+      background:linear-gradient(145deg,#eef4ff,#f7f3ff);
+      text-align:center;
+    }
+
+    .result-icon{
+      width:86px;
+      height:86px;
+      margin:0 auto 15px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      font-size:42px;
+      box-shadow:0 16px 30px rgba(73,96,207,.26);
+    }
+
+    .result h2{
+      margin:0 0 8px;
+      font-size:clamp(30px,3vw,44px);
+    }
+
+    .result p{
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:18px;
+      font-weight:750;
+    }
+
+    @media(max-width:900px){
+      .question-grid{grid-template-columns:1fr}
+      .interview-row{grid-template-columns:1fr 46px}
+      .interview-row label{grid-column:1/-1}
+    }
+
+    @media(max-height:720px){
+      .app{padding:7px 10px;gap:6px}
+      .workspace{padding:8px 11px}
+      .stage-head{margin-bottom:7px}
+      .stage-head h2{font-size:22px}
+      .stage-head p{font-size:13px}
+      .school-title{padding:7px 10px;font-size:16px}
+      .school-table th,.school-table td{padding:5px 7px;font-size:13px}
+      .answer-input{padding:3px 3px;font-size:13px}
+      .question-grid{gap:8px}
+      .question-card{padding:9px 11px}
+      .question-card label{margin-bottom:4px;font-size:14px}
+      .interview-list{gap:7px}
+      .interview-row{padding:7px 9px}
+      .mic{width:36px;height:36px;font-size:16px}
+      .audio-button{padding:8px 13px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title">
+        <h1>Hillside Secondary School</h1>
+        <p>Complete the table, answer the questions and interview a classmate.</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="audio-button" id="audioButton" type="button">▶ Play</button>
+        <div class="progress">
+          <div class="track"><div class="fill" id="progressFill"></div></div>
+          <div class="progress-text" id="progressText">Stage 1 of 3</div>
+        </div>
+      </div>
+      <audio id="lessonAudio" preload="auto" src="https://storage.yandexcloud.net/kids-app/public-assets/audio/unit1c/wb02.mp3"></audio>
+    </header>
+
+    <section class="workspace">
+      <section class="stage active" id="stageOne">
+        <div class="stage-head">
+          <h2>Listen and complete the missing information</h2>
+          <p>Use your teacher’s audio and fill in the six gaps.</p>
+        </div>
+
+        <div class="school-card">
+          <div class="school-title">Hillside Secondary School</div>
+          <table class="school-table">
+            <thead>
+              <tr>
+                <th class="teacher-head">Teacher</th>
+                <th class="lesson-head">Lesson</th>
+                <th class="room-head">Room</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mrs Cook</td>
+                <td data-key="maths"><input class="answer-input" id="gap1" placeholder="1)"></td>
+                <td>D</td>
+              </tr>
+              <tr>
+                <td>Miss Brown</td>
+                <td>Science</td>
+                <td data-key="room-f"><input class="answer-input" id="gap2" placeholder="2)"></td>
+              </tr>
+              <tr>
+                <td data-key="mr-hunt"><input class="answer-input" id="gap3" placeholder="3)"></td>
+                <td>English</td>
+                <td>B</td>
+              </tr>
+              <tr>
+                <td>Mr Marks</td>
+                <td data-key="history"><input class="answer-input" id="gap4" placeholder="4)"></td>
+                <td>C</td>
+              </tr>
+              <tr>
+                <td>Miss Simms</td>
+                <td>Music</td>
+                <td data-key="room-a"><input class="answer-input" id="gap5" placeholder="5)"></td>
+              </tr>
+              <tr>
+                <td>Mr Clark</td>
+                <td data-key="art"><input class="answer-input" id="gap6" placeholder="6)"></td>
+                <td>E</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="feedback" id="stageOneFeedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="resetStageOne" type="button">Reset</button>
+          <button class="btn primary" id="checkStageOne" type="button">Check</button>
+          <button class="btn primary" id="nextStageOne" type="button" hidden>Next</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stageTwo">
+        <div class="stage-head">
+          <h2>Answer the questions</h2>
+          <p>Use the completed table.</p>
+        </div>
+
+        <div class="question-grid">
+          <div class="question-card" data-question="english-teacher">
+            <label for="q1">1. Who is the English teacher?</label>
+            <input id="q1" placeholder="Write your answer">
+          </div>
+
+          <div class="question-card" data-question="miss-brown">
+            <label for="q2">2. What subject does Miss Brown teach?</label>
+            <input id="q2" placeholder="Write your answer">
+          </div>
+
+          <div class="question-card" data-question="maths-room">
+            <label for="q3">3. Where is the Maths lesson?</label>
+            <input id="q3" placeholder="Write your answer">
+          </div>
+
+          <div class="question-card" data-question="room-b">
+            <label for="q4">4. Which lesson is in Room B?</label>
+            <input id="q4" placeholder="Write your answer">
+          </div>
+        </div>
+
+        <div class="feedback" id="stageTwoFeedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="resetStageTwo" type="button">Reset</button>
+          <button class="btn primary" id="checkStageTwo" type="button">Check</button>
+          <button class="btn primary" id="nextStageTwo" type="button" hidden>Classmate interview</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stageThree">
+        <div class="stage-head">
+          <h2>Classmate interview</h2>
+          <p>Write your answers or use the microphone. Ask your classmate the same questions.</p>
+        </div>
+
+        <div class="interview-list">
+          <div class="interview-row">
+            <label for="i1">1. What is your favourite subject?</label>
+            <input id="i1" placeholder="My favourite subject is...">
+            <button class="mic" data-target="i1" type="button" aria-label="Record answer">🎤</button>
+          </div>
+
+          <div class="interview-row">
+            <label for="i2">2. What subjects do you have on Monday?</label>
+            <input id="i2" placeholder="On Monday, I have...">
+            <button class="mic" data-target="i2" type="button" aria-label="Record answer">🎤</button>
+          </div>
+
+          <div class="interview-row">
+            <label for="i3">3. When do you have English?</label>
+            <input id="i3" placeholder="I have English on...">
+            <button class="mic" data-target="i3" type="button" aria-label="Record answer">🎤</button>
+          </div>
+
+          <div class="interview-row">
+            <label for="i4">4. Who is your English teacher?</label>
+            <input id="i4" placeholder="My English teacher is...">
+            <button class="mic" data-target="i4" type="button" aria-label="Record answer">🎤</button>
+          </div>
+
+          <div class="interview-row">
+            <label for="i5">5. What room is your English lesson in?</label>
+            <input id="i5" placeholder="It is in Room...">
+            <button class="mic" data-target="i5" type="button" aria-label="Record answer">🎤</button>
+          </div>
+        </div>
+
+        <div class="feedback" id="stageThreeFeedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="resetStageThree" type="button">Reset</button>
+          <button class="btn primary" id="finishButton" type="button">Finish</button>
+        </div>
+      </section>
+
+      <section class="stage" id="resultStage">
+        <div class="result">
+          <div class="result-icon">✓</div>
+          <h2>Activity complete!</h2>
+          <p>You completed the listening table, the reading questions and the classmate interview.</p>
+          <button class="btn primary" id="restartButton" type="button">Start again</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const stageOne = document.getElementById("stageOne");
+    const stageTwo = document.getElementById("stageTwo");
+    const stageThree = document.getElementById("stageThree");
+    const resultStage = document.getElementById("resultStage");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const audio = document.getElementById("lessonAudio");
+    const audioButton = document.getElementById("audioButton");
+
+    const tableAnswers = {
+      "maths":["maths","math","mathematics"],
+      "room-f":["f","room f"],
+      "mr-hunt":["mr hunt","hunt"],
+      "history":["history"],
+      "room-a":["a","room a"],
+      "art":["art"]
+    };
+
+    function post(type, detail = {}) {
+      const message = {
+        type,
+        lessonId:"hillside-listening-and-interview",
+        ...detail
+      };
+      window.parent.postMessage(message, "*");
+      window.dispatchEvent(new CustomEvent(type, {detail:message}));
+    }
+
+    function playAudio(broadcast = true){
+      audio.currentTime = 0;
+      audio.play().catch(()=>{});
+      audioButton.textContent = "⏸ Stop";
+      if(broadcast) post("lesson:audio-play");
+    }
+
+    function stopAudio(broadcast = true){
+      audio.pause();
+      audio.currentTime = 0;
+      audioButton.textContent = "▶ Play";
+      if(broadcast) post("lesson:audio-stop");
+    }
+
+    audioButton.addEventListener("click",()=>{
+      if(audio.paused) playAudio(true);
+      else stopAudio(true);
+    });
+
+    audio.addEventListener("ended",()=>{
+      audioButton.textContent = "▶ Play";
+    });
+
+    window.addEventListener("message",event=>{
+      const data = event.data || {};
+      if(data.type === "set-role"){
+        document.body.classList.toggle("teacher-mode", data.role === "teacher");
+      }
+      if(data.type === "lesson:audio-play") playAudio(false);
+      if(data.type === "lesson:audio-stop") stopAudio(false);
+    });
+
+    function normalise(value) {
+      return value
+        .toLowerCase()
+        .trim()
+        .replace(/[.,!?]+$/g,"")
+        .replace(/\s+/g," ");
+    }
+
+    function showStage(stageNumber) {
+      [stageOne,stageTwo,stageThree,resultStage].forEach(stage => stage.classList.remove("active"));
+
+      if(stageNumber === 1){
+        stageOne.classList.add("active");
+        progressFill.style.width = "33.333%";
+        progressText.textContent = "Stage 1 of 3";
+      }else if(stageNumber === 2){
+        stageTwo.classList.add("active");
+        progressFill.style.width = "66.666%";
+        progressText.textContent = "Stage 2 of 3";
+      }else if(stageNumber === 3){
+        stageThree.classList.add("active");
+        progressFill.style.width = "100%";
+        progressText.textContent = "Stage 3 of 3";
+      }else{
+        resultStage.classList.add("active");
+        progressFill.style.width = "100%";
+        progressText.textContent = "Complete";
+      }
+    }
+
+    document.getElementById("checkStageOne").addEventListener("click",()=>{
+      let correct = 0;
+
+      document.querySelectorAll("[data-key]").forEach(cell=>{
+        const input = cell.querySelector("input");
+        const key = cell.dataset.key;
+        const value = normalise(input.value);
+        const ok = tableAnswers[key].includes(value);
+
+        cell.classList.toggle("correct",ok);
+        cell.classList.toggle("wrong",!ok);
+
+        if(ok) correct += 1;
+      });
+
+      const feedback = document.getElementById("stageOneFeedback");
+
+      if(correct === 6){
+        feedback.textContent = "Excellent! All six gaps are correct.";
+        feedback.className = "feedback ok";
+        document.getElementById("nextStageOne").hidden = false;
+        post("lesson:listening-table-complete",{score:6,total:6});
+      }else{
+        feedback.textContent = `${correct} of 6 correct. Check the red cells.`;
+        feedback.className = "feedback bad";
+        document.getElementById("nextStageOne").hidden = true;
+      }
+    });
+
+    document.getElementById("resetStageOne").addEventListener("click",()=>{
+      document.querySelectorAll("[data-key]").forEach(cell=>{
+        cell.classList.remove("correct","wrong");
+        cell.querySelector("input").value = "";
+      });
+      document.getElementById("stageOneFeedback").textContent = "";
+      document.getElementById("nextStageOne").hidden = true;
+    });
+
+    document.getElementById("nextStageOne").addEventListener("click",()=>showStage(2));
+
+    function stageTwoCorrect(key,value){
+      const v = normalise(value);
+
+      if(key === "english-teacher"){
+        return ["mr hunt","hunt","the english teacher is mr hunt"].includes(v);
+      }
+
+      if(key === "miss-brown"){
+        return ["science","miss brown teaches science"].includes(v);
+      }
+
+      if(key === "maths-room"){
+        return ["d","room d","the maths lesson is in room d","it is in room d"].includes(v);
+      }
+
+      if(key === "room-b"){
+        return ["english","the english lesson","english lesson","the english lesson is in room b"].includes(v);
+      }
+
+      return false;
+    }
+
+    document.getElementById("checkStageTwo").addEventListener("click",()=>{
+      let correct = 0;
+
+      document.querySelectorAll(".question-card").forEach(card=>{
+        const input = card.querySelector("input");
+        const ok = stageTwoCorrect(card.dataset.question,input.value);
+
+        card.classList.toggle("correct",ok);
+        card.classList.toggle("wrong",!ok);
+
+        if(ok) correct += 1;
+      });
+
+      const feedback = document.getElementById("stageTwoFeedback");
+
+      if(correct === 4){
+        feedback.textContent = "Excellent! All four answers are correct.";
+        feedback.className = "feedback ok";
+        document.getElementById("nextStageTwo").hidden = false;
+        post("lesson:follow-up-questions-complete",{score:4,total:4});
+      }else{
+        feedback.textContent = `${correct} of 4 correct. Check the red cards.`;
+        feedback.className = "feedback bad";
+        document.getElementById("nextStageTwo").hidden = true;
+      }
+    });
+
+    document.getElementById("resetStageTwo").addEventListener("click",()=>{
+      document.querySelectorAll(".question-card").forEach(card=>{
+        card.classList.remove("correct","wrong");
+        card.querySelector("input").value = "";
+      });
+      document.getElementById("stageTwoFeedback").textContent = "";
+      document.getElementById("nextStageTwo").hidden = true;
+    });
+
+    document.getElementById("nextStageTwo").addEventListener("click",()=>showStage(3));
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    document.querySelectorAll(".mic").forEach(button=>{
+      if(!SpeechRecognition){
+        button.title = "Voice input is not supported in this browser";
+      }
+
+      button.addEventListener("click",()=>{
+        const target = document.getElementById(button.dataset.target);
+
+        if(!SpeechRecognition){
+          target.focus();
+          document.getElementById("stageThreeFeedback").textContent =
+            "Voice input is not supported here. Type your answer instead.";
+          document.getElementById("stageThreeFeedback").className = "feedback bad";
+          return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = "en-GB";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        button.classList.add("listening");
+
+        recognition.onresult = event=>{
+          target.value = event.results[0][0].transcript;
+          button.classList.remove("listening");
+          document.getElementById("stageThreeFeedback").textContent = "Voice answer added.";
+          document.getElementById("stageThreeFeedback").className = "feedback ok";
+        };
+
+        recognition.onerror = ()=>{
+          button.classList.remove("listening");
+          document.getElementById("stageThreeFeedback").textContent =
+            "I could not hear the answer. Try again or type it.";
+          document.getElementById("stageThreeFeedback").className = "feedback bad";
+        };
+
+        recognition.onend = ()=>button.classList.remove("listening");
+        recognition.start();
+      });
+    });
+
+    document.getElementById("finishButton").addEventListener("click",()=>{
+      const answers = ["i1","i2","i3","i4","i5"].map(id=>document.getElementById(id).value.trim());
+      const completed = answers.filter(Boolean).length;
+      const feedback = document.getElementById("stageThreeFeedback");
+
+      if(completed < 5){
+        feedback.textContent = `Complete all five answers. ${completed} of 5 are ready.`;
+        feedback.className = "feedback bad";
+        return;
+      }
+
+      post("lesson:classmate-interview-complete",{answers});
+      showStage(4);
+    });
+
+    document.getElementById("resetStageThree").addEventListener("click",()=>{
+      ["i1","i2","i3","i4","i5"].forEach(id=>document.getElementById(id).value = "");
+      document.getElementById("stageThreeFeedback").textContent = "";
+    });
+
+    document.getElementById("restartButton").addEventListener("click",()=>{
+      document.getElementById("resetStageOne").click();
+      document.getElementById("resetStageTwo").click();
+      document.getElementById("resetStageThree").click();
+      showStage(1);
+    });
+  </script>
+</body>
+</html>

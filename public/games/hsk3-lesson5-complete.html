@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1" name="viewport"/>
+<title>HSK Standard Course 3 · Урок 5 · 我最近越来越胖了</title>
+<style>
+:root {
+  --orange:#f4511e; --orange2:#ff6a2a; --navy:#101a31; --blue:#276ac1;
+  --paper:#fff; --bg:#f4f0ea; --ink:#211f1d; --muted:#766c64; --line:#e4d9cf;
+  --green:#2e8b57; --red:#bf4040; --soft:#f7f3ee;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font-family:Inter,Arial,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif;background:var(--bg);color:var(--ink);overflow:hidden}
+button,select,input,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:11px;padding:10px 14px;font-weight:850}
+.primary{background:var(--orange);color:#fff}
+.secondary{background:#eee7df;color:#2c2926}
+.hidden{display:none!important}
+.app{height:100%;display:grid;grid-template-rows:72px minmax(0,1fr) 62px}.single-stage .app{grid-template-rows:72px minmax(0,1fr) 0}.single-stage footer{display:none}
+header{display:flex;align-items:center;gap:14px;padding:8px 14px;background:white;border-bottom:1px solid var(--line)}
+.hsk{width:64px;height:56px;border-radius:16px;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:950;font-size:27px}
+.headTitle b{display:block;font-size:20px} .headTitle span{font-size:12px;color:var(--muted)}
+.headerProgress{margin-left:auto;display:flex;align-items:center;gap:10px;min-width:36%}
+.progress{height:12px;background:#eee6df;border-radius:999px;overflow:hidden;flex:1}
+.progress>div{height:100%;background:var(--orange);width:0}
+.counter{font-size:12px;color:var(--muted);white-space:nowrap}
+main{min-height:0;padding:10px 14px;overflow:hidden}
+.screen{display:none;height:100%;max-width:1220px;margin:auto}
+.screen.active{display:block}
+.shell{height:100%;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.title h2{font-size:28px;margin:0} .title p{margin:4px 0 0;color:var(--muted)}
+.pill{background:var(--blue);color:white;border-radius:999px;padding:8px 13px;font-weight:900;white-space:nowrap}
+.content{min-height:0}
+.panel{height:100%;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:16px}
+.actions{display:flex;gap:9px;align-items:center;min-height:44px}
+.feedback{flex:1;background:#eee7df;border-radius:11px;padding:10px 12px;color:var(--muted);font-size:13px}
+.feedback.ok{background:#eef8f2;color:var(--green)} .feedback.bad{background:#fff0f0;color:var(--red)}
+footer{background:var(--navy);display:grid;grid-template-columns:150px 1fr 150px;align-items:center;padding:8px 14px;color:#dce5ff}
+footer button{height:46px} footer .center{text-align:center;font-weight:800} footer .next{background:#13b9d7;color:#08192a}
+.hero{display:grid;grid-template-columns:1fr 260px;gap:30px;align-items:center;min-height:100%}
+.eyebrow{font-weight:900;color:var(--orange);letter-spacing:.1em}
+.hero h1{font-size:54px;margin:10px 0 4px;color:var(--orange)}
+.heroPy{font-size:22px;color:var(--blue)} .hero p{font-size:20px;color:var(--muted)}
+.heroTags{display:flex;flex-wrap:wrap;gap:8px} .heroTags span{padding:8px 10px;background:#fff2eb;border-radius:10px}
+.big5{height:230px;border-radius:26px;background:var(--orange);color:white;font-size:150px;font-weight:950;display:grid;place-items:center}
+.route{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.route div{border:1px solid var(--line);border-radius:15px;padding:15px;display:flex;gap:12px;align-items:center}
+.route b{width:34px;height:34px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center}
+.route span{font-weight:800}
+.note{margin-top:12px;padding:11px 13px;border-radius:12px;background:#fff7e9;border:1px solid #ecd19b;color:#6d5330;font-size:13px}
+.flashbox{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.flashLesson{font-size:12px;color:var(--muted)} .flashZh{font-size:88px;font-weight:900;line-height:1.15;margin:14px 0}
+.flashPy{font-size:25px;color:var(--blue)} .flashRu{font-size:22px;color:var(--muted);margin-top:8px}
+.flashControls{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:22px} .flashCount{margin-top:10px;color:var(--muted)}
+.grammarMap{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.gcard{border:1px solid var(--line);border-radius:15px;padding:13px;display:grid;gap:5px}
+.gcard b{font-size:19px;color:var(--blue)} .gcard span{font-size:13px;color:var(--muted)} .gcard em{font-style:normal;background:var(--soft);padding:7px;border-radius:8px}
+.qstack{display:grid;gap:9px}
+.qcard{border:1px solid var(--line);border-radius:14px;padding:11px;display:grid;grid-template-columns:34px 1fr;column-gap:9px}
+.qnum{width:28px;height:28px;border-radius:50%;background:#eef3fb;color:var(--blue);display:grid;place-items:center;font-weight:900}
+.qtext{font-weight:800;line-height:1.45}
+.mcgrid{grid-column:2;display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.mc{display:flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:#faf8f5;cursor:pointer}
+.mc input{accent-color:var(--orange)} .mc.correct{border-color:var(--green);background:#eef9f2} .mc.wrong{border-color:var(--red);background:#fff0f0}
+.mini-feedback{grid-column:2;font-size:12px;margin-top:6px;color:var(--muted)}
+.picGrid{display:grid;gap:9px} .picGrid.six{grid-template-columns:repeat(3,1fr)} .picGrid.four{grid-template-columns:repeat(4,1fr)}
+.picCard,.adjCard{position:relative;border:1px solid var(--line);border-radius:14px;padding:8px;background:white;overflow:hidden}
+.picCard span{position:absolute;left:10px;top:10px;width:34px;height:34px;background:var(--blue);color:#fff;border-radius:9px;display:grid;place-items:center;font-weight:950;font-size:20px;z-index:2}
+.picCard img,.adjCard img{width:100%;height:160px;object-fit:contain;object-position:center;background:#fff;display:block}
+.adjCard select{width:100%;margin-top:7px}
+.matchGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.matchGrid label{border:1px solid var(--line);padding:9px;border-radius:11px;font-weight:800} .matchGrid select{width:74px;margin-left:8px}
+.vgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.vcard{border:1px solid var(--line);border-radius:14px;padding:11px}
+.vzh{font-size:31px;font-weight:900} .vpy{color:var(--blue)} .vru{margin:5px 0;color:#4e4945} .vex{font-size:13px;background:var(--soft);padding:7px;border-radius:8px}
+.fillstack{display:grid;gap:9px} .fillrow{border:1px solid var(--line);border-radius:13px;padding:10px;display:flex;gap:9px}
+.fillbody{flex:1} .answer-input{width:100%;padding:9px;border:1px solid var(--line);border-radius:9px;margin-top:7px;font-size:16px}
+.answer-input.good,.answer-select.good{border-color:var(--green);background:#effaf3} .answer-input.bad,.answer-select.bad{border-color:var(--red);background:#fff1f1}
+.bank{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:10px} .bank span{padding:6px 10px;border-radius:8px;background:#f2ece6;font-weight:900}
+.audioBox{display:grid;grid-template-columns:220px 1fr;gap:12px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:10px;background:#faf8f5}
+.audioBox div{display:grid} .audioBox span{font-size:12px;color:var(--muted)} audio{width:100%}
+.toggleBar{display:flex;gap:8px;margin:10px 0}
+.dialogue{display:grid;gap:7px}
+.dline{display:grid;grid-template-columns:68px 1fr;gap:8px;align-items:start}
+.speaker{font-weight:900;color:var(--blue);padding-top:4px} .speech{border-radius:11px;background:#f8f5f1;padding:9px 11px}
+.zh{font-size:19px;font-weight:750;line-height:1.5} .py{color:var(--blue);margin-top:5px} .ru{color:#615a54;margin-top:4px}
+.openStack,.sourcePractice{display:grid;gap:10px}
+.openQ{border:1px solid var(--line);border-radius:13px;padding:11px}
+.openQ textarea{display:block;width:100%;min-height:60px;margin:8px 0;border:1px solid var(--line);border-radius:9px;padding:9px;resize:vertical}
+.reveal{margin-top:7px;background:#eef4ff;border:1px solid #ceddf4;border-radius:9px;padding:8px;color:#33577e}
+.readList{display:grid;gap:10px;margin-top:12px} .readList div{padding:11px;border:1px solid var(--line);border-radius:12px;line-height:1.55}
+.theory{font-size:16px;line-height:1.6} .formula{font-size:28px;text-align:center;padding:18px;background:#fff4ee;border-radius:15px;color:#65301c}
+.compare{display:flex;align-items:center;justify-content:center;gap:12px;margin:15px 0}
+.compare div:not(.arrow){padding:12px;border:1px solid var(--line);border-radius:12px;display:grid} .compare span{font-size:12px;color:var(--muted)}
+.arrow{font-size:28px;color:var(--orange)} .examples{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.examples p{margin:0;padding:9px;background:var(--soft);border-radius:10px} .warning{margin-top:12px;padding:11px;background:#fff1eb;border-left:4px solid var(--orange);border-radius:9px}
+.scenePair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.scene{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;display:grid;grid-template-columns:42% 58%}
+.scene img{width:100%;height:100%;min-height:220px;object-fit:contain;object-position:center;background:white;padding:8px}
+.sceneText{padding:11px} .sceneText p{margin:5px 0}
+.speakGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.speakCard{border:1px solid var(--line);border-radius:13px;padding:11px;display:grid;grid-template-columns:34px 1fr;column-gap:9px}
+.speakCard b{grid-row:1/3;width:30px;height:30px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center}
+.speakCard p{font-size:18px;font-weight:850;margin:2px 0} .speakCard span{font-size:12px;color:var(--muted)}
+.recorder{margin-top:12px;border:1px solid var(--line);border-radius:13px;padding:10px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.copyPage{display:grid;gap:12px}
+.copyRow{border-bottom:1px solid var(--line);padding-bottom:10px;display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:center}
+.copyLabel{display:grid} .copyLabel b{font-size:28px} .copyLabel span{color:var(--blue)}
+.charPractice{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.charSet{display:flex;gap:4px;align-items:center} .gridCell{width:72px;height:72px;border:1px solid #b7aba0;position:relative;flex:0 0 auto;background:white}
+.gridCell::before,.gridCell::after{content:"";position:absolute;pointer-events:none;opacity:.35}
+.gridCell::before{left:50%;top:0;bottom:0;border-left:1px dashed #b7aba0}
+.gridCell::after{top:50%;left:0;right:0;border-top:1px dashed #b7aba0}
+.gridCell.model{display:grid;place-items:center;font-size:46px;font-family:"KaiTi","STKaiti","Microsoft YaHei",sans-serif;font-weight:800}
+.gridCell canvas{width:72px;height:72px;display:block;touch-action:none;position:relative;z-index:1}
+.resultBox{margin-top:13px;text-align:center;padding:16px;background:#fff7ef;border:1px solid #efd0bb;border-radius:15px}
+.resultScore{font-size:58px;font-weight:950;color:var(--orange)}
+.deepBtn{position:fixed;right:22px;bottom:78px;width:58px;height:58px;border-radius:50%;background:var(--blue);color:#fff;z-index:50;box-shadow:0 5px 20px #0003}
+.deepPanel{position:fixed;right:20px;bottom:145px;width:min(390px,calc(100vw - 30px));height:390px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 12px 35px #0003;z-index:55;display:none;grid-template-rows:auto 1fr auto}
+.deepPanel.open{display:grid} .deepHead{padding:10px 12px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;font-weight:900}
+.deepMsgs{overflow:auto;padding:10px;display:grid;align-content:start;gap:8px} .deepMsg{padding:8px 10px;border-radius:10px;background:#f2eee9;white-space:pre-wrap}
+.deepInput{display:flex;gap:6px;padding:9px;border-top:1px solid var(--line)} .deepInput input{flex:1;padding:9px;border:1px solid var(--line);border-radius:9px}
+@media(max-width:900px){
+ .app{grid-template-rows:62px minmax(0,1fr) 56px} .headTitle b{font-size:16px} .headerProgress{min-width:25%}
+ .title h2{font-size:21px} .route{grid-template-columns:repeat(2,1fr)} .vgrid{grid-template-columns:repeat(2,1fr)}
+ .picGrid.six{grid-template-columns:repeat(2,1fr)} .picGrid.four{grid-template-columns:repeat(2,1fr)} .matchGrid{grid-template-columns:repeat(2,1fr)}
+ .scenePair,.speakGrid,.examples{grid-template-columns:1fr} .scene{grid-template-columns:1fr} .scene img{height:190px;min-height:0}
+ .hero{grid-template-columns:1fr} .big5{display:none} .hero h1{font-size:40px}
+ .copyRow{grid-template-columns:1fr} footer{grid-template-columns:110px 1fr 110px}
+}
+@media(max-height:760px) and (min-width:901px){
+ .app{grid-template-rows:58px minmax(0,1fr) 52px} main{padding:7px 10px} .panel{padding:11px}
+ .title h2{font-size:22px} .picCard img,.adjCard img{height:125px} .vzh{font-size:26px}
+ .zh{font-size:17px} .flashZh{font-size:64px} .gridCell,.gridCell canvas{width:62px;height:62px}
+}
+
+.wb-inline{display:inline-block!important;width:150px!important;margin:3px 5px!important;padding:6px 8px!important}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="hsk">HSK</div>
+<div class="headTitle"><b>Standard Course 3</b><span>Урок 5 · 我最近越来越胖了</span></div>
+<div class="headerProgress"><div class="progress"><div id="progressBar"></div></div><span class="counter" id="counter"></span></div>
+</header>
+<main>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>第五课 · 我最近越来越胖了</h2><p>HSK Standard Course 3 · Урок 5</p></div>
+<div class="pill">Старт</div>
+</div>
+<div class="content"><div class="panel">
+<div class="hero">
+<div>
+<div class="eyebrow">УРОК 5</div>
+<h1>我最近越来越胖了</h1>
+<div class="heroPy">Wǒ zuìjìn yuèláiyuè pàng le.</div>
+<p>В последнее время я всё больше полнею.</p>
+<div class="heroTags"><span>13 новых слов</span><span>2 грамматические темы</span><span>5 официальных аудио</span></div>
+</div>
+<div class="big5">5</div>
+</div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Маршрут урока</h2><p>Сначала активируем старое, потом добавляем новое.</p></div>
+<div class="pill">Маршрут</div>
+</div>
+<div class="content"><div class="panel">
+<div class="route">
+<div><b>1</b><span>Повтор слов 1–4</span></div>
+<div><b>2</b><span>Повтор грамматики 1–4</span></div>
+<div><b>3</b><span>Warm-up и новая лексика</span></div>
+<div><b>4</b><span>4 диалога + официальное аудио</span></div>
+<div><b>5</b><span>了 = изменение ситуации</span></div>
+<div><b>6</b><span>越来越 + Adj / Mental V</span></div>
+<div><b>7</b><span>Упражнения учебника</span></div>
+<div><b>8</b><span>Говорение + прописи + финал</span></div>
+</div>
+<div class="note">Рабочая тетрадь в этот файл не добавлена: в текущих материалах урока 5 есть страницы учебника и официальные аудио 05-1…05-5.</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Повтор слов уроков 1–4</h2><p>66 слов. Одна большая карточка, одно слово за раз.</p></div>
+<div class="pill">Повтор</div>
+</div>
+<div class="content"><div class="panel">
+<div class="flashbox">
+<div class="flashLesson" id="reviewLesson">Повтор</div>
+<div class="flashZh" id="reviewZh">周末</div>
+<div class="flashPy hidden" id="reviewPy"></div>
+<div class="flashRu hidden" id="reviewRu"></div>
+<div class="flashControls">
+<button class="secondary" onclick="reviewPrev()">←</button>
+<button class="secondary" onclick="toggleReview('py')">Пиньинь</button>
+<button class="secondary" onclick="toggleReview('ru')">Перевод</button>
+<button class="primary" onclick="reviewNext()">Знаю →</button>
+</div>
+<div class="flashCount" id="reviewCount"></div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">«Знаю» без подсказки даёт +1. После пиньиня или перевода слово не засчитывается.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Грамматика уроков 1–4</h2><p>Быстрый просмотр перед новыми темами.</p></div>
+<div class="pill">Повтор</div>
+</div>
+<div class="content"><div class="panel">
+<div class="grammarMap">
+<div class="gcard"><b>V + 好</b><span>результат доведён до готовности</span><em>你准备好了吗？</em></div>
+<div class="gcard"><b>一点儿…也/都 + 不/没</b><span>полное отрицание</span><em>我一点儿钱也没带。</em></div>
+<div class="gcard"><b>来 / 去</b><span>направление относительно говорящего</span><em>他走进来了。</em></div>
+<div class="gcard"><b>V₁了…就V₂</b><span>сразу после первого действия</span><em>我下了课就回家。</em></div>
+<div class="gcard"><b>还是 / 或者</b><span>выбор в вопросе / «или» в утверждении</span><em>茶还是咖啡？</em></div>
+<div class="gcard"><b>地点 + V着 + NP</b><span>что находится в месте</span><em>桌子上放着饮料。</em></div>
+<div class="gcard"><b>又A又B</b><span>два параллельных признака</span><em>她又聪明又热情。</em></div>
+<div class="gcard"><b>V₁着 + V₂</b><span>сопровождающее действие</span><em>她笑着回答问题。</em></div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Повтор грамматики · практика</h2><p>8 коротких заданий перед уроком 5.</p></div>
+<div class="pill">Практика</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="prior_0">
+<div class="qnum">1</div><div class="qtext">«Я совсем не взяла денег».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_0" type="radio" value="0"/><span>我没带一点儿钱。</span></label><label class="mc"><input name="prior_0" type="radio" value="1"/><span>我一点儿钱也没带。</span></label><label class="mc"><input name="prior_0" type="radio" value="2"/><span>我一点儿也钱没带。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="prior_1">
+<div class="qnum">2</div><div class="qtext">«Я закончу урок и сразу пойду домой».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_1" type="radio" value="0"/><span>我就下课了回家。</span></label><label class="mc"><input name="prior_1" type="radio" value="1"/><span>我下课就了回家。</span></label><label class="mc"><input name="prior_1" type="radio" value="2"/><span>我下了课就回家。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="prior_2">
+<div class="qnum">3</div><div class="qtext">Вопрос с выбором: «чай или кофе?»</div>
+<div class="mcgrid"><label class="mc"><input name="prior_2" type="radio" value="0"/><span>茶还是咖啡？</span></label><label class="mc"><input name="prior_2" type="radio" value="1"/><span>茶或者咖啡？</span></label><label class="mc"><input name="prior_2" type="radio" value="2"/><span>茶和咖啡吗？</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="prior_3">
+<div class="qnum">4</div><div class="qtext">«На столе стоит много напитков».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_3" type="radio" value="0"/><span>很多饮料桌子上放。</span></label><label class="mc"><input name="prior_3" type="radio" value="1"/><span>桌子上放着很多饮料。</span></label><label class="mc"><input name="prior_3" type="radio" value="2"/><span>桌子上很多饮料着放。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="prior_4">
+<div class="qnum">5</div><div class="qtext">«Она и умная, и приветливая».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_4" type="radio" value="0"/><span>她聪明又很热情又。</span></label><label class="mc"><input name="prior_4" type="radio" value="1"/><span>她又聪明又热情。</span></label><label class="mc"><input name="prior_4" type="radio" value="2"/><span>她又很聪明热情。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="prior_5">
+<div class="qnum">6</div><div class="qtext">«Она отвечает, улыбаясь».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_5" type="radio" value="0"/><span>她笑着回答。</span></label><label class="mc"><input name="prior_5" type="radio" value="1"/><span>她回答着笑。</span></label><label class="mc"><input name="prior_5" type="radio" value="2"/><span>她着笑回答。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="prior_6">
+<div class="qnum">7</div><div class="qtext">«Я иду в школу».</div>
+<div class="mcgrid"><label class="mc"><input name="prior_6" type="radio" value="0"/><span>我在学校去。</span></label><label class="mc"><input name="prior_6" type="radio" value="1"/><span>我学校去。</span></label><label class="mc"><input name="prior_6" type="radio" value="2"/><span>我去学校。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="prior_7">
+<div class="qnum">8</div><div class="qtext">«Ты уже подготовился?»</div>
+<div class="mcgrid"><label class="mc"><input name="prior_7" type="radio" value="0"/><span>你准备好了吗？</span></label><label class="mc"><input name="prior_7" type="radio" value="1"/><span>你准备了吗好？</span></label><label class="mc"><input name="prior_7" type="radio" value="2"/><span>你好吗准备？</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Правильные позиции ответов специально чередуются.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Warm-up 1 · сопоставь слова и картинки</h2><p>给下面的词语选择对应的图片</p></div>
+<div class="pill">Warm-up</div>
+</div>
+<div class="content"><div class="panel">
+<div class="picGrid six"><div class="picCard"><span>A</span><img loading="lazy" decoding="async" alt="A" src="/games/hsk3-lesson5-assets/886cf206f5c41aeab03b.png"/></div><div class="picCard"><span>B</span><img loading="lazy" decoding="async" alt="B" src="/games/hsk3-lesson5-assets/80fb9fe1c04065d16d36.png"/></div><div class="picCard"><span>C</span><img loading="lazy" decoding="async" alt="C" src="/games/hsk3-lesson5-assets/0399dd812f79f9ddc257.png"/></div><div class="picCard"><span>D</span><img loading="lazy" decoding="async" alt="D" src="/games/hsk3-lesson5-assets/5aa704f8182cf052f50c.png"/></div><div class="picCard"><span>E</span><img loading="lazy" decoding="async" alt="E" src="/games/hsk3-lesson5-assets/8d89810c6c53c74da7a8.png"/></div><div class="picCard"><span>F</span><img loading="lazy" decoding="async" alt="F" src="/games/hsk3-lesson5-assets/368079196f9da2361dad.png"/></div></div>
+<div class="matchGrid">
+<label>感冒 gǎnmào<select class="persist answer-select" data-answer="F"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>发烧 fāshāo<select class="persist answer-select" data-answer="B"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>裙子 qúnzi<select class="persist answer-select" data-answer="D"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>草 cǎo<select class="persist answer-select" data-answer="E"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>开花 kāihuā<select class="persist answer-select" data-answer="A"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>夏天 xiàtiān<select class="persist answer-select" data-answer="C"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+</div>
+</div></div>
+<div class="actions"><button class="primary" onclick="checkSelects(this)">Проверить</button><div class="feedback">Картинки вырезаны из high-res страницы PDF, без скана целой страницы.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Warm-up 2 · выбери подходящее прилагательное</h2><p>看图片，用一个合适的形容词描述图片的内容</p></div>
+<div class="pill">Warm-up</div>
+</div>
+<div class="content"><div class="panel"><div class="picGrid four"><div class="adjCard"><img loading="lazy" decoding="async" alt="1" src="/games/hsk3-lesson5-assets/5865600d0df3ff026f0c.png"/><select class="persist answer-select" data-answer="C"><option value="">Выбери</option><option value="A">A 很漂亮</option><option value="B">B 很好吃</option><option value="C">C 很冷</option><option value="D">D 很绿</option></select></div><div class="adjCard"><img loading="lazy" decoding="async" alt="2" src="/games/hsk3-lesson5-assets/68d011c6bc5eaea45fab.png"/><select class="persist answer-select" data-answer="D"><option value="">Выбери</option><option value="A">A 很漂亮</option><option value="B">B 很好吃</option><option value="C">C 很冷</option><option value="D">D 很绿</option></select></div><div class="adjCard"><img loading="lazy" decoding="async" alt="3" src="/games/hsk3-lesson5-assets/9d11cda59ee0fd8b819b.png"/><select class="persist answer-select" data-answer="B"><option value="">Выбери</option><option value="A">A 很漂亮</option><option value="B">B 很好吃</option><option value="C">C 很冷</option><option value="D">D 很绿</option></select></div><div class="adjCard"><img loading="lazy" decoding="async" alt="4" src="/games/hsk3-lesson5-assets/57d6387708255891fe6c.png"/><select class="persist answer-select" data-answer="A"><option value="">Выбери</option><option value="A">A 很漂亮</option><option value="B">B 很好吃</option><option value="C">C 很冷</option><option value="D">D 很绿</option></select></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkSelects(this)">Проверить</button><div class="feedback">A 很漂亮 · B 很好吃 · C 很冷 · D 很绿</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Новая лексика · 1/2</h2><p>生词 · слова урока 5</p></div>
+<div class="pill">词汇 1/2</div>
+</div>
+<div class="content"><div class="panel"><div class="vgrid">
+<div class="vcard">
+<div class="vzh">发烧</div><div class="vpy">fāshāo</div><div class="vru">температурить; иметь жар</div>
+<div class="vex">前几天有点儿发烧。</div>
+</div>
+<div class="vcard">
+<div class="vzh">为</div><div class="vpy">wèi</div><div class="vru">для; ради</div>
+<div class="vex">这是我为你买的绿茶。</div>
+</div>
+<div class="vcard">
+<div class="vzh">照顾</div><div class="vpy">zhàogù</div><div class="vru">ухаживать; заботиться</div>
+<div class="vex">我要在家照顾他。</div>
+</div>
+<div class="vcard">
+<div class="vzh">用</div><div class="vpy">yòng</div><div class="vru">нужно; требоваться (часто 不用 = не нужно)</div>
+<div class="vex">不用去医院。</div>
+</div>
+<div class="vcard">
+<div class="vzh">感冒</div><div class="vpy">gǎnmào</div><div class="vru">простудиться; простуда</div>
+<div class="vex">昨天吃了感冒药。</div>
+</div>
+<div class="vcard">
+<div class="vzh">季节</div><div class="vpy">jìjié</div><div class="vru">сезон, время года</div>
+<div class="vex">你最喜欢哪个季节？</div>
+</div>
+<div class="vcard">
+<div class="vzh">当然</div><div class="vpy">dāngrán</div><div class="vru">конечно</div>
+<div class="vex">当然是春天。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Новая лексика · 2/2</h2><p>生词 · слова урока 5</p></div>
+<div class="pill">词汇 2/2</div>
+</div>
+<div class="content"><div class="panel"><div class="vgrid">
+<div class="vcard">
+<div class="vzh">春天</div><div class="vpy">chūntiān</div><div class="vru">весна</div>
+<div class="vex">春天天气不那么冷了。</div>
+</div>
+<div class="vcard">
+<div class="vzh">草</div><div class="vpy">cǎo</div><div class="vru">трава</div>
+<div class="vex">草和树都绿了。</div>
+</div>
+<div class="vcard">
+<div class="vzh">夏天</div><div class="vpy">xiàtiān</div><div class="vru">лето</div>
+<div class="vex">我最喜欢夏天。</div>
+</div>
+<div class="vcard">
+<div class="vzh">裙子</div><div class="vpy">qúnzi</div><div class="vru">юбка; платье</div>
+<div class="vex">这条裙子是去年买的。</div>
+</div>
+<div class="vcard">
+<div class="vzh">最近</div><div class="vpy">zuìjìn</div><div class="vru">недавно; в последнее время</div>
+<div class="vex">我最近越来越胖了。</div>
+</div>
+<div class="vcard">
+<div class="vzh">越</div><div class="vpy">yuè</div><div class="vru">тем больше; в 越来越…</div>
+<div class="vex">天气越来越冷。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Лексика · узнавание</h2><p>Выбери подходящее слово или выражение.</p></div>
+<div class="pill">词汇</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="vocab_0">
+<div class="qnum">1</div><div class="qtext">«температурить / иметь жар»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_0" type="radio" value="0"/><span>照顾</span></label><label class="mc"><input name="vocab_0" type="radio" value="1"/><span>发烧</span></label><label class="mc"><input name="vocab_0" type="radio" value="2"/><span>季节</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="vocab_1">
+<div class="qnum">2</div><div class="qtext">«ухаживать за кем-то»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_1" type="radio" value="0"/><span>照顾</span></label><label class="mc"><input name="vocab_1" type="radio" value="1"/><span>最近</span></label><label class="mc"><input name="vocab_1" type="radio" value="2"/><span>当然</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="vocab_2">
+<div class="qnum">3</div><div class="qtext">«сезон»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_2" type="radio" value="0"/><span>夏天</span></label><label class="mc"><input name="vocab_2" type="radio" value="1"/><span>草</span></label><label class="mc"><input name="vocab_2" type="radio" value="2"/><span>季节</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="vocab_3">
+<div class="qnum">4</div><div class="qtext">«конечно»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_3" type="radio" value="0"/><span>当然</span></label><label class="mc"><input name="vocab_3" type="radio" value="1"/><span>为</span></label><label class="mc"><input name="vocab_3" type="radio" value="2"/><span>越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="vocab_4">
+<div class="qnum">5</div><div class="qtext">«юбка / платье»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_4" type="radio" value="0"/><span>草</span></label><label class="mc"><input name="vocab_4" type="radio" value="1"/><span>裙子</span></label><label class="mc"><input name="vocab_4" type="radio" value="2"/><span>感冒</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="vocab_5">
+<div class="qnum">6</div><div class="qtext">«в последнее время»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_5" type="radio" value="0"/><span>最近</span></label><label class="mc"><input name="vocab_5" type="radio" value="1"/><span>春天</span></label><label class="mc"><input name="vocab_5" type="radio" value="2"/><span>用</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="vocab_6">
+<div class="qnum">7</div><div class="qtext">«не нужно идти»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_6" type="radio" value="0"/><span>不照顾去</span></label><label class="mc"><input name="vocab_6" type="radio" value="1"/><span>不用去</span></label><label class="mc"><input name="vocab_6" type="radio" value="2"/><span>不为去</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="vocab_7">
+<div class="qnum">8</div><div class="qtext">«для тебя»</div>
+<div class="mcgrid"><label class="mc"><input name="vocab_7" type="radio" value="0"/><span>越你</span></label><label class="mc"><input name="vocab_7" type="radio" value="1"/><span>最近你</span></label><label class="mc"><input name="vocab_7" type="radio" value="2"/><span>为你</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Проверяем значение, а не угадывание по позиции.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Лексика · в контексте</h2><p>Вставь слово из урока 5.</p></div>
+<div class="pill">词汇</div>
+</div>
+<div class="content"><div class="panel"><div class="fillstack">
+<div class="fillrow">
+<div class="qnum">1</div>
+<div class="fillbody">
+<div class="qtext">前几天有点儿____，现在好多了。</div>
+<input class="answer-input persist" data-answer="发烧" id="vfill_0" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">2</div>
+<div class="fillbody">
+<div class="qtext">这是我____你买的绿茶。</div>
+<input class="answer-input persist" data-answer="为" id="vfill_1" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">3</div>
+<div class="fillbody">
+<div class="qtext">我要在家____儿子。</div>
+<input class="answer-input persist" data-answer="照顾" id="vfill_2" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">4</div>
+<div class="fillbody">
+<div class="qtext">不____去医院。</div>
+<input class="answer-input persist" data-answer="用" id="vfill_3" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">5</div>
+<div class="fillbody">
+<div class="qtext">昨天吃了____药。</div>
+<input class="answer-input persist" data-answer="感冒" id="vfill_4" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">6</div>
+<div class="fillbody">
+<div class="qtext">你最喜欢哪个____？</div>
+<input class="answer-input persist" data-answer="季节" id="vfill_5" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">7</div>
+<div class="fillbody">
+<div class="qtext">____是春天。</div>
+<input class="answer-input persist" data-answer="当然" id="vfill_6" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">8</div>
+<div class="fillbody">
+<div class="qtext">我最近越来越胖了。这里反复出现的字是____。</div>
+<input class="answer-input persist" data-answer="越" id="vfill_7" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Пиши иероглифами.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 1 · 在小丽家</h2><p>Официальное аудио 05-1</p></div>
+<div class="pill">课文 1</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>05-1</b><span>официальная дорожка учебника</span></div>
+<audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/bc93adf955c893f5f444.mp3"></audio>
+</div>
+<div class="toggleBar">
+<button class="secondary" onclick="toggleClass('.py-1')">Пиньинь</button>
+<button class="secondary" onclick="toggleClass('.ru-1')">Перевод</button>
+</div>
+<div class="dialogue">
+<div class="dline">
+<div class="speaker">朋友</div>
+<div class="speech">
+<div class="zh">我听说你身体不舒服，怎么了？</div>
+<div class="py hidden py-1">Wǒ tīngshuō nǐ shēntǐ bù shūfu, zěnme le?</div>
+<div class="ru hidden ru-1">Я слышал, ты плохо себя чувствуешь. Что случилось?</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">前几天有点儿发烧，现在好多了。</div>
+<div class="py hidden py-1">Qián jǐ tiān yǒudiǎnr fāshāo, xiànzài hǎoduō le.</div>
+<div class="ru hidden ru-1">Несколько дней назад у меня была небольшая температура, сейчас намного лучше.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">朋友</div>
+<div class="speech">
+<div class="zh">喝杯茶吧，这是我为你买的绿茶，很不错。</div>
+<div class="py hidden py-1">Hē bēi chá ba, zhè shì wǒ wèi nǐ mǎi de lǜchá, hěn búcuò.</div>
+<div class="ru hidden ru-1">Выпей чаю. Это зелёный чай, который я купил для тебя, очень неплохой.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">谢谢，我要吃药，不喝茶了。</div>
+<div class="py hidden py-1">Xièxie, wǒ yào chī yào, bù hē chá le.</div>
+<div class="ru hidden ru-1">Спасибо. Мне нужно принять лекарство, чай я больше пить не буду.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">朋友</div>
+<div class="speech">
+<div class="zh">那喝杯水吧。</div>
+<div class="py hidden py-1">Nà hē bēi shuǐ ba.</div>
+<div class="ru hidden ru-1">Тогда выпей воды.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">好的。</div>
+<div class="py hidden py-1">Hǎo de.</div>
+<div class="ru hidden ru-1">Хорошо.</div>
+</div>
+</div></div>
+</div></div>
+<div class="actions"><div class="feedback">Сначала прослушай без пиньиня и перевода. Потом включай только то, что действительно нужно.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 1 · понимание</h2><p>Ответь по тексту своими словами.</p></div>
+<div class="pill">理解</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack">
+<div class="openQ">
+<b>1. 小丽怎么不舒服了？</b>
+<textarea class="persist" id="dq_1_1" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">她前几天有点儿发烧。</div>
+</div>
+<div class="openQ">
+<b>2. 现在小丽要做什么？</b>
+<textarea class="persist" id="dq_1_2" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">她要吃药。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Здесь ответы открытые: сначала сформулируй сама, затем сравни с моделью.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 2 · 在打电话</h2><p>Официальное аудио 05-2</p></div>
+<div class="pill">课文 2</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>05-2</b><span>официальная дорожка учебника</span></div>
+<audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/339259c7ead8b7e635ca.mp3"></audio>
+</div>
+<div class="toggleBar">
+<button class="secondary" onclick="toggleClass('.py-2')">Пиньинь</button>
+<button class="secondary" onclick="toggleClass('.ru-2')">Перевод</button>
+</div>
+<div class="dialogue">
+<div class="dline">
+<div class="speaker">周太太</div>
+<div class="speech">
+<div class="zh">对不起，我明天不能和你们出去玩儿了。</div>
+<div class="py hidden py-2">Duìbuqǐ, wǒ míngtiān bù néng hé nǐmen chūqu wánr le.</div>
+<div class="ru hidden ru-2">Извините, завтра я уже не смогу пойти с вами гулять.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">张太太</div>
+<div class="speech">
+<div class="zh">为什么？怎么了？</div>
+<div class="py hidden py-2">Wèishénme? Zěnme le?</div>
+<div class="ru hidden ru-2">Почему? Что случилось?</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">周太太</div>
+<div class="speech">
+<div class="zh">我儿子生病了，我要在家照顾他。</div>
+<div class="py hidden py-2">Wǒ érzi shēngbìng le, wǒ yào zài jiā zhàogù tā.</div>
+<div class="ru hidden ru-2">Мой сын заболел, мне нужно остаться дома и ухаживать за ним.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">张太太</div>
+<div class="speech">
+<div class="zh">他吃药了吗？要不要去医院？</div>
+<div class="py hidden py-2">Tā chī yào le ma? Yào bu yào qù yīyuàn?</div>
+<div class="ru hidden ru-2">Он принял лекарство? Нужно ли ехать в больницу?</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">周太太</div>
+<div class="speech">
+<div class="zh">不用去医院，昨天吃了感冒药，现在好一些了。</div>
+<div class="py hidden py-2">Bú yòng qù yīyuàn, zuótiān chī le gǎnmào yào, xiànzài hǎo yìxiē le.</div>
+<div class="ru hidden ru-2">В больницу ехать не нужно. Вчера он принял лекарство от простуды, сейчас ему немного лучше.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">张太太</div>
+<div class="speech">
+<div class="zh">那我们下次再一起出去玩儿吧。</div>
+<div class="py hidden py-2">Nà wǒmen xià cì zài yìqǐ chūqu wánr ba.</div>
+<div class="ru hidden ru-2">Тогда в следующий раз снова пойдём гулять вместе.</div>
+</div>
+</div></div>
+</div></div>
+<div class="actions"><div class="feedback">Сначала прослушай без пиньиня и перевода. Потом включай только то, что действительно нужно.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 2 · понимание</h2><p>Ответь по тексту своими словами.</p></div>
+<div class="pill">理解</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack">
+<div class="openQ">
+<b>1. 周太太能出去玩儿吗？为什么？</b>
+<textarea class="persist" id="dq_2_1" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">不能，因为她儿子生病了，她要在家照顾他。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Здесь ответы открытые: сначала сформулируй сама, затем сравни с моделью.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 3 · 在小刚家</h2><p>Официальное аудио 05-3</p></div>
+<div class="pill">课文 3</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>05-3</b><span>официальная дорожка учебника</span></div>
+<audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/63f01f6ee5b0d4508687.mp3"></audio>
+</div>
+<div class="toggleBar">
+<button class="secondary" onclick="toggleClass('.py-3')">Пиньинь</button>
+<button class="secondary" onclick="toggleClass('.ru-3')">Перевод</button>
+</div>
+<div class="dialogue">
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">你最喜欢哪个季节？</div>
+<div class="py hidden py-3">Nǐ zuì xǐhuan nǎge jìjié?</div>
+<div class="ru hidden ru-3">Какое время года тебе нравится больше всего?</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小刚</div>
+<div class="speech">
+<div class="zh">当然是春天，天气不那么冷了，草和树都绿了，花也开了。</div>
+<div class="py hidden py-3">Dāngrán shì chūntiān, tiānqì bù nàme lěng le, cǎo hé shù dōu lǜ le, huā yě kāi le.</div>
+<div class="ru hidden ru-3">Конечно, весна: погода уже не такая холодная, трава и деревья зеленеют, цветы распускаются.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">我最喜欢夏天，因为我可以穿漂亮的裙子了。</div>
+<div class="py hidden py-3">Wǒ zuì xǐhuan xiàtiān, yīnwèi wǒ kěyǐ chuān piàoliang de qúnzi le.</div>
+<div class="ru hidden ru-3">Больше всего я люблю лето, потому что тогда могу носить красивые платья.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小刚</div>
+<div class="speech">
+<div class="zh">那我也喜欢夏天了。</div>
+<div class="py hidden py-3">Nà wǒ yě xǐhuan xiàtiān le.</div>
+<div class="ru hidden ru-3">Тогда мне тоже начинает нравиться лето.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">怎么？你也有漂亮的裙子？</div>
+<div class="py hidden py-3">Zěnme? Nǐ yě yǒu piàoliang de qúnzi?</div>
+<div class="ru hidden ru-3">Что? У тебя тоже есть красивые платья?</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小刚</div>
+<div class="speech">
+<div class="zh">不，我喜欢看你穿漂亮的裙子。</div>
+<div class="py hidden py-3">Bù, wǒ xǐhuan kàn nǐ chuān piàoliang de qúnzi.</div>
+<div class="ru hidden ru-3">Нет, мне нравится смотреть, как ты носишь красивые платья.</div>
+</div>
+</div></div>
+</div></div>
+<div class="actions"><div class="feedback">Сначала прослушай без пиньиня и перевода. Потом включай только то, что действительно нужно.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 3 · понимание</h2><p>Ответь по тексту своими словами.</p></div>
+<div class="pill">理解</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack">
+<div class="openQ">
+<b>1. 小丽喜欢哪个季节？为什么？</b>
+<textarea class="persist" id="dq_3_1" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">她喜欢夏天，因为她可以穿漂亮的裙子。</div>
+</div>
+<div class="openQ">
+<b>2. 小刚喜欢哪个季节？为什么？</b>
+<textarea class="persist" id="dq_3_2" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">他本来喜欢春天，后来也说喜欢夏天，因为他喜欢看小丽穿漂亮的裙子。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Здесь ответы открытые: сначала сформулируй сама, затем сравни с моделью.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 4 · 在小刚家</h2><p>Официальное аудио 05-4</p></div>
+<div class="pill">课文 4</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>05-4</b><span>официальная дорожка учебника</span></div>
+<audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/0605b9e6c36c52f1854a.mp3"></audio>
+</div>
+<div class="toggleBar">
+<button class="secondary" onclick="toggleClass('.py-4')">Пиньинь</button>
+<button class="secondary" onclick="toggleClass('.ru-4')">Перевод</button>
+</div>
+<div class="dialogue">
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">我最近越来越胖了。</div>
+<div class="py hidden py-4">Wǒ zuìjìn yuèláiyuè pàng le.</div>
+<div class="ru hidden ru-4">В последнее время я всё больше полнею.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小刚</div>
+<div class="speech">
+<div class="zh">谁说的？我觉得你越来越漂亮了。</div>
+<div class="py hidden py-4">Shéi shuō de? Wǒ juéde nǐ yuèláiyuè piàoliang le.</div>
+<div class="ru hidden ru-4">Кто это сказал? По-моему, ты становишься всё красивее.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">你看，这条裙子是去年买的，今年就不能穿了。</div>
+<div class="py hidden py-4">Nǐ kàn, zhè tiáo qúnzi shì qùnián mǎi de, jīnnián jiù bù néng chuān le.</div>
+<div class="ru hidden ru-4">Смотри, эту юбку я купила в прошлом году, а в этом уже не могу её носить.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小刚</div>
+<div class="speech">
+<div class="zh">那是因为你吃得太多了，少吃点儿吧。</div>
+<div class="py hidden py-4">Nà shì yīnwèi nǐ chī de tài duō le, shǎo chī diǎnr ba.</div>
+<div class="ru hidden ru-4">Это потому, что ты слишком много ешь. Ешь поменьше.</div>
+</div>
+</div>
+<div class="dline">
+<div class="speaker">小丽</div>
+<div class="speech">
+<div class="zh">我做的饭越来越好吃，我能少吃吗？</div>
+<div class="py hidden py-4">Wǒ zuò de fàn yuèláiyuè hǎochī, wǒ néng shǎo chī ma?</div>
+<div class="ru hidden ru-4">Еда, которую я готовлю, становится всё вкуснее. Разве я могу есть меньше?</div>
+</div>
+</div></div>
+</div></div>
+<div class="actions"><div class="feedback">Сначала прослушай без пиньиня и перевода. Потом включай только то, что действительно нужно.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Диалог 4 · понимание</h2><p>Ответь по тексту своими словами.</p></div>
+<div class="pill">理解</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack">
+<div class="openQ">
+<b>1. 小丽最近怎么了？为什么？</b>
+<textarea class="persist" id="dq_4_1" placeholder="Ответь по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Показать модель ответа</button>
+<div class="reveal hidden">她最近越来越胖了，因为她吃得太多了。</div>
+</div></div></div></div>
+<div class="actions"><div class="feedback">Здесь ответы открытые: сначала сформулируй сама, затем сравни с моделью.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>朗读 · чтение вслух</h2><p>Официальное аудио 05-5.</p></div>
+<div class="pill">05-5</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>05-5</b><span>Read the following phrases and sentences aloud.</span></div>
+<audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/6e771b093a569c4100cb.mp3"></audio>
+</div>
+<div class="readList">
+<div><b>照顾：</b>照顾孩子 / 照顾小狗 / 照顾得很好 / 我要在家照顾他。</div>
+<div><b>裙子：</b>一条裙子 / 漂亮的裙子 / 穿裙子 / 我喜欢看你穿漂亮的裙子。</div>
+<div><b>用：</b>不用 / 不用上课 / 不用吃药 / 不用去医院。</div>
+<div><b>最近：</b>最近几天 / 最近几个月 / 我最近有点儿累 / 我最近越来越胖了。</div>
+<div><b>为：</b>为孩子做饭 / 为妈妈买衣服 / 为朋友准备礼物 / 这是我为你买的绿茶。</div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Грамматика 1 · 了 показывает изменение</h2><p>“了” 表示变化</p></div>
+<div class="pill">语法 1</div>
+</div>
+<div class="content"><div class="panel">
+<div class="theory">
+<div class="formula">Старая ситуация → <b>новая ситуация + 了</b></div>
+<p>Здесь 了 стоит в конце повествовательного предложения и показывает, что ситуация <b>изменилась</b> или появилась новая.</p>
+<div class="compare">
+<div><span>раньше</span><b>天气很冷。</b></div><div class="arrow">→</div>
+<div><span>сейчас</span><b>天气不那么冷了。</b></div>
+</div>
+<div class="examples">
+<p>上个月很冷，现在天气不那么冷了。</p>
+<p>我前几天有点儿发烧，现在好多了。</p>
+<p>我现在喜欢夏天了。</p>
+<p>这条裙子是去年买的，今年就不能穿了。</p>
+</div>
+<div class="warning">Не путай это с 了 после глагола, которое часто отмечает завершённое действие. Здесь главный смысл: <b>«теперь стало иначе»</b>.</div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>了 · практика из учебника</h2><p>完成句子 · возможны разные естественные продолжения.</p></div>
+<div class="pill">语法 1</div>
+</div>
+<div class="content"><div class="panel">
+<div class="sourcePractice">
+<div class="openQ"><b>1. 上个月草和树还没绿，花还没开，________。</b>
+<textarea class="persist" placeholder="Продолжи по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Один возможный вариант</button>
+<div class="reveal hidden">现在草和树都绿了，花也开了。</div></div>
+<div class="openQ"><b>2. 昨天腿有点儿疼，今天早上________。</b>
+<textarea class="persist" placeholder="Продолжи по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Один возможный вариант</button>
+<div class="reveal hidden">不疼了。 / 好多了。</div></div>
+<div class="openQ"><b>3. 这些水果是我上个星期买的，现在都________。</b>
+<textarea class="persist" placeholder="Продолжи по-китайски"></textarea>
+<button class="secondary" onclick="revealNext(this)">Один возможный вариант</button>
+<div class="reveal hidden">不新鲜了。</div></div>
+</div>
+<div class="note">В учебнике это открытые предложения. Показанные варианты — естественные модели ответа, а не напечатанный ключ.</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>了 = изменение · практика 1/3</h2><p>Определи, где новая ситуация требует 了.</p></div>
+<div class="pill">练习 1/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="chg0_0">
+<div class="qnum">1</div><div class="qtext">上个月很冷，现在天气不那么冷___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg0_0" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="chg0_0" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg0_0" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="chg0_1">
+<div class="qnum">2</div><div class="qtext">前几天有点儿发烧，现在好多___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg0_1" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg0_1" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="chg0_1" type="radio" value="2"/><span>的</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="chg0_2">
+<div class="qnum">3</div><div class="qtext">去年我不能穿这条裙子，今年可以穿___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg0_2" type="radio" value="0"/><span>吗</span></label><label class="mc"><input name="chg0_2" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg0_2" type="radio" value="2"/><span>呢</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="chg0_3">
+<div class="qnum">4</div><div class="qtext">我现在没钱___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg0_3" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg0_3" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="chg0_3" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="chg0_4">
+<div class="qnum">5</div><div class="qtext">春天到了，花开___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg0_4" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="chg0_4" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg0_4" type="radio" value="2"/><span>的</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Смысл: раньше было иначе, теперь ситуация изменилась.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>了 = изменение · практика 2/3</h2><p>Определи, где новая ситуация требует 了.</p></div>
+<div class="pill">练习 2/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="0" data-qname="chg1_0">
+<div class="qnum">1</div><div class="qtext">以前我不喜欢咖啡，现在喜欢___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg1_0" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg1_0" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="chg1_0" type="radio" value="2"/><span>吗</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="chg1_1">
+<div class="qnum">2</div><div class="qtext">昨天腿疼，今天不疼___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg1_1" type="radio" value="0"/><span>呢</span></label><label class="mc"><input name="chg1_1" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg1_1" type="radio" value="2"/><span>着</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="chg1_2">
+<div class="qnum">3</div><div class="qtext">以前他很瘦，现在胖___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg1_2" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg1_2" type="radio" value="1"/><span>过</span></label><label class="mc"><input name="chg1_2" type="radio" value="2"/><span>的</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="chg1_3">
+<div class="qnum">4</div><div class="qtext">天黑___，我们回家吧。</div>
+<div class="mcgrid"><label class="mc"><input name="chg1_3" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="chg1_3" type="radio" value="1"/><span>的</span></label><label class="mc"><input name="chg1_3" type="radio" value="2"/><span>了</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="chg1_4">
+<div class="qnum">5</div><div class="qtext">我吃药以后，现在好多___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg1_4" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg1_4" type="radio" value="1"/><span>过</span></label><label class="mc"><input name="chg1_4" type="radio" value="2"/><span>着</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Смысл: раньше было иначе, теперь ситуация изменилась.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>了 = изменение · практика 3/3</h2><p>Определи, где новая ситуация требует 了.</p></div>
+<div class="pill">练习 3/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="chg2_0">
+<div class="qnum">1</div><div class="qtext">以前这里没有超市，现在有___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg2_0" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="chg2_0" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg2_0" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="chg2_1">
+<div class="qnum">2</div><div class="qtext">她不喝茶___，因为要吃药。</div>
+<div class="mcgrid"><label class="mc"><input name="chg2_1" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="chg2_1" type="radio" value="1"/><span>过</span></label><label class="mc"><input name="chg2_1" type="radio" value="2"/><span>了</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="chg2_2">
+<div class="qnum">3</div><div class="qtext">孩子回家___，妈妈不着急了。</div>
+<div class="mcgrid"><label class="mc"><input name="chg2_2" type="radio" value="0"/><span>的</span></label><label class="mc"><input name="chg2_2" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="chg2_2" type="radio" value="2"/><span>着</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="chg2_3">
+<div class="qnum">4</div><div class="qtext">今年我能穿这条裙子___。</div>
+<div class="mcgrid"><label class="mc"><input name="chg2_3" type="radio" value="0"/><span>了</span></label><label class="mc"><input name="chg2_3" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="chg2_3" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="chg2_4">
+<div class="qnum">5</div><div class="qtext">天气暖和___，草也绿了。</div>
+<div class="mcgrid"><label class="mc"><input name="chg2_4" type="radio" value="0"/><span>过</span></label><label class="mc"><input name="chg2_4" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="chg2_4" type="radio" value="2"/><span>了</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Смысл: раньше было иначе, теперь ситуация изменилась.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Грамматика 2 · 越来越…</h2><p>越来越 + Adj / Mental V</p></div>
+<div class="pill">语法 2</div>
+</div>
+<div class="content"><div class="panel">
+<div class="theory">
+<div class="formula"><b>越来越 + 形容词 / 心理动词</b></div>
+<p>Конструкция показывает, что степень признака или внутреннего состояния <b>постепенно меняется со временем</b>.</p>
+<div class="examples">
+<p>我认识的汉字越来越多。</p>
+<p>你越来越漂亮。</p>
+<p>我越来越喜欢运动。</p>
+<p>我做的饭越来越好吃。</p>
+</div>
+<div class="warning">
+    Перед прилагательным внутри этой конструкции не ставим 很 / 非常:
+    <b>越来越冷</b> ✓ · <b>越来越很热</b> ✗ · <b>越来越非常想</b> ✗
+  </div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>越来越 · практика из учебника</h2><p>完成句子 · сначала придумай сама.</p></div>
+<div class="pill">语法 2</div>
+</div>
+<div class="content"><div class="panel">
+<div class="sourcePractice">
+<div class="openQ"><b>1. 最近天气________。</b><textarea class="persist"></textarea><button class="secondary" onclick="revealNext(this)">Пример</button><div class="reveal hidden">越来越冷了。</div></div>
+<div class="openQ"><b>2. 她每天都运动，现在________。</b><textarea class="persist"></textarea><button class="secondary" onclick="revealNext(this)">Пример</button><div class="reveal hidden">越来越瘦了。</div></div>
+<div class="openQ"><b>3. 快要考试了，我________。</b><textarea class="persist"></textarea><button class="secondary" onclick="revealNext(this)">Пример</button><div class="reveal hidden">越来越着急了。</div></div>
+<div class="openQ"><b>4. 孩子还没有回来，妈妈________。</b><textarea class="persist"></textarea><button class="secondary" onclick="revealNext(this)">Пример</button><div class="reveal hidden">越来越着急了。</div></div>
+</div>
+<div class="note">Это открытая практика из учебника. Примеры выше — возможные естественные ответы.</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>越来越 · практика 1/3</h2><p>Автоматизируем структуру без 很 внутри конструкции.</p></div>
+<div class="pill">练习 1/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="0" data-qname="more0_0">
+<div class="qnum">1</div><div class="qtext">最近天气___冷。</div>
+<div class="mcgrid"><label class="mc"><input name="more0_0" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more0_0" type="radio" value="1"/><span>越很越</span></label><label class="mc"><input name="more0_0" type="radio" value="2"/><span>很越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more0_1">
+<div class="qnum">2</div><div class="qtext">她每天运动，现在___瘦。</div>
+<div class="mcgrid"><label class="mc"><input name="more0_1" type="radio" value="0"/><span>越很越</span></label><label class="mc"><input name="more0_1" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more0_1" type="radio" value="2"/><span>很越来</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more0_2">
+<div class="qnum">3</div><div class="qtext">我的汉语___好。</div>
+<div class="mcgrid"><label class="mc"><input name="more0_2" type="radio" value="0"/><span>很好越来越</span></label><label class="mc"><input name="more0_2" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more0_2" type="radio" value="2"/><span>越来很好越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="more0_3">
+<div class="qnum">4</div><div class="qtext">快考试了，我___着急。</div>
+<div class="mcgrid"><label class="mc"><input name="more0_3" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more0_3" type="radio" value="1"/><span>很越来越</span></label><label class="mc"><input name="more0_3" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more0_4">
+<div class="qnum">5</div><div class="qtext">我认识的汉字___多。</div>
+<div class="mcgrid"><label class="mc"><input name="more0_4" type="radio" value="0"/><span>越来很多越</span></label><label class="mc"><input name="more0_4" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more0_4" type="radio" value="2"/><span>很越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">越来越 + прилагательное / психологический глагол.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>越来越 · практика 2/3</h2><p>Автоматизируем структуру без 很 внутри конструкции.</p></div>
+<div class="pill">练习 2/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="0" data-qname="more1_0">
+<div class="qnum">1</div><div class="qtext">他做饭___好吃。</div>
+<div class="mcgrid"><label class="mc"><input name="more1_0" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more1_0" type="radio" value="1"/><span>越很越</span></label><label class="mc"><input name="more1_0" type="radio" value="2"/><span>非常越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more1_1">
+<div class="qnum">2</div><div class="qtext">小丽觉得自己___胖。</div>
+<div class="mcgrid"><label class="mc"><input name="more1_1" type="radio" value="0"/><span>很越来越</span></label><label class="mc"><input name="more1_1" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more1_1" type="radio" value="2"/><span>越非常越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="more1_2">
+<div class="qnum">3</div><div class="qtext">孩子还没回来，妈妈___着急。</div>
+<div class="mcgrid"><label class="mc"><input name="more1_2" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more1_2" type="radio" value="1"/><span>非常越来越</span></label><label class="mc"><input name="more1_2" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more1_3">
+<div class="qnum">4</div><div class="qtext">春天来了，天气___暖和。</div>
+<div class="mcgrid"><label class="mc"><input name="more1_3" type="radio" value="0"/><span>越很越</span></label><label class="mc"><input name="more1_3" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more1_3" type="radio" value="2"/><span>很越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="more1_4">
+<div class="qnum">5</div><div class="qtext">我___喜欢运动。</div>
+<div class="mcgrid"><label class="mc"><input name="more1_4" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more1_4" type="radio" value="1"/><span>很越来越</span></label><label class="mc"><input name="more1_4" type="radio" value="2"/><span>越非常越</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">越来越 + прилагательное / психологический глагол.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>越来越 · практика 3/3</h2><p>Автоматизируем структуру без 很 внутри конструкции.</p></div>
+<div class="pill">练习 3/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="more2_0">
+<div class="qnum">1</div><div class="qtext">这家饭馆的饭___好吃。</div>
+<div class="mcgrid"><label class="mc"><input name="more2_0" type="radio" value="0"/><span>非常越来越</span></label><label class="mc"><input name="more2_0" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more2_0" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="more2_1">
+<div class="qnum">2</div><div class="qtext">工作多了，他___忙。</div>
+<div class="mcgrid"><label class="mc"><input name="more2_1" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more2_1" type="radio" value="1"/><span>越很越</span></label><label class="mc"><input name="more2_1" type="radio" value="2"/><span>很越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more2_2">
+<div class="qnum">3</div><div class="qtext">她说汉语说得___好。</div>
+<div class="mcgrid"><label class="mc"><input name="more2_2" type="radio" value="0"/><span>很越来越</span></label><label class="mc"><input name="more2_2" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more2_2" type="radio" value="2"/><span>越非常越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="more2_3">
+<div class="qnum">4</div><div class="qtext">夏天到了，天气___热。</div>
+<div class="mcgrid"><label class="mc"><input name="more2_3" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="more2_3" type="radio" value="1"/><span>越很越</span></label><label class="mc"><input name="more2_3" type="radio" value="2"/><span>非常越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="more2_4">
+<div class="qnum">5</div><div class="qtext">他学习很努力，成绩___好。</div>
+<div class="mcgrid"><label class="mc"><input name="more2_4" type="radio" value="0"/><span>很越来越</span></label><label class="mc"><input name="more2_4" type="radio" value="1"/><span>越来越</span></label><label class="mc"><input name="more2_4" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">越来越 + прилагательное / психологический глагол.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>了 или 越来越？</h2><p>Не выбирай по одному слову: сначала определи смысл.</p></div>
+<div class="pill">混合</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="mix_0">
+<div class="qnum">1</div><div class="qtext">Перед нами изменение ситуации: «раньше было холодно, теперь не так холодно».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_0" type="radio" value="0"/><span>天气越来越冷。</span></label><label class="mc"><input name="mix_0" type="radio" value="1"/><span>天气不那么冷了。</span></label><label class="mc"><input name="mix_0" type="radio" value="2"/><span>天气冷着。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="mix_1">
+<div class="qnum">2</div><div class="qtext">Постепенное изменение со временем: «становится всё красивее».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_1" type="radio" value="0"/><span>越来越漂亮</span></label><label class="mc"><input name="mix_1" type="radio" value="1"/><span>漂亮了越来越</span></label><label class="mc"><input name="mix_1" type="radio" value="2"/><span>很越来越漂亮</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="mix_2">
+<div class="qnum">3</div><div class="qtext">«Я в последнее время всё больше полнею».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_2" type="radio" value="0"/><span>我最近胖了越来越。</span></label><label class="mc"><input name="mix_2" type="radio" value="1"/><span>我越来越最近胖。</span></label><label class="mc"><input name="mix_2" type="radio" value="2"/><span>我最近越来越胖了。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="mix_3">
+<div class="qnum">4</div><div class="qtext">Что НЕЛЬЗЯ говорить?</div>
+<div class="mcgrid"><label class="mc"><input name="mix_3" type="radio" value="0"/><span>越来越冷</span></label><label class="mc"><input name="mix_3" type="radio" value="1"/><span>越来越喜欢</span></label><label class="mc"><input name="mix_3" type="radio" value="2"/><span>越来越很热</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="mix_4">
+<div class="qnum">5</div><div class="qtext">«Теперь мне уже лучше».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_4" type="radio" value="0"/><span>我现在好多了。</span></label><label class="mc"><input name="mix_4" type="radio" value="1"/><span>我现在越来越了好。</span></label><label class="mc"><input name="mix_4" type="radio" value="2"/><span>我现在好着。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="mix_5">
+<div class="qnum">6</div><div class="qtext">«Мой китайский становится всё лучше».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_5" type="radio" value="0"/><span>我的汉语越来越好。</span></label><label class="mc"><input name="mix_5" type="radio" value="1"/><span>我的汉语好越来越。</span></label><label class="mc"><input name="mix_5" type="radio" value="2"/><span>我的汉语越来越很好。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="mix_6">
+<div class="qnum">7</div><div class="qtext">«Теперь я не пью чай».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_6" type="radio" value="0"/><span>我不喝茶越来越。</span></label><label class="mc"><input name="mix_6" type="radio" value="1"/><span>我不喝茶了。</span></label><label class="mc"><input name="mix_6" type="radio" value="2"/><span>我了不喝茶。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="mix_7">
+<div class="qnum">8</div><div class="qtext">«Погода становится всё холоднее».</div>
+<div class="mcgrid"><label class="mc"><input name="mix_7" type="radio" value="0"/><span>天气越来越冷。</span></label><label class="mc"><input name="mix_7" type="radio" value="1"/><span>天气冷越来越很。</span></label><label class="mc"><input name="mix_7" type="radio" value="2"/><span>天气冷了越来越。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="mix_8">
+<div class="qnum">9</div><div class="qtext">Где 了 показывает именно новую ситуацию?</div>
+<div class="mcgrid"><label class="mc"><input name="mix_8" type="radio" value="0"/><span>我吃了饭。</span></label><label class="mc"><input name="mix_8" type="radio" value="1"/><span>我现在喜欢夏天了。</span></label><label class="mc"><input name="mix_8" type="radio" value="2"/><span>我看了书。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="mix_9">
+<div class="qnum">10</div><div class="qtext">Правильная структура 越来越:</div>
+<div class="mcgrid"><label class="mc"><input name="mix_9" type="radio" value="0"/><span>越来越 + 很 + Adj</span></label><label class="mc"><input name="mix_9" type="radio" value="1"/><span>越来越 + Adj / Mental V</span></label><label class="mc"><input name="mix_9" type="radio" value="2"/><span>很 + 越来越 + Adj</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">了 = новая ситуация. 越来越 = постепенное усиление/изменение степени.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Учебник · упражнение 2 · 1–5</h2><p>选择恰当的词语填空</p></div>
+<div class="pill">练习 2</div>
+</div>
+<div class="content"><div class="panel"><div class="bank"><span>草</span><span>最近</span><span>为</span><span>发烧</span><span>裙子</span></div><div class="fillstack">
+<div class="fillrow">
+<div class="qnum">1</div>
+<div class="fillbody">
+<div class="qtext">我是不是____了？怎么总是觉得冷？</div>
+<input class="answer-input persist" data-answer="发烧" id="tbfill1_0" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">2</div>
+<div class="fillbody">
+<div class="qtext">春天不冷不热，____都是绿的。</div>
+<input class="answer-input persist" data-answer="草" id="tbfill1_1" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">3</div>
+<div class="fillbody">
+<div class="qtext">快来看一下，这是我____你买的衣服。</div>
+<input class="answer-input persist" data-answer="为" id="tbfill1_2" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">4</div>
+<div class="fillbody">
+<div class="qtext">这条____真好看，是新买的吗？</div>
+<input class="answer-input persist" data-answer="裙子" id="tbfill1_3" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">5</div>
+<div class="fillbody">
+<div class="qtext">小王在忙什么呢？你____见过他吗？</div>
+<input class="answer-input persist" data-answer="最近" id="tbfill1_4" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Используй каждое слово по смыслу.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Учебник · упражнение 2 · 6–10</h2><p>选择恰当的词语填空</p></div>
+<div class="pill">练习 2</div>
+</div>
+<div class="content"><div class="panel"><div class="bank"><span>当然</span><span>照顾</span><span>用</span><span>季节</span><span>夏天</span></div><div class="fillstack">
+<div class="fillrow">
+<div class="qnum">1</div>
+<div class="fillbody">
+<div class="qtext">A：来一个西瓜。 B：这个____的西瓜又大又甜，多来几个吧。</div>
+<input class="answer-input persist" data-answer="季节" id="tbfill2_0" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">2</div>
+<div class="fillbody">
+<div class="qtext">A：今年____一点儿也不热。</div>
+<input class="answer-input persist" data-answer="夏天" id="tbfill2_1" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">3</div>
+<div class="fillbody">
+<div class="qtext">A：明天考试，你现在就睡觉了？不再看看书了？ B：不____看了，我已经复习好了。</div>
+<input class="answer-input persist" data-answer="用" id="tbfill2_2" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">4</div>
+<div class="fillbody">
+<div class="qtext">A：明天阴天，你还去看比赛吗？ B：我____要去，这是我最喜欢的比赛！</div>
+<input class="answer-input persist" data-answer="当然" id="tbfill2_3" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div>
+<div class="fillrow">
+<div class="qnum">5</div>
+<div class="fillbody">
+<div class="qtext">A：这是你家的小狗吗？真漂亮！谁____它？ B：我妈妈。</div>
+<input class="answer-input persist" data-answer="照顾" id="tbfill2_4" placeholder="Введите слово"/>
+<div class="mini-feedback"></div>
+</div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Обращай внимание на устойчивые блоки: 不用, 当然, 照顾 + объект.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Учебник · упражнение 3 · картинки 1–2</h2><p>用本课新学的语言点和词语描述图片</p></div>
+<div class="pill">练习 3</div>
+</div>
+<div class="content"><div class="panel">
+<div class="scenePair">
+<div class="scene">
+<img loading="lazy" decoding="async" alt="ребёнок с температурой" src="/games/hsk3-lesson5-assets/9278c53832898f8a5ac1.png"/>
+<div class="sceneText">
+<p>A：儿子怎么没去上学？</p><p>B：他________。</p>
+<p>A：最近天气不太好。</p><p>B：对，天气________，他穿得太少了。</p>
+<button class="secondary" onclick="revealNext(this)">Показать возможный вариант</button>
+<div class="reveal hidden">他发烧了。<br/>天气越来越冷了，他穿得太少了。</div>
+</div>
+</div>
+<div class="scene">
+<img loading="lazy" decoding="async" alt="пасмурное небо" src="/games/hsk3-lesson5-assets/3db5cb99d6166a6009b1.png"/>
+<div class="sceneText">
+<p>A：天________。你带伞了吗？</p><p>B：没有。</p>
+<p>A：那我们快点儿走吧，就要________。</p><p>B：好的。</p>
+<button class="secondary" onclick="revealNext(this)">Показать возможный вариант</button>
+<div class="reveal hidden">Например: 天越来越黑了。… 就要下雨了。</div>
+</div>
+</div>
+</div>
+<div class="note">Это задание учебника на свободное описание картинки. Примеры не являются напечатанным официальным ключом.</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Учебник · упражнение 3 · картинки 3–4</h2><p>Продолжи диалог, используя новую грамматику.</p></div>
+<div class="pill">练习 3</div>
+</div>
+<div class="content"><div class="panel">
+<div class="scenePair">
+<div class="scene">
+<img loading="lazy" decoding="async" alt="ученик делает домашнюю работу" src="/games/hsk3-lesson5-assets/935e53babeeca8702412.png"/>
+<div class="sceneText">
+<p>A：你昨天晚上没出去玩儿？</p><p>B：没有，一直在宿舍写作业呢。</p>
+<p>A：你最近真是________努力了。</p><p>B：你看，我的汉语是不是________？</p>
+<button class="secondary" onclick="revealNext(this)">Показать возможный вариант</button>
+<div class="reveal hidden">你最近真是越来越努力了。<br/>我的汉语是不是越来越好了？</div>
+</div>
+</div>
+<div class="scene">
+<img loading="lazy" decoding="async" alt="работник возвращается домой" src="/games/hsk3-lesson5-assets/9f9add8598bdc8a3b771.png"/>
+<div class="sceneText">
+<p>A：你现在回来得________。</p>
+<p>B：最近________忙。</p>
+<p>A：办公室有那么多事吗？</p>
+<p>B：经理去美国了，我要________。</p>
+<button class="secondary" onclick="revealNext(this)">Подсказка по структуре</button>
+<div class="reveal hidden">Первые два пропуска естественно тренируют 越来越…; последний — свободное продолжение по ситуации. Сначала сформулируй его сама.</div>
+</div>
+</div>
+</div>
+<div class="note">В исходнике нет напечатанных ответов к этому открытому упражнению, поэтому файл не выдаёт догадку за официальный ключ.</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>根据课文回答问题 · 1/2</h2><p>Ответь по четырём диалогам.</p></div>
+<div class="pill">课文问题</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack"><div class="openQ"><b>1. 小丽怎么不舒服了？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">她前几天有点儿发烧。</div></div><div class="openQ"><b>2. 现在小丽要做什么？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">她要吃药。</div></div><div class="openQ"><b>3. 周太太能出去玩儿吗？为什么？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">不能，因为她儿子生病了，她要在家照顾他。</div></div></div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>根据课文回答问题 · 2/2</h2><p>Ответь по четырём диалогам.</p></div>
+<div class="pill">课文问题</div>
+</div>
+<div class="content"><div class="panel"><div class="openStack"><div class="openQ"><b>4. 小丽喜欢哪个季节？为什么？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">她喜欢夏天，因为她可以穿漂亮的裙子。</div></div><div class="openQ"><b>5. 小刚喜欢哪个季节？为什么？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">他开始说最喜欢春天，后来也说喜欢夏天，因为他喜欢看小丽穿漂亮的裙子。</div></div><div class="openQ"><b>6. 小丽最近怎么了？为什么？</b><textarea class="persist" placeholder="Ответ по-китайски"></textarea><button class="secondary" onclick="revealNext(this)">Модель ответа</button><div class="reveal hidden">她最近越来越胖了，因为她吃得太多了。</div></div></div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Говорение · активируем урок 5</h2><p>Ответь вслух. Не читай готовую фразу.</p></div>
+<div class="pill">口语</div>
+</div>
+<div class="content"><div class="panel">
+<div class="speakGrid">
+<div class="speakCard"><b>1</b><p>你最近身体怎么样？</p><span>Используй 最近 + 了 / 越来越…</span></div>
+<div class="speakCard"><b>2</b><p>你最喜欢哪个季节？为什么？</p><span>春天 / 夏天 / 草 / 花 / 裙子</span></div>
+<div class="speakCard"><b>3</b><p>如果朋友感冒了，你会怎么照顾他？</p><span>照顾 / 吃药 / 医院 / 不用</span></div>
+<div class="speakCard"><b>4</b><p>最近你的汉语有什么变化？</p><span>越来越 + 好 / 容易 / 喜欢…</span></div>
+<div class="speakCard"><b>5</b><p>以前你不喜欢什么，现在喜欢了？</p><span>用 了 表示变化</span></div>
+<div class="speakCard"><b>6</b><p>说三个“越来越…”的句子。</p><span>天气 / 学习 / 工作 / 身体 / 汉语</span></div>
+</div>
+<div class="recorder">
+<button class="primary" id="recBtn" onclick="toggleRecord()">● Начать запись</button>
+<span id="recStatus">Запись хранится только в текущей вкладке.</span>
+<audio preload="none" class="hidden" controls="" id="recPlayback"></audio>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Прописи · 1/4</h2><p>Образец → серый след → два пустых 米字格 для каждого иероглифа.</p></div>
+<div class="pill">写字 1/4</div>
+</div>
+<div class="content"><div class="panel"><div class="copyPage"><div class="copyRow" data-pinyin="fāshāo" data-word="发烧"><div class="copyLabel"><b>发烧</b><span>fāshāo</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="wèi" data-word="为"><div class="copyLabel"><b>为</b><span>wèi</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="zhàogù" data-word="照顾"><div class="copyLabel"><b>照顾</b><span>zhàogù</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="yòng" data-word="用"><div class="copyLabel"><b>用</b><span>yòng</span></div><div class="charPractice"></div></div></div></div></div>
+<div class="actions"><button class="secondary" onclick="clearCopyPage(this)">Очистить страницу</button><div class="feedback">Рисуй мышью или пальцем.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Прописи · 2/4</h2><p>Образец → серый след → два пустых 米字格 для каждого иероглифа.</p></div>
+<div class="pill">写字 2/4</div>
+</div>
+<div class="content"><div class="panel"><div class="copyPage"><div class="copyRow" data-pinyin="gǎnmào" data-word="感冒"><div class="copyLabel"><b>感冒</b><span>gǎnmào</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="jìjié" data-word="季节"><div class="copyLabel"><b>季节</b><span>jìjié</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="dāngrán" data-word="当然"><div class="copyLabel"><b>当然</b><span>dāngrán</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="chūntiān" data-word="春天"><div class="copyLabel"><b>春天</b><span>chūntiān</span></div><div class="charPractice"></div></div></div></div></div>
+<div class="actions"><button class="secondary" onclick="clearCopyPage(this)">Очистить страницу</button><div class="feedback">Рисуй мышью или пальцем.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Прописи · 3/4</h2><p>Образец → серый след → два пустых 米字格 для каждого иероглифа.</p></div>
+<div class="pill">写字 3/4</div>
+</div>
+<div class="content"><div class="panel"><div class="copyPage"><div class="copyRow" data-pinyin="cǎo" data-word="草"><div class="copyLabel"><b>草</b><span>cǎo</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="xiàtiān" data-word="夏天"><div class="copyLabel"><b>夏天</b><span>xiàtiān</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="qúnzi" data-word="裙子"><div class="copyLabel"><b>裙子</b><span>qúnzi</span></div><div class="charPractice"></div></div></div></div></div>
+<div class="actions"><button class="secondary" onclick="clearCopyPage(this)">Очистить страницу</button><div class="feedback">Рисуй мышью или пальцем.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Прописи · 4/4</h2><p>Образец → серый след → два пустых 米字格 для каждого иероглифа.</p></div>
+<div class="pill">写字 4/4</div>
+</div>
+<div class="content"><div class="panel"><div class="copyPage"><div class="copyRow" data-pinyin="zuìjìn" data-word="最近"><div class="copyLabel"><b>最近</b><span>zuìjìn</span></div><div class="charPractice"></div></div><div class="copyRow" data-pinyin="yuè" data-word="越"><div class="copyLabel"><b>越</b><span>yuè</span></div><div class="charPractice"></div></div></div></div></div>
+<div class="actions"><button class="secondary" onclick="clearCopyPage(this)">Очистить страницу</button><div class="feedback">Рисуй мышью или пальцем.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Финал · лексика</h2><p>8 контрольных заданий.</p></div>
+<div class="pill">Итог 1/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="finalv_0">
+<div class="qnum">1</div><div class="qtext">最近</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_0" type="radio" value="0"/><span>сезон</span></label><label class="mc"><input name="finalv_0" type="radio" value="1"/><span>в последнее время</span></label><label class="mc"><input name="finalv_0" type="radio" value="2"/><span>простуда</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalv_1">
+<div class="qnum">2</div><div class="qtext">照顾</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_1" type="radio" value="0"/><span>ухаживать</span></label><label class="mc"><input name="finalv_1" type="radio" value="1"/><span>полнеть</span></label><label class="mc"><input name="finalv_1" type="radio" value="2"/><span>весна</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="finalv_2">
+<div class="qnum">3</div><div class="qtext">裙子</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_2" type="radio" value="0"/><span>лекарство</span></label><label class="mc"><input name="finalv_2" type="radio" value="1"/><span>трава</span></label><label class="mc"><input name="finalv_2" type="radio" value="2"/><span>юбка / платье</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalv_3">
+<div class="qnum">4</div><div class="qtext">当然</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_3" type="radio" value="0"/><span>конечно</span></label><label class="mc"><input name="finalv_3" type="radio" value="1"/><span>недавно</span></label><label class="mc"><input name="finalv_3" type="radio" value="2"/><span>для</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalv_4">
+<div class="qnum">5</div><div class="qtext">发烧</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_4" type="radio" value="0"/><span>простудиться</span></label><label class="mc"><input name="finalv_4" type="radio" value="1"/><span>температурить</span></label><label class="mc"><input name="finalv_4" type="radio" value="2"/><span>ухаживать</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalv_5">
+<div class="qnum">6</div><div class="qtext">季节</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_5" type="radio" value="0"/><span>сезон</span></label><label class="mc"><input name="finalv_5" type="radio" value="1"/><span>лето</span></label><label class="mc"><input name="finalv_5" type="radio" value="2"/><span>зелёный</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalv_6">
+<div class="qnum">7</div><div class="qtext">为</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_6" type="radio" value="0"/><span>становиться</span></label><label class="mc"><input name="finalv_6" type="radio" value="1"/><span>для / ради</span></label><label class="mc"><input name="finalv_6" type="radio" value="2"/><span>нужно</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalv_7">
+<div class="qnum">8</div><div class="qtext">不用</div>
+<div class="mcgrid"><label class="mc"><input name="finalv_7" type="radio" value="0"/><span>не нужно</span></label><label class="mc"><input name="finalv_7" type="radio" value="1"/><span>не сезон</span></label><label class="mc"><input name="finalv_7" type="radio" value="2"/><span>не недавно</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this,true)">Проверить</button><div class="feedback">Результат попадёт в итоговую статистику.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Финал · грамматика</h2><p>了 как изменение + 越来越.</p></div>
+<div class="pill">Итог 2/3</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack">
+<div class="qcard" data-answer="1" data-qname="finalg_0">
+<div class="qnum">1</div><div class="qtext">我现在喜欢夏天___。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_0" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="finalg_0" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="finalg_0" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalg_1">
+<div class="qnum">2</div><div class="qtext">最近天气___冷。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_1" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="finalg_1" type="radio" value="1"/><span>越来越很</span></label><label class="mc"><input name="finalg_1" type="radio" value="2"/><span>很越来越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalg_2">
+<div class="qnum">3</div><div class="qtext">我最近___胖了。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_2" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="finalg_2" type="radio" value="1"/><span>很越来越</span></label><label class="mc"><input name="finalg_2" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="2" data-qname="finalg_3">
+<div class="qnum">4</div><div class="qtext">以前没钱，现在有钱___。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_3" type="radio" value="0"/><span>过</span></label><label class="mc"><input name="finalg_3" type="radio" value="1"/><span>着</span></label><label class="mc"><input name="finalg_3" type="radio" value="2"/><span>了</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalg_4">
+<div class="qnum">5</div><div class="qtext">我的汉语___好。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_4" type="radio" value="0"/><span>越来越</span></label><label class="mc"><input name="finalg_4" type="radio" value="1"/><span>非常越来越</span></label><label class="mc"><input name="finalg_4" type="radio" value="2"/><span>越很越</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalg_5">
+<div class="qnum">6</div><div class="qtext">Что правильно?</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_5" type="radio" value="0"/><span>越来越很漂亮</span></label><label class="mc"><input name="finalg_5" type="radio" value="1"/><span>越来越漂亮</span></label><label class="mc"><input name="finalg_5" type="radio" value="2"/><span>很越来越漂亮</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalg_6">
+<div class="qnum">7</div><div class="qtext">前几天发烧，现在好多___。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_6" type="radio" value="0"/><span>着</span></label><label class="mc"><input name="finalg_6" type="radio" value="1"/><span>了</span></label><label class="mc"><input name="finalg_6" type="radio" value="2"/><span>过</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalg_7">
+<div class="qnum">8</div><div class="qtext">她越来越___运动。</div>
+<div class="mcgrid"><label class="mc"><input name="finalg_7" type="radio" value="0"/><span>喜欢</span></label><label class="mc"><input name="finalg_7" type="radio" value="1"/><span>很喜欢</span></label><label class="mc"><input name="finalg_7" type="radio" value="2"/><span>非常喜欢</span></label></div>
+<div class="mini-feedback"></div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this,true)">Проверить</button><div class="feedback">Две темы должны различаться по смыслу, а не по внешнему виду.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Финал · смешанная практика</h2><p>Лексика + порядок слов + две новые конструкции.</p></div>
+<div class="pill">Итог 3/3</div>
+</div>
+<div class="content"><div class="panel">
+<div class="qstack">
+<div class="qcard" data-answer="0" data-qname="finalm_0">
+<div class="qnum">1</div><div class="qtext">«В последнее время мой китайский становится всё лучше».</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_0" type="radio" value="0"/><span>我的汉语最近越来越好。</span></label><label class="mc"><input name="finalm_0" type="radio" value="1"/><span>我最近汉语好了越来越。</span></label><label class="mc"><input name="finalm_0" type="radio" value="2"/><span>我的汉语最近很好越来越。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalm_1">
+<div class="qnum">2</div><div class="qtext">«Теперь ему уже намного лучше».</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_1" type="radio" value="0"/><span>他现在越来越了好。</span></label><label class="mc"><input name="finalm_1" type="radio" value="1"/><span>他现在好多了。</span></label><label class="mc"><input name="finalm_1" type="radio" value="2"/><span>他现在好着。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalm_2">
+<div class="qnum">3</div><div class="qtext">«Мне не нужно ехать в больницу».</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_2" type="radio" value="0"/><span>我不用去医院。</span></label><label class="mc"><input name="finalm_2" type="radio" value="1"/><span>我不照顾去医院。</span></label><label class="mc"><input name="finalm_2" type="radio" value="2"/><span>我为不去医院。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="1" data-qname="finalm_3">
+<div class="qnum">4</div><div class="qtext">«Какой сезон тебе нравится больше всего?»</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_3" type="radio" value="0"/><span>你最近哪个季节？</span></label><label class="mc"><input name="finalm_3" type="radio" value="1"/><span>你最喜欢哪个季节？</span></label><label class="mc"><input name="finalm_3" type="radio" value="2"/><span>你哪个季节越来越？</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalm_4">
+<div class="qnum">5</div><div class="qtext">«Еда, которую я готовлю, становится всё вкуснее».</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_4" type="radio" value="0"/><span>我做的饭越来越好吃。</span></label><label class="mc"><input name="finalm_4" type="radio" value="1"/><span>我做的饭越来越很好吃。</span></label><label class="mc"><input name="finalm_4" type="radio" value="2"/><span>我越来越做的饭好吃。</span></label></div>
+<div class="mini-feedback"></div>
+</div>
+<div class="qcard" data-answer="0" data-qname="finalm_5">
+<div class="qnum">6</div><div class="qtext">«Сейчас я больше не пью чай».</div>
+<div class="mcgrid"><label class="mc"><input name="finalm_5" type="radio" value="0"/><span>我不喝茶了。</span></label><label class="mc"><input name="finalm_5" type="radio" value="1"/><span>我越来越不喝茶。</span></label><label class="mc"><input name="finalm_5" type="radio" value="2"/><span>我了不喝茶。</span></label></div>
+<div class="mini-feedback"></div>
+</div></div>
+<div class="resultBox">
+<div class="resultScore" id="resultScore">—</div>
+<div id="resultText">Проверь финальный блок, чтобы увидеть результат.</div>
+</div>
+</div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this,true); updateResult()">Проверить</button><button class="secondary" onclick="resetLesson()">Сбросить прогресс</button><div class="feedback">Урок 5 завершён.</div></div>
+</div>
+</section>
+<section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · урок 5</h2><p>Страницы 29–35 + аудио 练习册 05</p></div>
+<div class="pill">Workbook</div>
+</div>
+<div class="content"><div class="panel">
+<div class="note">Я добавила рабочую тетрадь в тот же HTML: аудирование 1–20, чтение 21–35, письмо 36–54 и review. Для аудирования вставлено официальное аудио рабочей тетради.</div>
+<div class="audioBox"><div><b>练习册 05</b><span>официальное аудио рабочей тетради</span></div><audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/533a2d09a7da034db7fd.mp3"></audio></div>
+<div class="note">Ключи подключены: Listening 1–5 F E B C A · 6–10 √ √ × × × · 11–15 B C C B A · 16–20 C C B A B; Reading 21–35; Writing 36–50; Review 1–2.</div></div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · Аудирование 1–5</h2><p>Прослушай 5 диалогов и выбери картинку A–F.</p></div>
+<div class="pill">Listening I</div>
+</div>
+<div class="content"><div class="panel">
+<div class="audioBox"><div><b>练习册 05</b><span>Part I</span></div><audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/533a2d09a7da034db7fd.mp3"></audio></div>
+<div class="picGrid six" style="margin-top:10px"><div class="picCard"><span>A</span><img loading="lazy" decoding="async" alt="A" src="/games/hsk3-lesson5-assets/28a49120e93a0e88f266.png"/></div><div class="picCard"><span>B</span><img loading="lazy" decoding="async" alt="B" src="/games/hsk3-lesson5-assets/8c6feceb8c345700c4af.png"/></div><div class="picCard"><span>C</span><img loading="lazy" decoding="async" alt="C" src="/games/hsk3-lesson5-assets/cbe1db4710a0a8a3a78e.png"/></div><div class="picCard"><span>D</span><img loading="lazy" decoding="async" alt="D" src="/games/hsk3-lesson5-assets/cfb6af3a2335f2303ffb.png"/></div><div class="picCard"><span>E</span><img loading="lazy" decoding="async" alt="E" src="/games/hsk3-lesson5-assets/3531cfdd28bfad1b3269.png"/></div><div class="picCard"><span>F</span><img loading="lazy" decoding="async" alt="F" src="/games/hsk3-lesson5-assets/6d05873b9a21e4a80d77.png"/></div></div>
+<div class="matchGrid" style="margin-top:10px">
+<label>1<select class="answer-select persist" data-answer="F" id="wb5_lis_1"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label><label>2<select class="answer-select persist" data-answer="E" id="wb5_lis_2"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label><label>3<select class="answer-select persist" data-answer="B" id="wb5_lis_3"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label><label>4<select class="answer-select persist" data-answer="C" id="wb5_lis_4"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label><label>5<select class="answer-select persist" data-answer="A" id="wb5_lis_5"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+</div>
+<div class="note">Картинки A–F вырезаны отдельно, чтобы не было каши из целой страницы. Если потом захочешь, я могу отдельно подключить проверку по ключу.</div>
+</div></div>
+<div class="actions"><button class="primary" onclick="checkSelects(this)">Проверить</button><div class="feedback">Выбери ответы 1–5 и нажми «Проверить».</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · Аудирование 6–10</h2><p>True / False по аудио.</p></div>
+<div class="pill">Listening II</div>
+</div>
+<div class="content"><div class="panel"><div class="audioBox"><div><b>练习册 05</b><span>Part II</span></div><audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/533a2d09a7da034db7fd.mp3"></audio></div><div class="qstack" style="margin-top:10px">
+<div class="qcard" data-answer="0" data-qname="wb5_fix_Аудирование_6–10_0">
+<div class="qnum">6</div><div class="qtext">★ 这几天的天气不太好。</div>
+<div class="mcgrid">
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_0" type="radio" value="0"/><span>√ True</span></label>
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_0" type="radio" value="1"/><span>× False</span></label>
+</div>
+</div>
+<div class="qcard" data-answer="0" data-qname="wb5_fix_Аудирование_6–10_1">
+<div class="qnum">7</div><div class="qtext">★ 现在他的病好了。</div>
+<div class="mcgrid">
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_1" type="radio" value="0"/><span>√ True</span></label>
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_1" type="radio" value="1"/><span>× False</span></label>
+</div>
+</div>
+<div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_6–10_2">
+<div class="qnum">8</div><div class="qtext">★ 小方现在比去年瘦。</div>
+<div class="mcgrid">
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_2" type="radio" value="0"/><span>√ True</span></label>
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_2" type="radio" value="1"/><span>× False</span></label>
+</div>
+</div>
+<div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_6–10_3">
+<div class="qnum">9</div><div class="qtext">★ 儿子不想吃饭，所以瘦了。</div>
+<div class="mcgrid">
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_3" type="radio" value="0"/><span>√ True</span></label>
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_3" type="radio" value="1"/><span>× False</span></label>
+</div>
+</div>
+<div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_6–10_4">
+<div class="qnum">10</div><div class="qtext">★ 冬天快到了。</div>
+<div class="mcgrid">
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_4" type="radio" value="0"/><span>√ True</span></label>
+<label class="mc"><input name="wb5_fix_Аудирование_6–10_4" type="radio" value="1"/><span>× False</span></label>
+</div>
+</div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Прослушай и выбери ответы.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · Аудирование 11–15</h2><p>Выбери правильный ответ.</p></div>
+<div class="pill">Listening III</div>
+</div>
+<div class="content"><div class="panel"><div class="audioBox"><div><b>练习册 05</b><span>Part III</span></div><audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/533a2d09a7da034db7fd.mp3"></audio></div><div class="qstack" style="margin-top:10px"><div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_11–15_0"><div class="qnum">11</div><div class="qtext">11. 男的让女的做什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_11–15_0" type="radio" value="0"/><span>A 吃药</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_0" type="radio" value="1"/><span>B 多喝水</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_0" type="radio" value="2"/><span>C 少吃水果</span></label></div></div><div class="qcard" data-answer="2" data-qname="wb5_fix_Аудирование_11–15_1"><div class="qnum">12</div><div class="qtext">12. 关于男的，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_11–15_1" type="radio" value="0"/><span>A 越来越好</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_1" type="radio" value="1"/><span>B 不发烧了</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_1" type="radio" value="2"/><span>C 还在生病</span></label></div></div><div class="qcard" data-answer="2" data-qname="wb5_fix_Аудирование_11–15_2"><div class="qnum">13</div><div class="qtext">13. 关于女的，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_11–15_2" type="radio" value="0"/><span>A 女的很聪明</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_2" type="radio" value="1"/><span>B 女的很不错</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_2" type="radio" value="2"/><span>C 女的给他介绍的女朋友很好</span></label></div></div><div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_11–15_3"><div class="qnum">14</div><div class="qtext">14. 关于学习，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_11–15_3" type="radio" value="0"/><span>A 越来越不容易</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_3" type="radio" value="1"/><span>B 越来越容易</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_3" type="radio" value="2"/><span>C 越来越没意思</span></label></div></div><div class="qcard" data-answer="0" data-qname="wb5_fix_Аудирование_11–15_4"><div class="qnum">15</div><div class="qtext">15. 关于男的，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_11–15_4" type="radio" value="0"/><span>A 越来越好</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_4" type="radio" value="1"/><span>B 没来上班</span></label><label class="mc"><input name="wb5_fix_Аудирование_11–15_4" type="radio" value="2"/><span>C 不用吃药了</span></label></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Прослушай и выбери ответы.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · Аудирование 16–20</h2><p>Выбери правильный ответ.</p></div>
+<div class="pill">Listening IV</div>
+</div>
+<div class="content"><div class="panel"><div class="audioBox"><div><b>练习册 05</b><span>Part IV</span></div><audio controls="" preload="metadata" src="/games/hsk3-lesson5-assets/533a2d09a7da034db7fd.mp3"></audio></div><div class="qstack" style="margin-top:10px"><div class="qcard" data-answer="2" data-qname="wb5_fix_Аудирование_16–20_0"><div class="qnum">16</div><div class="qtext">16. 关于春天，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_16–20_0" type="radio" value="0"/><span>A 天气不那么冷了</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_0" type="radio" value="1"/><span>B 草和树都绿了</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_0" type="radio" value="2"/><span>C 没有课了</span></label></div></div><div class="qcard" data-answer="2" data-qname="wb5_fix_Аудирование_16–20_1"><div class="qnum">17</div><div class="qtext">17. 关于男的，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_16–20_1" type="radio" value="0"/><span>A 天黑了</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_1" type="radio" value="1"/><span>B 白天没有时间</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_1" type="radio" value="2"/><span>C 天黑得晚了</span></label></div></div><div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_16–20_2"><div class="qnum">18</div><div class="qtext">18. 他们是什么关系？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_16–20_2" type="radio" value="0"/><span>A 男女朋友</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_2" type="radio" value="1"/><span>B 医生和病人</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_2" type="radio" value="2"/><span>C 丈夫和妻子</span></label></div></div><div class="qcard" data-answer="0" data-qname="wb5_fix_Аудирование_16–20_3"><div class="qnum">19</div><div class="qtext">19. 他们打算做什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_16–20_3" type="radio" value="0"/><span>A 买花</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_3" type="radio" value="1"/><span>B 看花</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_3" type="radio" value="2"/><span>C 看雨</span></label></div></div><div class="qcard" data-answer="1" data-qname="wb5_fix_Аудирование_16–20_4"><div class="qnum">20</div><div class="qtext">20. 关于小丽，可以知道什么？</div><div class="mcgrid"><label class="mc"><input name="wb5_fix_Аудирование_16–20_4" type="radio" value="0"/><span>A 瘦了</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_4" type="radio" value="1"/><span>B 胖了</span></label><label class="mc"><input name="wb5_fix_Аудирование_16–20_4" type="radio" value="2"/><span>C 吃得少了</span></label></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Прослушай и выбери ответы.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 阅读 21–25</h2><p>Соедини части одного и того же диалога.</p></div>
+<div class="pill">Reading I</div>
+</div>
+<div class="content"><div class="panel">
+<div class="bank"><span>A 要来客人了，我出去买点儿水果吧。</span><span>B 当然是春天。</span><span>C 你今天觉得怎么样？还发烧吗？</span><span>D 我们快回家去吧。</span><span>E 当然。我们先坐公共汽车，然后换地铁。</span><span>F 谢谢你照顾我，我的腿越来越好了。</span></div>
+<div class="matchGrid">
+<label>21 天越来越黑，快要下雨了。<select class="persist answer-select" data-answer="D"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>22 你最喜欢什么季节？<select class="persist answer-select" data-answer="B"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>23 我吃了药，也喝了很多水，现在不发烧了。<select class="persist answer-select" data-answer="C"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>24 不用去，家里还有一些苹果和西瓜。<select class="persist answer-select" data-answer="A"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+<label>25 别这么客气。<select class="persist answer-select" data-answer="F"><option value="">—</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select></label>
+</div>
+</div></div>
+<div class="actions"><button class="primary" onclick="checkSelects(this)">Проверить</button><div class="feedback">Ответы: 21 D · 22 B · 23 C · 24 A · 25 F</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 阅读 26–30</h2><p>Выбери подходящее слово для пропуска.</p></div>
+<div class="pill">Reading II</div>
+</div>
+<div class="content"><div class="panel"><div class="bank"><span>照顾</span><span>当然</span><span>胖</span><span>裙子</span><span>声音</span><span>为</span></div><div class="fillstack"><div class="fillrow"><div class="qnum">1</div><div class="fillbody"><div class="qtext">26. 这是我（   ）你买的蛋糕，你看看，喜欢吗？</div><input class="answer-input persist" data-answer="为" id="wb_r26_0" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">2</div><div class="fillbody"><div class="qtext">27. 下个星期我不在家，你能帮我（   ）一下我的小狗吗？</div><input class="answer-input persist" data-answer="照顾" id="wb_r26_1" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">3</div><div class="fillbody"><div class="qtext">28. 这条（   ）是去年我生日的时候妈妈给我买的。</div><input class="answer-input persist" data-answer="裙子" id="wb_r26_2" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">4</div><div class="fillbody"><div class="qtext">29. A：你怎么瘦了？是不是（   ）工作太忙了？</div><input class="answer-input persist" data-answer="最近" id="wb_r26_3" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">5</div><div class="fillbody"><div class="qtext">30. B：（   ）想去，我们什么时候走？</div><input class="answer-input persist" data-answer="当然" id="wb_r26_4" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Ключ: 26 F · 27 A · 28 D · 29 C · 30 B</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 阅读 31–35</h2><p>Выбери правильный ответ.</p></div>
+<div class="pill">Reading III</div>
+</div>
+<div class="content"><div class="panel"><div class="qstack"><div class="qcard" data-answer="2" data-qname="wb_r31_0"><div class="qnum">1</div><div class="qtext">31. ★ 北京的春天：</div><div class="mcgrid"><label class="mc"><input name="wb_r31_0" type="radio" value="0"/><span>A 天气非常冷</span></label><label class="mc"><input name="wb_r31_0" type="radio" value="1"/><span>B 花还没开</span></label><label class="mc"><input name="wb_r31_0" type="radio" value="2"/><span>C 树和草都绿了</span></label></div><div class="mini-feedback"></div></div><div class="qcard" data-answer="1" data-qname="wb_r31_1"><div class="qnum">2</div><div class="qtext">32. ★ “小胖子”们：</div><div class="mcgrid"><label class="mc"><input name="wb_r31_1" type="radio" value="0"/><span>A 爱吃菜</span></label><label class="mc"><input name="wb_r31_1" type="radio" value="1"/><span>B 爱吃肉</span></label><label class="mc"><input name="wb_r31_1" type="radio" value="2"/><span>C 爱运动</span></label></div><div class="mini-feedback"></div></div><div class="qcard" data-answer="1" data-qname="wb_r31_2"><div class="qnum">3</div><div class="qtext">33. ★ 中国人觉得茶：</div><div class="mcgrid"><label class="mc"><input name="wb_r31_2" type="radio" value="0"/><span>A 是红色的</span></label><label class="mc"><input name="wb_r31_2" type="radio" value="1"/><span>B 很好喝</span></label><label class="mc"><input name="wb_r31_2" type="radio" value="2"/><span>C 很贵</span></label></div><div class="mini-feedback"></div></div><div class="qcard" data-answer="0" data-qname="wb_r31_3"><div class="qnum">4</div><div class="qtext">34. ★ 根据这段话，可以知道：</div><div class="mcgrid"><label class="mc"><input name="wb_r31_3" type="radio" value="0"/><span>A 不吃饭对身体不好</span></label><label class="mc"><input name="wb_r31_3" type="radio" value="1"/><span>B 晚上可以不吃饭</span></label><label class="mc"><input name="wb_r31_3" type="radio" value="2"/><span>C 白天可以不吃饭</span></label></div><div class="mini-feedback"></div></div><div class="qcard" data-answer="2" data-qname="wb_r31_4"><div class="qnum">5</div><div class="qtext">35. ★ 吃药的时候要用：</div><div class="mcgrid"><label class="mc"><input name="wb_r31_4" type="radio" value="0"/><span>A 热茶水</span></label><label class="mc"><input name="wb_r31_4" type="radio" value="1"/><span>B 热牛奶</span></label><label class="mc"><input name="wb_r31_4" type="radio" value="2"/><span>C 热水</span></label></div><div class="mini-feedback"></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkMCGroup(this)">Проверить</button><div class="feedback">Ответы: 31 C · 32 B · 33 B · 34 A · 35 C</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 书写 36–40</h2><p>Собери предложение из слов.</p></div>
+<div class="pill">Writing I</div>
+</div>
+<div class="content"><div class="panel"><div class="fillstack"><div class="fillrow"><div class="qnum">1</div><div class="fillbody"><div class="qtext">36. 外边的 绿 草 都 了 →</div><input class="answer-input persist" data-answer="外边的草都绿了。" id="wb_w36_0" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">2</div><div class="fillbody"><div class="qtext">37. 好 现在 我的病 了 →</div><input class="answer-input persist" data-answer="现在我的病好了。" id="wb_w36_1" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">3</div><div class="fillbody"><div class="qtext">38. 热 越来越 天气 最近 →</div><input class="answer-input persist" data-answer="最近天气越来越热。" id="wb_w36_2" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">4</div><div class="fillbody"><div class="qtext">39. 越来越 雨 大 下得 →</div><input class="answer-input persist" data-answer="雨下得越来越大。" id="wb_w36_3" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">5</div><div class="fillbody"><div class="qtext">40. 漂亮 越来越 现在 我妹妹 →</div><input class="answer-input persist" data-answer="我妹妹现在越来越漂亮。" id="wb_w36_4" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Порядок слов тоже тренируется.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 书写 41–45</h2><p>Напиши иероглиф по пиньиню.</p></div>
+<div class="pill">Writing II</div>
+</div>
+<div class="content"><div class="panel"><div class="fillstack"><div class="fillrow"><div class="qnum">1</div><div class="fillbody"><div class="qtext">41. 听说你（fā）烧了，我来看看你。</div><input class="answer-input persist" data-answer="发" id="wb_w41_0" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">2</div><div class="fillbody"><div class="qtext">42. 今天是周末，不（yòng）去公司上班。</div><input class="answer-input persist" data-answer="用" id="wb_w41_1" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">3</div><div class="fillbody"><div class="qtext">43. 你觉得哪个（jì）节去南方最好？</div><input class="answer-input persist" data-answer="季" id="wb_w41_2" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">4</div><div class="fillbody"><div class="qtext">44. 大家都说北京的（chūn）天是最漂亮的。</div><input class="answer-input persist" data-answer="春" id="wb_w41_3" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">5</div><div class="fillbody"><div class="qtext">45. 你说我今天穿裤子还是穿（qún）子？</div><input class="answer-input persist" data-answer="裙" id="wb_w41_4" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Пиши только один иероглиф.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 书写 46–50</h2><p>辨认汉字，填完整句子。</p></div>
+<div class="pill">Writing III</div>
+</div>
+<div class="content"><div class="panel"><div class="fillstack"><div class="fillrow"><div class="qnum">1</div><div class="fillbody"><div class="qtext">46. 你____，____天到了，花都开了。 (看、春)</div><input class="answer-input persist" data-answer="你看，春天到了，花都开了。" id="wb_w46_0" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">2</div><div class="fillbody"><div class="qtext">47. 今年____天，我没去旅游，一直在家里____习，准备HSK考试。 (复、夏)</div><input class="answer-input persist" data-answer="今年夏天，我没去旅游，一直在家里复习，准备HSK考试。" id="wb_w46_1" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">3</div><div class="fillbody"><div class="qtext">48. 我的朋____有点儿____烧，我要去他家照顾他。 (发、友)</div><input class="answer-input persist" data-answer="我的朋友有点儿发烧，我要去他家照顾他。" id="wb_w46_2" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">4</div><div class="fillbody"><div class="qtext">49. 你穿了那么多衣服，当____觉得很____。 (热、然)</div><input class="answer-input persist" data-answer="你穿了那么多衣服，当然觉得很热。" id="wb_w46_3" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">5</div><div class="fillbody"><div class="qtext">50. 今天____上，我看到树下的小____都绿了。 (草、早)</div><input class="answer-input persist" data-answer="今天早上，我看到树下的小草都绿了。" id="wb_w46_4" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div></div></div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить</button><div class="feedback">Пиши всё предложение целиком.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 书写 51–54</h2><p>Составь слова из предложенных иероглифов.</p></div>
+<div class="pill">Writing IV</div>
+</div>
+<div class="content"><div class="panel">
+<div class="openStack">
+<div class="openQ"><b>51. 用 “明” 组词：</b><textarea class="persist" placeholder="Например: 明天，明白"></textarea><button class="secondary" onclick="revealNext(this)">Возможные варианты</button><div class="reveal hidden">明天、明白</div></div>
+<div class="openQ"><b>52. 用 “休” 组词：</b><textarea class="persist" placeholder="Например: 休息，休假"></textarea><button class="secondary" onclick="revealNext(this)">Возможные варианты</button><div class="reveal hidden">休息、休假</div></div>
+<div class="openQ"><b>53. 用 “从” 组词：</b><textarea class="persist" placeholder="Например: 从来，从前"></textarea><button class="secondary" onclick="revealNext(this)">Возможные варианты</button><div class="reveal hidden">从来、从前</div></div>
+<div class="openQ"><b>54. 用 “看” 组词：</b><textarea class="persist" placeholder="Например: 看书，看病"></textarea><button class="secondary" onclick="revealNext(this)">Возможные варианты</button><div class="reveal hidden">看书、看病</div></div>
+</div>
+</div></div>
+<div class="actions"><div class="feedback">Можно переходить дальше.</div></div>
+</div></section><section class="screen">
+<div class="shell">
+<div class="topline">
+<div class="title"><h2>Рабочая тетрадь · 复习 1–2</h2><p>Повтори главное содержание текстов урока 5.</p></div>
+<div class="pill">Review</div>
+</div>
+<div class="content"><div class="panel"><div class="fillstack"><div class="fillrow"><div class="qnum">1</div><div class="fillbody"><div class="qtext">1a. 小刚最喜欢的____是____。</div><input class="answer-input persist" data-answer="季节是春天" id="wb_rev1_0" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">2</div><div class="fillbody"><div class="qtext">1b. 因为天气不那么冷了，____和树都绿了。</div><input class="answer-input persist" data-answer="草" id="wb_rev1_1" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">3</div><div class="fillbody"><div class="qtext">1c. 小丽最喜欢____。</div><input class="answer-input persist" data-answer="夏天" id="wb_rev1_2" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div><div class="fillrow"><div class="qnum">4</div><div class="fillbody"><div class="qtext">1d. 因为可以穿漂亮的____。</div><input class="answer-input persist" data-answer="裙子" id="wb_rev1_3" placeholder="Введите ответ"/><div class="mini-feedback"></div></div></div></div>
+<div class="openQ">
+<b>2. 根据课文内容填空</b>
+<p>小丽去年买的裙子，今年 <input class="answer-input persist wb-inline" data-answer="就不能穿" id="wb_rev2_1" placeholder="①"/> 了。</p>
+<p>因为小丽吃得太多，小刚让她 <input class="answer-input persist wb-inline" data-answer="少吃点儿" id="wb_rev2_2" placeholder="②"/>。</p>
+<p><input class="answer-input persist wb-inline" data-answer="最近" id="wb_rev2_3" placeholder="③"/> 小丽
+         <input class="answer-input persist wb-inline" data-answer="越来越" id="wb_rev2_4" placeholder="④"/> 胖，
+         是因为她 <input class="answer-input persist wb-inline" data-answer="做的饭" id="wb_rev2_5" placeholder="⑤"/> 太好吃了。</p>
+<div class="mini-feedback"></div>
+</div>
+</div></div>
+<div class="actions"><button class="primary" onclick="checkTextAnswers(this)">Проверить всё</button><div class="feedback">Ключ review подключён к автопроверке.</div></div>
+</div></section></main>
+<footer>
+<button class="secondary" onclick="move(-1)">← Назад</button>
+<div class="center" id="footerTitle">Урок 5</div>
+<button class="next" onclick="move(1)">Дальше →</button>
+</footer>
+</div>
+<button class="deepBtn" onclick="toggleDeep()">💬</button>
+<div class="deepPanel" id="deepPanel">
+<div class="deepHead"><span>Помощник по уроку 5</span><button class="secondary" onclick="toggleDeep()">×</button></div>
+<div class="deepMsgs" id="deepMsgs"><div class="deepMsg">Спроси про 了, 越来越, лексику или конкретное предложение урока.</div></div>
+<div class="deepInput"><input id="deepText" placeholder="Напиши вопрос"/><button class="primary" onclick="askDeep()">Отправить</button></div>
+</div>
+<script>
+const REVIEW = [["周末", "zhōumò", "выходные"], ["打算", "dǎsuàn", "планировать"], ["啊", "a", "частица"], ["跟", "gēn", "с / вместе с"], ["一直", "yìzhí", "всё время"], ["游戏", "yóuxì", "игра"], ["作业", "zuòyè", "домашнее задание"], ["着急", "zháojí", "волноваться"], ["复习", "fùxí", "повторять"], ["南方", "nánfāng", "юг"], ["北方", "běifāng", "север"], ["面包", "miànbāo", "хлеб"], ["带", "dài", "брать с собой"], ["地图", "dìtú", "карта"], ["搬", "bān", "переезжать / переносить"], ["腿", "tuǐ", "нога"], ["疼", "téng", "болеть"], ["脚", "jiǎo", "ступня"], ["树", "shù", "дерево"], ["容易", "róngyì", "лёгкий"], ["难", "nán", "трудный"], ["太太", "tàitai", "госпожа / жена"], ["秘书", "mìshū", "секретарь"], ["经理", "jīnglǐ", "менеджер"], ["办公室", "bàngōngshì", "офис"], ["辆", "liàng", "сч. сл. для машин"], ["楼", "lóu", "этаж / здание"], ["拿", "ná", "держать / брать"], ["把", "bǎ", "сч. сл. / конструкция 把"], ["伞", "sǎn", "зонт"], ["胖", "pàng", "полный"], ["其实", "qíshí", "на самом деле"], ["瘦", "shòu", "худой"], ["还是", "háishi", "или? (в вопросе)"], ["爬山", "páshān", "ходить в горы"], ["小心", "xiǎoxīn", "осторожно"], ["条", "tiáo", "сч. сл."], ["裤子", "kùzi", "брюки"], ["记得", "jìde", "помнить"], ["衬衫", "chènshān", "рубашка"], ["元", "yuán", "юань"], ["新鲜", "xīnxiān", "свежий"], ["甜", "tián", "сладкий"], ["只", "zhǐ", "только"], ["放", "fàng", "класть / ставить"], ["饮料", "yǐnliào", "напиток"], ["或者", "huòzhě", "или (в утверждении)"], ["舒服", "shūfu", "комфортно"], ["花", "huā", "цветок"], ["绿", "lǜ", "зелёный"], ["比赛", "bǐsài", "соревнование"], ["照片", "zhàopiàn", "фотография"], ["年级", "niánjí", "курс / класс"], ["又", "yòu", "и...и / снова"], ["聪明", "cōngming", "умный"], ["热情", "rèqíng", "приветливый"], ["努力", "nǔlì", "старательный"], ["总是", "zǒngshì", "всегда"], ["回答", "huídá", "отвечать"], ["站", "zhàn", "стоять"], ["饿", "è", "голодный"], ["超市", "chāoshì", "супермаркет"], ["蛋糕", "dàngāo", "торт"], ["年轻", "niánqīng", "молодой"], ["认真", "rènzhēn", "серьёзно / внимательно"], ["客人", "kèrén", "гость / клиент"]];
+const COPY_WORDS = [["发烧", "fāshāo"], ["为", "wèi"], ["照顾", "zhàogù"], ["用", "yòng"], ["感冒", "gǎnmào"], ["季节", "jìjié"], ["当然", "dāngrán"], ["春天", "chūntiān"], ["草", "cǎo"], ["夏天", "xiàtiān"], ["裙子", "qúnzi"], ["最近", "zuìjìn"], ["越", "yuè"]];
+const stageParams=new URLSearchParams(location.hash.slice(1)||location.search);
+const stageFrom=Math.max(1,Number(stageParams.get('from')||1));
+const stageTo=Math.min(58,Number(stageParams.get('to')||58));
+if(stageFrom===stageTo)document.documentElement.classList.add('single-stage');
+const stageStorageKey=name=>`hsk3_l5_${stageFrom}_${stageTo}_${name}`;
+const screens=[...document.querySelectorAll('.screen')];
+const savedStage=Number(localStorage.getItem(stageStorageKey('screen')));
+let current=Number.isFinite(savedStage)&&savedStage>=stageFrom-1&&savedStage<=stageTo-1?savedStage:stageFrom-1;
+let finalStats=JSON.parse(localStorage.getItem('hsk3_l5_final_stats')||'{"correct":0,"total":0}');
+
+function move(n){ current=Math.max(stageFrom-1,Math.min(stageTo-1,current+n)); renderScreen(); }
+function renderScreen(){
+  screens.forEach((s,i)=>s.classList.toggle('active',i===current));
+  document.getElementById('counter').textContent=`${current+1} / ${screens.length}`;
+  document.getElementById('progressBar').style.width=((current+1)/screens.length*100)+'%';
+  document.getElementById('footerTitle').textContent=screens[current].querySelector('h2')?.textContent||'Урок 5';
+  localStorage.setItem(stageStorageKey('screen'),current);
+  screens[current].querySelector('.panel')?.scrollTo(0,0);
+}
+function norm(s){return (s||'').trim().toLowerCase().replace(/[，,。.!！？?、；;：“”"'\s]/g,'')}
+function toggleClass(sel){document.querySelectorAll(sel).forEach(x=>x.classList.toggle('hidden'))}
+function revealNext(btn){btn.nextElementSibling?.classList.toggle('hidden')}
+
+const reviewUser=(()=>{try{return JSON.parse(localStorage.getItem('authUser')||'null')}catch{return null}})();
+const reviewUserId=reviewUser?.id||reviewUser?.email||'teacher';
+const reviewProgressKey=`hsk-dictionary:${reviewUserId}`;
+const reviewSeenKey=`hsk-review-known:${reviewUserId}:5`;
+let reviewProgress=(()=>{try{return JSON.parse(localStorage.getItem(reviewProgressKey)||'{}')}catch{return {}}})();
+let reviewSeen=new Set((()=>{try{return JSON.parse(localStorage.getItem(reviewSeenKey)||'[]')}catch{return []}})());
+let reviewQueue=REVIEW.filter(([word])=>(reviewProgress[word]||0)<3&&!reviewSeen.has(word));
+let rIndex=Number(localStorage.getItem('hsk3_l5_review_index')||0);
+let reviewRevealed=false;
+function renderReview(){
+ if(!reviewQueue.length){
+   reviewZh.textContent='✓';reviewPy.textContent='';reviewRu.textContent='';
+   reviewLesson.textContent='Готово';reviewCount.textContent='Все слова этого повторения пройдены';
+   return;
+ }
+ rIndex=(rIndex+reviewQueue.length)%reviewQueue.length;
+ const [w,p,r]=reviewQueue[rIndex];
+ reviewZh.textContent=w;reviewPy.textContent=p;reviewRu.textContent=r;
+ reviewPy.classList.add('hidden');reviewRu.classList.add('hidden');reviewRevealed=false;
+ reviewLesson.textContent=`Знаю: ${reviewProgress[w]||0} / 3`;
+ reviewCount.textContent=`${rIndex+1} / ${reviewQueue.length} · осталось ${reviewQueue.length}`;
+ localStorage.setItem('hsk3_l5_review_index',rIndex);
+}
+function reviewNext(){
+ if(!reviewQueue.length)return;
+ const word=reviewQueue[rIndex][0];
+ if(!reviewRevealed)reviewProgress[word]=Math.min(3,(reviewProgress[word]||0)+1);
+ reviewSeen.add(word);
+ localStorage.setItem(reviewProgressKey,JSON.stringify(reviewProgress));
+ localStorage.setItem(reviewSeenKey,JSON.stringify([...reviewSeen]));
+ reviewQueue.splice(rIndex,1);if(rIndex>=reviewQueue.length)rIndex=0;renderReview();
+}
+function reviewPrev(){if(!reviewQueue.length)return;rIndex=(rIndex-1+reviewQueue.length)%reviewQueue.length;renderReview()}
+function toggleReview(kind){
+ reviewRevealed=true;
+ document.getElementById(kind==='py'?'reviewPy':'reviewRu').classList.toggle('hidden');
+}
+
+function checkMCGroup(btn, isFinal=false){
+ const panel=btn.closest('.shell').querySelector('.panel');
+ const cards=[...panel.querySelectorAll('.qcard')];
+ let correct=0;
+ cards.forEach(card=>{
+   const ans=Number(card.dataset.answer),name=card.dataset.qname;
+   const picked=card.querySelector(`input[name="${name}"]:checked`);
+   card.querySelectorAll('.mc').forEach(l=>l.classList.remove('correct','wrong'));
+   const fb=card.querySelector('.mini-feedback');
+   if(!picked){fb.textContent='Выбери ответ.';return}
+   const val=Number(picked.value);
+   const labs=[...card.querySelectorAll('.mc')];
+   labs[ans]?.classList.add('correct');
+   if(val===ans){correct++;fb.textContent='✓ Верно';fb.style.color='var(--green)'}
+   else{labs[val]?.classList.add('wrong');fb.textContent='✗ Неверно';fb.style.color='var(--red)'}
+ });
+ const feedback=btn.parentElement.querySelector('.feedback');
+ feedback.textContent=`Правильно: ${correct} из ${cards.length}`;
+ feedback.className='feedback '+(correct===cards.length?'ok':'bad');
+ if(isFinal){finalStats.correct+=correct;finalStats.total+=cards.length;localStorage.setItem('hsk3_l5_final_stats',JSON.stringify(finalStats));}
+ recordLesson5Results(panel);
+}
+
+function checkSelects(btn){
+ const panel=btn.closest('.shell').querySelector('.panel');
+ const els=[...panel.querySelectorAll('.answer-select')]; let c=0;
+ els.forEach(el=>{const ok=el.value===el.dataset.answer;el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);if(ok)c++});
+ const f=btn.parentElement.querySelector('.feedback'); f.textContent=`Правильно: ${c} из ${els.length}`; f.className='feedback '+(c===els.length?'ok':'bad');
+ recordLesson5Results(panel);
+}
+function checkTextAnswers(btn){
+ const panel=btn.closest('.shell').querySelector('.panel');
+ const els=[...panel.querySelectorAll('.answer-input')]; let c=0;
+ els.forEach(el=>{const ok=norm(el.value)===norm(el.dataset.answer);el.classList.toggle('good',ok);el.classList.toggle('bad',!ok);const fb=el.parentElement.querySelector('.mini-feedback');if(fb)fb.textContent=ok?'✓ Верно':`Ответ: ${el.dataset.answer}`;if(ok)c++});
+ const f=btn.parentElement.querySelector('.feedback'); f.textContent=`Правильно: ${c} из ${els.length}`; f.className='feedback '+(c===els.length?'ok':'bad');
+ recordLesson5Results(panel);
+}
+
+const LESSON5_RESULTS_KEY='hsk3_l5_analysis_results';
+function lesson5StageNumber(){return current+1}
+function recordLesson5Results(panel){
+ const rows=[];
+ panel.querySelectorAll('.qcard').forEach(card=>{
+   const prompt=card.querySelector('.qtext')?.textContent?.trim()||'Задание';
+   const labels=[...card.querySelectorAll('.mc')];
+   const picked=card.querySelector('input[type="radio"]:checked');
+   const answerIndex=Number(card.dataset.answer);
+   if(picked)rows.push({prompt,studentAnswer:labels[Number(picked.value)]?.textContent?.trim()||picked.value,correctAnswer:labels[answerIndex]?.textContent?.trim()||String(answerIndex),correct:Number(picked.value)===answerIndex,type:'choice'});
+ });
+ panel.querySelectorAll('.answer-select').forEach(el=>{
+   if(el.value)rows.push({prompt:el.closest('.fillrow,.qcard,.gcard')?.querySelector('.qtext,b')?.textContent?.trim()||'Выбор ответа',studentAnswer:el.value,correctAnswer:el.dataset.answer||'',correct:el.value===el.dataset.answer,type:'select'});
+ });
+ panel.querySelectorAll('.answer-input').forEach(el=>{
+   if(el.value.trim())rows.push({prompt:el.closest('.fillrow,.openQ,.qcard')?.querySelector('.qtext,b,p')?.textContent?.trim()||'Письменный ответ',studentAnswer:el.value.trim(),correctAnswer:el.dataset.answer||'',correct:norm(el.value)===norm(el.dataset.answer),type:'written'});
+ });
+ const saved=JSON.parse(localStorage.getItem(LESSON5_RESULTS_KEY)||'{}');
+ saved[lesson5StageNumber()]={title:panel.closest('.screen')?.querySelector('h2')?.textContent||`Экран ${lesson5StageNumber()}`,rows,updatedAt:new Date().toISOString()};
+ localStorage.setItem(LESSON5_RESULTS_KEY,JSON.stringify(saved));
+ try{parent.postMessage({type:'hsk-stage-result',lesson:5,stage:lesson5StageNumber(),title:saved[lesson5StageNumber()].title,answers:rows},location.origin)}catch{}
+}
+
+function savePersist(){
+ document.querySelectorAll('.persist[id]').forEach(el=>el.addEventListener('input',()=>localStorage.setItem('hsk3_l5_'+el.id,el.value)));
+ document.querySelectorAll('.persist[id]').forEach(el=>{const v=localStorage.getItem('hsk3_l5_'+el.id);if(v!==null)el.value=v});
+}
+document.addEventListener('change',e=>{
+ if(e.target.matches('.persist') && !e.target.id){ 
+   if(!e.target.dataset.persistKey)e.target.dataset.persistKey='p_'+Math.random().toString(36).slice(2);
+ }
+});
+
+function updateResult(){
+ const pct=finalStats.total?Math.round(finalStats.correct/finalStats.total*100):0;
+ resultScore.textContent=pct+'%';
+ resultText.textContent=pct>=90?'Новые конструкции уже держатся уверенно.':pct>=70?'Основа есть. Повтори экраны, где были ошибки.':'Вернись к двум грамматическим темам и пройди практику ещё раз.';
+}
+function resetLesson(){
+ if(!confirm('Сбросить прогресс урока 5?'))return;
+ Object.keys(localStorage).filter(k=>k.startsWith('hsk3_l5_')).forEach(k=>localStorage.removeItem(k));
+ finalStats={correct:0,total:0}; current=0; location.reload();
+}
+
+// Copybook
+function drawGrid(ctx,w,h,traceChar=''){
+ ctx.clearRect(0,0,w,h); ctx.strokeStyle='#b9afa5';ctx.lineWidth=1;
+ ctx.strokeRect(.5,.5,w-1,h-1);ctx.setLineDash([4,4]);ctx.globalAlpha=.45;
+ ctx.beginPath();ctx.moveTo(w/2,0);ctx.lineTo(w/2,h);ctx.moveTo(0,h/2);ctx.lineTo(w,h/2);ctx.stroke();
+ ctx.setLineDash([]);ctx.globalAlpha=1;
+ if(traceChar){ctx.fillStyle='#c8c3be';ctx.font=`${Math.round(h*.68)}px KaiTi, STKaiti, serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(traceChar,w/2,h/2+2);}
+}
+function makeCanvas(char,trace=false){
+ const cell=document.createElement('div');cell.className='gridCell';
+ const c=document.createElement('canvas');c.width=144;c.height=144;cell.appendChild(c);
+ const ctx=c.getContext('2d');drawGrid(ctx,c.width,c.height,trace?char:'');
+ let drawing=false,last=null;
+ const pos=e=>{const r=c.getBoundingClientRect();return [(e.clientX-r.left)*c.width/r.width,(e.clientY-r.top)*c.height/r.height]};
+ c.addEventListener('pointerdown',e=>{drawing=true;last=pos(e);c.setPointerCapture(e.pointerId)});
+ c.addEventListener('pointermove',e=>{if(!drawing)return;const p=pos(e);ctx.strokeStyle='#1d1b19';ctx.lineWidth=7;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(...last);ctx.lineTo(...p);ctx.stroke();last=p});
+ c.addEventListener('pointerup',()=>drawing=false);c.addEventListener('pointercancel',()=>drawing=false);
+ c.dataset.char=char;c.dataset.trace=trace?'1':'0'; return cell;
+}
+function initCopybook(){
+ document.querySelectorAll('.copyRow').forEach(row=>{
+   const cont=row.querySelector('.charPractice'); if(cont.children.length)return;
+   [...row.dataset.word].forEach(char=>{
+     const set=document.createElement('div');set.className='charSet';
+     const model=document.createElement('div');model.className='gridCell model';model.textContent=char;
+     set.appendChild(model);set.appendChild(makeCanvas(char,true));set.appendChild(makeCanvas(char,false));set.appendChild(makeCanvas(char,false));cont.appendChild(set);
+   });
+ });
+}
+function clearCopyPage(btn){
+ btn.closest('.shell').querySelectorAll('.gridCell canvas').forEach(c=>drawGrid(c.getContext('2d'),c.width,c.height,c.dataset.trace==='1'?c.dataset.char:''));
+}
+
+// Recording
+let recorder=null,chunks=[],stream=null;
+async function toggleRecord(){
+ const btn=document.getElementById('recBtn');
+ if(!recorder || recorder.state==='inactive'){
+   try{stream=await navigator.mediaDevices.getUserMedia({audio:true});chunks=[];recorder=new MediaRecorder(stream);recorder.ondataavailable=e=>chunks.push(e.data);recorder.onstop=()=>{const blob=new Blob(chunks,{type:'audio/webm'});recPlayback.src=URL.createObjectURL(blob);recPlayback.classList.remove('hidden');stream.getTracks().forEach(t=>t.stop())};recorder.start();btn.textContent='■ Остановить запись';recStatus.textContent='Идёт запись…';}
+   catch(e){recStatus.textContent='Браузер не дал доступ к микрофону.'}
+ } else {recorder.stop();btn.textContent='● Начать запись';recStatus.textContent='Готово. Прослушай себя.'}
+}
+
+// DeepSeek: чат и итоговый анализ именно урока 5
+let deepHistory=[];
+function toggleDeep(){deepPanel.classList.toggle('open')}
+async function requestDeepSeek(message,context){
+ const r=await fetch('/kids-api/hsk/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message,history:deepHistory.slice(-10),context})});
+ if(!r.ok)throw new Error(`HTTP ${r.status}`);
+ const d=await r.json();if(!d.reply)throw new Error('empty reply');return d.reply;
+}
+function lesson5ChatContext(){
+ const screen=screens[current];
+ return `HSK 3 Standard Course, урок 5 «我最近越来越胖了». Текущий экран ${lesson5StageNumber()} из 58: ${screen?.querySelector('h2')?.textContent||''}. Темы урока: 了 как изменение состояния; 越来越; лексика, аудирование, чтение и письмо урока 5.`;
+}
+async function askDeep(){
+ const t=deepText.value.trim();if(!t)return;deepText.value='';
+ const u=document.createElement('div');u.className='deepMsg';u.textContent='Вы: '+t;deepMsgs.appendChild(u);
+ const w=document.createElement('div');w.className='deepMsg';w.textContent='DeepSeek думает…';deepMsgs.appendChild(w);deepMsgs.scrollTop=deepMsgs.scrollHeight;
+ try{const reply=await requestDeepSeek(t,lesson5ChatContext());w.textContent=reply;deepHistory.push({role:'user',content:t},{role:'assistant',content:reply});}
+ catch(e){w.textContent='Не удалось получить ответ DeepSeek. Попробуй ещё раз.'}
+ deepMsgs.scrollTop=deepMsgs.scrollHeight;
+}
+async function analyzeLesson5(){
+ const out=document.getElementById('lesson5AnalysisOutput'),btn=document.getElementById('lesson5AnalyzeBtn');
+ const saved=JSON.parse(localStorage.getItem(LESSON5_RESULTS_KEY)||'{}');
+ const rows=Object.values(saved).flatMap(stage=>(stage.rows||[]).map(row=>({...row,stage:stage.title})));
+ if(!rows.length){out.textContent='Сначала выполни задания и нажимай «Проверить» — тогда ответы попадут в анализ.';return}
+ btn.disabled=true;btn.textContent='DeepSeek анализирует…';out.textContent='Собираю результаты именно урока 5…';
+ const correct=rows.filter(x=>x.correct).length,wrong=rows.filter(x=>!x.correct);
+ const evidence=wrong.slice(0,45).map((x,i)=>`${i+1}. [${x.stage}] ${x.prompt} | Ответ ученика: ${x.studentAnswer} | Ожидалось: ${x.correctAnswer}`).join('\\n').slice(0,3600);
+ const message='Проанализируй результаты именно урока 5 HSK 3 «我最近越来越胖了». Ответь по-русски, обращайся к ученику на «ты». Используй разделы: «Результат», «Повторяющиеся ошибки», «Что отработать». Отдельно оцени лексику, грамматику 了 и 越来越, аудирование, чтение и письмо только если по ним есть данные. Не выдавай полный список ключей и не придумывай ошибки, которых нет.';
+ try{out.textContent=await requestDeepSeek(message,`Урок 5. Проверено ответов: ${rows.length}; верно: ${correct}; ошибок: ${wrong.length}. Ошибочные ответы:
+${evidence||'Ошибок в проверенных ответах нет.'}`)}
+ catch(e){out.textContent='Не удалось получить итоговый анализ DeepSeek. Результаты сохранены — попробуй ещё раз.'}
+ finally{btn.disabled=false;btn.textContent='Получить итоговый анализ DeepSeek'}
+}
+function initLesson5Analysis(){
+ if(typeof stageTo==='number'&&stageTo!==58)return;
+ const host=screens[57]?.querySelector('.actions')||screens[57]?.querySelector('.panel');if(!host)return;
+ const box=document.createElement('div');box.style.cssText='display:grid;gap:8px;width:100%;margin-top:10px';
+ box.innerHTML='<button id="lesson5AnalyzeBtn" class="primary" onclick="analyzeLesson5()">Получить итоговый анализ DeepSeek</button><div id="lesson5AnalysisOutput" class="feedback" style="white-space:pre-wrap;max-height:260px;overflow:auto">Анализ использует только сохранённые результаты урока 5.</div>';
+ host.appendChild(box);
+}
+
+renderReview();savePersist();initCopybook();renderScreen();updateResult();initLesson5Analysis();
+</script>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personal Things</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#63788c;
+  --paper:#fffdf8;
+  --line:#dce8ef;
+  --blue:#4a8fd8;
+  --orange:#f59a4a;
+  --green:#49b46d;
+  --shadow:0 16px 38px rgba(40,65,90,.16);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#eaf4f8;
+  color:var(--ink);
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:1.4vh;
+  padding:2.2vh 2.2vw;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255,208,139,.55), transparent 22%),
+    radial-gradient(circle at 92% 18%, rgba(130,203,255,.45), transparent 24%),
+    linear-gradient(135deg,#f7fbfd,#eaf5f8 55%,#f9f5eb);
+}
+
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  padding:.85rem 1.2rem;
+  border:1px solid rgba(255,255,255,.7);
+  border-radius:24px;
+  background:rgba(255,255,255,.82);
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(10px);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.9rem;
+  min-width:0;
+}
+
+.badge {
+  display:grid;
+  place-items:center;
+  width:54px;
+  height:54px;
+  flex:0 0 54px;
+  border-radius:18px;
+  background:linear-gradient(145deg,#ffd798,#ffad5d);
+  font-size:1.9rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.8rem,3vw,3rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.3rem;
+  color:var(--muted);
+  font-size:clamp(.9rem,1.3vw,1.05rem);
+  font-weight:700;
+}
+
+.page-pill {
+  padding:.65rem 1rem;
+  border-radius:999px;
+  background:#edf6ff;
+  color:#2a659c;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.content {
+  min-height:0;
+  width:100%;
+  max-width:1280px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+}
+
+.grid {
+  width:100%;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:1rem;
+}
+
+.card {
+  position:relative;
+  min-height:185px;
+  border:2px solid var(--line);
+  border-radius:24px;
+  background:var(--paper);
+  box-shadow:0 8px 22px rgba(36,68,94,.10);
+  padding:1rem;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  cursor:pointer;
+  transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  user-select:none;
+}
+
+.card:hover {
+  transform:translateY(-4px);
+  border-color:#9ec7e7;
+  box-shadow:0 14px 28px rgba(36,68,94,.15);
+}
+
+.card:active {
+  transform:translateY(0);
+}
+
+.icon {
+  font-size:clamp(3.2rem,5vw,5rem);
+  line-height:1;
+  margin-bottom:.8rem;
+  filter:drop-shadow(0 5px 4px rgba(0,0,0,.09));
+}
+
+.word {
+  font-size:clamp(1.15rem,1.7vw,1.55rem);
+  font-weight:900;
+  color:var(--ink);
+}
+
+.translation {
+  margin-top:.35rem;
+  min-height:1.2em;
+  color:var(--orange);
+  font-weight:800;
+  opacity:0;
+  transform:translateY(5px);
+  transition:.16s ease;
+}
+
+.card.open .translation {
+  opacity:1;
+  transform:translateY(0);
+}
+
+.sound {
+  position:absolute;
+  top:.7rem;
+  right:.75rem;
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:12px;
+  background:#edf7ff;
+  color:#2c73aa;
+  font-size:1rem;
+  font-weight:900;
+}
+
+.hint {
+  position:absolute;
+  left:.85rem;
+  bottom:.7rem;
+  color:#9aacbb;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+}
+
+.footer {
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:1rem;
+  padding:.7rem 1rem;
+  border-radius:20px;
+  background:rgba(255,255,255,.82);
+  box-shadow:var(--shadow);
+}
+
+.note {
+  color:var(--muted);
+  font-weight:700;
+  font-size:.95rem;
+}
+
+.nav {
+  display:flex;
+  gap:.7rem;
+}
+
+.nav-btn {
+  cursor:pointer;
+  border:0;
+  border-radius:15px;
+  padding:.72rem 1.15rem;
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 5px 0 rgba(0,0,0,.16);
+}
+
+.nav-btn.prev {
+  background:#72879a;
+}
+
+.nav-btn.next {
+  background:var(--blue);
+}
+
+.nav-btn:disabled {
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+}
+
+@media (max-width:980px) {
+  .grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .card {
+    min-height:155px;
+  }
+}
+
+@media (max-width:700px) {
+  .app {
+    padding:1.5vh 2vw;
+  }
+  .grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:.7rem;
+  }
+  .card {
+    min-height:132px;
+    padding:.7rem;
+  }
+  .icon {
+    margin-bottom:.45rem;
+  }
+  .header {
+    padding:.7rem .85rem;
+  }
+  .badge {
+    width:46px;
+    height:46px;
+    flex-basis:46px;
+  }
+  .note {
+    display:none;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">🎒</div>
+      <div>
+        <h1>Personal Things</h1>
+        <div class="subtitle">Meet the new words</div>
+      </div>
+    </div>
+    <div id="pagePill" class="page-pill">1 / 2</div>
+  </header>
+
+  <main class="content">
+    <section id="grid" class="grid"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="note">Click a card to hear the word and see the translation.</div>
+    <div class="nav">
+      <button id="prevBtn" class="nav-btn prev">← BACK</button>
+      <button id="nextBtn" class="nav-btn next">NEXT →</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const items = [{"word": "skateboard", "ru": "скейтборд", "icon": "🛹"}, {"word": "helmet", "ru": "шлем", "icon": "⛑️"}, {"word": "basketball", "ru": "баскетбольный мяч", "icon": "🏀"}, {"word": "gloves", "ru": "перчатки", "icon": "🧤"}, {"word": "bicycle", "ru": "велосипед", "icon": "🚲"}, {"word": "trainers", "ru": "кроссовки", "icon": "👟"}, {"word": "cap", "ru": "кепка", "icon": "🧢"}, {"word": "guitar", "ru": "гитара", "icon": "🎸"}, {"word": "digital camera", "ru": "цифровая камера", "icon": "📷"}, {"word": "scarf", "ru": "шарф", "icon": "🧣"}, {"word": "watch", "ru": "наручные часы", "icon": "⌚"}, {"word": "handbag", "ru": "сумка", "icon": "👜"}, {"word": "teddy bear", "ru": "плюшевый мишка", "icon": "🧸"}];
+const pageSize = 8;
+const pages = Math.ceil(items.length / pageSize);
+let page = 0;
+
+const grid = document.getElementById("grid");
+const pagePill = document.getElementById("pagePill");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+function speak(word) {
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-GB";
+  utterance.rate = 0.82;
+  window.speechSynthesis.speak(utterance);
+}
+
+function render() {
+  const start = page * pageSize;
+  const visible = items.slice(start, start + pageSize);
+
+  grid.innerHTML = "";
+
+  visible.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="sound">🔊</div>
+      <div class="icon">${item.icon}</div>
+      <div class="word">${item.word}</div>
+      <div class="translation">${item.ru}</div>
+      <div class="hint">tap</div>
+    `;
+
+    card.addEventListener("click", () => {
+      card.classList.toggle("open");
+      speak(item.word);
+    });
+
+    grid.appendChild(card);
+  });
+
+  pagePill.textContent = `${page + 1} / ${pages}`;
+  prevBtn.disabled = page === 0;
+  nextBtn.disabled = false;
+  nextBtn.textContent = page === pages - 1 ? "COMPLETE ✓" : "NEXT →";
+}
+
+prevBtn.addEventListener("click", () => {
+  if (page > 0) {
+    page -= 1;
+    render();
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (page < pages - 1) {
+    page += 1;
+    render();
+    return;
+  }
+
+  const result = { wordsIntroduced: items.length, pagesViewed: pages };
+  localStorage.setItem("unit2bPersonalThingsIntroResult", JSON.stringify(result));
+  window.parent?.postMessage({
+    type: "lesson-step-complete",
+    lesson: "2b",
+    step: "personal-things-intro",
+    result
+  }, "*");
+  nextBtn.disabled = true;
+  nextBtn.textContent = "COMPLETED ✓";
+});
+
+render();
+</script>
+</body>
+</html>

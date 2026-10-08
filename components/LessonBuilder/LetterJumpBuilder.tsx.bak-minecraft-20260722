@@ -1,0 +1,18 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+import type { LetterJumpConfig } from './LetterJumpGame';
+
+interface Props { initialConfig?: LetterJumpConfig; onSave: (config: LetterJumpConfig) => void; }
+const DEFAULT_ITEMS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
+export default function LetterJumpBuilder({ initialConfig, onSave }: Props) {
+  const [title, setTitle] = useState(initialConfig?.title || 'Letter Jump');
+  const [instruction, setInstruction] = useState(initialConfig?.instruction || 'Прыгни на правильную букву или слово');
+  const [raw, setRaw] = useState((initialConfig?.items || DEFAULT_ITEMS).join('\n'));
+  const [rounds, setRounds] = useState(initialConfig?.rounds || 10);
+  const [lives, setLives] = useState(initialConfig?.lives || 3);
+  const items = useMemo(() => [...new Set(raw.split(/[\n,;]/).map(v => v.trim()).filter(Boolean))], [raw]);
+  const valid = items.length >= 6;
+  return <div className="h-full overflow-y-auto bg-gradient-to-br from-sky-50 to-blue-100 p-4"><div className="mx-auto max-w-3xl rounded-3xl bg-white p-6 shadow-xl"><h2 className="text-3xl font-black text-slate-800">🏃 Конструктор Letter Jump</h2><p className="mt-1 text-sm text-slate-500">Введите минимум 6 букв или слов. Игрок выбирает правильную платформу.</p><div className="mt-5 grid gap-4 md:grid-cols-2"><label className="font-bold">Название<input value={title} onChange={e => setTitle(e.target.value)} className="mt-1 w-full rounded-xl border-2 px-3 py-2" /></label><label className="font-bold">Инструкция<input value={instruction} onChange={e => setInstruction(e.target.value)} className="mt-1 w-full rounded-xl border-2 px-3 py-2" /></label></div><label className="mt-4 block font-bold">Буквы или слова<textarea value={raw} onChange={e => setRaw(e.target.value)} rows={9} className="mt-1 w-full rounded-xl border-2 px-3 py-2" /></label><div className={`mt-2 text-sm font-bold ${valid ? 'text-emerald-600' : 'text-red-600'}`}>Уникальных вариантов: {items.length} {valid ? '✓' : '(нужно минимум 6)'}</div><div className="mt-5 grid gap-4 md:grid-cols-2"><label className="font-bold">Раундов: {rounds}<input type="range" min={1} max={30} value={rounds} onChange={e => setRounds(Number(e.target.value))} className="mt-2 w-full" /></label><label className="font-bold">Жизней: {lives}<input type="range" min={1} max={7} value={lives} onChange={e => setLives(Number(e.target.value))} className="mt-2 w-full" /></label></div><button disabled={!valid} onClick={() => onSave({ title: title.trim() || 'Letter Jump', instruction: instruction.trim(), items, rounds, lives })} className="mt-6 w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-700 px-5 py-3 text-lg font-black text-white disabled:opacity-40">Сохранить Letter Jump</button></div></div>;
+}

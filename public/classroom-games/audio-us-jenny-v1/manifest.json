@@ -1,0 +1,23 @@
+{
+  "voice": "en-US-JennyNeural",
+  "rate": "+0%",
+  "phrases": {
+    "1": "one",
+    "2": "two",
+    "3": "three",
+    "4": "four",
+    "5": "five",
+    "6": "six",
+    "7": "seven",
+    "8": "eight",
+    "9": "nine",
+    "10": "ten",
+    "pen-pink": "Paint the pen pink.",
+    "pencil-purple": "Paint the pencil purple.",
+    "book-blue": "Paint the book blue.",
+    "eraser-green": "Paint the eraser green.",
+    "table-yellow": "Paint the table yellow.",
+    "chair-orange": "Paint the chair orange.",
+    "school-red": "Paint the school red."
+  }
+}

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Island Words — My name is...</title>
+<style>
+  :root{
+    --ink:#17364c;
+    --blue:#1689c9;
+    --deep:#075f98;
+    --sand:#f4cf82;
+    --sand2:#e8b85e;
+    --cream:#fff9e7;
+    --green:#4d9d43;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;height:100dvh;overflow:hidden;font-family:"Trebuchet MS",Arial,sans-serif;background:#76d8ef;color:var(--ink)}
+  button{font:inherit}
+  .game{
+    width:100%;height:100%;height:100dvh;position:relative;overflow:hidden;
+    background:
+      radial-gradient(circle at 18% 88%, rgba(255,255,255,.24) 0 2px, transparent 3px),
+      radial-gradient(circle at 72% 79%, rgba(255,255,255,.18) 0 2px, transparent 3px),
+      linear-gradient(to bottom,#65d7f1 0 22%,#1eb5d4 22% 28%,#f5d58f 28% 100%);
+  }
+  .ocean{
+    position:absolute;left:0;right:0;top:18%;height:13%;
+    background:
+      repeating-radial-gradient(ellipse at 50% 120%, rgba(255,255,255,.55) 0 3px, transparent 4px 14px),
+      linear-gradient(#2cc4df,#109fc5);
+    opacity:.95;
+  }
+  .island-left,.island-right{
+    position:absolute;top:13%;width:24%;height:18%;background:#2f8d55;border-radius:55% 55% 20% 20%;
+    box-shadow:inset 0 -18px 0 rgba(22,93,58,.25);
+  }
+  .island-left{left:-7%;transform:rotate(7deg)}
+  .island-right{right:-8%;transform:rotate(-6deg)}
+  .palm{
+    position:absolute;font-size:min(11vw,100px);top:7%;filter:drop-shadow(0 6px 3px rgba(0,0,0,.15));user-select:none
+  }
+  .palm.left{left:2%;transform:rotate(-8deg)}
+  .palm.right{right:2%;transform:scaleX(-1) rotate(-8deg)}
+  .shell{position:absolute;user-select:none;filter:drop-shadow(0 3px 2px rgba(110,72,20,.2))}
+  .shell.s1{left:4%;bottom:4%;font-size:34px;transform:rotate(-18deg)}
+  .shell.s2{right:5%;bottom:8%;font-size:31px;transform:rotate(15deg)}
+  .shell.s3{right:18%;bottom:2%;font-size:24px}
+  .starfish{position:absolute;left:16%;bottom:9%;font-size:34px;transform:rotate(12deg)}
+
+  .topbar{
+    position:relative;z-index:4;height:18%;display:flex;align-items:center;justify-content:center;gap:18px;padding:10px 18px 0;
+  }
+  .badge{
+    position:absolute;left:18px;top:14px;background:rgba(255,255,255,.88);border:3px solid rgba(255,255,255,.8);
+    border-radius:999px;padding:8px 14px;font-weight:900;color:var(--deep);box-shadow:0 5px 0 rgba(7,95,152,.15);
+    font-size:clamp(13px,1.6vw,18px)
+  }
+  .title-card{
+    background:rgba(255,249,231,.94);border:4px solid white;border-radius:26px;padding:10px 26px;text-align:center;
+    box-shadow:0 9px 0 rgba(13,105,145,.17),0 15px 30px rgba(0,0,0,.09);
+  }
+  .title-card h1{margin:0;color:var(--deep);font-size:clamp(22px,3.3vw,42px);line-height:1}
+  .title-card p{margin:6px 0 0;font-size:clamp(12px,1.5vw,18px);font-weight:800;color:#477088}
+
+  .character-card{
+    position:absolute;z-index:3;right:2.2%;top:31%;width:min(20vw,210px);
+    background:rgba(255,249,231,.92);border:4px solid white;border-radius:26px;
+    padding:10px;text-align:center;box-shadow:0 10px 22px rgba(75,45,10,.15);
+  }
+  .avatar{
+    width:100%;aspect-ratio:1/1;border-radius:20px;display:grid;place-items:center;
+    background:linear-gradient(#b9eff8,#7ed8ef 55%,#6bb55c 56%);
+    font-size:clamp(58px,8vw,100px);overflow:hidden;
+  }
+  .character-card strong{display:block;font-size:clamp(16px,2vw,24px);margin-top:6px;color:#a44c2a}
+  .character-card small{font-size:clamp(11px,1.2vw,15px);font-weight:800;color:#668092}
+
+  .workspace{
+    position:absolute;z-index:2;left:3%;right:24%;top:31%;bottom:4%;
+    display:grid;grid-template-rows:auto 1fr auto;gap:12px;
+  }
+  .prompt{
+    justify-self:center;background:#fff8dc;border:3px solid rgba(255,255,255,.9);border-radius:22px;
+    padding:9px 18px;box-shadow:0 6px 0 rgba(170,106,32,.14);
+    font-weight:900;font-size:clamp(15px,2vw,24px);text-align:center;
+  }
+  .prompt .name{color:#df6c32}
+
+  .slots{
+    display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:7px 10px;
+    padding:8px 10px;
+  }
+  .word{display:flex;gap:5px;margin-right:8px}
+  .slot{
+    width:clamp(27px,3.5vw,48px);height:clamp(35px,4.7vw,62px);
+    border-bottom:4px solid rgba(86,55,16,.55);display:flex;align-items:flex-end;justify-content:center;
+    font-weight:1000;font-size:clamp(23px,3vw,40px);color:#135f8e;text-shadow:0 2px 0 white;
+    transition:.2s;
+  }
+  .slot.filled{border-color:#31945b;transform:translateY(-2px)}
+  .slot.next{background:rgba(255,255,255,.22);border-radius:10px 10px 0 0}
+
+  .letters-zone{
+    min-height:118px;position:relative;border-radius:30px;
+    background:
+      radial-gradient(circle at 15% 25%,rgba(255,255,255,.18) 0 2px,transparent 3px),
+      radial-gradient(circle at 74% 70%,rgba(169,111,38,.12) 0 2px,transparent 3px),
+      linear-gradient(180deg,rgba(252,221,156,.7),rgba(229,177,86,.75));
+    border:3px dashed rgba(145,92,29,.22);
+    overflow:hidden;padding:10px;
+  }
+  .tile{
+    position:absolute;width:clamp(38px,5vw,58px);height:clamp(38px,5vw,58px);
+    border:0;border-radius:15px;display:grid;place-items:center;cursor:grab;
+    background:linear-gradient(#fffdf2,#f5ecd0);color:#145f8d;font-weight:1000;font-size:clamp(22px,3vw,34px);
+    box-shadow:0 5px 0 #d5a64a,0 8px 11px rgba(92,57,12,.18);
+    border:2px solid #fff;touch-action:none;user-select:none;
+    transition:filter .16s,transform .16s,opacity .16s;
+  }
+  .tile:hover{filter:brightness(1.04);transform:translateY(-2px)}
+  .tile.dragging{z-index:20;cursor:grabbing;transform:scale(1.12) rotate(3deg);box-shadow:0 10px 20px rgba(0,0,0,.23)}
+  .tile.used{opacity:0;pointer-events:none;transform:scale(.4)}
+  .tile.wrong{animation:shake .35s ease}
+  @keyframes shake{25%{transform:translateX(-6px) rotate(-4deg)}50%{transform:translateX(6px) rotate(4deg)}75%{transform:translateX(-4px)}}
+
+  .progress{
+    position:absolute;z-index:4;right:2.5%;bottom:3%;width:min(20vw,210px);display:flex;gap:7px;justify-content:center;
+  }
+  .dot{width:15px;height:15px;border-radius:50%;background:rgba(255,255,255,.65);border:2px solid white;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+  .dot.done{background:#5abf55}
+  .dot.current{background:#ffc84a;transform:scale(1.25)}
+
+  .toast{
+    position:absolute;z-index:30;left:50%;top:50%;transform:translate(-50%,-50%) scale(.8);
+    padding:18px 26px;background:rgba(255,250,230,.98);border:5px solid white;border-radius:28px;
+    font-size:clamp(24px,4vw,48px);font-weight:1000;color:#2f8c53;box-shadow:0 15px 40px rgba(0,0,0,.22);
+    opacity:0;pointer-events:none;
+  }
+  .toast.show{animation:pop 1.15s ease both}
+  @keyframes pop{
+    0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}
+    18%,75%{opacity:1;transform:translate(-50%,-50%) scale(1)}
+    100%{opacity:0;transform:translate(-50%,-50%) scale(1.12)}
+  }
+  .confetti{position:absolute;z-index:25;width:10px;height:16px;border-radius:3px;pointer-events:none;animation:fall 1.2s ease-in forwards}
+  @keyframes fall{to{transform:translate(var(--x),180px) rotate(520deg);opacity:0}}
+
+  .finish{
+    position:absolute;z-index:40;inset:0;background:rgba(7,80,112,.52);display:none;place-items:center;padding:22px;
+  }
+  .finish.show{display:grid}
+  .finish-card{
+    width:min(560px,90vw);background:#fff8df;border:6px solid white;border-radius:34px;text-align:center;padding:26px;
+    box-shadow:0 18px 50px rgba(0,0,0,.28);animation:finishIn .45s ease-out;
+  }
+  @keyframes finishIn{from{transform:scale(.8);opacity:0}to{transform:scale(1);opacity:1}}
+  .finish .trophy{font-size:72px}
+  .finish h2{margin:4px 0;color:#126c99;font-size:clamp(28px,4vw,44px)}
+  .finish p{font-size:clamp(16px,2vw,22px);font-weight:900}  .setup{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(7,95,152,.48);backdrop-filter:blur(5px)}
+  .setup.hidden{display:none}
+  .setup-card{width:min(680px,94vw);background:#fff9e7;border:5px solid white;border-radius:30px;padding:clamp(22px,4vw,42px);text-align:center;box-shadow:0 20px 60px rgba(7,52,86,.35)}
+  .setup-card h2{margin:0 0 8px;color:#075f98;font-size:clamp(27px,4vw,44px)}
+  .setup-card p{margin:0 0 18px;color:#476477;font-weight:700}
+  .phrase-input{width:100%;box-sizing:border-box;border:3px solid #8fd7ef;border-radius:18px;padding:14px 18px;font:900 clamp(22px,3.2vw,34px)/1.2 inherit;text-align:center;color:#17364c;outline:none;background:white}
+  .phrase-input:focus{border-color:#1689c9;box-shadow:0 0 0 5px rgba(22,137,201,.13)}
+  .setup-error{min-height:24px;margin:8px 0 2px;color:#d84c3f;font-weight:800}
+  .restart{
+    border:0;background:#52a94c;color:#fff;padding:12px 22px;border-radius:999px;font-weight:1000;
+    box-shadow:0 5px 0 #32752e;cursor:pointer;font-size:18px;
+  }
+
+  @media (max-width:760px){
+    .topbar{height:16%;padding-top:6px}
+    .badge{left:8px;top:7px;padding:5px 9px}
+    .title-card{padding:8px 14px}
+    .character-card{right:1.5%;top:29%;width:22%}
+    .workspace{left:2%;right:25%;top:29%;bottom:2%;gap:7px}
+    .letters-zone{min-height:96px}
+    .prompt{padding:6px 10px}
+  }
+  @media (max-height:560px){
+    .topbar{height:17%}
+    .palm{font-size:64px}
+    .character-card{top:29%;width:17%;right:2%}
+    .avatar{font-size:55px}
+    .character-card small{display:none}
+    .workspace{top:29%;right:21%;bottom:2%}
+    .letters-zone{min-height:86px}
+    .slot{height:36px;width:28px;font-size:24px}
+  }
+  /* Compact embedded view used inside the teacher/student live-session frame. */
+  @media (max-height:700px){
+    .topbar{height:15%;min-height:66px;padding:4px 12px 0}
+    .title-card{padding:6px 18px;border-width:3px}
+    .title-card p{margin-top:3px}
+    .character-card{top:17%;right:1.5%;width:min(13vw,110px);padding:5px;border-width:3px}
+    .character-card strong{margin-top:2px}
+    .character-card small{display:none}
+    .workspace{top:17%;left:2%;right:16%;bottom:2%;gap:5px;grid-template-rows:auto minmax(0,1fr) minmax(72px,30%)}
+    .prompt{padding:5px 12px}
+    .slots{padding:2px 6px;gap:3px 7px;overflow:auto}
+    .slot{width:clamp(23px,3vw,38px);height:clamp(30px,4.2vw,48px);font-size:clamp(20px,2.7vw,32px)}
+    .letters-zone{min-height:0;border-radius:22px;padding:6px}
+    .tile{width:clamp(34px,4.4vw,48px);height:clamp(34px,4.4vw,48px);font-size:clamp(20px,2.6vw,29px)}
+    .progress{right:1.5%;bottom:2%;width:min(13vw,110px);gap:4px}
+    .dot{width:11px;height:11px;border-width:1px}
+  }
+  @media (max-width:600px){
+    .character-card{display:none}
+    .workspace{right:2%}
+    .progress{right:3%;bottom:1%;width:auto}
+    .badge{font-size:11px}
+    .title-card h1{font-size:clamp(19px,7vw,30px)}
+    .title-card p{font-size:11px}
+  }</style>
+</head>
+<body>
+<div class="game" id="game">  <div class="setup" id="setup"><div class="setup-card">
+    <h2>Build the phrase</h2><p>Напиши фразу, которую нужно собрать по буквам</p>
+    <input class="phrase-input" id="phraseInput" maxlength="60" value="MY NAME IS KIKI" autocomplete="off" />
+    <div class="setup-error" id="setupError"></div><button class="restart" id="startGame">Начать</button>
+  </div></div>
+  <div class="ocean"></div>
+  <div class="island-left"></div><div class="island-right"></div>
+  <div class="palm left">🌴</div><div class="palm right">🌴</div>
+  <div class="shell s1">🐚</div><div class="shell s2">🐚</div><div class="shell s3">🐚</div><div class="starfish">⭐</div>
+
+  <header class="topbar">
+    <div class="badge" id="badge">1 / 4</div>
+    <div class="title-card">
+      <h1>Build it! 🏝️</h1>
+      <p>Собери фразу из букв на песке</p>
+    </div>
+  </header>
+
+  <aside class="character-card">
+    <div class="avatar" id="avatar">👧🏽</div>
+    <strong id="charName">Kiki</strong>
+    <small>Собери: «Меня зовут Kiki»</small>
+  </aside>
+
+  <main class="workspace">
+    <div class="prompt">Собери: <span>My name is</span> <span class="name" id="promptName">Kiki</span></div>
+    <div class="slots" id="slots"></div>
+    <div class="letters-zone" id="lettersZone"></div>
+  </main>
+
+  <div class="progress" id="progress"></div>
+  <div class="toast" id="toast">Great! ⭐</div>
+
+  <div class="finish" id="finish">
+    <div class="finish-card">
+      <div class="trophy">🏆</div>
+      <h2>Mission complete!</h2>
+      <p>Ты правильно собрал(а) фразу!</p>
+    </div>
+  </div>
+</div>
+
+<script>
+let rounds = [
+  {name:"KIKI", avatar:"👧🏽"},
+  {name:"TOTO", avatar:"👦🏽"},
+  {name:"LALA", avatar:"👧🏽"},
+  {name:"MOMO", avatar:"👩🏽"}
+];
+
+let round = 0;
+let expected = "";
+let flatExpected = [];
+let currentIndex = 0;
+let dragState = null;
+
+const slots = document.getElementById("slots");
+const zone = document.getElementById("lettersZone");
+const badge = document.getElementById("badge");
+const promptName = document.getElementById("promptName");
+const charName = document.getElementById("charName");
+const avatar = document.getElementById("avatar");
+const progress = document.getElementById("progress");
+const toast = document.getElementById("toast");
+const finish = document.getElementById("finish");
+const game = document.getElementById("game");const setup=document.getElementById("setup"),phraseInput=document.getElementById("phraseInput"),setupError=document.getElementById("setupError");
+function normalizePhrase(value){return value.trim().replace(/\s+/g," ")}
+function startWithPhrase(){
+  const phrase=normalizePhrase(phraseInput.value),letters=[...phrase].filter(ch=>ch!==" ");
+  if(letters.length<2){setupError.textContent="Напиши фразу минимум из двух букв";phraseInput.focus();return}
+  if(letters.length>40){setupError.textContent="Фраза слишком длинная — максимум 40 букв";phraseInput.focus();return}
+  rounds=[{phrase,avatar:"🏝️"}]; round=0; setupError.textContent="";
+  setup.classList.add("hidden"); finish.classList.remove("show"); loadRound();
+}
+
+function shuffle(a){
+  const arr=[...a];
+  for(let i=arr.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]]=[arr[j],arr[i]];
+  }
+  return arr;
+}
+
+function buildProgress(){
+  progress.innerHTML="";
+  rounds.forEach((_,i)=>{
+    const d=document.createElement("div");
+    d.className="dot"+(i<round?" done":i===round?" current":"");
+    progress.appendChild(d);
+  });
+}
+
+function buildSlots(words){
+  slots.innerHTML="";
+  flatExpected=[];
+  words.forEach((word,wi)=>{
+    const group=document.createElement("div");
+    group.className="word";
+    [...word].forEach(ch=>{
+      const s=document.createElement("div");
+      s.className="slot";
+      s.dataset.char=ch;
+      s.dataset.index=flatExpected.length;
+      group.appendChild(s);
+      flatExpected.push(ch);
+    });
+    slots.appendChild(group);
+  });
+  currentIndex=0;
+  updateNextSlot();
+}
+
+function updateNextSlot(){
+  document.querySelectorAll(".slot").forEach(s=>s.classList.remove("next"));
+  const next=document.querySelector(`.slot[data-index="${currentIndex}"]`);
+  if(next) next.classList.add("next");
+}
+
+function placeLetters(){
+  zone.innerHTML="";
+  const letters=shuffle(flatExpected);
+  const usedPositions=[];
+  letters.forEach((ch,i)=>{
+    const b=document.createElement("button");
+    b.className="tile";
+    b.textContent=ch;
+    b.dataset.char=ch;
+    b.setAttribute("aria-label", "Буква "+ch);
+
+    let x,y,tries=0;
+    do{
+      x=2+Math.random()*90;
+      y=6+Math.random()*64;
+      tries++;
+    }while(usedPositions.some(p=>Math.abs(p.x-x)<8 && Math.abs(p.y-y)<22) && tries<100);
+    usedPositions.push({x,y});
+    b.style.left=x+"%";
+    b.style.top=y+"%";
+
+    b.addEventListener("click",()=>tryLetter(b));
+    b.addEventListener("pointerdown",startDrag);
+    zone.appendChild(b);
+  });
+}
+
+function tryLetter(tile){
+  if(tile.classList.contains("used")) return;
+  const needed=flatExpected[currentIndex];
+  if(tile.dataset.char===needed){
+    const slot=document.querySelector(`.slot[data-index="${currentIndex}"]`);
+    slot.textContent=needed;
+    slot.classList.add("filled");
+    tile.classList.add("used");
+    currentIndex++;
+    updateNextSlot();
+    if(currentIndex===flatExpected.length){
+      completeRound();
+    }
+  }else{
+    tile.classList.remove("wrong");
+    void tile.offsetWidth;
+    tile.classList.add("wrong");
+  }
+}
+
+function startDrag(e){
+  if(e.button!==undefined && e.button!==0) return;
+  const tile=e.currentTarget;
+  if(tile.classList.contains("used")) return;
+  e.preventDefault();
+  const rect=tile.getBoundingClientRect();
+  dragState={tile, startX:e.clientX, startY:e.clientY, origLeft:tile.style.left, origTop:tile.style.top, offsetX:e.clientX-rect.left, offsetY:e.clientY-rect.top};
+  tile.setPointerCapture(e.pointerId);
+  tile.classList.add("dragging");
+  tile.addEventListener("pointermove",dragMove);
+  tile.addEventListener("pointerup",endDrag,{once:true});
+  tile.addEventListener("pointercancel",endDrag,{once:true});
+}
+
+function dragMove(e){
+  if(!dragState) return;
+  const z=zone.getBoundingClientRect();
+  const x=e.clientX-z.left-dragState.offsetX;
+  const y=e.clientY-z.top-dragState.offsetY;
+  dragState.tile.style.left=(x/z.width*100)+"%";
+  dragState.tile.style.top=(y/z.height*100)+"%";
+}
+
+function endDrag(e){
+  if(!dragState) return;
+  const {tile,origLeft,origTop}=dragState;
+  tile.classList.remove("dragging");
+  tile.releasePointerCapture?.(e.pointerId);
+  tile.removeEventListener("pointermove",dragMove);
+
+  const next=document.querySelector(`.slot[data-index="${currentIndex}"]`);
+  if(next){
+    const r=next.getBoundingClientRect();
+    const near = e.clientX>=r.left-25 && e.clientX<=r.right+25 && e.clientY>=r.top-35 && e.clientY<=r.bottom+35;
+    if(near && tile.dataset.char===flatExpected[currentIndex]){
+      tryLetter(tile);
+    }else if(near){
+      tile.classList.add("wrong");
+    }
+  }
+  if(!tile.classList.contains("used")){
+    tile.style.left=origLeft;
+    tile.style.top=origTop;
+  }
+  dragState=null;
+}
+
+function confetti(){
+  for(let i=0;i<28;i++){
+    const c=document.createElement("div");
+    c.className="confetti";
+    c.style.left=(35+Math.random()*30)+"%";
+    c.style.top=(35+Math.random()*10)+"%";
+    c.style.background=["#ffd34e","#ff7a6a","#35b8de","#5bbb58","#a56ae4"][i%5];
+    c.style.setProperty("--x",(Math.random()*400-200)+"px");
+    c.style.animationDelay=(Math.random()*.18)+"s";
+    game.appendChild(c);
+    setTimeout(()=>c.remove(),1500);
+  }
+}
+
+function completeRound(){
+  toast.textContent = round===3 ? "Amazing! 🏆" : "Great! ⭐";
+  toast.classList.remove("show"); void toast.offsetWidth; toast.classList.add("show");
+  confetti();
+  setTimeout(()=>{
+    round++;
+    if(round>=rounds.length){
+      document.querySelector(".finish p").innerHTML=`Ты правильно собрал(а): <b>${rounds[0].phrase}</b>`;
+      finish.classList.add("show");
+    }else{
+      loadRound();
+    }
+  },1150);
+}
+
+function loadRound(){
+  const r=rounds[round];
+  badge.textContent="1 / 1";
+  promptName.textContent=r.phrase;
+  charName.textContent="Your phrase";
+  avatar.textContent=r.avatar;
+  document.querySelector(".character-card small").textContent=`Собери: «${r.phrase}»`;
+  const words=r.phrase.split(" ");
+  buildSlots(words);
+  placeLetters();
+  buildProgress();
+}
+
+document.getElementById("startGame").onclick=startWithPhrase;
+phraseInput.addEventListener("keydown",e=>{if(e.key==="Enter") startWithPhrase()});
+const configuredPhrase=new URLSearchParams(window.location.search).get("phrase");
+if(configuredPhrase){
+  phraseInput.value=configuredPhrase;
+  startWithPhrase();
+}else{
+  phraseInput.focus();
+}</script>
+</body>
+</html>

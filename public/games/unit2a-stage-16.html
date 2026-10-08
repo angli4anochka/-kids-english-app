@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Lesson complete</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --green:#35a96f;
+      --green-dark:#22754c;
+      --ink:#263247;
+      --muted:#6d7685;
+      --line:#e4e8ed;
+      --green-bg:#eaf8f1;
+      --blue-bg:#eef5ff;
+      --orange-bg:#fff3ea;
+      --shadow:0 22px 60px rgba(43,34,29,.14);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 12%,rgba(255,185,133,.25),transparent 28%),
+        radial-gradient(circle at 90% 10%,rgba(93,155,225,.18),transparent 28%),
+        radial-gradient(circle at 70% 90%,rgba(90,190,135,.15),transparent 28%),
+        #f4f1ee;
+      overflow:hidden;
+    }
+
+    button{font:inherit}
+
+    .app{
+      width:min(1120px,calc(100vw - 24px));
+      height:min(90vh,800px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.98);
+      border:1px solid rgba(214,205,198,.8);
+      border-radius:30px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 22px 15px;
+      border-bottom:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .badge{
+      width:58px;
+      height:58px;
+      border-radius:19px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:22px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 9px 20px rgba(255,122,51,.25);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(28px,3vw,43px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .status{
+      margin-left:auto;
+      padding:10px 14px;
+      border-radius:16px;
+      background:var(--green-bg);
+      border:1px solid #b4e1c7;
+      color:var(--green-dark);
+      font-weight:950;
+    }
+
+    main{
+      min-height:0;
+      padding:20px;
+      display:grid;
+      grid-template-columns:360px 1fr;
+      gap:20px;
+      align-items:stretch;
+    }
+
+    .result-card,
+    .skills-card{
+      border:1px solid #e5e1dd;
+      border-radius:25px;
+      background:#fff;
+      box-shadow:0 12px 30px rgba(44,33,25,.07);
+    }
+
+    .result-card{
+      padding:24px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      background:
+        linear-gradient(160deg,rgba(255,122,51,.08),rgba(77,131,211,.07)),
+        #fff;
+    }
+
+    .trophy{
+      width:104px;
+      height:104px;
+      border-radius:32px;
+      display:grid;
+      place-items:center;
+      margin-bottom:18px;
+      color:#fff;
+      font-size:50px;
+      background:linear-gradient(145deg,#ff9b52,#f16824);
+      box-shadow:0 18px 34px rgba(232,95,24,.25);
+      transform:rotate(-2deg);
+    }
+
+    .result-card h2{
+      margin:0 0 7px;
+      font-size:34px;
+      letter-spacing:-.04em;
+    }
+
+    .result-card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+    }
+
+    .score-ring{
+      width:154px;
+      height:154px;
+      border-radius:50%;
+      margin:22px 0 16px;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(circle at center,#fff 59%,transparent 60%),
+        conic-gradient(var(--green) 0deg 360deg,#e6e9ee 360deg);
+      box-shadow:inset 0 0 0 1px #e5e8ec;
+    }
+
+    .score-main{
+      font-size:37px;
+      line-height:1;
+      font-weight:950;
+      color:var(--green-dark);
+    }
+
+    .score-label{
+      margin-top:4px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:850;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .skills-card{
+      padding:22px;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:16px;
+    }
+
+    .skills-card h2{
+      margin:0 0 5px;
+      font-size:29px;
+      letter-spacing:-.03em;
+    }
+
+    .skills-card>div>p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .skills{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:11px;
+      align-content:center;
+    }
+
+    .skill{
+      padding:15px;
+      border-radius:18px;
+      border:1px solid #dfe5ec;
+      background:#fafbfc;
+      display:flex;
+      gap:11px;
+      align-items:center;
+    }
+
+    .skill-icon{
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      flex:none;
+      color:#fff;
+      font-weight:950;
+      font-size:18px;
+    }
+
+    .country{background:linear-gradient(145deg,#5b91d1,#3568a5)}
+    .grammar{background:linear-gradient(145deg,#f28a53,#d75f27)}
+    .question{background:linear-gradient(145deg,#7b9fe0,#537bc2)}
+    .reading{background:linear-gradient(145deg,#d86570,#af3540)}
+    .writing{background:linear-gradient(145deg,#70bd91,#3d9867)}
+    .speaking{background:linear-gradient(145deg,#a27ad6,#7650af)}
+
+    .skill strong{
+      display:block;
+      margin-bottom:3px;
+      font-size:15px;
+    }
+
+    .skill span{
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.35;
+    }
+
+    .message{
+      padding:14px 16px;
+      border-radius:17px;
+      background:var(--blue-bg);
+      border:1px solid #bdd4ef;
+      color:#31577f;
+      line-height:1.5;
+      font-weight:800;
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .footer-note{
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 22px;
+      color:#fff;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s ease;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    .btn:hover{transform:translateY(-2px)}
+
+    @media(max-width:820px){
+      html,body{overflow:auto}
+
+      .app{
+        height:auto;
+        min-height:calc(100vh - 20px);
+        margin:10px auto;
+      }
+
+      main{
+        grid-template-columns:1fr;
+      }
+
+      .result-card{
+        min-height:420px;
+      }
+    }
+
+    @media(max-width:560px){
+      header{padding:14px}
+      .status{display:none}
+      main{padding:14px}
+      .skills{grid-template-columns:1fr}
+      .result-card,.skills-card{padding:18px}
+    }
+    /* Lesson iframe: keep the completion screen in one viewport. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);margin:12px auto}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Lesson complete</h1>
+        <p class="subtitle">I’m from... · Countries, nationalities and have got</p>
+      </div>
+      <div class="status">Completed ✓</div>
+    </header>
+
+    <main>
+      <section class="result-card">
+        <div class="trophy">★</div>
+        <h2>Mission complete!</h2>
+        <p>You finished every stage of Lesson 2a.</p>
+
+        <div class="score-ring">
+          <div>
+            <div id="scoreMain" class="score-main">6 / 6</div>
+            <div class="score-label">Final challenge</div>
+          </div>
+        </div>
+
+        <p id="resultMessage">Excellent work. You are ready for the next lesson.</p>
+      </section>
+
+      <section class="skills-card">
+        <div>
+          <h2>What you can do</h2>
+          <p>Your lesson skills, collected in one place because apparently achievement deserves paperwork too.</p>
+        </div>
+
+        <div class="skills">
+          <div class="skill">
+            <div class="skill-icon country">🌍</div>
+            <div>
+              <strong>Countries and nationalities</strong>
+              <span>Say where people are from.</span>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-icon grammar">H</div>
+            <div>
+              <strong>Have got</strong>
+              <span>Talk about things people have.</span>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-icon question">?</div>
+            <div>
+              <strong>Questions and answers</strong>
+              <span>Ask Have you got...? and reply.</span>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-icon reading">S</div>
+            <div>
+              <strong>Reading</strong>
+              <span>Understand the Spider-Man story.</span>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-icon speaking">M</div>
+            <div>
+              <strong>Speaking</strong>
+              <span>Interview classmates about school things.</span>
+            </div>
+          </div>
+
+          <div class="skill">
+            <div class="skill-icon writing">✎</div>
+            <div>
+              <strong>My profile</strong>
+              <span>Write about yourself in English.</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="message">
+          Next time, you will use these skills in a new situation instead of meeting yet another worksheet disguised as an adventure.
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-note">Lesson 2a has been completed.</div>
+      <button id="finishBtn" class="btn">Finish lesson</button>
+    </footer>
+  </section>
+
+  <script>
+    const saved = JSON.parse(localStorage.getItem('lesson2aFinalResult') || '{}');
+    const finalScore = saved?.finalChallenge?.score ?? 6;
+    const finalTotal = saved?.finalChallenge?.total ?? 6;
+
+    document.getElementById('scoreMain').textContent = `${finalScore} / ${finalTotal}`;
+
+    const resultMessage = document.getElementById('resultMessage');
+
+    if(finalScore === finalTotal){
+      resultMessage.textContent = 'Excellent work. You are ready for the next lesson.';
+    }else if(finalScore >= 4){
+      resultMessage.textContent = 'Good work. Review the difficult parts before the next lesson.';
+    }else{
+      resultMessage.textContent = 'You finished the lesson. Review the final challenge once more.';
+    }
+
+    document.getElementById('finishBtn').addEventListener('click', () => {
+      window.parent?.postMessage({
+        type:'lesson-complete',
+        lesson:'2a',
+        result:{
+          score:finalScore,
+          total:finalTotal,
+          skills:[
+            'countries-and-nationalities',
+            'have-got',
+            'questions-and-short-answers',
+            'reading',
+            'speaking',
+            'my-profile'
+          ]
+        }
+      },'*');
+
+      document.getElementById('finishBtn').textContent = 'Completed ✓';
+    });
+  </script>
+</body>
+</html>

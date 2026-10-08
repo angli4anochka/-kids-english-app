@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Find the Lesson</title>
+<style>
+:root{--ink:#17366f;--muted:#6b7da7;--blue:#5f7fe8;--purple:#8f7de8;--line:#dce6fb;--panel:#fff;--gold:#f3bd4d}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden}body{font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--ink);background:linear-gradient(135deg,#f8fbff,#eef4ff 55%,#f8f5ff)}button,input{font:inherit}
+.app{width:100%;height:100%;min-height:0;padding:8px 12px;display:grid;grid-template-rows:auto 1fr;gap:6px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px}.topbar h1{margin:0;font-size:clamp(24px,2.4vw,36px);letter-spacing:0;line-height:1}.topbar p{margin:3px 0 0;color:var(--muted);font-weight:700;font-size:13px}.actions{display:flex;gap:8px}.btn{border:0;border-radius:13px;padding:7px 13px;font-size:13px;font-weight:900;cursor:pointer;background:#edf3ff;color:var(--ink)}
+.workspace{min-height:0;height:100%;overflow:hidden;padding:8px;border-radius:22px;background:rgba(255,255,255,.96);box-shadow:0 20px 50px rgba(40,60,115,.15)}.content{max-width:1320px;height:100%;margin:auto;display:grid;grid-template-rows:auto auto 1fr auto;gap:7px;min-height:0}.table-card{overflow:hidden;border:2px solid var(--line);border-radius:16px;background:#fff}.table-title{padding:6px 10px;text-align:center;font-weight:900;color:#3158c7;background:linear-gradient(90deg,#edf3ff,#f6f1ff)}.table-scroll{overflow:hidden}table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed}th,td{padding:4px 3px;text-align:center;border-right:1px solid #e4eafb;border-bottom:1px solid #e4eafb;font-size:clamp(9px,.9vw,10.5px);line-height:1.15;transition:.18s}thead th{background:#edf3ff;color:#3158c7;font-size:clamp(8px,.8vw,9.5px)}.day{width:70px;background:#f4f7ff;color:#3158c7;font-weight:900}.break-cell{background:#fff1d7;color:#a46b1f;font-weight:900}.lunch-cell{background:#f3eaff;color:#7359b8;font-weight:900}tr.highlight-row td{background:#fff7d9!important;box-shadow:inset 0 0 0 1px #efc451}td.highlight-cell{background:#dff2ff!important;box-shadow:inset 0 0 0 3px #51a9e8!important;font-weight:900;color:#143b78}
+.speech-pattern{display:flex;align-items:center;justify-content:center;gap:7px;flex-wrap:wrap;padding:7px 10px;border:2px solid var(--line);border-radius:15px;background:linear-gradient(145deg,#f7faff,#f7f3ff);color:#28498f;font-size:clamp(13px,1.1vw,16px);font-weight:900;text-align:center}.speech-pattern strong{color:#5f6fe3}.cards{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:7px;align-content:stretch;min-height:0}.question-card{min-height:78px;position:relative;border:2px solid var(--line);border-radius:16px;display:grid;place-items:center;color:#fff;background:radial-gradient(circle at 78% 18%,rgba(255,255,255,.22),transparent 24%),linear-gradient(135deg,var(--blue),var(--purple));box-shadow:0 10px 24px rgba(73,96,207,.18);cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,opacity .16s ease}.teacher-mode .question-card:hover{transform:translateY(-3px);box-shadow:0 16px 30px rgba(73,96,207,.24)}body:not(.teacher-mode) .question-card{cursor:default;pointer-events:none}.question-card.opened{opacity:.62}.question-card .num{position:absolute;top:6px;left:7px;width:23px;height:23px;border-radius:50%;display:grid;place-items:center;background:#fff;color:#3158c7;font-size:12px;font-weight:900}.question-mark{font-size:clamp(42px,4.2vw,58px);line-height:1;font-weight:900;text-shadow:0 7px 16px rgba(37,57,110,.24)}.popup-overlay{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:22px;background:rgba(18,28,59,.48);backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:.2s}.popup-overlay.open{opacity:1;visibility:visible}.popup{width:min(650px,92vw);border-radius:24px;padding:22px;background:#fff;box-shadow:0 28px 80px rgba(18,28,59,.34);transform:translateY(14px) scale(.985);transition:transform .2s ease}.popup-overlay.open .popup{transform:translateY(0) scale(1)}.popup-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}.popup-label{color:#5f7fe8;font-size:13px;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.popup-close{width:38px;height:38px;border:0;border-radius:50%;background:#edf3ff;color:#3158c7;font-size:22px;font-weight:900;cursor:pointer}.popup-question{margin:0;font-size:clamp(26px,3.6vw,42px);line-height:1.15;letter-spacing:0;text-align:center}.popup-actions{display:flex;justify-content:center;gap:10px;margin-top:18px}.popup-answer{display:none;margin-top:16px;padding:14px 16px;border-radius:17px;background:#eaf9f3;border:1px solid #8bd3b7;color:#176f50;font-size:20px;font-weight:900;text-align:center}.popup-answer.visible{display:block}
+.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:7px 9px;border-radius:17px;background:#121a2a}.team{display:grid;grid-template-columns:1fr 70px;align-items:center;gap:8px;padding:5px 8px;border-radius:13px;background:rgba(255,255,255,.05)}.team-name{color:#e9efff;font-weight:900;font-size:15px}.score{min-height:42px;display:grid;place-items:center;border-radius:10px;background:#1b263a;border:1px solid #2c3954;color:#7af1a8;font-family:"Courier New",monospace;font-size:28px;font-weight:900}.team-b .score{color:#9fc1ff}.vs{color:#98a8cb;font-size:12px;font-weight:900;letter-spacing:.12em}.teacher-only{display:none}.teacher-mode .teacher-only{display:flex}.teacher-controls{grid-column:1/-1;justify-content:center;align-items:center;gap:12px;padding-top:5px;border-top:1px solid rgba(255,255,255,.08)}.group{display:flex;align-items:center;gap:6px}.group label{color:#dbe5ff;font-size:12px;font-weight:900}.score-input{width:76px;border:1px solid #40506f;border-radius:9px;padding:6px 7px;background:#1b263a;color:#fff;text-align:center;font-weight:900}.step{width:30px;height:30px;border:0;border-radius:8px;background:#324260;color:#fff;font-weight:900;cursor:pointer}
+@media(max-width:980px){.cards{grid-template-columns:repeat(3,minmax(130px,1fr))}.scoreboard{grid-template-columns:1fr}.vs{display:none}.team{grid-template-columns:1fr 70px}}@media(max-height:720px){.app{padding:6px 9px;gap:5px}.workspace{padding:7px}.content{gap:6px}th,td{padding:3px 2px;font-size:9px}.day{width:64px}.question-card{min-height:68px}.question-mark{font-size:40px}.speech-pattern{padding:6px 9px;font-size:13px}.scoreboard{padding:5px 8px}.team{padding:4px 7px}.score{min-height:38px;font-size:25px}}
+body:not(.teacher-mode) .question-card{pointer-events:auto;cursor:pointer}
+</style>
+</head>
+<body>
+<main class="app">
+<header class="topbar">
+  <div><h1>Find the lesson</h1><p>Use the timetable, choose a question card and answer with the speaking pattern.</p></div>
+  <div class="actions"><button class="btn teacher-only" id="resetCards">Reset cards</button><button class="btn teacher-only" id="studentView">Student view</button></div>
+</header>
+<section class="workspace"><div class="content">
+<section class="table-card"><div class="table-title">John’s School Timetable</div><div class="table-scroll">
+<table id="scheduleTable"><thead><tr><th class="day">Day</th><th>8:30–9:30</th><th>9:30–10:25</th><th>Break</th><th>10:30–11:00</th><th>11:00–11:30</th><th>11:30–12:30</th><th>12:30–1:30</th><th>1:30–2:30</th><th>2:30–3:30</th></tr></thead>
+<tbody>
+<tr data-day="Monday"><td class="day">Monday</td><td>History</td><td>Geography</td><td class="break-cell">Break</td><td>Maths</td><td>English</td><td>Art</td><td class="lunch-cell">Lunch</td><td>Science</td><td>IT</td></tr>
+<tr data-day="Tuesday"><td class="day">Tuesday</td><td>Music</td><td>English</td><td class="break-cell">Break</td><td>Science</td><td>History</td><td>Art</td><td class="lunch-cell">Lunch</td><td>P.E.</td><td>IT</td></tr>
+<tr data-day="Wednesday"><td class="day">Wednesday</td><td>Maths</td><td>Geography</td><td class="break-cell">Break</td><td>History</td><td>English</td><td>Music</td><td class="lunch-cell">Lunch</td><td>Science</td><td>P.E.</td></tr>
+<tr data-day="Thursday"><td class="day">Thursday</td><td>English</td><td>Maths</td><td class="break-cell">Break</td><td>Science</td><td>History</td><td>Music</td><td class="lunch-cell">Lunch</td><td>P.E.</td><td>IT</td></tr>
+<tr data-day="Friday"><td class="day">Friday</td><td>Maths</td><td>English</td><td class="break-cell">Break</td><td>Geography</td><td>History</td><td>Science</td><td class="lunch-cell">Lunch</td><td>Music</td><td>P.E.</td></tr>
+</tbody></table></div></section>
+<div class="speech-pattern"><span>Say:</span><strong>We have … on … at …</strong><span>Example: We have Geography on Monday at 9:30.</span></div>
+<section class="cards" id="cards"></section>
+<section class="scoreboard">
+  <div class="team team-a"><div class="team-name" id="teamANameDisplay">Team A</div><div class="score" id="teamAScoreDisplay">0</div></div>
+  <div class="vs">VS</div>
+  <div class="team team-b"><div class="team-name" id="teamBNameDisplay">Team B</div><div class="score" id="teamBScoreDisplay">0</div></div>
+  <div class="teacher-controls teacher-only">
+    <div class="group"><label>Team A</label><input class="score-input" id="teamANameInput" value="Team A"><button class="step" data-team="A" data-delta="-1">−</button><input class="score-input" id="teamAScoreInput" type="number" min="0" value="0"><button class="step" data-team="A" data-delta="1">+</button></div>
+    <div class="group"><label>Team B</label><input class="score-input" id="teamBNameInput" value="Team B"><button class="step" data-team="B" data-delta="-1">−</button><input class="score-input" id="teamBScoreInput" type="number" min="0" value="0"><button class="step" data-team="B" data-delta="1">+</button></div>
+  </div>
+</section>
+</div></section></main>
+
+<div class="popup-overlay" id="questionPopup" aria-hidden="true">
+  <section class="popup" role="dialog" aria-modal="true" aria-labelledby="popupQuestion">
+    <div class="popup-top">
+      <div class="popup-label" id="popupLabel">Question</div>
+      <button class="popup-close" id="popupClose" type="button" aria-label="Close">×</button>
+    </div>
+    <h2 class="popup-question" id="popupQuestion"></h2>
+    <div class="popup-actions">
+      <button class="btn" id="closePopup" type="button">Close</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const cardData=[
+{q:"When is Geography?",a:"Monday at 9:30, Wednesday at 9:30, and Friday at 10:30.",e:[['Monday','Geography'],['Wednesday','Geography'],['Friday','Geography']]},
+{q:"What subject is at 11:30 on Monday?",a:"Art.",e:[['Monday','Art']]},
+{q:"When is English on Tuesday?",a:"At 9:30.",e:[['Tuesday','English']]},
+{q:"What subject is at 2:30 on Friday?",a:"P.E.",e:[['Friday','P.E.']]},
+{q:"When is Science on Thursday?",a:"At 10:30.",e:[['Thursday','Science']]},
+{q:"What subject is at 8:30 on Tuesday?",a:"Music.",e:[['Tuesday','Music']]},
+{q:"When is Lunch?",a:"From 12:30 to 1:30 every day.",e:[['Monday','Lunch'],['Tuesday','Lunch'],['Wednesday','Lunch'],['Thursday','Lunch'],['Friday','Lunch']]},
+{q:"What subject is at 1:30 on Wednesday?",a:"Science.",e:[['Wednesday','Science']]}
+];
+const cards=document.getElementById('cards'),table=document.getElementById('scheduleTable');
+function post(type,detail={}){const m={type,lessonId:'find-the-lesson-flip-cards',...detail};window.parent.postMessage(m,'*');window.dispatchEvent(new CustomEvent(type,{detail:m}));if(channel&&type==='lesson:score-update')channel.postMessage(m)}
+function clearHighlights(){table.querySelectorAll('tbody tr').forEach(r=>r.classList.remove('highlight-row'));table.querySelectorAll('td').forEach(c=>c.classList.remove('highlight-cell'))}
+function highlight(e){clearHighlights();e.forEach(([day,text])=>{const r=table.querySelector(`tbody tr[data-day="${day}"]`);if(!r)return;r.classList.add('highlight-row');[...r.children].forEach(c=>{if(c.textContent.trim()===text)c.classList.add('highlight-cell')})})}
+const popup=document.getElementById('questionPopup'),popupQ=document.getElementById('popupQuestion'),popupLabel=document.getElementById('popupLabel');let activeCard=null;
+function closeQuestion(){popup.classList.remove('open');popup.setAttribute('aria-hidden','true');activeCard=null}
+function openQuestion(c,i,broadcast=true){activeCard=i;popupLabel.textContent=`Question ${i+1}`;popupQ.textContent=c.q;popup.classList.add('open');popup.setAttribute('aria-hidden','false');document.querySelectorAll('.question-card').forEach((x,n)=>{if(n===i)x.classList.add('opened')});highlight(c.e);if(broadcast)post('lesson:card-opened',{card:i+1,question:c.q})}
+function renderCards(){cards.innerHTML='';cardData.forEach((c,i)=>{const el=document.createElement('button');el.type='button';el.className='question-card';el.setAttribute('aria-label',`Open question ${i+1}`);el.innerHTML=`<span class="num">${i+1}</span><span class="question-mark">?</span>`;el.onclick=()=>{if(document.body.classList.contains('teacher-mode'))openQuestion(c,i)};cards.appendChild(el)})}
+const params=new URLSearchParams(location.search);if(params.get('teacher')==='1'||params.get('mode')==='teacher')document.body.classList.add('teacher-mode');
+const channel='BroadcastChannel'in window?new BroadcastChannel('find-the-lesson-scores'):null;
+const aNameD=document.getElementById('teamANameDisplay'),bNameD=document.getElementById('teamBNameDisplay'),aScoreD=document.getElementById('teamAScoreDisplay'),bScoreD=document.getElementById('teamBScoreDisplay');
+const aNameI=document.getElementById('teamANameInput'),bNameI=document.getElementById('teamBNameInput'),aScoreI=document.getElementById('teamAScoreInput'),bScoreI=document.getElementById('teamBScoreInput');
+const n=v=>{const x=parseInt(v,10);return Number.isFinite(x)&&x>=0?x:0};
+function apply(s,save=false,broadcast=false){const x={teamAName:s.teamAName||'Team A',teamBName:s.teamBName||'Team B',teamAScore:n(s.teamAScore),teamBScore:n(s.teamBScore)};aNameD.textContent=x.teamAName;bNameD.textContent=x.teamBName;aScoreD.textContent=x.teamAScore;bScoreD.textContent=x.teamBScore;aNameI.value=x.teamAName;bNameI.value=x.teamBName;aScoreI.value=x.teamAScore;bScoreI.value=x.teamBScore;if(save)localStorage.setItem('find-the-lesson-score-state',JSON.stringify(x));if(broadcast)post('lesson:score-update',x)}
+function update(){apply({teamAName:aNameI.value.trim(),teamBName:bNameI.value.trim(),teamAScore:aScoreI.value,teamBScore:bScoreI.value},true,true)}
+[aNameI,bNameI,aScoreI,bScoreI].forEach(x=>x.addEventListener('input',update));document.querySelectorAll('.step').forEach(b=>b.onclick=()=>{const inp=b.dataset.team==='A'?aScoreI:bScoreI;inp.value=Math.max(0,n(inp.value)+Number(b.dataset.delta));update()});
+function resetCards(broadcast=true){document.querySelectorAll('.question-card').forEach(x=>x.classList.remove('opened'));clearHighlights();closeQuestion();if(broadcast)post('lesson:cards-reset')}
+document.getElementById('resetCards').onclick=()=>resetCards(true);document.getElementById('studentView').onclick=()=>{const u=new URL(location.href);u.searchParams.delete('teacher');u.searchParams.delete('mode');location.href=u};
+window.addEventListener('message',e=>{const d=e.data||{};if(d.type==='set-role')document.body.classList.toggle('teacher-mode',d.role==='teacher');if(d.type==='lesson:score-update')apply(d,true,false);if(d.type==='lesson:card-opened'){const i=Number(d.card)-1;if(cardData[i])openQuestion(cardData[i],i,false)}if(d.type==='lesson:cards-reset')resetCards(false)});if(channel)channel.onmessage=e=>{if(e.data?.type==='lesson:score-update')apply(e.data,true,false)};window.addEventListener('storage',e=>{if(e.key==='find-the-lesson-score-state'&&e.newValue)try{apply(JSON.parse(e.newValue),false,false)}catch{}});try{const s=JSON.parse(localStorage.getItem('find-the-lesson-score-state'));if(s)apply(s)}catch{}
+document.getElementById('popupClose').onclick=closeQuestion;
+document.getElementById('closePopup').onclick=closeQuestion;
+popup.onclick=e=>{if(e.target===popup)closeQuestion()};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&popup.classList.contains('open'))closeQuestion()});
+renderCards();
+cards.addEventListener('click',e=>{if(document.body.classList.contains('teacher-mode'))return;const el=e.target.closest('.question-card');if(!el)return;const i=[...cards.children].indexOf(el);if(i>=0&&cardData[i])openQuestion(cardData[i],i)});
+</script>
+</body>
+</html>

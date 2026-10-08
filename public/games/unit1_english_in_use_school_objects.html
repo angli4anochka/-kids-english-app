@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>School objects</title>
+  <style>
+    :root{--navy:#102a56;--blue:#3976e8;--purple:#7658df;--green:#14845e;--red:#d74655;--muted:#667d9f}*{box-sizing:border-box}
+    html,body{width:100%;height:100%;margin:0;overflow:hidden;font-family:Inter,ui-rounded,"Nunito Sans",system-ui,sans-serif;color:var(--navy);background:radial-gradient(circle at 8% 0,#dceaff 0,transparent 34%),linear-gradient(145deg,#fbfdff,#edf3ff)}
+    .app{width:min(1280px,100%);height:100dvh;margin:auto;padding:8px 14px;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:8px;overflow:hidden}
+    header{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:40px}.title{display:flex;align-items:center;gap:10px}.badge{width:38px;aspect-ratio:1;display:grid;place-items:center;border:2px solid #fff;border-radius:12px;color:#fff;background:linear-gradient(145deg,#6096f3,#355fc5);box-shadow:0 6px 18px #315fc733;font-size:1.2rem;font-weight:900}h1,p{margin:0}h1{font-size:clamp(1.16rem,1.8vw,1.55rem);line-height:1.15;letter-spacing:-.025em}.eyebrow{color:#6d83a5;font-size:.6rem;font-weight:900;letter-spacing:.14em;line-height:1.2;text-transform:uppercase}.progress{padding:7px 13px;border:1px solid #5175af26;border-radius:99px;background:#ffffffdc;box-shadow:0 8px 24px #30518614;font-weight:950}
+    .scene-wrap{min-height:0;display:grid;place-items:center;overflow:visible}.scene{position:relative;width:min(100%,calc((100dvh - 130px) * 16 / 9));max-height:calc(100dvh - 130px);aspect-ratio:16/9;overflow:visible;border:4px solid #fff;border-radius:20px;background:#dbe7f5;box-shadow:0 18px 48px #284e8b24}.scene>img{width:100%;height:100%;display:block;object-fit:contain;border-radius:16px}.hotspot{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);border:0;border-radius:18px;background:transparent;cursor:pointer}.hotspot::after{content:"";position:absolute;left:50%;top:50%;width:17px;height:17px;border:3px solid #fff;border-radius:50%;background:#3976e8dd;box-shadow:0 4px 13px #0d2b5d63;transform:translate(-50%,-50%);transition:.18s}.hotspot:hover::after,.hotspot.active::after{width:27px;height:27px;background:#7658df}.hotspot.found{pointer-events:none}.hotspot.found::after{display:none}.object-label{position:absolute;left:50%;top:50%;display:none;padding:7px 11px;border:2px solid #fff;border-radius:11px;color:#fff;background:#14845eee;box-shadow:0 5px 16px #073d2b55;font-size:clamp(.68rem,1.2vw,.9rem);font-weight:950;white-space:nowrap;transform:translate(-50%,-50%)}.hotspot.found .object-label{display:block}
+    .control-panel{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;padding:8px 12px;border:3px solid #fff;border-radius:18px;background:#ffffffeb;box-shadow:0 12px 30px #284e8b18}.instruction{margin-right:4px;color:var(--muted);font-size:.92rem;font-weight:800}.choices{display:none;align-items:center;justify-content:center;flex-wrap:wrap;gap:7px}.choices.open{display:flex}.word{height:36px;border:2px solid #ccdaee;border-radius:11px;padding:0 12px;color:var(--navy);background:#fff;font:inherit;font-size:.92rem;font-weight:900;cursor:pointer}.word:hover{border-color:var(--blue);background:#edf4ff}.feedback{min-width:130px;font-size:.92rem;font-weight:900}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}.send{display:none;height:38px;border:0;border-radius:12px;padding:0 16px;color:#fff;background:linear-gradient(135deg,#13805c,#24a878);box-shadow:0 8px 20px #17805e35;font:inherit;font-weight:900;cursor:pointer}
+    .celebration{display:none;font-weight:950;color:var(--green)}.control-panel.complete .instruction,.control-panel.complete .choices{display:none}.control-panel.complete .celebration,.control-panel.complete .send{display:block}
+    @media(max-width:760px){html,body{overflow:auto}.app{height:auto;min-height:100dvh;padding:9px;overflow:visible}.scene{width:100%;max-height:none;border-width:3px;border-radius:18px}.scene-wrap{align-items:start}.instruction{width:100%;text-align:center}.control-panel{align-self:end}.feedback{width:100%;text-align:center}.hotspot::after{width:15px;height:15px}.object-label{padding:5px 8px}}
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header><div class="title"><span class="badge">5</span><div><p class="eyebrow">Vocabulary</p><h1>School objects</h1></div></div><span class="progress">0 / 6</span></header>
+    <div class="scene-wrap"><section class="scene" aria-label="Interactive classroom scene">
+      <img src="https://storage.yandexcloud.net/kids-app/html-assets/unit1-english-in-use-school-objects/school-objects-01-18ac20c6470a8191.webp" alt="A classroom with school objects on a desk">
+      <button class="hotspot" data-answer="ruler" aria-label="Object on the left of the desk" style="--x:2%;--y:66%;--w:31%;--h:15%"><span class="object-label">ruler</span></button>
+      <button class="hotspot" data-answer="textbook" aria-label="Object in the centre of the desk" style="--x:36%;--y:63%;--w:26%;--h:22%"><span class="object-label">textbook</span></button>
+      <button class="hotspot" data-answer="eraser" aria-label="Small object at the front-left" style="--x:18%;--y:82%;--w:11%;--h:13%"><span class="object-label">eraser</span></button>
+      <button class="hotspot" data-answer="atlas" aria-label="Object on the right of the desk" style="--x:66%;--y:60%;--w:32%;--h:25%"><span class="object-label">atlas</span></button>
+      <button class="hotspot" data-answer="pen" aria-label="Object at the front-right" style="--x:65%;--y:82%;--w:25%;--h:14%"><span class="object-label">pen</span></button>
+      <button class="hotspot" data-answer="classroom" aria-label="The room" style="--x:32%;--y:3%;--w:43%;--h:39%"><span class="object-label">classroom</span></button>
+    </section></div>
+    <section class="control-panel">
+      <p class="instruction">Click an object, then choose its name.</p>
+      <div class="choices" aria-label="Choose the object name">
+        <button class="word" type="button">atlas</button><button class="word" type="button">pen</button><button class="word" type="button">ruler</button><button class="word" type="button">classroom</button><button class="word" type="button">eraser</button><button class="word" type="button">textbook</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p><p class="celebration">Excellent! You found all six objects.</p><button class="send" type="button">Send to teacher</button>
+    </section>
+  </main>
+  <script>
+    const hotspots=[...document.querySelectorAll('.hotspot')],choices=document.querySelector('.choices'),words=[...document.querySelectorAll('.word')],feedback=document.querySelector('.feedback'),progress=document.querySelector('.progress'),panel=document.querySelector('.control-panel'),send=document.querySelector('.send');let active=null,found=[];
+    hotspots.forEach(hotspot=>hotspot.addEventListener('click',()=>{if(hotspot.classList.contains('found'))return;hotspots.forEach(item=>item.classList.remove('active'));active=hotspot;hotspot.classList.add('active');choices.classList.add('open');feedback.textContent='Choose a word.';feedback.className='feedback'}));
+    words.forEach(word=>word.addEventListener('click',()=>{if(!active)return;const answer=active.dataset.answer;if(word.textContent.trim()!==answer){feedback.textContent='Not quite. Try another word.';feedback.className='feedback bad';return}active.classList.remove('active');active.classList.add('found');found.push(answer);feedback.textContent='Correct!';feedback.className='feedback good';progress.textContent=`${found.length} / 6`;active=null;choices.classList.remove('open');if(found.length===6){panel.classList.add('complete')}}));
+    send.addEventListener('click',()=>{const result={activityId:'school-objects-find',answers:found,score:found.length,maxScore:6,completed:found.length===6,timestamp:new Date().toISOString()};window.parent.postMessage({type:'UNIPLAY_ACTIVITY_RESULT',payload:result},'*');window.parent.postMessage({type:'lesson-result',...result},'*');try{localStorage.setItem('school-objects-find-result',JSON.stringify(result))}catch{}send.textContent='Sent ✓';send.disabled=true});
+  </script>
+</body>
+</html>

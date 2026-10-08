@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plural Endings Trainer</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#6b7e90;
+  --blue:#4a8fd8;
+  --blue-dark:#2f6ca4;
+  --green:#49b36d;
+  --orange:#f39a4b;
+  --red:#d96565;
+  --line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:1vh;
+  padding:1.5vh 1.6vw;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255,208,139,.38), transparent 23%),
+    radial-gradient(circle at 92% 12%, rgba(130,198,255,.32), transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec);
+}
+
+.header,
+.rule-bar,
+.grid,
+.footer {
+  width:100%;
+  max-width:1380px;
+  margin:0 auto;
+}
+
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.65rem .95rem;
+  border-radius:20px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+}
+
+.badge {
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);
+  font-size:1.55rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.5rem,2.5vw,2.45rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.2rem;
+  color:var(--muted);
+  font-weight:700;
+  font-size:.9rem;
+}
+
+.score {
+  padding:.5rem .85rem;
+  border-radius:999px;
+  background:#fff0b8;
+  color:#8b5a00;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.rule-bar {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.65rem;
+}
+
+.rule {
+  padding:.56rem .7rem;
+  border-radius:16px;
+  background:rgba(255,255,255,.93);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+
+.rule strong {
+  display:block;
+  color:var(--blue-dark);
+  font-size:1.05rem;
+}
+
+.rule span {
+  display:block;
+  margin-top:.15rem;
+  color:var(--muted);
+  font-size:.75rem;
+  font-weight:700;
+}
+
+.grid {
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.72rem;
+  align-content:center;
+}
+
+.card {
+  min-width:0;
+  min-height:150px;
+  display:grid;
+  grid-template-rows:auto auto auto;
+  align-items:center;
+  gap:.55rem;
+  padding:.75rem;
+  border:2px solid var(--line);
+  border-radius:20px;
+  background:rgba(255,255,255,.95);
+  box-shadow:0 8px 20px rgba(37,64,89,.09);
+  transition:.15s ease;
+}
+
+.card.correct {
+  border-color:var(--green);
+  background:#eaf8ef;
+}
+
+.card.wrong {
+  border-color:var(--red);
+  background:#ffecec;
+}
+
+.top {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.55rem;
+}
+
+.icon {
+  font-size:2.4rem;
+}
+
+.word {
+  font-size:1.2rem;
+  font-weight:900;
+}
+
+.ending-row {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:.35rem;
+}
+
+.ending-btn {
+  cursor:pointer;
+  border:2px solid #cfdde6;
+  border-radius:11px;
+  background:#fff;
+  padding:.45rem .2rem;
+  color:var(--ink);
+  font-weight:900;
+  font-size:.84rem;
+}
+
+.ending-btn:hover {
+  border-color:#9ec8e5;
+  background:#f3faff;
+}
+
+.ending-btn.selected {
+  border-color:var(--blue);
+  background:#eaf5ff;
+  color:var(--blue-dark);
+}
+
+.preview {
+  min-height:2.4em;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:.48rem .55rem;
+  border-radius:11px;
+  background:#f5faff;
+  color:var(--blue-dark);
+  font-weight:900;
+  text-align:center;
+}
+
+.preview.empty {
+  color:#9aabb7;
+  font-weight:700;
+}
+
+.footer {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.58rem .9rem;
+  border-radius:18px;
+  background:rgba(255,255,255,.88);
+  box-shadow:var(--shadow);
+}
+
+.status {
+  color:var(--muted);
+  font-weight:800;
+  font-size:.88rem;
+}
+
+.actions {
+  display:flex;
+  gap:.65rem;
+}
+
+.action-btn {
+  cursor:pointer;
+  border:0;
+  border-radius:13px;
+  padding:.65rem 1rem;
+  color:#fff;
+  font-weight:900;
+}
+
+.reset-btn {
+  background:#74889a;
+}
+
+.check-btn {
+  background:var(--green);
+  box-shadow:0 5px 0 #2f8050;
+}
+
+.check-btn:disabled {
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+}
+
+@media (max-width:1000px) {
+  .grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .card {
+    min-height:132px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">✍️</div>
+      <div>
+        <h1>Build the plural</h1>
+        <div class="subtitle">Choose s, es, ies or ves.</div>
+      </div>
+    </div>
+    <div id="score" class="score">0 / 12</div>
+  </header>
+
+  <section class="rule-bar">
+    <div class="rule">
+      <strong>s</strong>
+      <span>cap → caps</span>
+    </div>
+    <div class="rule">
+      <strong>es</strong>
+      <span>watch → watches</span>
+    </div>
+    <div class="rule">
+      <strong>ies</strong>
+      <span>party → parties</span>
+    </div>
+    <div class="rule">
+      <strong>ves</strong>
+      <span>knife → knives</span>
+    </div>
+  </section>
+
+  <main id="grid" class="grid"></main>
+
+  <footer class="footer">
+    <div id="status" class="status">Choose an ending for every word.</div>
+    <div class="actions">
+      <button id="resetBtn" class="action-btn reset-btn">RESET</button>
+      <button id="checkBtn" class="action-btn check-btn" disabled>CHECK</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const words = [{"word": "doll", "ending": "s", "plural": "dolls", "icon": "🪆"}, {"word": "cap", "ending": "s", "plural": "caps", "icon": "🧢"}, {"word": "boy", "ending": "s", "plural": "boys", "icon": "👦"}, {"word": "watch", "ending": "es", "plural": "watches", "icon": "⌚"}, {"word": "box", "ending": "es", "plural": "boxes", "icon": "📦"}, {"word": "bus", "ending": "es", "plural": "buses", "icon": "🚌"}, {"word": "party", "ending": "ies", "plural": "parties", "icon": "🎉"}, {"word": "baby", "ending": "ies", "plural": "babies", "icon": "👶"}, {"word": "city", "ending": "ies", "plural": "cities", "icon": "🏙️"}, {"word": "knife", "ending": "ves", "plural": "knives", "icon": "🔪"}, {"word": "leaf", "ending": "ves", "plural": "leaves", "icon": "🍃"}, {"word": "scarf", "ending": "ves", "plural": "scarves", "icon": "🧣"}];
+const endings = ["s", "es", "ies", "ves"];
+
+const grid = document.getElementById("grid");
+const checkBtn = document.getElementById("checkBtn");
+const resetBtn = document.getElementById("resetBtn");
+const score = document.getElementById("score");
+const status = document.getElementById("status");
+
+const answers = new Map();
+
+function makePlural(word, ending) {
+  if (!ending) return "";
+
+  if (ending === "s") {
+    return word + "s";
+  }
+
+  if (ending === "es") {
+    return word + "es";
+  }
+
+  if (ending === "ies") {
+    return word.endsWith("y")
+      ? word.slice(0, -1) + "ies"
+      : word + "ies";
+  }
+
+  if (ending === "ves") {
+    if (word.endsWith("fe")) {
+      return word.slice(0, -2) + "ves";
+    }
+
+    if (word.endsWith("f")) {
+      return word.slice(0, -1) + "ves";
+    }
+  }
+
+  return word + ending;
+}
+
+function updateState() {
+  score.textContent = `${answers.size} / ${words.length}`;
+  checkBtn.disabled = answers.size !== words.length;
+
+  if (answers.size === words.length) {
+    status.textContent = "All words are ready. Check your answers.";
+  } else {
+    status.textContent = "Choose an ending for every word.";
+  }
+}
+
+function render() {
+  grid.innerHTML = "";
+
+  words.forEach((item, index) => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.dataset.index = index;
+
+    const top = document.createElement("div");
+    top.className = "top";
+    top.innerHTML = `
+      <div class="icon">${item.icon}</div>
+      <div class="word">${item.word}</div>
+    `;
+
+    const endingRow = document.createElement("div");
+    endingRow.className = "ending-row";
+
+    const preview = document.createElement("div");
+    preview.className = "preview empty";
+    preview.textContent = "Choose an ending";
+
+    endings.forEach(ending => {
+      const button = document.createElement("button");
+      button.className = "ending-btn";
+      button.textContent = ending;
+
+      button.addEventListener("click", () => {
+        answers.set(index, ending);
+
+        endingRow.querySelectorAll(".ending-btn").forEach(btn => {
+          btn.classList.remove("selected");
+        });
+
+        button.classList.add("selected");
+        preview.className = "preview";
+        preview.textContent = makePlural(item.word, ending);
+
+        card.classList.remove("correct", "wrong");
+        updateState();
+      });
+
+      endingRow.appendChild(button);
+    });
+
+    card.append(top, endingRow, preview);
+    grid.appendChild(card);
+  });
+
+  updateState();
+}
+
+checkBtn.addEventListener("click", () => {
+  let correct = 0;
+
+  words.forEach((item, index) => {
+    const card = document.querySelector(`.card[data-index="${index}"]`);
+    const chosen = answers.get(index);
+
+    card.classList.remove("correct", "wrong");
+
+    if (chosen === item.ending) {
+      card.classList.add("correct");
+      correct += 1;
+    } else {
+      card.classList.add("wrong");
+    }
+  });
+
+  score.textContent = `${correct} / ${words.length}`;
+
+  if (correct === words.length) {
+    status.textContent = "Perfect! All plural endings are correct.";
+    status.style.color = "#267544";
+    const result = {
+      score:correct,
+      total:words.length,
+      answers:words.map((item,index) => ({ word:item.word, ending:answers.get(index), plural:makePlural(item.word, answers.get(index)) }))
+    };
+    localStorage.setItem("unit2bPluralEndingsTrainerResult", JSON.stringify(result));
+    window.parent?.postMessage({ type:"lesson-step-complete", lesson:"2b", step:"plural-endings-trainer", result }, "*");
+    checkBtn.disabled = true;
+    checkBtn.textContent = "COMPLETED ✓";
+  } else {
+    status.textContent = `${correct} correct. Change the red cards and check again.`;
+    status.style.color = "#9e3434";
+  }
+});
+
+resetBtn.addEventListener("click", () => {
+  answers.clear();
+  status.style.color = "";
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

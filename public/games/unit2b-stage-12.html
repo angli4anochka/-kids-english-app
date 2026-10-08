@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Everyday English</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#6c8092;
+  --blue:#4a8fd8;
+  --blue-dark:#2f6ca4;
+  --green:#49b36d;
+  --orange:#f39a4b;
+  --red:#d96565;
+  --line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:1.2vh;
+  padding:1.8vh 2vw;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255,208,139,.38), transparent 23%),
+    radial-gradient(circle at 92% 12%, rgba(130,198,255,.32), transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec);
+}
+
+.header,
+.main,
+.footer {
+  width:100%;
+  max-width:1280px;
+  margin:0 auto;
+}
+
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.75rem 1rem;
+  border-radius:22px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.85rem;
+}
+
+.badge {
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);
+  font-size:1.75rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.8rem,3vw,2.8rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.25rem;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.progress {
+  padding:.55rem .9rem;
+  border-radius:999px;
+  background:#edf7ff;
+  color:#2f689c;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.main {
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(340px,.9fr);
+  gap:1rem;
+}
+
+.chat-card,
+.answer-card {
+  min-height:0;
+  border-radius:26px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--shadow);
+}
+
+.chat-card {
+  position:relative;
+  padding:1.2rem;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:1.2rem;
+  overflow:hidden;
+}
+
+.chat-card::before {
+  content:"";
+  position:absolute;
+  inset:auto -10% -28% auto;
+  width:320px;
+  height:320px;
+  border-radius:50%;
+  background:rgba(74,143,216,.08);
+}
+
+.scene-icon {
+  position:absolute;
+  top:1rem;
+  right:1rem;
+  font-size:4.5rem;
+  opacity:.9;
+}
+
+.person-row {
+  display:flex;
+  align-items:flex-end;
+  gap:.8rem;
+  position:relative;
+  z-index:1;
+}
+
+.person-row.reply {
+  justify-content:flex-end;
+}
+
+.avatar {
+  width:68px;
+  height:68px;
+  flex:0 0 68px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:linear-gradient(145deg,#d8edff,#8fc8ee);
+  border:4px solid #fff;
+  box-shadow:0 8px 18px rgba(37,64,89,.13);
+  font-size:2.2rem;
+}
+
+.reply .avatar {
+  background:linear-gradient(145deg,#ffe0ea,#f4a0ba);
+}
+
+.bubble {
+  max-width:76%;
+  padding:1rem 1.15rem;
+  border-radius:22px 22px 22px 7px;
+  background:#eaf5ff;
+  color:var(--ink);
+  font-size:clamp(1.15rem,2vw,1.65rem);
+  line-height:1.35;
+  font-weight:900;
+}
+
+.reply .bubble {
+  min-width:220px;
+  min-height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:22px 22px 7px 22px;
+  background:#fff0f5;
+  color:#a0acb7;
+  text-align:center;
+}
+
+.reply .bubble.filled {
+  color:#9b3f61;
+}
+
+.name {
+  margin-bottom:.25rem;
+  color:var(--muted);
+  font-size:.8rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.answer-card {
+  padding:1rem;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:.9rem;
+}
+
+.answer-title {
+  font-size:1.25rem;
+  font-weight:900;
+}
+
+.answer-tip {
+  margin-top:.25rem;
+  color:var(--muted);
+  font-size:.9rem;
+  font-weight:700;
+}
+
+.options {
+  display:grid;
+  gap:.8rem;
+  align-content:center;
+}
+
+.option {
+  cursor:pointer;
+  min-height:82px;
+  padding:.85rem 1rem;
+  border:3px solid var(--line);
+  border-radius:19px;
+  background:#fff;
+  color:var(--ink);
+  text-align:left;
+  font-size:clamp(1rem,1.7vw,1.25rem);
+  font-weight:900;
+  box-shadow:0 5px 0 #cad7df;
+  transition:.15s ease;
+}
+
+.option:hover {
+  transform:translateY(-2px);
+  border-color:#9ec8e5;
+  background:#f5fbff;
+}
+
+.option.correct {
+  border-color:var(--green);
+  background:#eaf8ef;
+  color:#267544;
+  box-shadow:0 5px 0 #91d1a6;
+}
+
+.option.wrong {
+  border-color:var(--red);
+  background:#ffecec;
+  color:#9e3434;
+  box-shadow:0 5px 0 #e1a2a2;
+}
+
+.feedback {
+  min-height:60px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  padding:.65rem .75rem;
+  border-radius:16px;
+  background:#f8fcff;
+  border:2px solid var(--line);
+  font-weight:900;
+}
+
+.feedback-text {
+  color:var(--muted);
+}
+
+.next-btn {
+  display:none;
+  cursor:pointer;
+  border:0;
+  border-radius:13px;
+  padding:.65rem .95rem;
+  background:var(--blue);
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 5px 0 var(--blue-dark);
+}
+
+.next-btn.show {
+  display:inline-block;
+}
+
+.footer {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:.6rem .9rem;
+  border-radius:18px;
+  background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);
+  color:var(--muted);
+  font-size:.9rem;
+  font-weight:700;
+  text-align:center;
+}
+
+@media (max-width:900px) {
+  .main {
+    grid-template-columns:1fr;
+    grid-template-rows:1fr auto;
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">💬</div>
+      <div>
+        <h1>Everyday English</h1>
+        <div class="subtitle">Choose the best reply.</div>
+      </div>
+    </div>
+    <div id="progress" class="progress">1 / 4</div>
+  </header>
+
+  <main class="main">
+    <section class="chat-card">
+      <div id="sceneIcon" class="scene-icon">🎂</div>
+
+      <div class="person-row">
+        <div class="avatar">🧑</div>
+        <div>
+          <div id="speakerName" class="name">Ben</div>
+          <div id="speakerLine" class="bubble">Happy Birthday, Kate!</div>
+        </div>
+      </div>
+
+      <div class="person-row reply">
+        <div>
+          <div id="replyName" class="name" style="text-align:right;">Kate</div>
+          <div id="replyBubble" class="bubble">Choose a reply...</div>
+        </div>
+        <div class="avatar">👧</div>
+      </div>
+    </section>
+
+    <section class="answer-card">
+      <div>
+        <div class="answer-title">What does the second person say?</div>
+        <div class="answer-tip">Choose one answer.</div>
+      </div>
+
+      <div id="options" class="options"></div>
+
+      <div class="feedback">
+        <div id="feedbackText" class="feedback-text">Read the situation carefully.</div>
+        <button id="nextBtn" class="next-btn">NEXT →</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    Useful phrases: Thank you. · It’s a present. · Great! · Wow! It’s fantastic!
+  </footer>
+</div>
+
+<script>
+const rounds = [{"speaker": "Ben", "line": "Happy Birthday, Kate!", "icon": "🎂", "options": ["Thank you.", "You’re welcome."], "answer": "Thank you.", "reply": "Kate"}, {"speaker": "Anna", "line": "What have you got there?", "icon": "🎁", "options": ["It’s a blue one.", "It’s a present."], "answer": "It’s a present.", "reply": "Tom"}, {"speaker": "Mia", "line": "I’ve got a present for you, too.", "icon": "⌚", "options": ["Great! It’s a watch.", "It’s in the box."], "answer": "Great! It’s a watch.", "reply": "Leo"}, {"speaker": "Sam", "line": "This is for you!", "icon": "🎀", "options": ["It’s over there.", "Wow! It’s fantastic!"], "answer": "Wow! It’s fantastic!", "reply": "Emma"}];
+
+const progress = document.getElementById("progress");
+const sceneIcon = document.getElementById("sceneIcon");
+const speakerName = document.getElementById("speakerName");
+const speakerLine = document.getElementById("speakerLine");
+const replyName = document.getElementById("replyName");
+const replyBubble = document.getElementById("replyBubble");
+const optionsBox = document.getElementById("options");
+const feedbackText = document.getElementById("feedbackText");
+const nextBtn = document.getElementById("nextBtn");
+
+let current = 0;
+let locked = false;
+const results = [];
+
+function renderRound() {
+  const round = rounds[current];
+  locked = false;
+
+  progress.textContent = `${current + 1} / ${rounds.length}`;
+  sceneIcon.textContent = round.icon;
+  speakerName.textContent = round.speaker;
+  speakerLine.textContent = round.line;
+  replyName.textContent = round.reply;
+  replyBubble.textContent = "Choose a reply...";
+  replyBubble.classList.remove("filled");
+
+  feedbackText.textContent = "Read the situation carefully.";
+  feedbackText.style.color = "";
+  nextBtn.classList.remove("show");
+  optionsBox.innerHTML = "";
+
+  round.options.forEach(text => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = text;
+
+    button.addEventListener("click", () => chooseAnswer(button, text, round));
+    optionsBox.appendChild(button);
+  });
+}
+
+function chooseAnswer(button, text, round) {
+  if (locked) return;
+  locked = true;
+  results[current] = { speaker:round.speaker, line:round.line, chosen:text, answer:round.answer, correct:text === round.answer };
+
+  const buttons = [...optionsBox.querySelectorAll(".option")];
+
+  buttons.forEach(item => {
+    item.disabled = true;
+    if (item.textContent.trim() === round.answer) {
+      item.classList.add("correct");
+    }
+  });
+
+  replyBubble.textContent = text;
+  replyBubble.classList.add("filled");
+
+  if (text === round.answer) {
+    feedbackText.textContent = "Correct!";
+    feedbackText.style.color = "#267544";
+  } else {
+    button.classList.add("wrong");
+    feedbackText.textContent = `The best reply is: ${round.answer}`;
+    feedbackText.style.color = "#9e3434";
+  }
+
+  nextBtn.textContent = current === rounds.length - 1 ? "COMPLETE ✓" : "NEXT →";
+  nextBtn.classList.add("show");
+}
+
+nextBtn.addEventListener("click", () => {
+  if (current === rounds.length - 1) {
+    const result = { score:results.filter(item => item?.correct).length, total:rounds.length, answers:results };
+    localStorage.setItem("unit2bEverydayEnglishResult", JSON.stringify(result));
+    window.parent?.postMessage({ type:"lesson-step-complete", lesson:"2b", step:"everyday-english-my-things", result }, "*");
+    nextBtn.disabled = true;
+    nextBtn.textContent = "COMPLETED ✓";
+    return;
+  }
+  current += 1;
+  renderRound();
+});
+
+renderRound();
+</script>
+</body>
+</html>

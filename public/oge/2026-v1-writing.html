@@ -1,0 +1,126 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>1 вариант ОГЭ 2026 — Письмо · 35</title><style>
+:root {
+  --bg:#f5f6fa; --paper:#fff; --ink:#172033; --muted:#667085; --line:#d9dee8;
+  --accent:#5b5bd6; --accent-soft:#eeeeff; --success:#138a57; --warn:#b66a00;
+  --shadow:0 12px 35px rgba(30,42,65,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+body{min-height:100vh}
+header.top {
+  position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.top-inner{max-width:1220px;margin:auto;padding:10px 18px;display:flex;align-items:center;gap:16px}
+.brand{min-width:215px}
+.brand b{display:block;font-size:18px}
+.brand span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:7px;overflow-x:auto;flex:1;padding:2px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.tab.active{background:var(--accent-soft);border-color:#bfc2f5;color:#34349f;font-weight:700}
+.status{min-width:145px;text-align:right;font-size:12px;color:var(--muted)}
+.status strong{display:block;color:var(--ink);font-size:14px}
+main{max-width:1220px;margin:0 auto;padding:18px}
+.screen{display:none}
+.screen.active{display:block}
+.paper{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:18px}
+.exam-head{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #222;padding-bottom:7px;margin-bottom:14px;font-family:Georgia,'Times New Roman',serif}
+.exam-head b{font-size:14px}
+.center-title{text-align:center;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:21px;margin:8px 0 16px}
+.instruction{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;line-height:1.42;border:1.5px solid #777;padding:10px 12px;margin:12px 0 20px;background:#fff}
+.audio-box{background:#f8f8ff;border:1px solid #d6d8fb;border-radius:14px;padding:12px 14px;margin:0 0 18px}
+.audio-box b{display:block;margin-bottom:7px}
+.audio-box audio{width:100%}
+.q{border-top:1px solid #edf0f4;padding:18px 0}
+.q:first-of-type{border-top:0}
+.q-row{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:start}
+.q-num{width:42px;height:34px;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Georgia,'Times New Roman',serif;background:#fff}
+.q-body{min-width:0}
+.q-text,.source-text,.reading,.email-box{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5}
+.q-text{font-weight:600}
+.options{display:grid;gap:5px;margin:8px 0 0 0;font-family:Georgia,'Times New Roman',serif;font-size:16px}
+.radio-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.radio-choice input{position:absolute;opacity:0}
+.radio-choice label{border:1px solid var(--line);border-radius:10px;min-width:62px;height:42px;padding:0 13px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:700}
+.radio-choice input:checked+label{background:var(--accent-soft);border-color:var(--accent);color:#34349f}
+.answer-line{display:flex;align-items:center;gap:9px;margin-top:11px;flex-wrap:wrap}
+.answer-line label{font-weight:700;font-size:14px}
+.answer-input{border:1px solid #bac2d0;border-radius:9px;padding:10px 11px;min-width:220px;background:#fff}
+.answer-input:focus,textarea:focus,select:focus{outline:3px solid rgba(91,91,214,.15);border-color:var(--accent)}
+.grid-table{width:100%;border-collapse:collapse;margin:12px 0;font-family:Georgia,'Times New Roman',serif}
+.grid-table th,.grid-table td{border:1px solid #555;padding:8px;text-align:center}
+.grid-table th:first-child,.grid-table td:first-child{text-align:left;font-weight:700}
+.grid-table select{width:76px;border:1px solid #adb6c5;border-radius:8px;padding:7px;background:white}
+.rubrics{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.65;margin:6px 0 14px}
+.rubrics div{margin:3px 0}
+.info-table{width:100%;border-collapse:collapse;font-family:Georgia,'Times New Roman',serif;font-size:16px}
+.info-table td{border:1px solid #555;padding:8px}
+.info-table td:first-child{width:48px;text-align:center;font-weight:700}
+.info-table td:nth-child(2){width:45%}
+.info-table input{width:100%;border:0;border-bottom:1px solid #999;padding:6px;background:transparent;outline:0}
+.questions{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55}
+.questions div{margin:5px 0;font-weight:600}
+.text-block{display:grid;grid-template-columns:38px 1fr;gap:12px;margin:18px 0}
+.text-letter{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:18px;text-align:right}
+.reading p{margin:0 0 11px;text-align:justify}
+.footnote{font-family:Georgia,'Times New Roman',serif;font-size:13px;margin-top:18px;border-top:1px solid #333;padding-top:8px}
+.tf-legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:7px}
+.grammar-row{display:grid;grid-template-columns:52px minmax(0,1fr) 110px;gap:12px;align-items:start;border-top:1px solid #edf0f4;padding:17px 0}
+.grammar-row:first-of-type{border-top:0}
+.base-word{font-family:Georgia,'Times New Roman',serif;font-weight:700;text-align:right;padding-top:8px}
+.inline-input{display:inline-block;vertical-align:baseline;min-width:190px;border:0;border-bottom:2px solid #6d7480;border-radius:0;padding:3px 5px;background:#fbfbfd}
+.inline-input:focus{outline:0;border-bottom-color:var(--accent);background:#f6f6ff}
+.email-box{border:1px solid #666}
+.email-row{display:grid;grid-template-columns:95px 1fr;border-bottom:1px solid #aaa}
+.email-row:last-child{border-bottom:0}
+.email-row b,.email-row span{padding:7px 9px}
+.email-row b{border-right:1px solid #aaa}
+.email-body{padding:10px 12px;font-style:italic;line-height:1.45}
+.write-area{width:100%;min-height:300px;border:1px solid #adb6c5;border-radius:12px;padding:14px;font-size:16px;line-height:1.55;resize:vertical;margin-top:12px}
+.word-count{margin-top:7px;font-size:13px;color:var(--muted)}
+.word-count.good{color:var(--success);font-weight:700}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 24px}
+.nav-btn,.secondary{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+.nav-btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.warning{color:var(--warn);font-size:13px;margin-top:7px;display:none}
+.warning.show{display:block}
+.smallprint{font-family:Georgia,'Times New Roman',serif;font-size:12px;color:#3f4652;line-height:1.4}
+.result-box{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted)}
+@media(max-width:760px){
+  .top-inner{flex-wrap:wrap}
+  .brand,.status{min-width:0}
+  .status{text-align:left}
+  main{padding:10px}
+  .paper{padding:18px 16px}
+  .q-row,.grammar-row{grid-template-columns:42px 1fr}
+  .base-word{grid-column:2;text-align:left}
+  .q-text,.source-text,.reading,.email-box{font-size:16px}
+  .grid-table{font-size:14px}
+}
+
+    .save-line{max-width:1220px;margin:auto;padding:8px 18px;display:flex;flex-wrap:wrap;gap:12px;font-size:13px}.save-line button{padding:8px 12px}.review-note{font-size:12px;color:#667085}.status{min-width:110px}@media(max-width:650px){.top-inner{flex-wrap:wrap}.brand{min-width:0}.paper{padding:16px 12px}.bottom-bar{position:static}.answer-input{min-width:0;max-width:100%}.q-row,.grammar-row{grid-template-columns:42px minmax(0,1fr)}.grid-table,.info-table{display:block;max-width:100%;overflow-x:auto}.tabs{min-width:0}.email-row{grid-template-columns:70px minmax(0,1fr)}.email-row span{overflow-wrap:anywhere}}
+    </style></head><body>
+    <header class="top"><div class="top-inner"><div class="brand"><b>1 вариант ОГЭ 2026</b><span>Письмо · 35</span></div><div class="tabs" id="tabs"></div><div class="status"><strong id="progress"></strong>ответов заполнено</div></div><div class="save-line"><span id="saveStatus" role="status">Подключение к уроку…</span><span id="mode" hidden>Предпросмотр учителя</span></div></header>
+    <main id="exam"><section class="screen" data-screen="6">
+  <div class="paper">
+    <div class="exam-head"><b>18</b><span>ОГЭ. ТИПОВЫЕ ЭКЗАМЕНАЦИОННЫЕ ВАРИАНТЫ. ПИСЬМЕННАЯ ЧАСТЬ</span></div>
+    <div class="center-title">Раздел 4 (задание по письму)</div>
+    <div class="instruction">Для ответа на задание 35 используйте БЛАНК ОТВЕТОВ № 2. При выполнении задания 35 особое внимание обратите на то, что Ваши ответы будут оцениваться только по записям, сделанным на бланке ответов № 2. Никакие записи черновика не будут учитываться экспертом. Обратите внимание также на необходимость соблюдения указанного объёма электронного письма. Письмо недостаточного объёма, а также часть текста электронного письма, превышающая требуемый объём, не оцениваются. Укажите номер задания 35 в БЛАНКЕ ОТВЕТОВ № 2 и напишите текст своего электронного письма зарубежному другу по переписке.</div>
+
+    <div class="q-row"><div class="q-num">35</div><div class="q-body">
+      <div class="source-text">You have received an email message from your English-speaking pen-friend Duncan.</div>
+      <div class="email-box" style="margin-top:10px">
+        <div class="email-row"><b>From:</b><span>Duncan@mail.uk</span></div>
+        <div class="email-row"><b>To:</b><span>Russian_friend@oge.ru</span></div>
+        <div class="email-row"><b>Subject:</b><span>Learning English</span></div>
+        <div class="email-body">...Some of my classmates think that we don't need to learn foreign languages anymore because there are lots of apps which can translate anything...<br><br>...Do you think it is necessary to speak a foreign language, why? At what age do Russian students start learning English at school? What do you do outside the classroom to improve your English?...</div>
+      </div>
+      <div class="source-text" style="margin-top:14px">Write a message to Duncan and answer his 3 questions.<br><b>Write 100–120 words.</b><br>Remember the rules of email writing.</div>
+      <textarea class="write-area" data-key="q35" id="q35" placeholder=""></textarea>
+      <div class="word-count" id="wordCount">0 words</div>
+    </div></div>
+  </div>
+</section>
+    <div class="bottom-bar"><button class="nav-btn" id="prevBtn" type="button">← Назад</button><div class="result-box"><span id="reviewNote">Ответы отправляются учителю для проверки.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" id="clearBtn" type="button">Очистить ответы</button><button class="secondary" id="downloadBtn" type="button">Скачать ответы</button><button class="nav-btn primary" id="nextBtn" type="button">Дальше →</button><button class="nav-btn primary" id="finishBtn" type="button">Завершить часть</button></div></div></main>
+    <script>window.OGE_writing="writing";</script><script src="/oge/2026-v1-bridge.js?v=1"></script></body></html>

@@ -14,6 +14,7 @@ import { lessonService } from '../services/lessonService';
 
 import LessonFlag from '../components/Island/LessonFlag';
 import { lessonFlagsData } from '../data/lessonFlags';
+import { kidsBoxIslandTwoLessonIds } from '../data/kidsBoxIslandLessons';
 import { getIslandImage } from '../utils/lazyImages';
 import type { Activity } from '../types';
 interface IslandScreenProps {
@@ -36,6 +37,23 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
   const [lessonPlanKey, setLessonPlanKey] = useState(0); // For forcing LessonPlan refresh
   const [islandImageUrl, setIslandImageUrl] = useState<string | null>(null);
   const [lessonReadyUrl, setLessonReadyUrl] = useState<string | null>(null); // URL when teacher starts lesson
+  const [serverCompletedLessons, setServerCompletedLessons] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    const groupId = user?.groupId || user?.group_id;
+    if (role !== 'student' || !groupId) return;
+    fetch(`/kids-api/groups/${groupId}/progress`)
+      .then(response => response.json())
+      .then(result => {
+        if (!result.success) return;
+        setServerCompletedLessons(new Set(
+          (result.data || [])
+            .filter((item: any) => item.is_completed)
+            .map((item: any) => String(item.lesson_id))
+        ));
+      })
+      .catch(error => console.error('[IslandScreen] Failed to load server progress:', error));
+  }, [role, user?.groupId, user?.group_id]);
 
   useEffect(() => {
     if (island) {
@@ -228,7 +246,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
 
   if (!island) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.webp)' }}>
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)' }}>
         <div className="text-white text-2xl">Остров не найден</div>
       </div>
     );
@@ -237,7 +255,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
   // Show lesson plan component on stage 3 and beyond
   if (currentStageIndex >= 2) {
     return (
-      <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4" style={{ backgroundImage: 'url(/img/background.webp)' }}>
+      <div className="min-h-screen w-full bg-cover bg-center bg-no-repeat p-4" style={{ backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)' }}>
         <div className="h-full flex gap-4">
           {/* Left panel - Lesson Plan (30%) */}
           <div className="w-[30%] h-full">
@@ -298,15 +316,20 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
   // Проверяем прогресс уроков
   const getLessonStatus = (lessonNumber: number): 'locked' | 'available' | 'completed' => {
     if (role === 'teacher') return 'available';
+    if (String(user?.id) === '12' && island.id === 'island-1' && lessonNumber <= 18) return 'completed';
 
     const progressKey = `${island.id}-lesson-${lessonNumber}`;
-    const isCompleted = localStorage.getItem(progressKey) === 'completed';
+    const linkedProgressLessonId = island.id === 'island-2' ? kidsBoxIslandTwoLessonIds[lessonNumber - 1] : undefined;
+    const isCompleted = localStorage.getItem(progressKey) === 'completed'
+      || Boolean(linkedProgressLessonId && serverCompletedLessons.has(linkedProgressLessonId));
 
     if (isCompleted) return 'completed';
     if (lessonNumber === 1) return 'available';
 
     const prevProgressKey = `${island.id}-lesson-${lessonNumber - 1}`;
-    const isPrevCompleted = localStorage.getItem(prevProgressKey) === 'completed';
+    const previousLinkedLessonId = island.id === 'island-2' ? kidsBoxIslandTwoLessonIds[lessonNumber - 2] : undefined;
+    const isPrevCompleted = localStorage.getItem(prevProgressKey) === 'completed'
+      || Boolean(previousLinkedLessonId && serverCompletedLessons.has(previousLinkedLessonId));
     return isPrevCompleted ? 'available' : 'locked';
   };
 
@@ -326,7 +349,8 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     soundManager.playClick();
 
     // Build the lesson path
-    const path = `/island/${island.id}/lesson/${lessonNumber}`;
+const linkedLessonId = island.id === 'island-2' ? kidsBoxIslandTwoLessonIds[lessonNumber - 1] : undefined;
+    const path = `/island/${island.id}/lesson/${lessonNumber}${linkedLessonId ? `?lessonId=${linkedLessonId}` : ''}`;
     
     // Teachers send navigate command to students via WebSocket
     if (role === 'teacher' && socket && isConnected) {
@@ -353,7 +377,7 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
     window.location.href = path;
   };
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/img/background.webp)' }}>
+    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(https://storage.yandexcloud.net/kids-app/public-assets/img/background.webp)' }}>
       {/* Navigation buttons - top left */}
       <div className="absolute top-8 left-8 z-30 flex gap-3">
         <button
@@ -386,6 +410,8 @@ const IslandScreen = ({ islandId }: IslandScreenProps) => {
           <img
             src={islandImageUrl}
             alt={island.title}
+            loading="eager"
+            fetchPriority="high"
             className="w-full h-full object-cover"
           />
         ) : (

@@ -1,0 +1,258 @@
+{
+  "version": 3,
+  "pages404": true,
+  "appType": "app",
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "priority": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    }
+  ],
+  "headers": [],
+  "onMatchHeaders": [],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/course/[courseId]",
+      "regex": "^/course/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcourseId": "nxtPcourseId"
+      },
+      "namedRegex": "^/course/(?<nxtPcourseId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/course/[courseId]/book/[bookId]",
+      "regex": "^/course/([^/]+?)/book/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcourseId": "nxtPcourseId",
+        "nxtPbookId": "nxtPbookId"
+      },
+      "namedRegex": "^/course/(?<nxtPcourseId>[^/]+?)/book/(?<nxtPbookId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/island/[islandId]",
+      "regex": "^/island/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPislandId": "nxtPislandId"
+      },
+      "namedRegex": "^/island/(?<nxtPislandId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/island/[islandId]/lesson/[lessonNumber]",
+      "regex": "^/island/([^/]+?)/lesson/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPislandId": "nxtPislandId",
+        "nxtPlessonNumber": "nxtPlessonNumber"
+      },
+      "namedRegex": "^/island/(?<nxtPislandId>[^/]+?)/lesson/(?<nxtPlessonNumber>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/join/[groupId]",
+      "regex": "^/join/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPgroupId": "nxtPgroupId"
+      },
+      "namedRegex": "^/join/(?<nxtPgroupId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/student/live-session/[sessionId]",
+      "regex": "^/student/live\\-session/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsessionId": "nxtPsessionId"
+      },
+      "namedRegex": "^/student/live\\-session/(?<nxtPsessionId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher/lessons/edit/[lessonId]",
+      "regex": "^/teacher/lessons/edit/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPlessonId": "nxtPlessonId"
+      },
+      "namedRegex": "^/teacher/lessons/edit/(?<nxtPlessonId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher/live-session/[sessionId]",
+      "regex": "^/teacher/live\\-session/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPsessionId": "nxtPsessionId"
+      },
+      "namedRegex": "^/teacher/live\\-session/(?<nxtPsessionId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher/self-study/[lessonId]",
+      "regex": "^/teacher/self\\-study/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPlessonId": "nxtPlessonId"
+      },
+      "namedRegex": "^/teacher/self\\-study/(?<nxtPlessonId>[^/]+?)(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/cookie-policy",
+      "regex": "^/cookie\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/cookie\\-policy(?:/)?$"
+    },
+    {
+      "page": "/favicon.ico",
+      "regex": "^/favicon\\.ico(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/favicon\\.ico(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/map",
+      "regex": "^/map(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/map(?:/)?$"
+    },
+    {
+      "page": "/personal-data-consent",
+      "regex": "^/personal\\-data\\-consent(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/personal\\-data\\-consent(?:/)?$"
+    },
+    {
+      "page": "/privacy-policy",
+      "regex": "^/privacy\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy\\-policy(?:/)?$"
+    },
+    {
+      "page": "/privacy-settings",
+      "regex": "^/privacy\\-settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy\\-settings(?:/)?$"
+    },
+    {
+      "page": "/register",
+      "regex": "^/register(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/register(?:/)?$"
+    },
+    {
+      "page": "/scoreboard",
+      "regex": "^/scoreboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/scoreboard(?:/)?$"
+    },
+    {
+      "page": "/student/courses",
+      "regex": "^/student/courses(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/student/courses(?:/)?$"
+    },
+    {
+      "page": "/student/lesson-results",
+      "regex": "^/student/lesson\\-results(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/student/lesson\\-results(?:/)?$"
+    },
+    {
+      "page": "/student/profile",
+      "regex": "^/student/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/student/profile(?:/)?$"
+    },
+    {
+      "page": "/student/spotlight",
+      "regex": "^/student/spotlight(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/student/spotlight(?:/)?$"
+    },
+    {
+      "page": "/teacher/dashboard",
+      "regex": "^/teacher/dashboard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher/dashboard(?:/)?$"
+    },
+    {
+      "page": "/teacher/groups",
+      "regex": "^/teacher/groups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher/groups(?:/)?$"
+    },
+    {
+      "page": "/teacher/lesson-results",
+      "regex": "^/teacher/lesson\\-results(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher/lesson\\-results(?:/)?$"
+    },
+    {
+      "page": "/teacher/lessons",
+      "regex": "^/teacher/lessons(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher/lessons(?:/)?$"
+    },
+    {
+      "page": "/teacher/lessons/create",
+      "regex": "^/teacher/lessons/create(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher/lessons/create(?:/)?$"
+    },
+    {
+      "page": "/terms",
+      "regex": "^/terms(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/terms(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments",
+    "clientParamParsing": false,
+    "dynamicRSCPrerender": false
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}

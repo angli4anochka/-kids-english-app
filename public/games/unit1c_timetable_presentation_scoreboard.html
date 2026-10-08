@@ -1,0 +1,677 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>School Programme</title>
+  <style>
+    :root {
+      --ink:#17366f;
+      --muted:#6b7da7;
+      --blue:#5f7fe8;
+      --purple:#8f7de8;
+      --line:#dce6fb;
+      --panel:rgba(255,255,255,.96);
+      --shadow:0 22px 60px rgba(37,57,110,.16);
+      --score-bg:#111826;
+      --score-line:#2a3651;
+      --score-text:#f7f4d6;
+      --score-green:#7af1a8;
+      --score-blue:#8ab8ff;
+      --break:#fff0d6;
+      --lunch:#f3eaff;
+    }
+
+    * { box-sizing:border-box; }
+
+    html, body {
+      width:100%;
+      height:100%;
+      margin:0;
+      overflow:hidden;
+    }
+
+    body {
+      font-family:Inter, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(108,145,238,.24), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(154,132,236,.18), transparent 24%),
+        linear-gradient(135deg,#f8fbff 0%,#eef4ff 54%,#f8f5ff 100%);
+    }
+
+    button { font:inherit; }
+
+    .app {
+      width:100%;
+      height:100%;
+      min-height:0;
+      padding:clamp(8px,1.2vw,16px);
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:6px;
+    }
+
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .title h1 {
+      margin:0;
+      font-size:clamp(23px,2.25vw,36px);
+      line-height:1;
+      letter-spacing:0;
+    }
+
+    .title p {
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:clamp(13px,1vw,16px);
+      font-weight:750;
+    }
+
+    .step-badge {
+      padding:8px 13px;
+      border-radius:999px;
+      color:#3158c7;
+      background:#edf3ff;
+      font-size:14px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .workspace {
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      padding:clamp(8px,1.2vw,14px);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.88);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .content {
+      width:min(1280px,100%);
+      height:100%;
+      margin:0 auto;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+      gap:7px;
+      min-height:0;
+    }
+
+    .guide {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:8px 12px;
+      border:2px solid var(--line);
+      border-radius:16px;
+      background:#fbfdff;
+      font-size:14px;
+    }
+
+    .guide strong {
+      color:#3158c7;
+    }
+
+    .guide-examples {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      justify-content:flex-end;
+    }
+
+    .guide-chip {
+      padding:6px 9px;
+      border-radius:999px;
+      color:#28498f;
+      background:linear-gradient(145deg,#eef4ff,#f6f1ff);
+      border:1px solid #e0e7fb;
+      font-size:12px;
+      font-weight:850;
+      white-space:nowrap;
+    }
+
+    .table-card {
+      overflow:hidden;
+      border:2px solid var(--line);
+      border-radius:17px;
+      background:#fff;
+    }
+
+    .table-title {
+      padding:7px 12px;
+      color:#3158c7;
+      background:linear-gradient(90deg,#edf3ff,#f6f1ff);
+      font-weight:950;
+      text-align:center;
+      letter-spacing:.03em;
+    }
+
+    .table-scroll {
+      width:100%;
+      overflow:hidden;
+    }
+
+    .schedule-table {
+      width:100%;
+      min-width:0;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+
+    .schedule-table th,
+    .schedule-table td {
+      border-right:1px solid #e4eafb;
+      border-bottom:1px solid #e4eafb;
+      padding:5px 4px;
+      text-align:center;
+      font-size:clamp(9px,.95vw,11px);
+      line-height:1.18;
+    }
+
+    .schedule-table th:last-child,
+    .schedule-table td:last-child {
+      border-right:0;
+    }
+
+    .schedule-table tbody tr:last-child td {
+      border-bottom:0;
+    }
+
+    .schedule-table thead th {
+      color:#3158c7;
+      background:#edf3ff;
+      font-size:clamp(8px,.85vw,10px);
+      font-weight:950;
+    }
+
+    .schedule-table .day {
+      width:74px;
+      color:#3158c7;
+      background:#f4f7ff;
+      font-weight:950;
+    }
+
+    .schedule-table .break-cell {
+      background:var(--break);
+      color:#aa6e22;
+      font-weight:900;
+    }
+
+    .schedule-table .lunch-cell {
+      background:var(--lunch);
+      color:#7259b6;
+      font-weight:900;
+    }
+
+    .schedule-table tr.active-row td:not(.day):not(.break-cell):not(.lunch-cell) {
+      background:#eaf5ff;
+      box-shadow:inset 0 0 0 1px #a9c7f4;
+    }
+
+    .scoreboard-wrap {
+      overflow:hidden;
+      border-radius:18px;
+      background:var(--score-bg);
+      box-shadow:inset 0 0 0 1px rgba(255,255,255,.03),0 16px 38px rgba(18,27,43,.20);
+    }
+
+    .score-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:7px 12px;
+      border-bottom:1px solid rgba(255,255,255,.06);
+      background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
+    }
+
+    .score-title {
+      color:#d9e8ff;
+      font-size:12px;
+      font-weight:950;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .score-counter {
+      color:#8ab8ff;
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .scoreboard {
+      min-height:0;
+      height:100%;
+      padding:10px 12px;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      background:
+        linear-gradient(180deg,rgba(255,255,255,.02),rgba(0,0,0,.06)),
+        repeating-linear-gradient(
+          0deg,
+          transparent,
+          transparent 24px,
+          rgba(255,255,255,.015) 24px,
+          rgba(255,255,255,.015) 25px
+        );
+    }
+
+    .score-word {
+      color:var(--score-text);
+      font-size:clamp(18px,2vw,30px);
+      font-weight:900;
+    }
+
+    .slot {
+      position:relative;
+      min-width:78px;
+      min-height:48px;
+      padding:6px 10px;
+      display:grid;
+      place-items:center;
+      overflow:hidden;
+      border-radius:12px;
+      background:linear-gradient(180deg,#202a40,#131c2d);
+      border:1px solid var(--score-line);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.06),inset 0 -1px 0 rgba(0,0,0,.45);
+    }
+
+    .slot.medium { min-width:104px; }
+    .slot.large { min-width:128px; }
+
+    .slot::after {
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      top:50%;
+      height:1px;
+      background:rgba(255,255,255,.08);
+    }
+
+    .slot-value {
+      position:relative;
+      z-index:1;
+      color:var(--score-green);
+      font-size:clamp(18px,2.05vw,31px);
+      font-weight:950;
+      white-space:nowrap;
+      text-shadow:0 0 14px rgba(122,241,168,.18);
+    }
+
+    .slot.time .slot-value,
+    .slot.day-slot .slot-value {
+      color:var(--score-blue);
+      text-shadow:0 0 14px rgba(138,184,255,.18);
+    }
+
+    .slot-value.animate {
+      animation:dropIn .55s cubic-bezier(.2,.7,.15,1);
+    }
+
+    @keyframes dropIn {
+      0% { transform:translateY(-160%) scaleY(1.2); opacity:0; }
+      55% { transform:translateY(12%) scaleY(.95); opacity:1; }
+      100% { transform:translateY(0) scaleY(1); opacity:1; }
+    }
+
+    .controls {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+
+    .sentence-text {
+      color:var(--muted);
+      font-size:14px;
+      font-weight:850;
+    }
+
+    .btn-row {
+      display:flex;
+      gap:8px;
+      flex:0 0 auto;
+    }
+
+    .btn {
+      border:0;
+      border-radius:14px;
+      padding:8px 14px;
+      font-size:14px;
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    .btn.primary {
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 10px 20px rgba(73,96,207,.22);
+    }
+
+    .btn.secondary {
+      color:var(--ink);
+      background:#edf3ff;
+    }
+
+    @media (max-width:850px) {
+      .guide {
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .guide-examples {
+        justify-content:flex-start;
+      }
+
+      .controls {
+        align-items:flex-start;
+        flex-direction:column;
+      }
+    }
+
+    @media (max-height:700px) {
+      .app { padding:7px 10px; gap:6px; }
+      .workspace { padding:7px 10px; }
+      .content { gap:6px; }
+      .guide { padding:6px 9px; font-size:13px; }
+      .guide-chip { padding:5px 8px; font-size:12px; }
+      .table-title { padding:6px 10px; }
+      .schedule-table th,
+      .schedule-table td { padding:4px 3px; font-size:10px; }
+      .schedule-table thead th { font-size:9px; }
+      .schedule-table .day { width:68px; }
+      .score-top { padding:6px 10px; }
+      .scoreboard { padding:8px 10px; }
+      .slot { min-height:44px; min-width:70px; padding:5px 8px; }
+      .slot.medium { min-width:92px; }
+      .slot.large { min-width:116px; }
+      .score-word,
+      .slot-value { font-size:clamp(17px,1.9vw,27px); }
+      .btn { padding:7px 13px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title">
+        <h1>School Programme</h1>
+        <p>Read the full timetable and watch five examples on the scoreboard.</p>
+      </div>
+      <div class="step-badge">5 examples</div>
+    </header>
+
+    <section class="workspace">
+      <div class="content">
+        <section class="guide">
+          <div><strong>How to read it:</strong> use the subject, starting time and day.</div>
+          <div class="guide-examples">
+            <span class="guide-chip">History is at 8:30.</span>
+            <span class="guide-chip">We have Science on Tuesday.</span>
+            <span class="guide-chip">P.E. is on Friday.</span>
+          </div>
+        </section>
+
+        <section class="table-card">
+          <div class="table-title">John’s School Timetable</div>
+          <div class="table-scroll">
+            <table class="schedule-table" id="scheduleTable">
+              <thead>
+                <tr>
+                  <th class="day">Day</th>
+                  <th>8:30–9:30</th>
+                  <th>9:30–10:25</th>
+                  <th>Break</th>
+                  <th>10:30–11:00</th>
+                  <th>11:00–11:30</th>
+                  <th>11:30–12:30</th>
+                  <th>12:30–1:30</th>
+                  <th>1:30–2:30</th>
+                  <th>2:30–3:30</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr data-row="0">
+                  <td class="day">Monday</td>
+                  <td>History</td>
+                  <td>Geography</td>
+                  <td class="break-cell">Break</td>
+                  <td>Maths</td>
+                  <td>English</td>
+                  <td>Art</td>
+                  <td class="lunch-cell">Lunch</td>
+                  <td>Science</td>
+                  <td>IT</td>
+                </tr>
+                <tr data-row="1">
+                  <td class="day">Tuesday</td>
+                  <td>Music</td>
+                  <td>English</td>
+                  <td class="break-cell">Break</td>
+                  <td>Science</td>
+                  <td>History</td>
+                  <td>Art</td>
+                  <td class="lunch-cell">Lunch</td>
+                  <td>P.E.</td>
+                  <td>IT</td>
+                </tr>
+                <tr data-row="2">
+                  <td class="day">Wednesday</td>
+                  <td>Maths</td>
+                  <td>Geography</td>
+                  <td class="break-cell">Break</td>
+                  <td>History</td>
+                  <td>English</td>
+                  <td>Music</td>
+                  <td class="lunch-cell">Lunch</td>
+                  <td>Science</td>
+                  <td>P.E.</td>
+                </tr>
+                <tr data-row="3">
+                  <td class="day">Thursday</td>
+                  <td>English</td>
+                  <td>Maths</td>
+                  <td class="break-cell">Break</td>
+                  <td>Science</td>
+                  <td>History</td>
+                  <td>Music</td>
+                  <td class="lunch-cell">Lunch</td>
+                  <td>P.E.</td>
+                  <td>IT</td>
+                </tr>
+                <tr data-row="4">
+                  <td class="day">Friday</td>
+                  <td>Maths</td>
+                  <td>English</td>
+                  <td class="break-cell">Break</td>
+                  <td>Geography</td>
+                  <td>History</td>
+                  <td>Science</td>
+                  <td class="lunch-cell">Lunch</td>
+                  <td>Music</td>
+                  <td>P.E.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="scoreboard-wrap">
+          <div class="score-top">
+            <div class="score-title">Timetable scoreboard</div>
+            <div class="score-counter" id="scoreCounter">Example 1 / 5</div>
+          </div>
+          <div class="scoreboard" id="scoreboard"></div>
+        </section>
+
+        <section class="controls">
+          <div class="sentence-text" id="sentenceText"></div>
+          <div class="btn-row">
+            <button class="btn secondary" id="replayBtn" type="button">Replay</button>
+            <button class="btn primary" id="nextBtn" type="button">Next example</button>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const examples = [
+      {
+        row:0,
+        text:"History is at 8:30 on Monday.",
+        parts:[
+          {type:"slot", role:"subject", size:"medium", value:"History"},
+          {type:"word", value:"is"},
+          {type:"word", value:"at"},
+          {type:"slot", role:"time", value:"8:30"},
+          {type:"word", value:"on"},
+          {type:"slot", role:"day-slot", size:"large", value:"Monday"},
+          {type:"word", value:"."}
+        ]
+      },
+      {
+        row:1,
+        text:"We have Science at 10:30 on Tuesday.",
+        parts:[
+          {type:"word", value:"We"},
+          {type:"word", value:"have"},
+          {type:"slot", role:"subject", size:"medium", value:"Science"},
+          {type:"word", value:"at"},
+          {type:"slot", role:"time", value:"10:30"},
+          {type:"word", value:"on"},
+          {type:"slot", role:"day-slot", size:"large", value:"Tuesday"},
+          {type:"word", value:"."}
+        ]
+      },
+      {
+        row:2,
+        text:"English is at 11:00 on Wednesday.",
+        parts:[
+          {type:"slot", role:"subject", size:"medium", value:"English"},
+          {type:"word", value:"is"},
+          {type:"word", value:"at"},
+          {type:"slot", role:"time", value:"11:00"},
+          {type:"word", value:"on"},
+          {type:"slot", role:"day-slot", size:"large", value:"Wednesday"},
+          {type:"word", value:"."}
+        ]
+      },
+      {
+        row:3,
+        text:"We have Music at 11:30 on Thursday.",
+        parts:[
+          {type:"word", value:"We"},
+          {type:"word", value:"have"},
+          {type:"slot", role:"subject", size:"medium", value:"Music"},
+          {type:"word", value:"at"},
+          {type:"slot", role:"time", value:"11:30"},
+          {type:"word", value:"on"},
+          {type:"slot", role:"day-slot", size:"large", value:"Thursday"},
+          {type:"word", value:"."}
+        ]
+      },
+      {
+        row:4,
+        text:"P.E. is at 2:30 on Friday.",
+        parts:[
+          {type:"slot", role:"subject", size:"medium", value:"P.E."},
+          {type:"word", value:"is"},
+          {type:"word", value:"at"},
+          {type:"slot", role:"time", value:"2:30"},
+          {type:"word", value:"on"},
+          {type:"slot", role:"day-slot", size:"large", value:"Friday"},
+          {type:"word", value:"."}
+        ]
+      }
+    ];
+
+    const scoreboard = document.getElementById("scoreboard");
+    const scoreCounter = document.getElementById("scoreCounter");
+    const sentenceText = document.getElementById("sentenceText");
+    const rows = [...document.querySelectorAll("#scheduleTable tbody tr")];
+    let current = 0;
+    const seenExamples = new Set();
+    let completionPosted = false;
+
+    function post(type, detail = {}) {
+      const message = {
+        type,
+        lessonId:"timetable-presentation-scoreboard-full",
+        ...detail
+      };
+      window.parent.postMessage(message, "*");
+      window.dispatchEvent(new CustomEvent(type, {detail:message}));
+    }
+
+    function renderExample(index, animate=true) {
+      const example = examples[index];
+      scoreboard.innerHTML = "";
+      sentenceText.textContent = example.text;
+      scoreCounter.textContent = `Example ${index + 1} / ${examples.length}`;
+
+      rows.forEach(row => {
+        row.classList.toggle("active-row", Number(row.dataset.row) === example.row);
+      });
+
+      seenExamples.add(index);
+
+      example.parts.forEach(part => {
+        if (part.type === "word") {
+          const span = document.createElement("span");
+          span.className = "score-word";
+          span.textContent = part.value;
+          scoreboard.appendChild(span);
+          return;
+        }
+
+        const slot = document.createElement("div");
+        slot.className = `slot ${part.size || ""} ${part.role || ""}`.trim();
+
+        const value = document.createElement("span");
+        value.className = "slot-value" + (animate ? " animate" : "");
+        value.textContent = part.value;
+
+        slot.appendChild(value);
+        scoreboard.appendChild(slot);
+      });
+
+      post("lesson:timetable-example", {
+        example:index + 1,
+        text:example.text
+      });
+
+      if (!completionPosted && seenExamples.size === examples.length) {
+        completionPosted = true;
+        post("lesson:timetable-presentation-complete", {
+          score: examples.length,
+          total: examples.length
+        });
+      }
+    }
+
+    document.getElementById("nextBtn").addEventListener("click", () => {
+      current = (current + 1) % examples.length;
+      renderExample(current, true);
+    });
+
+    document.getElementById("replayBtn").addEventListener("click", () => {
+      renderExample(current, true);
+    });
+
+    renderExample(current, true);
+  </script>
+</body>
+</html>

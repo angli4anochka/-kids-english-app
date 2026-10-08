@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Find someone who...</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --ink:#263247;
+      --muted:#6d7685;
+      --line:#e4e8ed;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --blue-bg:#eef5ff;
+      --shadow:0 20px 55px rgba(43,34,29,.13);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%,rgba(255,185,133,.22),transparent 26%),
+        radial-gradient(circle at 90% 12%,rgba(93,155,225,.16),transparent 26%),
+        #f4f1ee;
+      overflow:hidden;
+    }
+
+    button,input{font:inherit}
+
+    .app{
+      width:min(1240px,calc(100vw - 24px));
+      height:min(90vh,840px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.98);
+      border:1px solid rgba(214,205,198,.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:17px 22px 14px;
+      border-bottom:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:21px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.24);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .progress{
+      margin-left:auto;
+      min-width:124px;
+      padding:10px 13px;
+      border-radius:16px;
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      color:var(--orange-dark);
+      font-weight:900;
+      text-align:center;
+    }
+
+    .instruction{
+      margin:14px 20px 0;
+      padding:11px 14px;
+      border-radius:17px;
+      background:#fffaf5;
+      border:1px solid #ffe0ca;
+      color:#7a4c2b;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .instruction strong{color:var(--orange-dark)}
+
+    main{
+      min-height:0;
+      padding:16px 20px 18px;
+    }
+
+    .screen{
+      display:none;
+      height:100%;
+    }
+
+    .screen.active{display:grid}
+
+    .mission-screen{
+      grid-template-columns:minmax(420px,.85fr) minmax(520px,1.15fr);
+      gap:18px;
+      min-height:0;
+    }
+
+    .panel{
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:23px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      padding:17px;
+      min-height:0;
+    }
+
+    .panel h2{
+      margin:0 0 6px;
+      font-size:25px;
+      letter-spacing:-.03em;
+    }
+
+    .panel-intro{
+      margin:0 0 14px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .question-buttons{
+      display:grid;
+      gap:9px;
+      margin-bottom:14px;
+    }
+
+    .question-btn{
+      border:1px solid #d8dee7;
+      border-radius:14px;
+      background:#fff;
+      color:#344054;
+      padding:11px 13px;
+      font-weight:850;
+      text-align:left;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .question-btn:hover{
+      border-color:#ffad76;
+      transform:translateY(-1px);
+    }
+
+    .question-btn.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .people{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+    }
+
+    .person{
+      border:1px solid #dde3ea;
+      border-radius:18px;
+      padding:13px;
+      background:#fafbfc;
+      text-align:center;
+      cursor:pointer;
+      transition:.16s ease;
+    }
+
+    .person:hover{
+      border-color:#8bb1df;
+      transform:translateY(-2px);
+    }
+
+    .person.active{
+      background:var(--blue-bg);
+      border-color:#86addd;
+    }
+
+    .avatar{
+      width:70px;
+      height:70px;
+      margin:0 auto 8px;
+      border-radius:23px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:29px;
+      font-weight:950;
+    }
+
+    .mia{background:linear-gradient(145deg,#e98eaa,#c65b85)}
+    .leo{background:linear-gradient(145deg,#5ea3d7,#3377b0)}
+    .ben{background:linear-gradient(145deg,#67b98f,#338d63)}
+
+    .person-name{
+      font-weight:950;
+      font-size:18px;
+    }
+
+    .person-note{
+      margin-top:3px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .speech{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:17px;
+      background:var(--blue-bg);
+      border:1px solid #bdd4ef;
+      color:#31577f;
+      font-weight:850;
+      line-height:1.45;
+      text-align:center;
+    }
+
+    .speech.show{display:block}
+
+    .table-wrap{
+      overflow:hidden;
+      border:1px solid #e1e6ec;
+      border-radius:17px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+    }
+
+    th,td{
+      padding:10px 8px;
+      text-align:center;
+      border-right:1px solid #e6e9ed;
+      border-bottom:1px solid #e6e9ed;
+      font-size:13px;
+    }
+
+    th:last-child,td:last-child{border-right:0}
+    tr:last-child td{border-bottom:0}
+
+    thead th{
+      background:#f5f7fa;
+      color:#41506a;
+      font-weight:950;
+    }
+
+    thead th:first-child{
+      text-align:left;
+      width:34%;
+    }
+
+    tbody td:first-child{
+      text-align:left;
+      font-weight:850;
+      background:#fbfcfd;
+    }
+
+    .cell{
+      font-weight:950;
+      font-size:16px;
+      color:#a3abb7;
+    }
+
+    .cell.yes{
+      color:var(--green);
+      background:var(--green-bg);
+    }
+
+    .cell.no{
+      color:var(--red);
+      background:var(--red-bg);
+    }
+
+    .counter{
+      margin-top:11px;
+      text-align:right;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .write-screen{
+      place-items:center;
+    }
+
+    .write-card{
+      width:min(880px,100%);
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:24px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      padding:22px;
+    }
+
+    .write-card h2{
+      margin:0 0 6px;
+      font-size:31px;
+      letter-spacing:-.03em;
+    }
+
+    .write-card>p{
+      margin:0 0 17px;
+      color:var(--muted);
+    }
+
+    .sentence-list{
+      display:grid;
+      gap:11px;
+    }
+
+    .sentence-row{
+      padding:13px 14px;
+      border:1px solid #e2e6eb;
+      border-radius:16px;
+      background:#fafbfc;
+    }
+
+    .sentence-row label{
+      display:block;
+      margin-bottom:8px;
+      font-weight:900;
+      line-height:1.4;
+    }
+
+    .sentence-row input{
+      width:100%;
+      border:1px solid #d7dde6;
+      border-radius:13px;
+      padding:11px 12px;
+      outline:none;
+    }
+
+    .sentence-row input:focus{
+      border-color:#ff9d60;
+      box-shadow:0 0 0 4px rgba(255,122,51,.13);
+    }
+
+    .sentence-row.correct{
+      background:var(--green-bg);
+      border-color:#90d2ac;
+    }
+
+    .sentence-row.incorrect{
+      background:var(--red-bg);
+      border-color:#efaaa6;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:15px;
+      font-weight:850;
+      text-align:center;
+    }
+
+    .feedback.show{display:block}
+
+    .feedback.correct{
+      background:var(--green-bg);
+      border:1px solid #a8ddbf;
+      color:#256b48;
+    }
+
+    .feedback.incorrect{
+      background:var(--red-bg);
+      border:1px solid #efb0ac;
+      color:#98362f;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:17px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){transform:translateY(-2px)}
+
+    .primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .next{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .footer-note{
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .continue{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    @media(max-width:900px){
+      html,body{overflow:auto}
+
+      .app{
+        height:auto;
+        min-height:calc(100vh - 20px);
+        margin:10px auto;
+      }
+
+      .mission-screen{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:600px){
+      header{padding:14px}
+      .progress{display:none}
+      .instruction{margin:12px 14px 0}
+      main{padding:14px}
+      .people{grid-template-columns:1fr}
+      th,td{padding:8px 5px;font-size:11px}
+    }
+    /* Lesson iframe: use the complete embedded viewport without scrolling. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);margin:12px auto}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Find someone who...</h1>
+        <p class="subtitle">Ask questions and complete the class table.</p>
+      </div>
+      <div id="progress" class="progress">Step 1 of 2</div>
+    </header>
+
+    <section class="instruction">
+      <strong>How to play:</strong> choose a question, then click Mia, Leo or Ben. Listen to the answer and complete all 12 cells.
+    </section>
+
+    <main>
+      <section id="missionScreen" class="screen mission-screen active">
+        <article class="panel">
+          <h2>Choose a question</h2>
+          <p class="panel-intro">Then click one classmate to ask it.</p>
+
+          <div id="questionButtons" class="question-buttons"></div>
+
+          <div class="people">
+            <button class="person" data-person="Mia">
+              <div class="avatar mia">M</div>
+              <div class="person-name">Mia</div>
+              <div class="person-note">Click to ask</div>
+            </button>
+
+            <button class="person" data-person="Leo">
+              <div class="avatar leo">L</div>
+              <div class="person-name">Leo</div>
+              <div class="person-note">Click to ask</div>
+            </button>
+
+            <button class="person" data-person="Ben">
+              <div class="avatar ben">B</div>
+              <div class="person-name">Ben</div>
+              <div class="person-note">Click to ask</div>
+            </button>
+          </div>
+
+          <div id="speech" class="speech"></div>
+        </article>
+
+        <article class="panel">
+          <h2>Class survey</h2>
+          <p class="panel-intro">The answers appear here after each question.</p>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>School object</th>
+                  <th>Mia</th>
+                  <th>Leo</th>
+                  <th>Ben</th>
+                </tr>
+              </thead>
+              <tbody id="surveyBody"></tbody>
+            </table>
+          </div>
+
+          <div class="counter"><span id="askedCount">0</span> / 12 answers collected</div>
+          <div id="missionFeedback" class="feedback"></div>
+
+          <div class="actions">
+            <button id="writeBtn" class="btn next">Write sentences</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="writeScreen" class="screen write-screen">
+        <article class="write-card">
+          <h2>Write about the class</h2>
+          <p>Use the survey table and write three complete sentences.</p>
+
+          <div class="sentence-list">
+            <div class="sentence-row">
+              <label for="sentence1">1. Write about Mia and the atlas.</label>
+              <input id="sentence1" type="text" autocomplete="off" placeholder="Mia ...">
+            </div>
+
+            <div class="sentence-row">
+              <label for="sentence2">2. Write about Leo and the ruler.</label>
+              <input id="sentence2" type="text" autocomplete="off" placeholder="Leo ...">
+            </div>
+
+            <div class="sentence-row">
+              <label for="sentence3">3. Write about Mia and Ben and their pencil cases.</label>
+              <input id="sentence3" type="text" autocomplete="off" placeholder="Mia and Ben ...">
+            </div>
+          </div>
+
+          <div id="writeFeedback" class="feedback"></div>
+
+          <div class="actions">
+            <button id="checkWritingBtn" class="btn primary">Check</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Choose a question and ask one classmate.</div>
+      <button id="continueBtn" class="btn continue">Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const objects = [
+      {id:'atlas', label:'an atlas'},
+      {id:'ruler', label:'a ruler'},
+      {id:'pencil-case', label:'a pencil case'},
+      {id:'dictionary', label:'a dictionary'}
+    ];
+
+    const people = ['Mia','Leo','Ben'];
+
+    const data = {
+      Mia:{
+        'atlas':true,
+        'ruler':false,
+        'pencil-case':true,
+        'dictionary':false
+      },
+      Leo:{
+        'atlas':false,
+        'ruler':false,
+        'pencil-case':false,
+        'dictionary':true
+      },
+      Ben:{
+        'atlas':true,
+        'ruler':true,
+        'pencil-case':true,
+        'dictionary':true
+      }
+    };
+
+    const collected = {};
+    let selectedObject = null;
+
+    const questionButtons = document.getElementById('questionButtons');
+    const surveyBody = document.getElementById('surveyBody');
+    const speech = document.getElementById('speech');
+    const askedCount = document.getElementById('askedCount');
+    const missionFeedback = document.getElementById('missionFeedback');
+    const writeBtn = document.getElementById('writeBtn');
+    const missionScreen = document.getElementById('missionScreen');
+    const writeScreen = document.getElementById('writeScreen');
+    const progress = document.getElementById('progress');
+    const footerNote = document.getElementById('footerNote');
+    const continueBtn = document.getElementById('continueBtn');
+
+    function renderQuestions(){
+      questionButtons.innerHTML = '';
+
+      objects.forEach(object => {
+        const button = document.createElement('button');
+        button.className = 'question-btn';
+        button.textContent = `Have you got ${object.label}?`;
+        button.dataset.object = object.id;
+
+        button.addEventListener('click', () => {
+          selectedObject = object.id;
+          document.querySelectorAll('.question-btn')
+            .forEach(question => question.classList.toggle('selected', question === button));
+        });
+
+        questionButtons.appendChild(button);
+      });
+    }
+
+    function renderTable(){
+      surveyBody.innerHTML = '';
+
+      objects.forEach(object => {
+        const row = document.createElement('tr');
+
+        const label = document.createElement('td');
+        label.textContent = object.label;
+        row.appendChild(label);
+
+        people.forEach(person => {
+          const cell = document.createElement('td');
+          cell.className = 'cell';
+          cell.dataset.key = `${person}-${object.id}`;
+          cell.textContent = '—';
+          row.appendChild(cell);
+        });
+
+        surveyBody.appendChild(row);
+      });
+    }
+
+    document.querySelectorAll('.person').forEach(personButton => {
+      personButton.addEventListener('click', () => {
+        if(!selectedObject){
+          speech.className = 'speech show';
+          speech.textContent = 'Choose a question first.';
+          return;
+        }
+
+        const person = personButton.dataset.person;
+        const hasIt = data[person][selectedObject];
+        const object = objects.find(item => item.id === selectedObject);
+
+        const answer = hasIt
+          ? 'Yes, I have.'
+          : 'No, I haven’t.';
+
+        speech.className = 'speech show';
+        speech.innerHTML = `<strong>${person}:</strong> ${answer}`;
+
+        document.querySelectorAll('.person')
+          .forEach(button => button.classList.toggle('active', button === personButton));
+
+        const key = `${person}-${selectedObject}`;
+        collected[key] = hasIt;
+
+        const cell = document.querySelector(`[data-key="${key}"]`);
+        cell.textContent = hasIt ? '✓ Yes' : '× No';
+        cell.className = `cell ${hasIt ? 'yes' : 'no'}`;
+
+        askedCount.textContent = Object.keys(collected).length;
+
+        if(Object.keys(collected).length === 12){
+          missionFeedback.className = 'feedback show correct';
+          missionFeedback.textContent = 'Survey complete. You have collected all 12 answers.';
+          writeBtn.style.display = 'inline-block';
+          footerNote.textContent = 'Use the completed table to write sentences.';
+        }
+      });
+    });
+
+    writeBtn.addEventListener('click', () => {
+      missionScreen.classList.remove('active');
+      writeScreen.classList.add('active');
+      progress.textContent = 'Step 2 of 2';
+      footerNote.textContent = 'Write three complete sentences.';
+    });
+
+    function normalise(value){
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[’‘]/g,"'")
+        .replace(/\s+/g,' ');
+    }
+
+    const expected = [
+      ['mia has got an atlas.','mia has got an atlas'],
+      ["leo hasn't got a ruler.","leo hasn't got a ruler"],
+      ['mia and ben have got pencil cases.','mia and ben have got pencil cases']
+    ];
+
+    document.getElementById('checkWritingBtn').addEventListener('click', () => {
+      const inputs = [
+        document.getElementById('sentence1'),
+        document.getElementById('sentence2'),
+        document.getElementById('sentence3')
+      ];
+
+      let score = 0;
+
+      inputs.forEach((input,index) => {
+        const value = normalise(input.value);
+        const row = input.closest('.sentence-row');
+        const correct = expected[index].includes(value);
+
+        row.classList.toggle('correct',correct);
+        row.classList.toggle('incorrect',!correct);
+
+        if(correct) score++;
+      });
+
+      const writeFeedback = document.getElementById('writeFeedback');
+
+      if(score === 3){
+        writeFeedback.className = 'feedback show correct';
+        writeFeedback.innerHTML =
+          'Perfect:<br>Mia has got an atlas.<br>Leo hasn’t got a ruler.<br>Mia and Ben have got pencil cases.';
+
+        inputs.forEach(input => input.disabled = true);
+        document.getElementById('checkWritingBtn').disabled = true;
+        continueBtn.style.display = 'inline-block';
+        footerNote.textContent = 'The speaking mission is complete.';
+
+        localStorage.setItem('findSomeoneWhoResult',JSON.stringify({
+          collected,
+          writingScore:3,
+          writingTotal:3
+        }));
+      }else{
+        writeFeedback.className = 'feedback show incorrect';
+        writeFeedback.textContent = `${score} of 3 sentences are correct. Fix the red sentences and check again.`;
+      }
+    });
+
+    continueBtn.addEventListener('click', () => {
+      const result = JSON.parse(localStorage.getItem('findSomeoneWhoResult') || '{}');
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'find-someone-who',
+        result
+      },'*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    renderQuestions();
+    renderTable();
+  </script>
+</body>
+</html>

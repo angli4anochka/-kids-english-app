@@ -253,7 +253,7 @@ export default function SpotlightEx8({ isTeacher, lessonId, activityId, sessionI
         })}
 
         {/* bird */}
-        <img src="/spotlight/ex8-bird.png" alt="" draggable={false}
+        <img src="https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex8-bird.png" alt="" draggable={false}
           style={{ position: 'absolute', right: 'clamp(8px,3vw,48px)', bottom: 4, width: 'clamp(120px,16vw,260px)', pointerEvents: 'none', opacity: 0.9 }} />
       </div>
 

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Do you know them?</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --ink:#25324a;
+      --muted:#667085;
+      --line:#eadfd3;
+      --green:#36b37e;
+      --shadow:0 18px 45px rgba(61,44,31,.12);
+    }
+    *{box-sizing:border-box}
+    html,body{
+      margin:0; min-height:100%;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(255,181,124,.24), transparent 26%),
+        radial-gradient(circle at 88% 20%, rgba(131,204,255,.20), transparent 25%),
+        #f7f4ef;
+      font-family:Inter, ui-rounded, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      overflow:hidden;
+    }
+    button{font:inherit}
+    .app{
+      width:min(1280px, calc(100vw - 28px));
+      height:min(90vh, 820px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.96);
+      border:1px solid rgba(217,203,189,.7);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      position:relative;
+    }
+    header{
+      padding:18px 24px 14px;
+      display:flex; align-items:center; gap:16px;
+      border-bottom:1px solid #f0e8df;
+      background:rgba(255,255,255,.86);
+    }
+    .badge{
+      width:58px; height:58px; border-radius:18px; display:grid; place-items:center;
+      color:#fff; font-weight:900; font-size:22px;
+      background:linear-gradient(145deg,#ff914d,#ff6f2c);
+      box-shadow:0 8px 18px rgba(255,122,51,.28);
+      transform:rotate(-3deg); flex:none;
+    }
+    h1{margin:0; font-size:clamp(25px,3vw,42px); line-height:1; letter-spacing:-.03em;}
+    .subtitle{margin:7px 0 0; color:var(--muted); font-size:15px;}
+    .counter{
+      margin-left:auto; min-width:122px; padding:10px 14px; border-radius:16px;
+      text-align:center; font-weight:800; background:#fff4ec; color:var(--orange-dark); border:1px solid #ffd8c1;
+    }
+    main{padding:18px 22px 16px; min-height:0; display:flex; align-items:center;}
+    .cards{width:100%; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px;}
+    .card{
+      position:relative; min-width:0; border:1px solid #eadfd5; background:#fff; border-radius:23px;
+      padding:12px; cursor:pointer; box-shadow:0 10px 24px rgba(43,34,28,.07);
+      transition:.2s ease; text-align:left; color:inherit;
+    }
+    .card:hover{transform:translateY(-5px); box-shadow:0 18px 35px rgba(43,34,28,.13); border-color:#ffc8a6;}
+    .card:focus-visible{outline:4px solid rgba(255,122,51,.25); outline-offset:2px;}
+    .card.done{border-color:#9cdcbc; background:linear-gradient(180deg,#fff,#f8fffb);}
+    .status{
+      position:absolute; top:9px; right:9px; z-index:5; width:28px; height:28px; border-radius:50%;
+      display:grid; place-items:center; font-size:14px; font-weight:900; background:#fff;
+      border:1px solid #e7ddd4; color:#9a8f86;
+    }
+    .done .status{background:var(--green); color:#fff; border-color:var(--green);}
+    .portrait{
+      height:185px; border-radius:17px; overflow:hidden; background:#f1f3f6;
+      border:1px solid #edf0f4;
+    }
+    .portrait img{width:100%; height:100%; object-fit:cover; display:block;}
+    .name{margin:11px 2px 3px; font-weight:900; font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    .hint{margin:0 2px; color:var(--muted); font-size:13px; min-height:18px;}
+    .card-answer{
+      margin:7px 2px 1px;
+      color:#2c7a55;
+      font-size:12px;
+      font-weight:800;
+      line-height:1.35;
+      display:none;
+    }
+    .card.done .card-answer{display:block;}
+    footer{
+      display:flex; align-items:center; gap:14px; padding:12px 22px 16px;
+      border-top:1px solid #f0e8df; background:#fff;
+    }
+    .note{color:var(--muted); font-size:14px; display:flex; gap:8px; align-items:center;}
+    .note .dot{width:9px;height:9px;border-radius:50%;background:#f4ad4e;flex:none;}
+    .continue{
+      margin-left:auto; border:0; border-radius:16px; padding:13px 24px;
+      color:#fff; font-weight:900;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22); cursor:pointer; transition:.2s ease;
+    }
+    .continue:disabled{background:#d7d9de; box-shadow:none; cursor:not-allowed; color:#8b9099;}
+    .continue:not(:disabled):hover{transform:translateY(-2px)}
+    .modal-backdrop{
+      position:absolute; inset:0; background:rgba(34,40,54,.48); backdrop-filter:blur(4px);
+      display:none; align-items:center; justify-content:center; padding:22px; z-index:20;
+    }
+    .modal-backdrop.open{display:flex}
+    .modal{
+      width:min(720px,100%); max-height:calc(100% - 18px); overflow:auto; background:#fff;
+      border-radius:26px; box-shadow:0 26px 70px rgba(25,26,34,.28); padding:20px; position:relative;
+    }
+    .modal-top{display:flex; align-items:center; gap:14px; padding-right:42px;}
+    .mini{width:58px;height:58px;border-radius:16px;display:grid;place-items:center;color:#fff;font-weight:900;font-size:24px;background:var(--orange);}
+    .modal h2{margin:0;font-size:27px}
+    .modal p{margin:5px 0 0;color:var(--muted)}
+    .close{
+      position:absolute;right:16px;top:15px;width:38px;height:38px;border:0;border-radius:12px;
+      background:#f4f1ed;color:#475467;font-size:21px;cursor:pointer;
+    }
+    .question{margin-top:18px; padding:14px; border-radius:18px; background:#faf8f5; border:1px solid #eee6de;}
+    .question-title{font-weight:900; margin-bottom:10px;}
+    .choices{display:flex; flex-wrap:wrap; gap:8px;}
+    .choice{
+      border:1px solid #dbdfe7; background:#fff; color:#344054; border-radius:999px;
+      padding:9px 13px; cursor:pointer; font-weight:750; transition:.15s ease;
+    }
+    .choice:hover{border-color:#ffb789}
+    .choice.selected{background:#fff0e7; border-color:#ff9b5a; color:#b94508; box-shadow:inset 0 0 0 1px #ff9b5a;}
+    .preview{margin-top:16px; padding:12px 14px; min-height:48px; border-radius:16px; background:#eef7ff; color:#254b70; font-weight:750;}
+    
+    .answer-box{
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:17px;
+      background:#f4fbf7;
+      border:1px solid #b9e5cc;
+      color:#1f6243;
+      font-weight:800;
+      line-height:1.5;
+      display:none;
+    }
+    .answer-box.show{display:block}
+    .answer-box .answer-title{
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      margin-bottom:5px;
+      color:#29875b;
+    }
+    .choice.correct{
+      background:#e8f8ef;
+      border-color:#53bd83;
+      color:#17603d;
+      box-shadow:inset 0 0 0 1px #53bd83;
+    }
+    .choice.wrong{
+      background:#fff0ef;
+      border-color:#ef7f78;
+      color:#a3312d;
+      box-shadow:inset 0 0 0 1px #ef7f78;
+    }
+    .choice.locked{cursor:default}
+    .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:16px;}
+    .secondary,.save{border:0;border-radius:14px;padding:11px 17px;font-weight:900;cursor:pointer;}
+    .secondary{background:#f1f2f4;color:#475467}
+    .save{background:var(--orange);color:#fff}
+    .toast{
+      position:absolute; left:50%; bottom:74px; transform:translate(-50%,15px); opacity:0; pointer-events:none;
+      padding:12px 16px; border-radius:14px; background:#243047; color:#fff; font-weight:800;
+      box-shadow:0 12px 30px rgba(20,25,35,.24); transition:.25s ease; z-index:30;
+    }
+    .toast.show{opacity:1; transform:translate(-50%,0)}
+    @media (max-width:1000px){
+      html,body{overflow:auto}
+      .app{height:auto; min-height:calc(100vh - 20px); margin:10px auto;}
+      .cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+      .portrait{height:170px}
+    }
+    @media (max-width:650px){
+      header{padding:14px}
+      .badge{width:48px;height:48px}
+      .counter{display:none}
+      main{padding:14px}
+      .cards{grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px}
+      .card{padding:9px}
+      .portrait{height:155px}
+      .name{font-size:15px}
+      footer{padding:11px 14px}
+      .note{font-size:12px}
+    }
+  </style>
+</head>
+<body>
+  <section class="app" aria-label="Warm-up activity">
+    <header>
+      <div class="badge">2a</div>
+      <div class="heading">
+        <h1>Do you know them?</h1>
+        <p class="subtitle">Choose a card, make a guess and check the correct answer.</p>
+      </div>
+      <div class="counter"><span id="count">0</span> / 5 guessed</div>
+    </header>
+
+    <main>
+      <div class="cards">
+        <button class="card" data-id="wednesday" data-name="Wednesday Addams" aria-label="Wednesday Addams">
+          <span class="status">?</span>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-12ea4a9aa1d9896e.png" alt="Wednesday Addams"></div>
+          <div class="name">Wednesday Addams</div>
+          <p class="hint">Make a guess</p>
+          <p class="card-answer"></p>
+        </button>
+
+        <button class="card" data-id="ladybug" data-name="Ladybug" aria-label="Ladybug">
+          <span class="status">?</span>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-10be8a0456e3a35e.png" alt="Ladybug"></div>
+          <div class="name">Ladybug</div>
+          <p class="hint">Make a guess</p>
+          <p class="card-answer"></p>
+        </button>
+
+        <button class="card" data-id="tanjiro" data-name="Tanjiro Kamado" aria-label="Tanjiro Kamado">
+          <span class="status">?</span>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-6290dcd74f820412.png" alt="Tanjiro Kamado"></div>
+          <div class="name">Tanjiro Kamado</div>
+          <p class="hint">Make a guess</p>
+          <p class="card-answer"></p>
+        </button>
+
+        <button class="card" data-id="ronaldo" data-name="Cristiano Ronaldo" aria-label="Cristiano Ronaldo">
+          <span class="status">?</span>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-762fe3485cbc5061.png" alt="Cristiano Ronaldo"></div>
+          <div class="name">Cristiano Ronaldo</div>
+          <p class="hint">Make a guess</p>
+          <p class="card-answer"></p>
+        </button>
+
+        <button class="card" data-id="lisa" data-name="Lisa" aria-label="Lisa">
+          <span class="status">?</span>
+          <div class="portrait"><img src="https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-99c9e2175aaff3d6.png" alt="Lisa from BLACKPINK"></div>
+          <div class="name">Lisa</div>
+          <p class="hint">Make a guess</p>
+          <p class="card-answer"></p>
+        </button>
+      </div>
+    </main>
+
+    <footer>
+      <div class="note"><span class="dot"></span>Open every card and press Guess to reveal the correct answer.</div>
+      <button id="continueBtn" class="continue" disabled>Continue</button>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal">
+        <button class="close" id="closeModal" aria-label="Close">×</button>
+        <div class="modal-top">
+          <div class="mini" id="miniNumber">1</div>
+          <div>
+            <h2 id="modalTitle">Wednesday Addams</h2>
+            <p>What do you think?</p>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">1. Who is this?</div>
+          <div class="choices" data-field="type">
+            <button class="choice" data-value="a real person">A real person</button>
+            <button class="choice" data-value="a fictional character">A fictional character</button>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">2. Where are they from?</div>
+          <div class="choices" data-field="country">
+            <button class="choice" data-value="the USA">the USA</button>
+            <button class="choice" data-value="France">France</button>
+            <button class="choice" data-value="Japan">Japan</button>
+            <button class="choice" data-value="Portugal">Portugal</button>
+            <button class="choice" data-value="Thailand">Thailand</button>
+            <button class="choice" data-value="South Korea">South Korea</button>
+            <button class="choice" data-value="the UK">the UK</button>
+            <button class="choice" data-value="Canada">Canada</button>
+          </div>
+        </div>
+
+        <div class="question">
+          <div class="question-title">3. What nationality are they?</div>
+          <div class="choices" data-field="nationality">
+            <button class="choice" data-value="American">American</button>
+            <button class="choice" data-value="French">French</button>
+            <button class="choice" data-value="Japanese">Japanese</button>
+            <button class="choice" data-value="Portuguese">Portuguese</button>
+            <button class="choice" data-value="Thai">Thai</button>
+            <button class="choice" data-value="Korean">Korean</button>
+            <button class="choice" data-value="British">British</button>
+            <button class="choice" data-value="Canadian">Canadian</button>
+          </div>
+        </div>
+
+        <div class="preview" id="preview">Choose your answers to build a sentence.</div>
+        <div class="answer-box" id="answerBox"><div class="answer-title">Correct answer</div><div id="answerText"></div></div>
+
+        <div class="modal-actions">
+          <button class="secondary" id="cancelBtn">Cancel</button>
+          <button class="save" id="saveBtn">Guess</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Your guesses are saved.</div>
+  </section>
+
+  <script>
+    const cards = [...document.querySelectorAll('.card')];
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const miniNumber = document.getElementById('miniNumber');
+    const countEl = document.getElementById('count');
+    const continueBtn = document.getElementById('continueBtn');
+    const preview = document.getElementById('preview');
+    const toast = document.getElementById('toast');
+    const answerBox = document.getElementById('answerBox');
+    const answerText = document.getElementById('answerText');
+
+    const correctAnswers = {
+      wednesday: {
+        type:'a fictional character',
+        country:'the USA',
+        nationality:'American',
+        sentence:'Wednesday Addams is a fictional character. She is from the USA. She is American.'
+      },
+      ladybug: {
+        type:'a fictional character',
+        country:'France',
+        nationality:'French',
+        sentence:'Ladybug is a fictional character. She is from France. She is French.'
+      },
+      tanjiro: {
+        type:'a fictional character',
+        country:'Japan',
+        nationality:'Japanese',
+        sentence:'Tanjiro Kamado is a fictional character. He is from Japan. He is Japanese.'
+      },
+      ronaldo: {
+        type:'a real person',
+        country:'Portugal',
+        nationality:'Portuguese',
+        sentence:'Cristiano Ronaldo is a real person. He is from Portugal. He is Portuguese.'
+      },
+      lisa: {
+        type:'a real person',
+        country:'Thailand',
+        nationality:'Thai',
+        sentence:'Lisa is a real person. She is from Thailand. She is Thai.'
+      }
+    };
+
+    let activeId = null;
+    const guesses = JSON.parse(localStorage.getItem('warmupGuessesV2') || '{}');
+    let draft = {};
+    let revealed = false;
+
+    function updateCards(){
+      cards.forEach(card => {
+        const id = card.dataset.id;
+        const done = Boolean(guesses[id]?.revealed);
+        card.classList.toggle('done', done);
+        card.querySelector('.status').textContent = done ? '✓' : '?';
+        card.querySelector('.hint').textContent = done ? 'Answer revealed' : 'Make a guess';
+        const answerLine = card.querySelector('.card-answer');
+        if(done){
+          const answer = correctAnswers[id];
+          answerLine.textContent = `${answer.country} · ${answer.nationality}`;
+        } else {
+          answerLine.textContent = '';
+        }
+      });
+      const total = Object.values(guesses).filter(item => item?.revealed).length;
+      countEl.textContent = total;
+      continueBtn.disabled = total < cards.length;
+    }
+
+    function openModal(card, index){
+      activeId = card.dataset.id;
+      draft = guesses[activeId]?.guess ? {...guesses[activeId].guess} : {};
+      revealed = Boolean(guesses[activeId]?.revealed);
+      modalTitle.textContent = card.dataset.name;
+      miniNumber.textContent = index + 1;
+
+      document.querySelectorAll('.choice').forEach(btn => {
+        const field = btn.closest('.choices').dataset.field;
+        btn.classList.remove('selected','correct','wrong','locked');
+        btn.disabled = revealed;
+        if(draft[field] === btn.dataset.value) btn.classList.add('selected');
+      });
+
+      if(revealed){
+        showCorrectAnswer();
+        document.getElementById('saveBtn').textContent = 'Done';
+      } else {
+        answerBox.classList.remove('show');
+        answerText.textContent = '';
+        document.getElementById('saveBtn').textContent = 'Guess';
+      }
+
+      updatePreview();
+      modalBackdrop.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function showCorrectAnswer(){
+      const correct = correctAnswers[activeId];
+      answerText.textContent = correct.sentence;
+      answerBox.classList.add('show');
+
+      document.querySelectorAll('.choices').forEach(group => {
+        const field = group.dataset.field;
+        group.querySelectorAll('.choice').forEach(btn => {
+          btn.disabled = true;
+          btn.classList.add('locked');
+          btn.classList.remove('correct','wrong');
+          if(btn.dataset.value === correct[field]) btn.classList.add('correct');
+          if(draft[field] === btn.dataset.value && btn.dataset.value !== correct[field]){
+            btn.classList.add('wrong');
+          }
+        });
+      });
+    }
+
+    function closeModal(){
+      modalBackdrop.classList.remove('open');
+      document.body.style.overflow = '';
+      activeId = null;
+    }
+
+    function updatePreview(){
+      const name = cards.find(c => c.dataset.id === activeId)?.dataset.name || 'This person';
+      if(!draft.type && !draft.country && !draft.nationality){
+        preview.textContent = 'Choose your answers to build a sentence.';
+        return;
+      }
+      const parts = [];
+      if(draft.type) parts.push(`${name} is ${draft.type}.`);
+      if(draft.country) parts.push(`I think they are from ${draft.country}.`);
+      if(draft.nationality) parts.push(`They are ${draft.nationality}.`);
+      preview.textContent = parts.join(' ');
+    }
+
+    cards.forEach((card,index) => card.addEventListener('click', () => openModal(card,index)));
+
+    document.querySelectorAll('.choice').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if(revealed) return;
+        const group = btn.closest('.choices');
+        const field = group.dataset.field;
+        draft[field] = btn.dataset.value;
+        group.querySelectorAll('.choice').forEach(item => item.classList.toggle('selected', item === btn));
+        updatePreview();
+      });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      if(revealed){
+        closeModal();
+        return;
+      }
+
+      if(!draft.type || !draft.country || !draft.nationality){
+        preview.textContent = 'Choose one answer in each question before you press Guess.';
+        return;
+      }
+
+      revealed = true;
+      guesses[activeId] = {
+        guess:{...draft},
+        revealed:true
+      };
+      localStorage.setItem('warmupGuessesV2', JSON.stringify(guesses));
+      showCorrectAnswer();
+      document.getElementById('saveBtn').textContent = 'Done';
+      updateCards();
+    });
+
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+    document.getElementById('cancelBtn').addEventListener('click', closeModal);
+    modalBackdrop.addEventListener('click', e => {
+      if(e.target === modalBackdrop) closeModal();
+    });
+
+    document.addEventListener('keydown', e => {
+      if(e.key === 'Escape' && modalBackdrop.classList.contains('open')) closeModal();
+    });
+
+    continueBtn.addEventListener('click', () => {
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'warm-up',
+        answers:guesses,
+        correctAnswers:correctAnswers
+      }, '*');
+
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    });
+
+    updateCards();
+  </script>
+</body>
+</html>

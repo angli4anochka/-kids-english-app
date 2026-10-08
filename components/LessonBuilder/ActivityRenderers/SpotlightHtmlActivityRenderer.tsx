@@ -1,6 +1,15 @@
+import Oge2027Activity from './Oge2027Activity';
+import Oge2026Activity from './Oge2026Activity';
+import { ThiefNumbersActivity, FeelingsMemoryActivity, FamilySpellActivity, WordTrainActivity, CheshireColoursActivity, IslandFriendsActivity, PaintSchoolActivity, NumbersBingoActivity } from './ClassroomGameActivity';
+import OgeReadingActivity from './OgeReadingActivity';
 import type { Activity } from '../../../types';
 import SpotlightVerbBeSlides from './SpotlightVerbBeSlides';
 import SpotlightS5Alphabet from './SpotlightS5Alphabet';
+import SpotlightS5AlphabetWindowFit from './SpotlightS5AlphabetWindowFit';
+import KidsBoxMatchMemory from './KidsBoxMatchMemory';
+import KidsBoxAlphabetTrainKR from './KidsBoxAlphabetTrainKR';
+import KidsBoxAlphabetCodebreakerSZ from './KidsBoxAlphabetCodebreakerSZ';
+import KidsBoxForestAlphabetBoard from './KidsBoxForestAlphabetBoard';
 import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
 import SpotlightS5UkUsa from './SpotlightS5UkUsa';
 import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
@@ -73,6 +82,72 @@ import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './Spotli
 import SpotlightUnit1bPronounMachine from './SpotlightUnit1bPronounMachine';
 import SpotlightUnit1bAmIsAreRulesPracticeNoMonster from './SpotlightUnit1bAmIsAreRulesPracticeNoMonster';
 import SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos from './SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos';
+import SpotlightUnit1bToBeSixForms10SentencesRandom from './SpotlightUnit1bToBeSixForms10SentencesRandom';
+import SpotlightUnit1bQuestionBuilder from './SpotlightUnit1bQuestionBuilder';
+import SpotlightUnit1bFinalOpenProfile from './SpotlightUnit1bFinalOpenProfile';
+import SpotlightUnit1EnglishInUseGreetings from './SpotlightUnit1EnglishInUseGreetings';
+import SpotlightUnit1EnglishInUseListeningMatchAbc from './SpotlightUnit1EnglishInUseListeningMatchAbc';
+import SpotlightUnit1EnglishInUseSpeakingSituationCards from './SpotlightUnit1EnglishInUseSpeakingSituationCards';
+import SpotlightUnit1EnglishInUseSchoolObjects from './SpotlightUnit1EnglishInUseSchoolObjects';
+import SpotlightUnit1EnglishInUseArticlesAAn from './SpotlightUnit1EnglishInUseArticlesAAn';
+import SpotlightUnit1EnglishInUsePersonalPronouns from './SpotlightUnit1EnglishInUsePersonalPronouns';
+import SpotlightUnit1EnglishInUseToBeForms from './SpotlightUnit1EnglishInUseToBeForms';
+import SpotlightUnit1EnglishInUseProfileReadingSally from './SpotlightUnit1EnglishInUseProfileReadingSally';
+import SpotlightUnit1EnglishInUseQuestionWordsAboutMe from './SpotlightUnit1EnglishInUseQuestionWordsAboutMe';
+import SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame from './SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame';
+import SpotlightUnit1EnglishInUseProgressCheck1Opening from './SpotlightUnit1EnglishInUseProgressCheck1Opening';
+import SpotlightStarlightGrade8Revision from './SpotlightStarlightGrade8Revision';
+import StarlightGrade8Stage from './StarlightGrade8Stage';
+
+import SpotlightUnit1cCapitalLettersFromBook from './SpotlightUnit1cCapitalLettersFromBook';
+import SpotlightUnit1cTonyStudentProfileReading from './SpotlightUnit1cTonyStudentProfileReading';
+import SpotlightUnit1cHillsideListeningInterview from './SpotlightUnit1cHillsideListeningInterview';
+import SpotlightUnit1cFindTheLessonQuestionCards from './SpotlightUnit1cFindTheLessonQuestionCards';
+import SpotlightUnit1cFinalChallenge from './SpotlightUnit1cFinalChallenge';
+import SpotlightUnit1cSchoolSubjectRiddles from './SpotlightUnit1cSchoolSubjectRiddles';
+import SpotlightUnit1cPersonalPronounsPractice from './SpotlightUnit1cPersonalPronounsPractice';
+import SpotlightUnit1cWriteAboutClassmate from './SpotlightUnit1cWriteAboutClassmate';
+import SpotlightUnit1cListeningExercise4 from './SpotlightUnit1cListeningExercise4';
+import SpotlightUnit1cTimetablePresentationScoreboard from './SpotlightUnit1cTimetablePresentationScoreboard';
+import SpotlightUnit1cFavouriteSubjectsReview from './SpotlightUnit1cFavouriteSubjectsReview';
+import SpotlightUnit1dWelcome from './SpotlightUnit1dWelcome';
+import SpotlightUnit1dJaneProfile from './SpotlightUnit1dJaneProfile';
+import SpotlightUnit1dMatchHeadings from './SpotlightUnit1dMatchHeadings';
+import SpotlightUnit1dReadingChallenge from './SpotlightUnit1dReadingChallenge';
+import SpotlightUnit1dPersonalPronouns from './SpotlightUnit1dPersonalPronouns';
+import SpotlightUnit1dPronounSecurityCheck from './SpotlightUnit1dPronounSecurityCheck';
+import SpotlightUnit1dSchoolsInEngland from './SpotlightUnit1dSchoolsInEngland';
+import SpotlightUnit1dWrittenIdentityCheck from './SpotlightUnit1dWrittenIdentityCheck';
+import SpotlightUnit1dHomepageBuilder from './SpotlightUnit1dHomepageBuilder';
+import SpotlightAlphabetRiverGL from './SpotlightAlphabetRiverGL';
+import SpotlightUnit2aStage2 from './SpotlightUnit2aStage2';
+import SpotlightUnit2aStage3 from './SpotlightUnit2aStage3';
+import SpotlightUnit2aStage4 from './SpotlightUnit2aStage4';
+import SpotlightUnit2aStage5 from './SpotlightUnit2aStage5';
+import SpotlightUnit2aStage6 from './SpotlightUnit2aStage6';
+import SpotlightUnit2aStage7 from './SpotlightUnit2aStage7';
+import SpotlightUnit2aStage8 from './SpotlightUnit2aStage8';
+import SpotlightUnit2aStage9 from './SpotlightUnit2aStage9';
+import SpotlightUnit2aStage10 from './SpotlightUnit2aStage10';
+import SpotlightUnit2aStage11 from './SpotlightUnit2aStage11';
+import SpotlightUnit2aStage12 from './SpotlightUnit2aStage12';
+import SpotlightUnit2aStage13 from './SpotlightUnit2aStage13';
+import SpotlightUnit2aStage14 from './SpotlightUnit2aStage14';
+import SpotlightUnit2aStage15 from './SpotlightUnit2aStage15';
+import SpotlightUnit2aStage16 from './SpotlightUnit2aStage16';
+import SpotlightUnit2bStage2 from './SpotlightUnit2bStage2';
+import SpotlightUnit2bStage3 from './SpotlightUnit2bStage3';
+import SpotlightUnit2bStage4 from './SpotlightUnit2bStage4';
+import SpotlightUnit2bStage5 from './SpotlightUnit2bStage5';
+import SpotlightUnit2bStage6 from './SpotlightUnit2bStage6';
+import SpotlightUnit2bStage7 from './SpotlightUnit2bStage7';
+import SpotlightUnit2bStage8 from './SpotlightUnit2bStage8';
+import SpotlightUnit2bStage9 from './SpotlightUnit2bStage9';
+import SpotlightUnit2bStage10 from './SpotlightUnit2bStage10';
+import SpotlightUnit2bStage11 from './SpotlightUnit2bStage11';
+import SpotlightUnit2bStage12 from './SpotlightUnit2bStage12';
+import SpotlightUnit2bStage13 from './SpotlightUnit2bStage13';
+import SpotlightUnit2bStage14 from './SpotlightUnit2bStage14';
 
 interface Props {
   activity: Activity;
@@ -80,6 +155,9 @@ interface Props {
   isTeacher: boolean;
   lessonId?: string;
   sessionId?: string;
+  groupId?: number;
+  socket?: any;
+  isConnected?: boolean;
   onEdit: (activity: Activity) => void;
 }
 
@@ -88,11 +166,28 @@ interface SlideProps {
   lessonId?: string;
   activityId?: string;
   sessionId?: string;
+  groupId?: number;
+  socket?: any;
+  isConnected?: boolean;
 }
 
 const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
+  'thief-random-numbers': ThiefNumbersActivity,
+  'feelings-word-picture-memory': FeelingsMemoryActivity,
+  'my-family-spell-the-word': FamilySpellActivity,
+  'word-train-school-toys': WordTrainActivity,
+  'cheshire-colour-challenge': CheshireColoursActivity,
+  'island-friends-matching': IslandFriendsActivity,
+  'paint-school-colours': PaintSchoolActivity,
+  'numbers-bingo-1-10': NumbersBingoActivity,
+  'oge-test1-reading': OgeReadingActivity,
   'verb-be': SpotlightVerbBeSlides,
   'spotlight5-alphabet': SpotlightS5Alphabet,
+  'spotlight5-alphabet-window-fit': SpotlightS5AlphabetWindowFit,
+  'kidsbox-match-memory': KidsBoxMatchMemory,
+  'kidsbox-alphabet-train-k-r': KidsBoxAlphabetTrainKR,
+  'kidsbox-alphabet-codebreaker-s-z': KidsBoxAlphabetCodebreakerSZ,
+  'kidsbox-forest-alphabet-board': KidsBoxForestAlphabetBoard,
   'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
   'spotlight5-uk-usa': SpotlightS5UkUsa,
   'spotlight5-australia-nz': SpotlightS5AustraliaNz,
@@ -165,11 +260,108 @@ const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
   'unit1b-pronoun-machine': SpotlightUnit1bPronounMachine,
   'unit1b-am-is-are-rules-practice-no-monster': SpotlightUnit1bAmIsAreRulesPracticeNoMonster,
   'unit1b-affirmative-negative-html-worksheet-dynamic-photos': SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos,
+  'unit1b-to-be-six-forms-10-sentences-random': SpotlightUnit1bToBeSixForms10SentencesRandom,
+  'unit1b-question-builder': SpotlightUnit1bQuestionBuilder,
+  'unit1b-final-open-profile': SpotlightUnit1bFinalOpenProfile,
+  'unit1-english-in-use-greetings': SpotlightUnit1EnglishInUseGreetings,
+  'unit1-english-in-use-listening-match-abc': SpotlightUnit1EnglishInUseListeningMatchAbc,
+  'unit1-english-in-use-speaking-situation-cards': SpotlightUnit1EnglishInUseSpeakingSituationCards,
+  'unit1-english-in-use-school-objects': SpotlightUnit1EnglishInUseSchoolObjects,
+  'unit1-english-in-use-articles-a-an': SpotlightUnit1EnglishInUseArticlesAAn,
+  'unit1-english-in-use-personal-pronouns': SpotlightUnit1EnglishInUsePersonalPronouns,
+  'unit1-english-in-use-to-be-forms': SpotlightUnit1EnglishInUseToBeForms,
+  'unit1-english-in-use-profile-reading-sally': SpotlightUnit1EnglishInUseProfileReadingSally,
+  'unit1-english-in-use-question-words-about-me': SpotlightUnit1EnglishInUseQuestionWordsAboutMe,
+  'unit1-english-in-use-translators-corner-team-game': SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame,
+  'progress-check-1-opening': SpotlightUnit1EnglishInUseProgressCheck1Opening,
+  'starlight-grade8-scrapbook-v5': SpotlightStarlightGrade8Revision,
+  'unit1c-capital-letters-from-book': SpotlightUnit1cCapitalLettersFromBook,
+  'unit1c-tony-student-profile-reading': SpotlightUnit1cTonyStudentProfileReading,
+  'unit1c-hillside-listening-interview': SpotlightUnit1cHillsideListeningInterview,
+  'unit1c-find-the-lesson-question-cards': SpotlightUnit1cFindTheLessonQuestionCards,
+  'unit1c-final-challenge': SpotlightUnit1cFinalChallenge,
+  'unit1c-school-subject-riddles': SpotlightUnit1cSchoolSubjectRiddles,
+  'unit1c-personal-pronouns-practice': SpotlightUnit1cPersonalPronounsPractice,
+  'unit1c-write-about-classmate': SpotlightUnit1cWriteAboutClassmate,
+  'unit1c-listening-exercise-4': SpotlightUnit1cListeningExercise4,
+  'unit1c-timetable-presentation-scoreboard': SpotlightUnit1cTimetablePresentationScoreboard,
+  'unit1c-favourite-subjects-review': SpotlightUnit1cFavouriteSubjectsReview,
+  'unit1d-welcome': SpotlightUnit1dWelcome,
+  'unit1d-jane-profile': SpotlightUnit1dJaneProfile,
+  'unit1d-match-headings': SpotlightUnit1dMatchHeadings,
+  'unit1d-reading-challenge': SpotlightUnit1dReadingChallenge,
+  'unit1d-personal-pronouns': SpotlightUnit1dPersonalPronouns,
+  'unit1d-pronoun-security-check': SpotlightUnit1dPronounSecurityCheck,
+  'unit1d-schools-in-england': SpotlightUnit1dSchoolsInEngland,
+  'unit1d-written-identity-check': SpotlightUnit1dWrittenIdentityCheck,
+  'unit1d-homepage-builder': SpotlightUnit1dHomepageBuilder,
+  'alphabet-river-g-l': SpotlightAlphabetRiverGL,
+  'unit2a-stage-2': SpotlightUnit2aStage2,
+  'unit2a-stage-3': SpotlightUnit2aStage3,
+  'unit2a-stage-4': SpotlightUnit2aStage4,
+  'unit2a-stage-5': SpotlightUnit2aStage5,
+  'unit2a-stage-6': SpotlightUnit2aStage6,
+  'unit2a-stage-7': SpotlightUnit2aStage7,
+  'unit2a-stage-8': SpotlightUnit2aStage8,
+  'unit2a-stage-9': SpotlightUnit2aStage9,
+  'unit2a-stage-10': SpotlightUnit2aStage10,
+  'unit2a-stage-11': SpotlightUnit2aStage11,
+  'unit2a-stage-12': SpotlightUnit2aStage12,
+  'unit2a-stage-13': SpotlightUnit2aStage13,
+  'unit2a-stage-14': SpotlightUnit2aStage14,
+  'unit2a-stage-15': SpotlightUnit2aStage15,
+  'unit2a-stage-16': SpotlightUnit2aStage16,
+  'unit2b-stage-2': SpotlightUnit2bStage2,
+  'unit2b-stage-3': SpotlightUnit2bStage3,
+  'unit2b-stage-4': SpotlightUnit2bStage4,
+  'unit2b-stage-5': SpotlightUnit2bStage5,
+  'unit2b-stage-6': SpotlightUnit2bStage6,
+  'unit2b-stage-7': SpotlightUnit2bStage7,
+  'unit2b-stage-8': SpotlightUnit2bStage8,
+  'unit2b-stage-9': SpotlightUnit2bStage9,
+  'unit2b-stage-10': SpotlightUnit2bStage10,
+  'unit2b-stage-11': SpotlightUnit2bStage11,
+  'unit2b-stage-12': SpotlightUnit2bStage12,
+  'unit2b-stage-13': SpotlightUnit2bStage13,
+  'unit2b-stage-14': SpotlightUnit2bStage14,
 };
 
-const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, onEdit }: Props) => {
+const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, sessionId, groupId, socket, isConnected, onEdit }: Props) => {
   const activityData = (activity as any).content_data || (activity as any).contentData || {};
-  const lessonKey = activityData.lessonKey || (activity as any).lessonKey || 'verb-be';
+  const lessonKey = activityData.lessonKey || (activity as any).lessonKey || null;
+
+  // Live sessions load a slim activity first and enrich content_data afterwards.
+  // Never render an unrelated default lesson while the real lessonKey is loading.
+  if (!lessonKey) {
+    return isViewMode ? (
+      <div className="flex h-full w-full items-center justify-center bg-slate-50 text-slate-400">
+        <div className="h-10 w-10 animate-spin rounded-full border-4 border-slate-200 border-t-purple-500" />
+      </div>
+    ) : (
+      <div className="flex h-full items-center justify-center p-8 text-gray-500">
+        Select a Spotlight activity
+      </div>
+    );
+  }
+
+  const starlightStage = /^starlight-grade8-stage-(\d+)$/.exec(lessonKey);
+  if (starlightStage) {
+    return (
+      <div className="w-full h-full">
+        <StarlightGrade8Stage
+          stage={Number(starlightStage[1])}
+          isTeacher={isTeacher}
+          lessonId={lessonId}
+          activityId={activity.id}
+          sessionId={sessionId}
+        />
+      </div>
+    );
+  }
+  const oge2026Part = /^oge-2026-v1-(listening|reading|grammar|writing)$/.exec(lessonKey);
+  if (oge2026Part) return <Oge2026Activity part={oge2026Part[1] as 'listening' | 'reading' | 'grammar' | 'writing'} isTeacher={isTeacher} lessonId={lessonId} activityId={activity.id} sessionId={sessionId} groupId={groupId} socket={socket} isConnected={isConnected} />;
+  const ogePart = /^oge-2027-(listening|reading|grammar|writing)$/.exec(lessonKey);
+  if (ogePart) return <Oge2027Activity part={ogePart[1] as 'listening' | 'reading' | 'grammar' | 'writing'} isTeacher={isTeacher} lessonId={lessonId} activityId={activity.id} sessionId={sessionId} groupId={groupId} socket={socket} isConnected={isConnected} />;
   const Component = SPOTLIGHT_COMPONENTS[lessonKey];
 
   if (!Component) {
@@ -187,9 +379,13 @@ const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lesson
         lessonId={lessonId}
         activityId={activity.id}
         sessionId={sessionId}
+        groupId={groupId}
+        socket={socket}
+        isConnected={isConnected}
       />
     </div>
   );
 };
 
 export default SpotlightHtmlActivityRenderer;
+

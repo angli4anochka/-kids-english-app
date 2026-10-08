@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Урок 1 — Буква E в закрытом слоге</title>
+<style>
+:root{
+  --green:#a8c92d;
+  --pink:#ef6f9a;
+  --pink2:#f6b6ca;
+  --paper:#fff;
+  --ink:#222;
+  --line:#c9c9c9;
+  --soft:#f8faf4;
+  --ok:#2e9a54;
+  --bad:#d55561;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#f1f1ef;
+  color:var(--ink);
+}
+.app{
+  max-width:980px;
+  margin:0 auto;
+  padding:18px;
+}
+.toolbar{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+.tab{
+  border:none;
+  padding:11px 18px;
+  border-radius:12px;
+  font-weight:800;
+  cursor:pointer;
+  background:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.tab.active{background:var(--green);color:#fff}
+.page{
+  display:none;
+  background:white;
+  border:1px solid #ddd;
+  box-shadow:0 6px 24px rgba(0,0,0,.09);
+  min-height:760px;
+}
+.page.active{display:block}
+.header{
+  display:grid;
+  grid-template-columns:140px 1fr;
+  align-items:stretch;
+}
+.lesson{
+  background:#d92d63;
+  color:#fff;
+  font-weight:900;
+  font-size:26px;
+  display:grid;
+  place-items:center;
+  padding:10px;
+}
+.topic{
+  background:var(--green);
+  padding:10px 16px;
+  font-size:22px;
+}
+.letter-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  padding:12px 28px 8px;
+  background:linear-gradient(90deg,#c8da56 0 24%,transparent 24%);
+}
+.letter-card{
+  border:2px solid #8da84b;
+  background:#fff;
+  padding:10px;
+  text-align:center;
+}
+.bigletter{
+  font-size:52px;
+  border-bottom:2px solid #333;
+  margin-bottom:8px;
+  line-height:1;
+}
+.soundline{
+  font-size:16px;
+}
+.soundred{color:#d23d47;font-weight:800}
+.ribbon{
+  margin:0 28px;
+  background:var(--pink2);
+  text-align:center;
+  font-weight:700;
+  padding:5px;
+}
+.practice{
+  padding:12px 28px 24px;
+  display:grid;
+  gap:10px;
+}
+.word-row{
+  display:grid;
+  grid-template-columns:290px 1fr;
+  gap:12px;
+  align-items:stretch;
+}
+.word-info{
+  border:2px solid #89a943;
+  background:#fff;
+  padding:8px 10px;
+  display:grid;
+  grid-template-columns:110px 1fr;
+  align-items:center;
+  gap:10px;
+  min-height:130px;
+}
+.pic{
+  width:105px;
+  height:90px;
+  display:grid;
+  place-items:center;
+}
+.pic svg{max-width:100%;max-height:100%}
+.word-detail{text-align:center}
+.word-title{
+  font-size:26px;
+  letter-spacing:2px;
+  border-bottom:1px solid #888;
+  display:inline-block;
+  margin-bottom:4px;
+}
+.phonics{font-family:Georgia,serif;font-size:18px;line-height:1.25}
+.write-area{
+  display:grid;
+  grid-template-columns:1fr;
+  align-content:center;
+  gap:6px;
+}
+.write-line{
+  display:grid;
+  grid-template-columns:80px 1fr;
+  align-items:center;
+  gap:8px;
+}
+.write-line label{font-size:22px}
+.trace-input{
+  border:none;
+  border-bottom:2px solid #bdbdbd;
+  font-size:22px;
+  padding:4px 6px;
+  outline:none;
+  background:transparent;
+}
+.trace-input:focus{border-color:#4b84c6}
+.small-actions{
+  display:flex;
+  gap:8px;
+  justify-content:flex-end;
+  padding-top:6px;
+}
+.btn{
+  border:1px solid #bbb;
+  background:#fff;
+  border-radius:10px;
+  padding:8px 12px;
+  cursor:pointer;
+  font-weight:700;
+}
+.btn.primary{background:#4b84c6;color:white;border-color:#4b84c6}
+.feedback{min-height:24px;font-weight:800;text-align:center;color:#555}
+.ok{color:var(--ok)!important}
+.bad{color:var(--bad)!important}
+
+/* page 2 */
+.task-header{
+  margin:18px 28px 8px;
+  background:var(--green);
+  text-align:right;
+  padding:5px 12px;
+  font-size:14px;
+}
+.task{
+  margin:10px 28px 14px;
+}
+.task-title{
+  display:flex;
+  align-items:center;
+  background:var(--pink2);
+  min-height:30px;
+  font-weight:800;
+}
+.task-num{
+  width:42px;
+  background:#d92d63;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  align-self:stretch;
+}
+.task-title span:last-child{padding:5px 10px}
+.connect-board{
+  position:relative;
+  display:grid;
+  grid-template-columns:150px 1fr 220px;
+  gap:18px;
+  align-items:center;
+  padding:18px 8px 12px;
+  min-height:360px;
+}
+.connect-words{
+  display:grid;
+  gap:12px;
+  z-index:2;
+}
+.connect-word{
+  border:2px solid #ddd;
+  background:#fff;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:21px;
+  cursor:pointer;
+  text-align:center;
+  font-weight:700;
+}
+.connect-word.selected{border-color:#4b84c6;background:#eef6ff}
+.connect-word.done{border-color:var(--ok);background:#effaf2}
+.connect-pics{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  z-index:2;
+}
+.connect-pic{
+  border:2px solid #ddd;
+  background:#fff;
+  border-radius:14px;
+  padding:8px;
+  cursor:pointer;
+  min-height:125px;
+}
+.connect-pic svg{width:100%;height:105px}
+.connect-pic.selected{border-color:#4b84c6;background:#eef6ff}
+.connect-pic.done{border-color:var(--ok);background:#effaf2}
+.connect-lines{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+.connect-help{
+  align-self:stretch;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#777;
+  font-size:14px;
+  text-align:center;
+}
+.search-wrap{
+  display:grid;
+  grid-template-columns:330px 1fr;
+  gap:18px;
+  padding:12px 8px;
+}
+.word-grid{
+  display:grid;
+  grid-template-columns:repeat(6,44px);
+  gap:2px;
+  justify-content:start;
+}
+.cell{
+  width:44px;height:44px;
+  border:1px solid #999;
+  background:#fff;
+  font-size:19px;
+  cursor:pointer;
+}
+.cell.active{background:#ffe66b}
+.answer-lines{
+  display:grid;
+  gap:10px;
+  align-content:start;
+}
+.answer-line{
+  border:none;border-bottom:2px solid #bbb;
+  font-size:20px;padding:4px 6px;
+}
+.read-columns{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  padding:12px 60px 8px;
+}
+.read-col{
+  border-right:1px solid #aaa;
+  padding:0 18px;
+}
+.read-col:last-child{border-right:none}
+.read-head{font-weight:900;font-size:22px;margin-bottom:4px}
+.read-word{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:none;
+  background:transparent;
+  font-size:23px;
+  padding:2px 0;
+  cursor:pointer;
+}
+.read-word.done{color:var(--ok);font-weight:800}
+.cap-wrap{
+  display:flex;
+  gap:22px;
+  padding:14px 40px 20px;
+  flex-wrap:wrap;
+}
+.cap-pair{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:26px;
+}
+.cap-input{
+  width:52px;
+  height:42px;
+  text-align:center;
+  font-size:24px;
+  border:2px solid #777;
+}
+@media(max-width:760px){
+  .header{grid-template-columns:110px 1fr}
+  .lesson{font-size:20px}.topic{font-size:18px}
+  .letter-row{grid-template-columns:repeat(2,1fr);padding:12px}
+  .ribbon{margin:0 12px}
+  .practice{padding:12px}
+  .word-row{grid-template-columns:1fr}
+  .word-info{grid-template-columns:100px 1fr}
+  .connect-board{grid-template-columns:1fr;min-height:auto}
+  .connect-help{padding:4px 0}
+  .connect-pics{grid-template-columns:repeat(2,1fr)}
+  .connect-lines{display:none}
+  .search-wrap{grid-template-columns:1fr}
+  .task,.task-header{margin-left:12px;margin-right:12px}
+  .read-columns{padding:12px;grid-template-columns:1fr}
+  .read-col{border-right:none;border-bottom:1px solid #aaa;padding:8px 0}
+  .match-pics{grid-template-columns:repeat(2,1fr)}
+}
+
+html,body{width:100%;height:100%;overflow:hidden}
+.app{height:100dvh;max-width:1050px;padding:8px;display:flex;flex-direction:column;align-items:center}
+.toolbar{flex:none;width:100%;gap:6px;margin-bottom:6px;align-items:center}
+.tab,.btn{min-height:36px;padding:7px 10px}
+.page{min-height:0;width:100%;flex:none;transform-origin:top center}
+.page [hidden]{display:none!important}
+.letter-row{grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 12px;gap:8px}
+.letter-card{padding:6px}.bigletter{font-size:36px;margin-bottom:4px}
+.practice{padding:8px 12px;gap:6px}.ribbon{margin:0 12px}
+.word-row{grid-template-columns:290px minmax(0,1fr)}
+.write-area,.write-line,.trace-input,.answer-line{min-width:0;width:100%}
+.word-info{min-height:130px}.feedback{min-height:22px}
+.small-actions{padding-top:2px!important}.task{margin:8px 12px}.task-header{margin:8px 12px}
+.connect-board{min-height:0;padding:8px;grid-template-columns:140px minmax(50px,1fr) 240px;gap:12px}
+.connect-word{padding:8px}.connect-pic{min-height:100px}.connect-pic svg{height:85px}
+.connect-lines{display:block}.search-wrap{grid-template-columns:280px minmax(0,1fr);padding:8px}
+.read-columns{grid-template-columns:repeat(3,1fr);padding:12px}.read-col{border-bottom:0;padding:8px}
+.pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-left:auto}
+#screenCount{font-weight:bold;white-space:nowrap}.btn:disabled{opacity:.4;cursor:default}
+@media(max-width:600px){
+ .app{padding:5px}.toolbar{justify-content:center}.tab{font-size:12px}.pager{margin-left:0}
+ .header{grid-template-columns:75px 1fr}.lesson{font-size:16px}.topic{font-size:16px;padding:8px}
+ .bigletter{font-size:28px}.soundline{font-size:12px}.letter-card{padding:4px}.letter-row{gap:4px;padding:6px}
+ .word-row{grid-template-columns:1fr}.word-info{min-height:95px;grid-template-columns:100px 1fr;padding:4px}
+ .pic{height:75px}.write-line{grid-template-columns:55px 1fr}.trace-input,.write-line label{font-size:18px}
+ .connect-board{grid-template-columns:90px minmax(10px,1fr) 160px;gap:4px;padding:4px}
+ .connect-help{font-size:10px}.connect-word{font-size:17px;padding:8px 4px}.connect-pics{gap:4px}
+ .connect-pic{min-height:80px;padding:3px}.connect-pic svg{height:65px}
+ .search-wrap{grid-template-columns:1fr;gap:8px}.word-grid{justify-content:center}
+ .answer-lines{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.answer-line{font-size:16px}
+ .read-word{font-size:20px}.cap-wrap{gap:12px;padding:14px 8px}.cap-pair{font-size:22px}
+}
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="toolbar">
+    <button class="tab active" data-page="p1">Страница 1</button>
+    <button class="tab" data-page="p2">Задания к уроку 1</button>
+  </div>
+
+  <section class="page active" id="p1">
+    <div class="header">
+      <div class="lesson">Урок 1</div>
+      <div class="topic">Буква E в закрытом слоге</div>
+    </div>
+
+    <div class="letter-row">
+      <div class="letter-card">
+        <div class="bigletter">E e</div>
+        <div class="soundline">ЗВУК <span class="soundred">[e]</span></div>
+        <div style="font-size:13px">в закрытом слоге</div>
+      </div>
+      <div class="letter-card">
+        <div class="bigletter">T t</div>
+        <div class="soundline">ЗВУК [t]</div>
+      </div>
+      <div class="letter-card">
+        <div class="bigletter">N n</div>
+        <div class="soundline">ЗВУК [n]</div>
+      </div>
+      <div class="letter-card">
+        <div class="bigletter">P p</div>
+        <div class="soundline">ЗВУК [p]</div>
+      </div>
+    </div>
+
+    <div class="ribbon">Запоминай, читай, пиши</div>
+
+    <div class="practice">
+      <div class="word-row" data-word="ten">
+        <div class="word-info">
+          <div class="pic" data-pic="ten"></div>
+          <div class="word-detail">
+            <div class="word-title">TEN</div>
+            <div class="phonics">t e n<br>[t] <span class="soundred">[e]</span> [n]<br>[ten]</div>
+          </div>
+        </div>
+        <div class="write-area">
+          <div class="write-line"><label>T t</label><input class="trace-input" data-answer="T t"></div>
+          <div class="write-line"><label>TEN</label><input class="trace-input" data-answer="TEN"></div>
+          <div class="write-line"><label>ten</label><input class="trace-input" data-answer="ten"></div>
+        </div>
+      </div>
+
+      <div class="word-row" data-word="net">
+        <div class="word-info">
+          <div class="pic" data-pic="net"></div>
+          <div class="word-detail">
+            <div class="word-title">NET</div>
+            <div class="phonics">n e t<br>[n] <span class="soundred">[e]</span> [t]<br>[net]</div>
+          </div>
+        </div>
+        <div class="write-area">
+          <div class="write-line"><label>N n</label><input class="trace-input" data-answer="N n"></div>
+          <div class="write-line"><label>NET</label><input class="trace-input" data-answer="NET"></div>
+          <div class="write-line"><label>net</label><input class="trace-input" data-answer="net"></div>
+        </div>
+      </div>
+
+      <div class="word-row" data-word="pen">
+        <div class="word-info">
+          <div class="pic" data-pic="pen"></div>
+          <div class="word-detail">
+            <div class="word-title">PEN</div>
+            <div class="phonics">p e n<br>[p] <span class="soundred">[e]</span> [n]<br>[pen]</div>
+          </div>
+        </div>
+        <div class="write-area">
+          <div class="write-line"><label>P p</label><input class="trace-input" data-answer="P p"></div>
+          <div class="write-line"><label>PEN</label><input class="trace-input" data-answer="PEN"></div>
+          <div class="write-line"><label>pen</label><input class="trace-input" data-answer="pen"></div>
+        </div>
+      </div>
+
+      <div class="word-row" data-word="pet">
+        <div class="word-info">
+          <div class="pic" data-pic="pet"></div>
+          <div class="word-detail">
+            <div class="word-title">PET</div>
+            <div class="phonics">p e t<br>[p] <span class="soundred">[e]</span> [t]<br>[pet]</div>
+          </div>
+        </div>
+        <div class="write-area">
+          <div class="write-line"><label>E e</label><input class="trace-input" data-answer="E e"></div>
+          <div class="write-line"><label>PET</label><input class="trace-input" data-answer="PET"></div>
+          <div class="write-line"><label>pet</label><input class="trace-input" data-answer="pet"></div>
+        </div>
+      </div>
+
+      <div class="small-actions">
+        <button class="btn primary" id="checkPage1">Проверить</button>
+        <button class="btn" id="clearPage1">Очистить</button>
+      </div>
+      <div id="page1Feedback" class="feedback"></div>
+      <div class="small-actions" style="justify-content:center;padding-top:12px">
+        <button class="btn primary" id="goPage2">Перейти к заданиям →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="page" id="p2">
+    <div class="task-header">Задания к уроку 1</div>
+
+    <div class="task">
+      <div class="task-title"><div class="task-num">1</div><span>Соедини слово и картинку</span></div>
+      <div class="connect-board" id="connectBoard">
+        <div class="connect-words" id="matchWords"></div>
+        <div class="connect-help">Нажми слово,<br>потом картинку</div>
+        <div class="connect-pics" id="matchPics"></div>
+        <svg class="connect-lines" id="connectLines" aria-hidden="true"></svg>
+      </div>
+      <div class="feedback" id="matchFeedback">Соедини все 4 пары.</div>
+    </div>
+
+    <div class="task">
+      <div class="task-title"><div class="task-num">2</div><span>Найди слова, в которых есть звук [p]</span></div>
+      <div class="search-wrap">
+        <div class="word-grid" id="wordGrid"></div>
+        <div class="answer-lines">
+          <input class="answer-line foundInput" placeholder="">
+          <input class="answer-line foundInput" placeholder="">
+          <input class="answer-line foundInput" placeholder="">
+        </div>
+      </div>
+      <div class="feedback" id="searchFeedback"></div>
+    </div>
+
+    <div class="task">
+      <div class="task-title"><div class="task-num">3</div><span>Прочитай слова</span></div>
+      <div class="read-columns">
+        <div class="read-col">
+          <div class="read-head">-en</div>
+          <button class="read-word" data-say="pen">pen</button>
+          <button class="read-word" data-say="ten">ten</button>
+        </div>
+        <div class="read-col">
+          <div class="read-head">-et</div>
+          <button class="read-word" data-say="pet">pet</button>
+          <button class="read-word" data-say="net">net</button>
+        </div>
+        <div class="read-col">
+          <div class="read-head">-ent</div>
+          <button class="read-word" data-say="pent">pent</button>
+          <button class="read-word" data-say="tent">tent</button>
+        </div>
+      </div>
+      <div class="feedback" id="readFeedback">Прочитано: 0 / 6</div>
+    </div>
+
+    <div class="task">
+      <div class="task-title"><div class="task-num">4</div><span>Поменяй буквы (строчные на заглавные)</span></div>
+      <div class="cap-wrap">
+        <div class="cap-pair">t → <input class="cap-input" maxlength="1" data-answer="T"></div>
+        <div class="cap-pair">n → <input class="cap-input" maxlength="1" data-answer="N"></div>
+        <div class="cap-pair">p → <input class="cap-input" maxlength="1" data-answer="P"></div>
+        <div class="cap-pair">e → <input class="cap-input" maxlength="1" data-answer="E"></div>
+      </div>
+      <div class="small-actions" style="padding:0 28px 18px">
+        <button class="btn primary" id="checkCaps">Проверить</button>
+      </div>
+      <div class="feedback" id="capsFeedback"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const SVG = {
+  ten:`<svg viewBox="0 0 120 90" aria-label="10"><text x="60" y="66" text-anchor="middle" font-size="68" font-weight="900" font-family="Arial" fill="#43a365" stroke="#267549" stroke-width="1.5">10</text></svg>`,
+  net:`<svg viewBox="0 0 120 90" aria-label="net"><line x1="30" y1="76" x2="58" y2="43" stroke="#6b4f3b" stroke-width="5" stroke-linecap="round"/><ellipse cx="77" cy="35" rx="29" ry="20" transform="rotate(-18 77 35)" fill="#fff" stroke="#444" stroke-width="2"/><path d="M54 22 L99 48 M59 16 L103 42 M50 31 L91 57 M68 13 L104 35 M51 39 L85 60 M55 54 L94 17 M50 45 L87 13 M65 61 L103 25" stroke="#777" stroke-width="1"/></svg>`,
+  pen:`<svg viewBox="0 0 120 90" aria-label="pen"><g transform="rotate(-18 60 45)"><rect x="30" y="36" width="58" height="14" rx="7" fill="#4d4fa5"/><rect x="78" y="36" width="19" height="14" rx="5" fill="#d6a32f"/><polygon points="30,36 18,43 30,50" fill="#d5b08b"/><polygon points="18,43 24,40 24,46" fill="#222"/><rect x="41" y="39" width="31" height="4" rx="2" fill="#8d8ee2"/></g></svg>`,
+  pet:`<svg viewBox="0 0 120 90" aria-label="pet"><g transform="translate(24 8)"><ellipse cx="36" cy="50" rx="25" ry="22" fill="#d8b18d"/><circle cx="36" cy="29" r="22" fill="#dfbd9d"/><polygon points="18,15 24,0 31,17" fill="#dfbd9d"/><polygon points="42,16 49,1 56,18" fill="#dfbd9d"/><ellipse cx="28" cy="29" rx="4" ry="6" fill="#3f6149"/><ellipse cx="44" cy="29" rx="4" ry="6" fill="#3f6149"/><polygon points="36,36 32,39 40,39" fill="#d57881"/><path d="M36 40 Q30 45 25 41 M36 40 Q42 45 47 41" fill="none" stroke="#6e4e46" stroke-width="1.5"/><rect x="22" y="50" width="28" height="8" rx="4" fill="#e84f68"/></g></svg>`
+};
+
+document.querySelectorAll('[data-pic]').forEach(el=>{
+  el.innerHTML = SVG[el.dataset.pic];
+});
+
+function openPage(id){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===id));
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='p2') setTimeout(drawConnections,60);
+}
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click',()=>openPage(tab.dataset.page));
+});
+document.getElementById('goPage2').addEventListener('click',()=>openPage('p2'));
+
+document.getElementById('checkPage1').addEventListener('click',()=>{
+  const inputs=[...document.querySelectorAll('.word-row:not([hidden]) .trace-input')];
+  let good=0;
+  inputs.forEach(inp=>{
+    const ok=inp.value.trim()===inp.dataset.answer;
+    inp.style.borderColor=ok?'#2e9a54':'#d55561';
+    if(ok) good++;
+  });
+  const f=document.getElementById('page1Feedback');
+  f.textContent = good===inputs.length ? '✓ Всё правильно!' : `Правильно: ${good} из ${inputs.length}`;
+  f.className='feedback '+(good===inputs.length?'ok':'bad');
+});
+document.getElementById('clearPage1').addEventListener('click',()=>{
+  document.querySelectorAll('.trace-input').forEach(inp=>{inp.value='';inp.style.borderColor='#bdbdbd'});
+  document.getElementById('page1Feedback').textContent='';
+});
+
+/* Task 1: literal "connect word and picture" with visible connecting lines */
+const picOrder=['ten','pen','net','pet'];
+const wordOrder=['pet','net','pen','ten'];
+
+document.getElementById('matchWords').innerHTML=
+  wordOrder.map(w=>`<button class="connect-word" data-w="${w}">${w}</button>`).join('');
+
+document.getElementById('matchPics').innerHTML=
+  picOrder.map(w=>`<button class="connect-pic" data-w="${w}" aria-label="${w}">${SVG[w]}</button>`).join('');
+
+let selectedWord=null;
+let connected=new Map();
+
+function drawConnections(){
+  const board=document.getElementById('connectBoard');
+  const svg=document.getElementById('connectLines');
+  const boardRect=board.getBoundingClientRect();
+  svg.setAttribute('viewBox',`0 0 ${boardRect.width} ${boardRect.height}`);
+  svg.innerHTML='';
+
+  connected.forEach((picEl, wordEl)=>{
+    const wr=wordEl.getBoundingClientRect();
+    const pr=picEl.getBoundingClientRect();
+
+    const x1=wr.right-boardRect.left;
+    const y1=wr.top+wr.height/2-boardRect.top;
+    const x2=pr.left-boardRect.left;
+    const y2=pr.top+pr.height/2-boardRect.top;
+
+    const mid=(x1+x2)/2;
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d',`M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
+    path.setAttribute('fill','none');
+    path.setAttribute('stroke','#62a44c');
+    path.setAttribute('stroke-width','4');
+    path.setAttribute('stroke-linecap','round');
+    svg.appendChild(path);
+  });
+}
+
+document.querySelectorAll('.connect-word').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(btn.classList.contains('done')) return;
+    document.querySelectorAll('.connect-word').forEach(x=>x.classList.remove('selected'));
+    selectedWord=btn;
+    btn.classList.add('selected');
+    document.getElementById('matchFeedback').textContent='Теперь нажми подходящую картинку.';
+    document.getElementById('matchFeedback').className='feedback';
+  });
+});
+
+document.querySelectorAll('.connect-pic').forEach(pic=>{
+  pic.addEventListener('click',()=>{
+    const f=document.getElementById('matchFeedback');
+    if(!selectedWord){
+      f.textContent='Сначала нажми на слово слева.';
+      f.className='feedback bad';
+      return;
+    }
+    if(pic.dataset.w===selectedWord.dataset.w){
+      connected.set(selectedWord,pic);
+      selectedWord.classList.remove('selected');
+      selectedWord.classList.add('done');
+      pic.classList.add('done');
+      selectedWord=null;
+      f.textContent=connected.size===4?'✓ Все слова соединены правильно!':'✓ Верно! Соедини следующую пару.';
+      f.className='feedback ok';
+      requestAnimationFrame(drawConnections);
+    }else{
+      pic.classList.add('selected');
+      f.textContent='Не эта картинка. Попробуй ещё.';
+      f.className='feedback bad';
+      setTimeout(()=>pic.classList.remove('selected'),350);
+    }
+  });
+});
+
+window.addEventListener('resize',()=>requestAnimationFrame(drawConnections));
+
+/* Task 2 exact grid from workbook */
+const letters=[
+'z','c','x','s','u','r',
+'n','u','w','q','p','u',
+'e','p','e','n','o','t',
+'t','e','f','g','j','l',
+'s','t','a','t','e','n',
+'x','o','u','r','q','w'
+];
+const grid=document.getElementById('wordGrid');
+grid.innerHTML=letters.map((l,i)=>`<button class="cell" data-i="${i}">${l}</button>`).join('');
+let path=[];
+const targets={
+  '13,14,15':'pen',
+  '13,19,25':'pet'
+};
+document.querySelectorAll('.cell').forEach(c=>c.addEventListener('click',()=>{
+  const i=+c.dataset.i;
+  if(path.includes(i))return;
+  path.push(i);c.classList.add('active');
+  const key=path.join(',');
+  const exact=targets[key];
+  const prefix=Object.keys(targets).some(k=>k.startsWith(key));
+  if(exact){
+    const empty=[...document.querySelectorAll('.foundInput')].find(x=>!x.value);
+    if(empty) empty.value=exact;
+    document.getElementById('searchFeedback').textContent='✓ '+exact.toUpperCase();
+    document.getElementById('searchFeedback').className='feedback ok';
+    path=[];
+  }else if(!prefix){
+    document.getElementById('searchFeedback').textContent='Попробуй другой путь.';
+    document.getElementById('searchFeedback').className='feedback bad';
+    setTimeout(()=>{
+      document.querySelectorAll('.cell').forEach(x=>x.classList.remove('active'));
+      path=[];
+    },450);
+  }
+}));
+
+/* Task 3 */
+let readSet=new Set();
+document.querySelectorAll('.read-word').forEach(b=>b.addEventListener('click',()=>{
+  const w=b.dataset.say;
+  readSet.add(w);
+  b.classList.add('done');
+  document.getElementById('readFeedback').textContent=`Прочитано: ${readSet.size} / 6`;
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(w);
+    u.lang='en-US';u.rate=.72;
+    speechSynthesis.speak(u);
+  }
+}));
+
+/* Task 4 */
+document.getElementById('checkCaps').addEventListener('click',()=>{
+  const inputs=[...document.querySelectorAll('.cap-input')];
+  let good=0;
+  inputs.forEach(i=>{
+    const ok=i.value.trim()===i.dataset.answer;
+    i.style.borderColor=ok?'#2e9a54':'#d55561';
+    if(ok)good++;
+  });
+  const f=document.getElementById('capsFeedback');
+  f.textContent=good===inputs.length?'✓ Всё правильно!':`Правильно: ${good} из ${inputs.length}`;
+  f.className='feedback '+(good===inputs.length?'ok':'bad');
+});
+</script>
+<script>
+let screenIndex=0;
+const rows=[...document.querySelectorAll('.word-row')];
+const tasks=[...document.querySelectorAll('#p2 .task')];
+const pager=document.createElement('div');pager.className='pager';
+pager.innerHTML='<button class="btn" id="prevScreen" aria-label="Предыдущее задание">←</button><span id="screenCount"></span><button class="btn primary" id="nextScreen" aria-label="Следующее задание">Далее →</button>';
+document.querySelector('.toolbar').append(pager);
+document.getElementById('goPage2').parentElement.hidden=true;
+function fitScreen(){
+ const page=document.querySelector('.page.active');if(!page)return;
+ page.style.zoom='1';
+ const available=window.innerHeight-document.querySelector('.toolbar').getBoundingClientRect().height-24;
+ const scale=Math.min(1,available/page.scrollHeight);
+ page.style.zoom=String(Math.max(.1,scale));
+ if(screenIndex===4)requestAnimationFrame(drawConnections);
+}
+function showScreen(index){
+ screenIndex=Math.max(0,Math.min(7,index));
+ const pageId=screenIndex<4?'p1':'p2';
+ document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===pageId));
+ document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.page===pageId));
+ rows.forEach((r,i)=>r.hidden=i!==screenIndex);
+ tasks.forEach((t,i)=>t.hidden=i!==screenIndex-4);
+ document.getElementById('page1Feedback').textContent='';
+ document.getElementById('screenCount').textContent=(screenIndex+1)+' / 8';
+ document.getElementById('prevScreen').disabled=screenIndex===0;
+ document.getElementById('nextScreen').disabled=screenIndex===7;
+ requestAnimationFrame(fitScreen);
+}
+openPage=function(id){showScreen(id==='p1'?0:4)};
+document.getElementById('prevScreen').onclick=()=>showScreen(screenIndex-1);
+document.getElementById('nextScreen').onclick=()=>showScreen(screenIndex+1);
+window.addEventListener('resize',()=>requestAnimationFrame(fitScreen));
+document.addEventListener('click',()=>requestAnimationFrame(fitScreen));
+showScreen(0);
+</script>
+</body>
+</html>

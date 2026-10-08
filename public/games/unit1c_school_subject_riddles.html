@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Guess the School Subject</title>
+  <style>
+    :root {
+      --ink: #17366f;
+      --muted: #6a7da7;
+      --blue: #5d7ce7;
+      --purple: #8e7be8;
+      --panel: rgba(255,255,255,.95);
+      --line: #dce6fb;
+      --ok: #219a70;
+      --bad: #d75464;
+      --shadow: 0 24px 70px rgba(38,58,112,.18);
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%, rgba(109,143,238,.28), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(154,132,236,.20), transparent 24%),
+        linear-gradient(135deg, #f8fbff 0%, #eef4ff 54%, #f8f5ff 100%);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      height: 100%;
+      min-height: 0;
+      padding: clamp(10px, 1.6vw, 22px);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 10px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .title-wrap {
+      min-width: 0;
+    }
+
+    .eyebrow {
+      margin: 0 0 4px;
+      color: var(--blue);
+      font-weight: 950;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-size: clamp(12px, 1vw, 15px);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(24px, 2.8vw, 40px);
+      line-height: 1;
+      letter-spacing: 0;
+    }
+
+    .progress-box {
+      min-width: min(300px, 38vw);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 8px;
+      border-radius: 999px;
+      background: #dfe8fb;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      width: 11.11%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--purple));
+      transition: width .25s ease;
+    }
+
+    .progress-text {
+      min-width: 72px;
+      text-align: right;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .workspace {
+      min-height: 0;
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,.86);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .screen {
+      position: absolute;
+      inset: 0;
+      display: none;
+      padding: clamp(14px, 2vw, 28px);
+      overflow: auto;
+    }
+
+    .screen.active {
+      display: grid;
+      animation: fade .22s ease;
+    }
+
+    @keyframes fade {
+      from { opacity: 0; transform: translateY(8px); }
+    }
+
+    .quiz-layout {
+      grid-template-columns: minmax(250px, .72fr) minmax(400px, 1.28fr);
+      gap: clamp(18px, 3vw, 42px);
+      align-items: center;
+      height: 100%;
+    }
+
+    .visual-card {
+      min-height: 300px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background:
+        linear-gradient(145deg, #eaf1ff, #f4efff);
+      border: 1px solid #dbe5fb;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+    }
+
+    .visual-icon {
+      width: min(190px, 23vw);
+      aspect-ratio: 1;
+      border-radius: 26px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.82);
+      box-shadow: 0 18px 38px rgba(50,72,140,.14);
+      font-size: clamp(74px, 8.5vw, 120px);
+    }
+
+    .question-panel {
+      max-width: 760px;
+    }
+
+    .question-number {
+      margin: 0 0 8px;
+      color: var(--blue);
+      font-size: 14px;
+      font-weight: 950;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+
+    .riddle {
+      margin: 0;
+      font-size: clamp(25px, 2.8vw, 42px);
+      line-height: 1.16;
+      letter-spacing: -.035em;
+      text-wrap: balance;
+    }
+
+    .instruction {
+      margin: 12px 0 14px;
+      color: var(--muted);
+      font-size: clamp(14px, 1.1vw, 17px);
+    }
+
+    .answer-wrap {
+      display: flex;
+      align-items: stretch;
+      gap: 12px;
+    }
+
+    .answer-input {
+      flex: 1;
+      min-width: 0;
+      border: 2px solid var(--line);
+      border-radius: 18px;
+      padding: 15px 18px;
+      outline: none;
+      color: #24458e;
+      background: #fff;
+      font-size: clamp(19px, 1.6vw, 24px);
+      font-weight: 850;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .answer-input:focus {
+      border-color: #8fa7ec;
+      box-shadow: 0 0 0 5px rgba(93,124,231,.11);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 17px;
+      padding: 14px 24px;
+      font-weight: 950;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 13px 26px rgba(73,96,207,.25);
+    }
+
+    .btn.secondary {
+      color: var(--ink);
+      background: #edf3ff;
+    }
+
+    .btn:disabled {
+      opacity: .42;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .choice-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .choice-button {
+      min-height: 62px;
+      border: 2px solid var(--line);
+      border-radius: 15px;
+      padding: 11px 16px;
+      color: #28498f;
+      background: #fff;
+      font-size: clamp(17px, 1.4vw, 22px);
+      font-weight: 950;
+      cursor: pointer;
+      box-shadow: 0 10px 22px rgba(48,72,136,.10);
+      transition:
+        transform .14s ease,
+        border-color .14s ease,
+        background .14s ease,
+        color .14s ease;
+    }
+
+    .choice-button:hover:not(:disabled) {
+      transform: translateY(-2px);
+      border-color: #9db2ec;
+      background: #f5f8ff;
+    }
+
+    .choice-button.correct {
+      color: #137552;
+      border-color: #72cda9;
+      background: #eaf9f3;
+    }
+
+    .choice-button.wrong {
+      color: #b33f50;
+      border-color: #eba0aa;
+      background: #fff1f3;
+    }
+
+    .choice-button:disabled {
+      cursor: default;
+    }
+
+    .feedback {
+      min-height: 24px;
+      margin-top: 10px;
+      font-size: 15px;
+      font-weight: 950;
+    }
+
+    .feedback.ok { color: var(--ok); }
+    .feedback.bad { color: var(--bad); }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .result-screen {
+      place-items: center;
+      text-align: center;
+    }
+
+    .result-card {
+      width: min(620px, 92%);
+      padding: 28px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #eef4ff, #f7f3ff);
+      border: 1px solid #dce6fb;
+    }
+
+    .result-icon {
+      width: 78px;
+      height: 78px;
+      margin: 0 auto 14px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: white;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      font-size: 38px;
+      box-shadow: 0 18px 34px rgba(73,96,207,.28);
+    }
+
+    .result-card h2 {
+      margin: 0 0 10px;
+      font-size: clamp(28px, 3.2vw, 44px);
+      letter-spacing: 0;
+    }
+
+    .result-card p {
+      margin: 0 0 18px;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    @media (max-width: 900px) {
+      .quiz-layout {
+        grid-template-columns: 1fr;
+        align-content: start;
+      }
+
+      .visual-card {
+        min-height: 210px;
+      }
+
+      .visual-icon {
+        width: 150px;
+        font-size: 92px;
+      }
+    }
+
+    @media (max-height: 720px) {
+      .app {
+        padding: 14px 18px;
+        gap: 10px;
+      }
+
+      .screen {
+        padding: 18px 22px;
+      }
+
+      .quiz-layout {
+        gap: 22px;
+      }
+
+      .visual-card {
+        min-height: 290px;
+      }
+
+      .visual-icon {
+        width: 180px;
+        font-size: 110px;
+      }
+
+      .riddle {
+        font-size: 36px;
+      }
+
+      .instruction {
+        margin: 12px 0 14px;
+      }
+
+      .choice-grid {
+        gap: 12px;
+      }
+
+      .choice-button {
+        min-height: 62px;
+        padding: 11px 16px;
+        font-size: 19px;
+      }
+
+      .btn {
+        padding: 11px 20px;
+      }
+
+      .actions {
+        margin-top: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title-wrap">
+        <p class="eyebrow">Subject recognition</p>
+        <h1>Guess the school subject</h1>
+      </div>
+
+      <div class="progress-box" aria-label="Progress">
+        <div class="progress-track">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text" id="progressText">1 of 9</div>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <section class="screen active quiz-layout" id="quizScreen">
+        <div class="visual-card">
+          <div class="visual-icon" id="visualIcon" aria-hidden="true">❓</div>
+        </div>
+
+        <div class="question-panel">
+          <p class="question-number" id="questionNumber">Riddle 1</p>
+          <h2 class="riddle" id="riddleText"></h2>
+          <p class="instruction">Choose the correct school subject.</p>
+
+          <div class="choice-grid" id="choiceGrid" aria-label="Choose the school subject"></div>
+
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+
+          <div class="actions">
+            <button class="btn primary" id="nextButton" type="button" hidden>Next</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen result-screen" id="resultScreen">
+        <div class="result-card">
+          <div class="result-icon">✓</div>
+          <h2>Excellent work!</h2>
+          <p id="resultText">You guessed all the school subjects.</p>
+          <button class="btn primary" id="restartButton" type="button">Play again</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const riddles = [
+      {
+        answer: "Maths",
+        distractor: "Music",
+        text: "We work with numbers and solve problems.",
+        icon: "➗"
+      },
+      {
+        answer: "English",
+        distractor: "Art",
+        text: "We learn new words, read and speak in another language.",
+        icon: "📘"
+      },
+      {
+        answer: "History",
+        distractor: "Science",
+        text: "We learn about people and events from the past.",
+        icon: "🏛️"
+      },
+      {
+        answer: "Geography",
+        distractor: "IT",
+        text: "We learn about countries, cities and maps.",
+        icon: "🌍"
+      },
+      {
+        answer: "Science",
+        distractor: "History",
+        text: "We do experiments and learn about nature.",
+        icon: "🧪"
+      },
+      {
+        answer: "Music",
+        distractor: "Maths",
+        text: "We sing songs and play musical instruments.",
+        icon: "🎵"
+      },
+      {
+        answer: "Art",
+        distractor: "IT",
+        text: "We draw, paint and make pictures.",
+        icon: "🎨"
+      },
+      {
+        answer: "P.E.",
+        distractor: "English",
+        text: "We run, jump and play sports.",
+        icon: "⚽"
+      },
+      {
+        answer: "IT",
+        distractor: "Art",
+        text: "We use computers and learn about technology.",
+        icon: "💻"
+      }
+    ];
+
+    const quizScreen = document.getElementById("quizScreen");
+    const resultScreen = document.getElementById("resultScreen");
+    const questionNumber = document.getElementById("questionNumber");
+    const riddleText = document.getElementById("riddleText");
+    const visualIcon = document.getElementById("visualIcon");
+    const choiceGrid = document.getElementById("choiceGrid");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("nextButton");
+    const restartButton = document.getElementById("restartButton");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const resultText = document.getElementById("resultText");
+
+    let current = 0;
+    let score = 0;
+    let attempts = 0;
+
+    function post(type, detail = {}) {
+      const message = {
+        type,
+        lessonId: "school-subject-riddles",
+        ...detail
+      };
+
+      window.parent.postMessage(message, "*");
+      window.dispatchEvent(new CustomEvent(type, { detail: message }));
+    }
+
+    function shuffle(items) {
+      const copy = [...items];
+      for (let i = copy.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy;
+    }
+
+    function renderRiddle() {
+      const item = riddles[current];
+
+      questionNumber.textContent = `Riddle ${current + 1}`;
+      riddleText.textContent = item.text;
+      visualIcon.textContent = item.icon;
+      progressText.textContent = `${current + 1} of ${riddles.length}`;
+      progressFill.style.width = `${((current + 1) / riddles.length) * 100}%`;
+
+      feedback.textContent = "";
+      feedback.className = "feedback";
+      nextButton.hidden = true;
+      attempts = 0;
+      choiceGrid.innerHTML = "";
+
+      const choices = shuffle([item.answer, item.distractor]);
+
+      choices.forEach(choice => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "choice-button";
+        button.textContent = choice;
+        button.addEventListener("click", () => chooseAnswer(button, choice));
+        choiceGrid.appendChild(button);
+      });
+    }
+
+    function chooseAnswer(button, choice) {
+      const item = riddles[current];
+      attempts += 1;
+
+      if (choice === item.answer) {
+        if (attempts === 1) score += 1;
+
+        button.classList.add("correct");
+        feedback.textContent = `Correct! It is ${item.answer}.`;
+        feedback.className = "feedback ok";
+
+        [...choiceGrid.children].forEach(option => {
+          option.disabled = true;
+          if (option.textContent === item.answer) {
+            option.classList.add("correct");
+          }
+        });
+
+        nextButton.hidden = false;
+
+        post("lesson:riddle-correct", {
+          riddle: current + 1,
+          answer: item.answer,
+          attempts
+        });
+      } else {
+        button.classList.add("wrong");
+        button.disabled = true;
+        feedback.textContent = "Not quite. Choose the other answer.";
+        feedback.className = "feedback bad";
+
+        post("lesson:riddle-incorrect", {
+          riddle: current + 1,
+          submittedAnswer: choice,
+          attempts
+        });
+      }
+    }
+
+    nextButton.addEventListener("click", () => {
+      current += 1;
+
+      if (current < riddles.length) {
+        renderRiddle();
+        return;
+      }
+
+      quizScreen.classList.remove("active");
+      resultScreen.classList.add("active");
+      resultText.textContent = `You answered ${score} of 9 correctly on the first try.`;
+
+      post("lesson:subject-riddles-complete", {
+        score,
+        total: riddles.length
+      });
+    });
+
+    restartButton.addEventListener("click", () => {
+      current = 0;
+      score = 0;
+      resultScreen.classList.remove("active");
+      quizScreen.classList.add("active");
+      renderRiddle();
+      post("lesson:subject-riddles-restarted");
+    });
+
+    renderRiddle();
+  </script>
+</body>
+</html>

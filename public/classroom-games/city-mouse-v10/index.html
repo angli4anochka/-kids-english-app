@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>
+(() => {
+  const stage = Number(new URLSearchParams(location.search).get('stage'));
+  if (!Number.isInteger(stage) || stage < 1 || stage > 22) return;
+  document.documentElement.classList.add('platform-stage');
+  const style = document.createElement('style');
+  style.textContent = `.platform-stage .topbar,.platform-stage .footer{display:none!important}.platform-stage .slides{height:100dvh!important}.platform-stage .slides > .slide{display:none!important}.platform-stage .slides > .slide:nth-of-type(${stage}){display:block!important}`;
+  document.head.appendChild(style);
+})();
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>A city mouse or a country mouse? — Interactive lesson</title>
+<style>
+:root{
+  --ink:#243044; --muted:#667085; --paper:#fffdf9; --cream:#fff8ef; --red:#ef6b6b;
+  --coral:#ff8b78; --green:#78b98a; --sage:#eaf4eb; --blue:#76a9e8; --lav:#a993e8;
+  --yellow:#f6c65b; --line:#e8e4df; --shadow:0 12px 32px rgba(44,55,77,.12);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f6f3ef;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button,input,textarea{font:inherit}
+.topbar{height:54px;display:flex;align-items:center;gap:14px;padding:8px 18px;background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);backdrop-filter:blur(12px)}
+.brand{font-weight:900;letter-spacing:-.02em;white-space:nowrap}.brand span{color:var(--red)}
+.progress{flex:1;height:8px;border-radius:99px;background:#eee8e2;overflow:hidden}.progress>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--coral),var(--lav));transition:.25s}
+.counter{font-size:13px;font-weight:800;color:var(--muted);min-width:62px;text-align:right}
+.slides{height:calc(100dvh - 104px);min-height:0;overflow:hidden}
+.slide{display:none;height:100%;padding:clamp(10px,1.5vw,20px);overflow:hidden}
+.slide.active{display:block}
+.frame{height:100%;min-height:0;max-width:1440px;margin:auto;display:flex;flex-direction:column;gap:clamp(8px,1vh,14px)}
+.kicker{font-size:clamp(11px,1vw,14px);text-transform:uppercase;letter-spacing:.16em;color:var(--red);font-weight:900}
+h1,h2,h3,p{margin:0}h1{font-size:clamp(28px,4vw,62px);line-height:.96;letter-spacing:-.05em}h2{font-size:clamp(22px,2.6vw,40px);line-height:1.05;letter-spacing:-.035em}h3{font-size:clamp(16px,1.6vw,24px)}
+.sub{font-size:clamp(13px,1.25vw,18px);color:var(--muted);line-height:1.35}
+.grid2{flex:1;min-height:0;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(10px,1.5vw,20px)}
+.grid2.equal{grid-template-columns:1fr 1fr}.grid3{flex:1;min-height:0;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.card{background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:24px;padding:clamp(12px,1.4vw,20px);box-shadow:var(--shadow);min-height:0;overflow:hidden}
+.imgcard{padding:8px;background:#fff}.imgcard img,.fitimg{width:100%;height:100%;object-fit:contain;object-position:center;border-radius:18px;display:block}
+.hero{position:relative;flex:1;min-height:0;border-radius:28px;background:#fff;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line)}
+.hero img{width:100%;height:100%;object-fit:contain;display:block;background:#fff}
+.hero-copy{position:absolute;left:clamp(18px,3vw,48px);top:clamp(18px,3vh,42px);max-width:min(620px,48%);background:rgba(255,255,255,.86);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.8);padding:clamp(14px,2vw,26px);border-radius:24px;box-shadow:0 12px 30px rgba(30,41,59,.12)}
+.hero-copy h1{font-size:clamp(32px,4.4vw,64px)}
+.pills,.choices,.chips{display:flex;flex-wrap:wrap;gap:8px}.pill,.choice,.chip{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;font-weight:800;font-size:clamp(12px,1.05vw,15px);cursor:pointer;transition:.15s}.pill:hover,.choice:hover,.chip:hover{transform:translateY(-1px);box-shadow:0 6px 14px rgba(0,0,0,.08)}
+.choice.selected,.pill.selected{background:#25324a;color:#fff;border-color:#25324a}.choice.good{background:#e7f7ec;border-color:#8fd0a0;color:#185f2f}.choice.bad{background:#fff0ef;border-color:#ef9991;color:#8a2d27}
+.prompt{padding:12px 14px;border-radius:18px;background:#fff6ed;border:1px solid #f3d6bd;font-weight:800}.question{font-size:clamp(16px,1.6vw,24px);font-weight:900;line-height:1.2}.tiny{font-size:12px;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;background:#f4f0ff;color:#5d4ba8;font-weight:900;font-size:12px}.badge.green{background:#e9f6ec;color:#2e7540}.badge.red{background:#fff0ed;color:#a14840}
+.stack{display:flex;flex-direction:column;gap:10px;min-height:0}.center{display:flex;align-items:center;justify-content:center}.space{flex:1}
+.senses{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.sense{padding:12px;border-radius:18px;background:#f8f8fa;text-align:center}.sense b{display:block;font-size:clamp(14px,1.3vw,19px)}
+.dropgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;min-height:0;flex:1}.dropzone{border:2px dashed #cfd4dc;border-radius:20px;padding:10px;background:rgba(255,255,255,.75);min-height:0;overflow:auto}.dropzone h3{text-align:center;margin-bottom:8px}.sourcebox{border-radius:18px;padding:10px;background:#fff6ed;border:1px solid #f3dfca;display:flex;flex-wrap:wrap;gap:7px;min-height:74px;align-content:flex-start}.chip{border-radius:12px;padding:7px 10px;background:#fff;cursor:grab}.chip.dragging{opacity:.35}.dropzone .chip{display:inline-block;margin:3px}.dropzone.correct{border-color:#8ccc9c;background:#eff9f1}
+.tabbar{display:flex;gap:8px;flex-wrap:wrap}.tab{border:0;border-radius:999px;padding:8px 13px;background:#f0edf8;color:#5e4d96;font-weight:900;cursor:pointer}.tab.active{background:#5f4ba7;color:#fff}.tabpane{display:none}.tabpane.active{display:block}.diary{font-size:clamp(13px,1.15vw,17px);line-height:1.45}.diary strong{color:#ce594f}
+.tfrow,.matchrow,.grammarrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:16px;background:#fff}.tfrow .choices{justify-content:flex-end}.tfrow.correct,.grammarrow.correct{border-color:#8cc99a;background:#eff9f1}.tfrow.wrong,.grammarrow.wrong{border-color:#e8aaa4;background:#fff3f2}
+.matchgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:0}.matchcol{display:flex;flex-direction:column;gap:8px}.matchbtn{border:1px solid var(--line);background:#fff;border-radius:14px;padding:9px 11px;text-align:left;font-weight:800;cursor:pointer}.matchbtn.active{outline:3px solid #b9aaf1}.matchbtn.matched{background:#eef8f0;border-color:#91c99d;color:#276a38;cursor:default}
+.bigmic{font-size:clamp(46px,7vw,94px);line-height:1}.radio{background:linear-gradient(145deg,#1e293b,#334155);color:#fff}.radio .sub{color:#d6dce6}.radio .prompt{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.14)}
+.radio-challenge-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px}
+.radio-controls{display:grid;grid-template-columns:auto auto 1fr;gap:10px;align-items:stretch}
+.radio-control{background:#fff;border:1px solid var(--line);border-radius:18px;padding:9px 11px;box-shadow:0 7px 20px rgba(44,55,77,.07)}
+.radio-label{display:block;font-size:10px;line-height:1;text-transform:uppercase;letter-spacing:.13em;color:var(--muted);font-weight:950;margin-bottom:7px}
+.radio-control .choices{flex-wrap:nowrap}
+.radio-control .choice{padding:7px 11px;white-space:nowrap}
+.radio-tips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;background:#25324a;color:#fff;border-radius:18px;padding:9px}
+.radio-tip{min-width:0;border-radius:12px;background:rgba(255,255,255,.09);padding:7px 8px;text-align:center;font-size:clamp(10px,.86vw,13px);font-weight:850;line-height:1.2}
+.radio-reading{flex:1;min-height:0;background:linear-gradient(145deg,#fff,#fffbf5);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:clamp(14px,1.7vw,22px);display:flex;flex-direction:column;overflow:hidden}
+.radio-reading-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+.radio-person{font-size:clamp(18px,1.7vw,25px);font-weight:950;letter-spacing:-.025em}.radio-day{padding:6px 10px;border-radius:999px;background:#f4f0ff;color:#5d4ba8;font-weight:950;font-size:12px}
+.radio-diary{flex:1;min-height:0;display:flex;align-items:center;font-family:Georgia,'Times New Roman',serif;font-size:clamp(16px,1.5vw,23px);line-height:1.52;color:#273247;max-width:1100px}
+.radio-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;border-top:1px solid var(--line);padding-top:8px;margin-top:8px}.radio-bottom .tiny{font-size:11px}
+@media(max-width:900px){.radio-controls{grid-template-columns:1fr 1fr}.radio-tips{grid-column:1/-1}.radio-diary{font-size:clamp(14px,1.7vw,20px)}}
+@media(max-height:700px){.radio-challenge-head .sub{display:none}.radio-controls{gap:6px}.radio-control{padding:6px 8px}.radio-label{margin-bottom:4px}.radio-control .choice{padding:5px 8px}.radio-tips{padding:6px}.radio-tip{padding:5px 6px}.radio-reading{padding:10px 14px}.radio-diary{font-size:clamp(13px,1.35vw,18px);line-height:1.38}.radio-bottom{padding-top:5px;margin-top:5px}}
+.interviewqs{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.qcard{padding:10px 12px;border-radius:15px;background:#fff;border:1px solid var(--line);font-weight:800}
+.grammar-split{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}.rule{padding:14px;border-radius:20px}.rule.simple{background:#fff7e8;border:1px solid #f0d18a}.rule.cont{background:#edf4ff;border:1px solid #b7d0f3}.rule ul{margin:8px 0 0 18px;padding:0;font-size:clamp(12px,1.05vw,15px);line-height:1.35}
+.example{padding:9px 11px;border-radius:14px;background:#fff;border:1px solid var(--line);font-weight:800;cursor:pointer}.example.ps{border-left:5px solid var(--yellow)}.example.pc{border-left:5px solid var(--blue)}
+mark.clickverb{background:#fff2a8;border-radius:6px;padding:1px 3px;cursor:pointer}mark.clickverb.hit{background:#bce8c5}.inlineinput{width:120px;max-width:28vw;border:1px solid #cfd5dd;border-radius:10px;padding:6px 8px}.reason{font-size:12px;color:var(--muted);margin-top:5px}
+.wordmachine{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:clamp(18px,2vw,28px);font-weight:950}.wordbox{padding:14px 18px;border-radius:16px;background:#fff;border:1px solid var(--line);min-width:150px;text-align:center}.arrow{font-size:30px;color:var(--coral)}
+.formgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.field{background:#fff;border:1px solid var(--line);border-radius:15px;padding:10px}.field label{display:block;font-size:12px;color:var(--muted);font-weight:800;margin-bottom:5px}.field input,.field textarea{width:100%;border:0;outline:0;background:#f8f8fa;border-radius:10px;padding:8px;resize:none;color:var(--ink)}
+.emailbox{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#fff;border:1px solid var(--line);border-radius:18px;padding:12px;min-height:0;flex:1}.emailbox textarea{width:100%;height:100%;resize:none;border:0;outline:0;font:inherit;line-height:1.4;color:var(--ink)}
+.category-help{display:grid;gap:4px;padding:10px 12px;border-radius:14px;background:#f7f4ff;border:1px solid #e3dcf7;max-width:520px}.category-help b{font-size:clamp(14px,1.2vw,18px);color:#25324a}.category-help span{font-size:12px;font-weight:900;color:#6a58ad;text-transform:uppercase;letter-spacing:.04em}.category-help em{font-style:normal;font-size:clamp(12px,1vw,15px);color:#57657a}.emailbox textarea{white-space:pre-wrap}
+.checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.check{padding:10px;border-radius:14px;background:#f7f5fb;border:1px solid #e0d9f2;text-align:center;font-weight:850;font-size:clamp(11px,1vw,14px)}
+.footer{height:50px;display:flex;align-items:center;justify-content:space-between;padding:7px 16px;background:#fff;border-top:1px solid var(--line)}
+.navbtn{border:0;border-radius:14px;padding:9px 16px;background:#25324a;color:#fff;font-weight:900;cursor:pointer}.navbtn:disabled{opacity:.3;cursor:not-allowed}.navbtn.ghost{background:#f0edf0;color:#39455a}.hint{font-size:12px;color:var(--muted)}
+.feedback{min-height:22px;font-size:13px;font-weight:850}.feedback.good{color:#2f7a45}.feedback.bad{color:#a6453d}
+.inlineinput.input-ok{border-color:#79bb8a;background:#eff9f1}.inlineinput.input-bad{border-color:#e28e86;background:#fff3f2}.answer-note{display:inline-block;margin-left:8px;font-size:12px;font-weight:800;color:#a6453d}.grammarrow.correct{border-color:#8cc99a;background:#eff9f1}.grammarrow.has-errors{border-color:#ead9d6;background:#fff}
+.toast{position:fixed;left:50%;bottom:64px;transform:translate(-50%,12px);background:#243044;color:#fff;padding:10px 14px;border-radius:14px;opacity:0;pointer-events:none;transition:.2s;z-index:50;font-weight:800;font-size:13px}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (max-width:900px){.grid2,.grid2.equal{grid-template-columns:1fr 1fr}.hero-copy{max-width:58%}.dropgrid{gap:6px}.card{border-radius:18px}.grid3{gap:7px}}
+@media (max-width:720px){.topbar{padding:7px 10px}.brand{font-size:13px}.slide{padding:8px}.grid2,.grid2.equal{grid-template-columns:1fr}.grid2>.imgcard{display:none}.grid3{grid-template-columns:1fr 1fr}.dropgrid{grid-template-columns:1fr 1fr 1fr}.hero-copy{max-width:72%}.checklist{grid-template-columns:1fr 1fr}.interviewqs{grid-template-columns:1fr}.matchgrid{gap:6px}}
+@media (max-height:700px){.topbar{height:46px}.footer{height:44px}.slides{height:calc(100dvh - 90px)}.slide{padding:8px}.frame{gap:7px}.card{padding:10px}.sub{font-size:12px}.pill,.choice,.chip{padding:6px 9px}.qcard,.tfrow,.grammarrow{padding:7px 9px}.hero-copy{padding:12px}.diary{font-size:12.5px;line-height:1.34}.rule{padding:10px}.sourcebox{min-height:58px}.field{padding:7px}.field input,.field textarea{padding:6px}.footer{padding:5px 12px}.navbtn{padding:7px 13px}}
+
+/* Redesigned Vocabulary 1a: compact, image-led, no empty white boxes */
+.vocab-1a-frame{gap:8px}
+.vocab-1a-head{flex:0 0 auto}
+.vocab-1a-head h2{font-size:clamp(25px,3vw,44px);margin-top:1px}
+.vocab-places{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.place-panel{min-height:0;display:grid;grid-template-rows:minmax(0,1fr) auto;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
+.place-image-wrap{position:relative;min-height:0;background:#edf3f6;overflow:hidden}
+.place-image-wrap img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}
+.place-tag{position:absolute;left:12px;top:12px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);font-size:12px;font-weight:950;letter-spacing:.08em;box-shadow:0 5px 14px rgba(20,30,45,.12)}
+.place-speaking{padding:10px 12px 11px;display:grid;gap:9px;background:linear-gradient(180deg,#fff,#fffaf5)}
+.sense-row{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.sense-mini{min-width:0;border:1px solid #ebe6df;border-radius:15px;padding:8px 7px;background:#fff;text-align:center;display:grid;grid-template-columns:auto auto;grid-template-areas:'icon title' 'hint hint';align-items:center;justify-content:center;column-gap:6px;row-gap:2px}
+.sense-mini span{grid-area:icon;font-size:16px}.sense-mini b{grid-area:title;font-size:12px;letter-spacing:.06em}.sense-mini small{grid-area:hint;color:var(--muted);font-size:11px;line-height:1.15}
+.feel-line{display:flex;align-items:center;gap:8px;min-width:0}.feel-question{font-size:11px;font-weight:900;color:#596579;white-space:nowrap}.feel-chips{display:flex;gap:5px;flex-wrap:wrap;min-width:0}
+.feel-chip{border:1px solid #e6dfd7;background:#f8f5f1;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:850;color:#334055;cursor:pointer}.feel-chip:hover,.feel-chip:focus{background:#243044;color:#fff;border-color:#243044}
+.vocab-speaking-strip{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding:8px 12px;border-radius:16px;background:#243044;color:#fff;font-size:clamp(11px,1vw,14px)}
+.vocab-speaking-strip span:not(:first-child){padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.10)}
+@media(max-height:760px){.vocab-1a-head .sub{display:none}.vocab-1a-frame{gap:6px}.place-speaking{padding:7px 9px;gap:6px}.sense-mini{padding:6px 5px}.feel-chip{padding:4px 7px}.vocab-speaking-strip{padding:6px 10px}}
+@media(max-width:900px){.vocab-places{grid-template-columns:1fr 1fr;gap:8px}.place-tag{top:7px;left:7px}.feel-question{display:none}.feel-line{justify-content:center}.vocab-speaking-strip{gap:6px}}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand"><span>1a</span> City vs Country</div>
+  <div class="progress"><i id="progressFill"></i></div>
+  <div class="counter" id="counter">1 / 22</div>
+</div>
+<main class="slides" id="slides">
+
+<!-- 1 -->
+<section class="slide active">
+  <div class="frame">
+    <div class="hero">
+      <img data-cm-src="assets/cm-a56706e727b1dd2d.webp" alt="City mouse and country mouse" />
+      <div class="hero-copy">
+        <div class="kicker">Warm-up</div>
+        <h1>A city mouse or a country mouse?</h1>
+        <p class="sub" style="margin-top:10px">Where would you rather live? Choose a side and explain why.</p>
+        <div class="choices" style="margin-top:12px"><button class="choice">🏙️ CITY</button><button class="choice">🌿 COUNTRY</button></div>
+        <div class="prompt" style="margin-top:10px">I’d rather live in… because…</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide vocab-1a-slide">
+<div class="frame vocab-1a-frame">
+  <div class="vocab-1a-head">
+    <div class="kicker">Vocabulary · 1a</div>
+    <h2>What can you see, hear and smell?</h2>
+    <p class="sub">Compare the two places. Use the prompts, then say how each place makes you feel.</p>
+  </div>
+
+  <div class="vocab-places">
+    <article class="place-panel city-panel">
+      <div class="place-image-wrap">
+        <img data-cm-src="assets/cm-4419cdf6ac760727.webp" alt="Busy city" />
+        <div class="place-tag">🏙️ CITY</div>
+      </div>
+      <div class="place-speaking">
+        <div class="sense-row">
+          <div class="sense-mini"><span>👀</span><b>SEE</b><small>I can see…</small></div>
+          <div class="sense-mini"><span>👂</span><b>HEAR</b><small>I can hear…</small></div>
+          <div class="sense-mini"><span>👃</span><b>SMELL</b><small>I can smell…</small></div>
+        </div>
+        <div class="feel-line">
+          <span class="feel-question">How does it make you feel?</span>
+          <div class="feel-chips">
+            <button class="feel-chip">😊 happy</button>
+            <button class="feel-chip">😣 stressed</button>
+            <button class="feel-chip">😟 worried</button>
+            <button class="feel-chip">⚡ excited</button>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="place-panel country-panel">
+      <div class="place-image-wrap">
+        <img data-cm-src="assets/cm-ffc424b670d5d088.webp" alt="Peaceful countryside" />
+        <div class="place-tag">🌿 COUNTRY</div>
+      </div>
+      <div class="place-speaking">
+        <div class="sense-row">
+          <div class="sense-mini"><span>👀</span><b>SEE</b><small>I can see…</small></div>
+          <div class="sense-mini"><span>👂</span><b>HEAR</b><small>I can hear…</small></div>
+          <div class="sense-mini"><span>👃</span><b>SMELL</b><small>I can smell…</small></div>
+        </div>
+        <div class="feel-line">
+          <span class="feel-question">How does it make you feel?</span>
+          <div class="feel-chips">
+            <button class="feel-chip">😌 relaxed</button>
+            <button class="feel-chip">😊 happy</button>
+            <button class="feel-chip">🕊️ free</button>
+            <button class="feel-chip">😔 lonely</button>
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+
+  <div class="vocab-speaking-strip">
+    <span>💬 <b>Speak:</b></span>
+    <span>In the city, I can see…</span>
+    <span>In the country, I can hear…</span>
+    <span>It makes me feel… because…</span>
+  </div>
+</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Vocabulary</div><h2>Sort the lifestyle phrases</h2><p class="sub">Drag each phrase into CITY, COUNTRY or BOTH. You can move them again if you change your mind.</p></div>
+  <div class="sourcebox" id="lifestyleSource">
+    <span class="chip" draggable="true">lead an unhealthy lifestyle</span><span class="chip" draggable="true">heavy traffic</span><span class="chip" draggable="true">constant noise & pollution</span><span class="chip" draggable="true">convenient public transport</span><span class="chip" draggable="true">shops, cinemas and theatres</span><span class="chip" draggable="true">crowded streets</span><span class="chip" draggable="true">high cost of living</span><span class="chip" draggable="true">low rate of unemployment</span><span class="chip" draggable="true">high quality lifestyle</span><span class="chip" draggable="true">fresh air</span><span class="chip" draggable="true">feeling isolated</span><span class="chip" draggable="true">peace and quiet</span><span class="chip" draggable="true">friendly, helpful people</span><span class="chip" draggable="true">beautiful landscapes</span><span class="chip" draggable="true">high rate of unemployment</span>
+  </div>
+  <div class="dropgrid">
+    <div class="dropzone" data-zone="city"><h3>🏙️ CITY</h3></div>
+    <div class="dropzone" data-zone="country"><h3>🌿 COUNTRY</h3></div>
+    <div class="dropzone" data-zone="both"><h3>🤔 BOTH / IT DEPENDS</h3></div>
+  </div>
+</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Vocabulary · 1b</div><h2>What matters to you?</h2><p class="sub">Choose phrases from the previous task and make personal sentences.</p></div>
+  <div class="grid3">
+    <div class="card center"><div class="stack"><div style="font-size:44px">🙂</div><h3>I don’t mind…</h3><p class="sub">Say one lifestyle thing you can accept.</p></div></div>
+    <div class="card center"><div class="stack"><div style="font-size:44px">❤️</div><h3>…is very important to me.</h3><p class="sub">Choose one thing you really value.</p></div></div>
+    <div class="card center"><div class="stack"><div style="font-size:44px">😖</div><h3>I can’t stand…</h3><p class="sub">Choose one thing you really dislike.</p></div></div>
+  </div>
+  <div class="prompt">Now add <b>because</b>. Example: “I can’t stand crowded streets because they make me stressed.”</div>
+</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Reading & Listening · 2</div><h2>Teenage Life Swap</h2><p class="sub">Before reading, predict what the programme is about.</p></div>
+  <div class="grid2">
+    <div class="card stack center" style="text-align:center"><div style="font-size:76px">🔄</div><h3>Two girls. Two homes. One week.</h3><p class="sub">What could go wrong? Quite a lot, because humans apparently enjoy voluntarily rearranging their lives for television.</p></div>
+    <div class="card stack" id="predictionBox">
+      <button class="choice quizChoice" data-correct="false">A. Two girls change schools.</button>
+      <button class="choice quizChoice" data-correct="true">B. Two girls swap families and lifestyles.</button>
+      <button class="choice quizChoice" data-correct="false">C. Two girls travel together.</button>
+      <button class="choice quizChoice" data-correct="false">D. Two girls move to London.</button>
+      <div class="feedback" id="predictionFeedback"></div>
+      <div class="prompt">Predict one problem Annabel might have and one problem Sarah might have.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Meet the girls</div><h2>Who will enjoy the swap more?</h2><p class="sub">Make your prediction before you read the diaries.</p></div>
+  <div class="grid2 equal">
+    <div class="card stack"><div class="badge green">ANNABEL · 14</div><div class="imgcard" style="flex:1"><img data-cm-src="assets/cm-dfddc08b2dcad946.webp" /></div><div><b>Normally:</b> London &nbsp;→&nbsp; <b>This week:</b> a farm in Scotland</div></div>
+    <div class="card stack"><div class="badge red">SARAH · 14</div><div class="imgcard" style="flex:1"><img data-cm-src="assets/cm-d1a7f96ca4a4dbfc.webp" /></div><div><b>Normally:</b> Scotland &nbsp;→&nbsp; <b>This week:</b> London</div></div>
+  </div>
+  <div class="choices center"><button class="choice">Annabel</button><button class="choice">Sarah</button><button class="choice">Both</button></div>
+</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Reading · Annabel</div><h2>Annabel’s diary</h2></div>
+  <div class="grid2">
+    <div class="card imgcard"><img data-cm-src="assets/cm-dfddc08b2dcad946.webp" /></div>
+    <div class="card stack">
+      <div class="tabbar" data-tabs="annabel"><button class="tab active" data-tab="a2">Day 2</button><button class="tab" data-tab="a4">Day 4</button><button class="tab" data-tab="a6">Day 6</button></div>
+      <div class="tabpane active diary" data-pane="a2"><p>Everyone gets up at <strong>5 am</strong> because there’s a lot to do on the farm. Sarah’s mum is very nice. She brings me a cup of tea in bed, but I just go back to sleep. Later, I go outside to the farmyard to help Sarah’s family. Today we are <strong>milking the cows</strong> in the barn and <strong>feeding the chickens</strong>. The animals are lovely, but I can’t stand the smell.</p><div class="prompt" style="margin-top:10px">Why does Annabel get up at 5 am?</div></div>
+      <div class="tabpane diary" data-pane="a4"><p>Sarah’s mum takes me to school every morning. We drive five miles to meet the school bus, which leaves at 7 am. Sarah’s school is very small, but everyone is so friendly.</p><div class="prompt" style="margin-top:10px">How does Annabel get to school?</div></div>
+      <div class="tabpane diary" data-pane="a6"><p>Learning about farming is interesting, but I’m happy I’m going home tomorrow. The fresh air is nice but it’s too quiet here. I also feel <strong>isolated</strong>. In the city, the streets are crowded but you have everything close at hand. I miss the shops, my friends and the theatre! I don’t want to leave all my new friends.</p><div class="prompt" style="margin-top:10px">What does Annabel miss about London?</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Reading · Sarah</div><h2>Sarah’s diary</h2></div>
+  <div class="grid2">
+    <div class="card imgcard"><img data-cm-src="assets/cm-d1a7f96ca4a4dbfc.webp" /></div>
+    <div class="card stack">
+      <div class="tabbar" data-tabs="sarah"><button class="tab active" data-tab="s2">Day 2</button><button class="tab" data-tab="s4">Day 4</button><button class="tab" data-tab="s6">Day 6</button></div>
+      <div class="tabpane active diary" data-pane="s2"><p>Everyone stays in bed late here. It’s 8 am and Annabel’s mum is making breakfast! In the afternoon, we’re going shopping on Oxford Street and then we’re going to the cinema! I’m so excited!</p><div class="prompt" style="margin-top:10px">What is Sarah going to do in the afternoon?</div></div>
+      <div class="tabpane diary" data-pane="s4"><p>I travel to Annabel’s school by tube. Her school is huge with 1,500 students and the facilities are very interesting and helpful. I’m enjoying the lessons, but most of all I love the facilities. The computer room and the swimming pool are my favourites.</p><div class="prompt" style="margin-top:10px">What does Sarah like most at Annabel’s school?</div></div>
+      <div class="tabpane diary" data-pane="s6"><p>Today, I’m feeling a bit tired. It’s always noisy here and you can hear the traffic all night. I think I’m getting a bit homesick, too. I miss the beautiful landscapes and the people from my hometown. I’m happy I’m going home tomorrow but I’m sure I’ll visit London and see Annabel’s lovely family again!</p><div class="prompt" style="margin-top:10px">Why is Sarah tired and homesick?</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Reading · 3a</div><h2>True or False?</h2><p class="sub">Choose. If it’s false, correct the sentence aloud.</p></div>
+  <div class="stack" id="tfList">
+    <div class="tfrow" data-answer="false"><b>1. Annabel doesn’t like staying in bed.</b><div class="choices"><button class="choice tf" data-val="true">True</button><button class="choice tf" data-val="false">False</button></div></div>
+    <div class="tfrow" data-answer="true"><b>2. Sarah can’t sleep at night.</b><div class="choices"><button class="choice tf" data-val="true">True</button><button class="choice tf" data-val="false">False</button></div></div>
+    <div class="tfrow" data-answer="true"><b>3. Sarah’s new school has lots of facilities.</b><div class="choices"><button class="choice tf" data-val="true">True</button><button class="choice tf" data-val="false">False</button></div></div>
+    <div class="tfrow" data-answer="true"><b>4. Annabel travels five miles to reach the school bus.</b><div class="choices"><button class="choice tf" data-val="true">True</button><button class="choice tf" data-val="false">False</button></div></div>
+  </div>
+  <div class="prompt">Evidence matters: find the line in the diary that proves each answer.</div>
+</div>
+</section>
+
+<!-- 10 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Vocabulary · 3a</div><h2>Words from the diaries</h2><p class="sub">Click a word, then its meaning. Match all eight.</p></div>
+  <div class="matchgrid" id="matchGame">
+    <div class="matchcol">
+      <button class="matchbtn" data-id="barn">barn</button><button class="matchbtn" data-id="farmyard">farmyard</button><button class="matchbtn" data-id="facilities">facilities</button><button class="matchbtn" data-id="isolated">isolated</button><button class="matchbtn" data-id="feed">feed the chickens</button><button class="matchbtn" data-id="miss">miss somebody</button><button class="matchbtn" data-id="traffic">traffic</button><button class="matchbtn" data-id="landscape">landscape</button>
+    </div>
+    <div class="matchcol">
+      <button class="matchbtn def" data-id="facilities">useful rooms, equipment and services</button><button class="matchbtn def" data-id="traffic">cars, buses and other vehicles on roads</button><button class="matchbtn def" data-id="miss">feel sad because someone isn’t with you</button><button class="matchbtn def" data-id="barn">a farm building for animals or storage</button><button class="matchbtn def" data-id="landscape">the natural view of an area</button><button class="matchbtn def" data-id="feed">give food to farm birds</button><button class="matchbtn def" data-id="isolated">far from other people or places</button><button class="matchbtn def" data-id="farmyard">the open area around farm buildings</button>
+    </div>
+  </div>
+  <div class="feedback" id="matchFeedback"></div>
+</div>
+</section>
+
+<!-- 11 -->
+<section class="slide">
+<div class="frame">
+  <div class="radio-challenge-head">
+    <div><div class="kicker">Reading aloud · 3b</div><h2>🎙️ Radio challenge</h2><p class="sub">Choose a girl and a diary entry. The text will appear below. Read it like a radio presenter.</p></div>
+    <div class="badge">YOU’RE ON AIR</div>
+  </div>
+
+  <div class="radio-controls">
+    <div class="radio-control">
+      <span class="radio-label">1 · Choose a character</span>
+      <div class="choices">
+        <button class="choice radioPersonBtn selected" data-person="Annabel">Annabel</button>
+        <button class="choice radioPersonBtn" data-person="Sarah">Sarah</button>
+      </div>
+    </div>
+    <div class="radio-control">
+      <span class="radio-label">2 · Choose an entry</span>
+      <div class="choices">
+        <button class="choice radioDayBtn selected" data-day="2">Day 2</button>
+        <button class="choice radioDayBtn" data-day="4">Day 4</button>
+        <button class="choice radioDayBtn" data-day="6">Day 6</button>
+      </div>
+    </div>
+    <div class="radio-tips" aria-label="Reading tips">
+      <div class="radio-tip">🗣️<br>Speak clearly</div>
+      <div class="radio-tip">😊<br>Show emotion</div>
+      <div class="radio-tip">⏸️<br>Pause</div>
+      <div class="radio-tip">⭐<br>Stress key words</div>
+    </div>
+  </div>
+
+  <div class="radio-reading">
+    <div class="radio-reading-top"><div class="radio-person" id="radioPersonTitle">Annabel</div><div class="radio-day" id="radioDayTitle">Day 2</div></div>
+    <div class="radio-diary" id="radioDiaryText">Everyone gets up at 5 am because there’s a lot to do on the farm. Sarah’s mum is very nice. She brings me a cup of tea in bed, but I just go back to sleep. Later, I go outside to the farmyard to help Sarah’s family. Today we are milking the cows in the barn and feeding the chickens. The animals are lovely, but I can’t stand the smell.</div>
+    <div class="radio-bottom"><div class="tiny">Read the whole entry aloud. Don’t rush. Make the listener believe the story.</div><div class="badge green">Use Zoom audio / voice recording</div></div>
+  </div>
+</div>
+</section>
+
+<!-- 12 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Speaking · 4</div><h2>Teenage Life — Exclusive Interview</h2><p class="sub">One student is the journalist. The other becomes Annabel or Sarah.</p></div>
+  <div class="grid2">
+    <div class="card imgcard"><img data-cm-src="assets/cm-e0d73d4ed0623b6f.webp" /></div>
+    <div class="card stack"><div class="interviewqs"><div class="qcard">Where do you normally live?</div><div class="qcard">What time do you usually get up?</div><div class="qcard">What is different this week?</div><div class="qcard">What do you like about your new school?</div><div class="qcard">What do you miss?</div><div class="qcard">What are you doing tonight?</div></div><div class="prompt">Final question: Do you want to stay here? Why / why not?</div></div>
+  </div>
+</div>
+</section>
+
+<!-- 13 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar · 5</div><h2>Present Simple vs Present Continuous</h2><p class="sub">First notice the pattern. Then use the rule.</p></div>
+  <div class="grid2">
+    <div class="card imgcard"><img data-cm-src="assets/cm-9b219f4952a1539a.webp" /></div>
+    <div class="card stack">
+      <div class="grammar-split"><div class="rule simple"><h3>🔁 Present Simple</h3><ul><li>обычно / регулярно</li><li>факты и постоянные ситуации</li><li>расписания</li></ul></div><div class="rule cont"><h3>📍 Present Continuous</h3><ul><li>прямо сейчас</li><li>временная ситуация</li><li>планы на ближайшее будущее</li></ul></div></div>
+      <div class="example ps">I always love hearing from you.</div><div class="example pc">At the moment I am studying really hard.</div><div class="example pc">I’m working in a library for the next few months.</div><div class="example pc">Tonight I am meeting my friends.</div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- 14 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar · Find it in context</div><h2>Spot the verb forms</h2><p class="sub">Click the highlighted verb phrases. Say whether each is Present Simple or Present Continuous.</p></div>
+  <div class="grid2 equal">
+    <div class="card diary stack"><span class="badge green">ANNABEL</span><p>Everyone <mark class="clickverb">gets up</mark> at 5 am because there’s a lot to do on the farm. Today we <mark class="clickverb">are milking</mark> the cows and <mark class="clickverb">feeding</mark> the chickens. Sarah’s mum <mark class="clickverb">takes</mark> me to school every morning. I <mark class="clickverb">am going</mark> home tomorrow.</p></div>
+    <div class="card diary stack"><span class="badge red">SARAH</span><p>I <mark class="clickverb">travel</mark> to Annabel’s school by tube. I <mark class="clickverb">am enjoying</mark> the lessons. Today I <mark class="clickverb">am feeling</mark> a bit tired. You <mark class="clickverb">can hear</mark> the traffic all night. I <mark class="clickverb">am getting</mark> a bit homesick.</p></div>
+  </div>
+  <div class="prompt">Find one more example of each tense in the full diary text.</div>
+</div>
+</section>
+
+<!-- 15 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar · Meaning matters</div><h2>Same verb, different meaning</h2><p class="sub">Некоторые глаголы могут стоять и в Present Simple, и в Present Continuous. Всё зависит от того, <b>что именно означает глагол</b> в предложении.</p></div>
+  <div class="grid2 equal">
+    <div class="card stack">
+      <h3>THINK</h3>
+      <div class="example ps">I think London is exciting.</div>
+      <div class="tiny"><b>think = считать / иметь мнение</b><br>Это мнение, а не действие → <b>Present Simple</b></div>
+      <div class="example pc">I’m thinking of changing school.</div>
+      <div class="tiny"><b>think = обдумывать</b><br>Человек сейчас находится в процессе размышления → <b>Present Continuous</b></div>
+    </div>
+    <div class="card stack">
+      <h3>LOOK</h3>
+      <div class="example ps">He looks tired.</div>
+      <div class="tiny"><b>look = выглядеть</b><br>Мы описываем, каким он кажется → <b>Present Simple</b></div>
+      <div class="example pc">He is looking at the photo.</div>
+      <div class="tiny"><b>look = смотреть</b><br>Он сейчас выполняет действие → <b>Present Continuous</b></div>
+    </div>
+  </div>
+  <div class="prompt">💡 Главное: сначала определи <b>значение глагола</b>. Не выбирай Continuous только потому, что действие связано с «сейчас».</div>
+</div>
+</section>
+
+<!-- 16 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar · 6</div><h2>Present Simple or Present Continuous?</h2><p class="sub">Впиши полную форму глагола. После проверки неправильное поле покажет правильный ответ.</p></div>
+  <div class="stack" id="grammarChallenge">
+    <div class="grammarrow" data-answers="are you,starts"><div><b>1.</b> Why <input class="inlineinput" placeholder="you / be"> in such a hurry? · My exam <input class="inlineinput" placeholder="start"> in ten minutes.<div class="reason">Почему: состояние + расписание</div></div><button class="choice gcheck">Check</button></div>
+    <div class="grammarrow" data-answers="am thinking,don't think"><div><b>2.</b> I <input class="inlineinput" placeholder="think"> of changing school. · I <input class="inlineinput" placeholder="not / think"> it’s a good idea.<div class="reason">Почему: обдумываю сейчас + мнение</div></div><button class="choice gcheck">Check</button></div>
+    <div class="grammarrow" data-answers="are you,is always taking"><div><b>3.</b> Why <input class="inlineinput" placeholder="you / be"> angry? · My sister <input class="inlineinput" placeholder="always / take"> my clothes.<div class="reason">Почему: состояние + раздражающая повторяющаяся привычка</div></div><button class="choice gcheck">Check</button></div>
+    <div class="grammarrow" data-answers="looks,is studying"><div><b>4.</b> Tom <input class="inlineinput" placeholder="look"> very stressed. · He <input class="inlineinput" placeholder="study"> a lot these days.<div class="reason">Почему: выглядит + временная ситуация в эти дни</div></div><button class="choice gcheck">Check</button></div>
+    <div class="grammarrow" data-answers="are you leaving,leaves"><div><b>5.</b> Why <input class="inlineinput" placeholder="you / leave"> now? · My train <input class="inlineinput" placeholder="leave"> in an hour.<div class="reason">Почему: действие сейчас + расписание</div></div><button class="choice gcheck">Check</button></div>
+  </div>
+</div>
+</section>
+
+<!-- 17 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar focus</div><h2>“Always” can sound annoyed</h2></div>
+  <div class="grid2 equal">
+    <div class="card center"><div class="stack" style="text-align:center"><div style="font-size:54px">🙂</div><h3>She always takes my clothes.</h3><p class="sub">A repeated fact or habit.</p></div></div>
+    <div class="card center"><div class="stack" style="text-align:center"><div style="font-size:54px">😤</div><h3>She is always taking my clothes!</h3><p class="sub">A repeated action that annoys the speaker.</p></div></div>
+  </div>
+  <div class="prompt">Create one annoyed sentence with <b>always + Present Continuous</b>.</div>
+</div>
+</section>
+
+<!-- 18 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Word Formation</div><h2>Build the noun</h2><p class="sub">Verb → noun with <b>-ment</b>. Then add <b>un-</b> for a negative meaning.</p></div>
+  <div class="card center" style="flex:1"><div class="stack"><div class="wordmachine"><div class="wordbox">develop</div><div class="arrow">→</div><div class="wordbox">development</div></div><div class="wordmachine"><div class="wordbox">employ</div><div class="arrow">→</div><div class="wordbox">employment</div><div class="arrow">→</div><div class="wordbox">unemployment</div></div></div></div>
+  <div class="grid3"><div class="field"><label>develop →</label><input data-answer="development" class="wordinput" placeholder="type the noun"></div><div class="field"><label>employ →</label><input data-answer="employment" class="wordinput" placeholder="type the noun"></div><div class="field"><label>employment → negative</label><input data-answer="unemployment" class="wordinput" placeholder="type the noun"></div></div>
+</div>
+</section>
+
+<!-- 19 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Writing preparation</div><h2>Plan your email</h2><p class="sub">Speak first. Writing becomes much easier once your brain has actually produced the ideas.</p></div>
+  <div class="grid2">
+    <div class="card imgcard"><img data-cm-src="assets/cm-7b8a1d54b43d9e93.webp" /></div>
+    <div class="card"><div class="formgrid"><div class="field"><label>📍 Where do you live?</label><textarea rows="2" placeholder="I live in..."></textarea></div><div class="field"><label>⏰ What is your daily routine?</label><textarea rows="2" placeholder="I usually..."></textarea></div><div class="field"><label>📚 What are you doing these days?</label><textarea rows="2" placeholder="These days, I’m..."></textarea></div><div class="field"><label>🌙 What are you doing tonight?</label><textarea rows="2" placeholder="Tonight, I’m..."></textarea></div></div></div>
+  </div>
+</div>
+</section>
+
+<!-- 20 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Grammar check before writing</div><h2>Normal life or now?</h2><p class="sub">Click each sentence to switch its category.</p></div>
+  <div class="grid2 equal">
+    <div class="card stack" id="normalCol">
+      <h3>🔁 MY NORMAL LIFE</h3>
+      <div class="category-help"><b>Обычно / каждый день</b><span>Present Simple</span><em>Example: I usually get up at 7.</em></div>
+    </div>
+    <div class="card stack" id="nowCol">
+      <h3>📍 NOW / THESE DAYS</h3>
+      <div class="category-help"><b>Сейчас / в эти дни</b><span>Present Continuous</span><em>Example: I’m studying a lot these days.</em></div>
+    </div>
+  </div>
+  <div class="sourcebox" id="sentenceSource"><button class="chip moveSentence" data-target="normal">I usually get up at 7.</button><button class="chip moveSentence" data-target="normal">I live in Istanbul.</button><button class="chip moveSentence" data-target="now">I’m studying a lot these days.</button><button class="chip moveSentence" data-target="now">I’m meeting my friends tonight.</button></div>
+</div>
+</section>
+
+<!-- 21 -->
+<section class="slide">
+<div class="frame">
+  <div><div class="kicker">Writing · 7</div><h2>Write to your English penfriend</h2><p class="sub">Include where you live, your daily routine, what you are doing these days and what you are doing tonight.</p></div>
+  <div class="checklist"><div class="check">📍 where you live</div><div class="check">⏰ daily routine</div><div class="check">📚 these days</div><div class="check">🌙 tonight</div></div>
+  <div class="emailbox"><textarea id="emailDraft">Hi ____,
+
+Thanks for your email!
+I live in ...
+I usually ...
+These days, I’m ...
+Tonight, I’m ...
+
+What about you?
+Write back soon!
+
+____</textarea></div>
+</div>
+</section>
+
+<!-- 22 -->
+<section class="slide">
+<div class="frame">
+  <div class="hero">
+    <img data-cm-src="assets/cm-a56706e727b1dd2d.webp" />
+    <div class="hero-copy">
+      <div class="kicker">Final Challenge</div><h1>City mouse or country mouse?</h1><p class="sub" style="margin-top:10px">After Annabel and Sarah’s swap, where would you rather live now?</p>
+      <div class="stack" style="margin-top:12px"><span class="badge green">Use 2 lifestyle expressions</span><span class="badge">Use 1 Present Simple sentence</span><span class="badge red">Use 1 Present Continuous sentence</span><span class="badge">Use because</span></div>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+<div class="footer">
+  <button class="navbtn ghost" id="prevBtn">← Back</button>
+  <div class="hint">← → keys also work · everything stays inside one screen</div>
+  <button class="navbtn" id="nextBtn">Next →</button>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const slides=[...document.querySelectorAll('.slide')]; let current=0;
+const prevBtn=document.getElementById('prevBtn'), nextBtn=document.getElementById('nextBtn'), counter=document.getElementById('counter'), progressFill=document.getElementById('progressFill');
+function showSlide(i){current=Math.max(0,Math.min(slides.length-1,i));slides.forEach((s,n)=>s.classList.toggle('active',n===current));counter.textContent=`${current+1} / ${slides.length}`;progressFill.style.width=`${((current+1)/slides.length)*100}%`;prevBtn.disabled=current===0;nextBtn.disabled=current===slides.length-1;window.dispatchEvent(new Event('resize'));}
+prevBtn.onclick=()=>showSlide(current-1);nextBtn.onclick=()=>showSlide(current+1);document.addEventListener('keydown',e=>{if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;if(e.key==='ArrowRight')showSlide(current+1);if(e.key==='ArrowLeft')showSlide(current-1)});showSlide(0);
+
+// Generic selectable pills
+for(const el of document.querySelectorAll('.pill,.choice')){if(!el.classList.contains('quizChoice')&&!el.classList.contains('tf')&&!el.classList.contains('gcheck')&&!el.classList.contains('radioPersonBtn')&&!el.classList.contains('radioDayBtn'))el.addEventListener('click',()=>el.classList.toggle('selected'))}
+
+// Radio challenge: character + diary entry selector
+const radioEntries={
+  Annabel:{
+    2:`Everyone gets up at 5 am because there’s a lot to do on the farm. Sarah’s mum is very nice. She brings me a cup of tea in bed, but I just go back to sleep. Later, I go outside to the farmyard to help Sarah’s family. Today we are milking the cows in the barn and feeding the chickens. The animals are lovely, but I can’t stand the smell.`,
+    4:`Sarah’s mum takes me to school every morning. We drive five miles to meet the school bus, which leaves at 7 am. Sarah’s school is very small, but everyone’s so friendly.`,
+    6:`Learning about farming is interesting, but I’m happy I’m going home tomorrow. The fresh air is nice but it’s too quiet here. I also feel isolated. In the city, the streets are crowded but you have everything close at hand. I miss the hustle and bustle of London but I don’t want to leave all my new friends.`
+  },
+  Sarah:{
+    2:`Everyone stays in bed late here. It’s 8 am and Annabel’s mum is making breakfast! In the afternoon, we’re going shopping on Oxford Street and then we’re going to the cinema! I’m so excited!`,
+    4:`I travel to Annabel’s school by tube. Her school is huge with 1,500 students and her friends are very interesting and helpful. I’m enjoying the lessons, but most of all I love the facilities. The computer room and the swimming pool are my favourites.`,
+    6:`Today, I’m feeling a bit tired. It’s always noisy here and you can hear the traffic all night. I think I’m getting a bit homesick, too. I miss the beautiful landscapes and the people from my hometown. I’m happy I’m going home tomorrow but I’m sure I’ll visit London and see Annabel’s lovely family again!`
+  }
+};
+let radioPerson='Annabel', radioDay=2;
+function renderRadioEntry(){
+  document.getElementById('radioPersonTitle').textContent=radioPerson;
+  document.getElementById('radioDayTitle').textContent=`Day ${radioDay}`;
+  document.getElementById('radioDiaryText').textContent=radioEntries[radioPerson][radioDay];
+  document.querySelectorAll('.radioPersonBtn').forEach(b=>b.classList.toggle('selected',b.dataset.person===radioPerson));
+  document.querySelectorAll('.radioDayBtn').forEach(b=>b.classList.toggle('selected',Number(b.dataset.day)===radioDay));
+}
+document.querySelectorAll('.radioPersonBtn').forEach(b=>b.addEventListener('click',()=>{radioPerson=b.dataset.person;renderRadioEntry()}));
+document.querySelectorAll('.radioDayBtn').forEach(b=>b.addEventListener('click',()=>{radioDay=Number(b.dataset.day);renderRadioEntry()}));
+renderRadioEntry();
+
+// Prediction quiz
+for(const b of document.querySelectorAll('.quizChoice')) b.onclick=()=>{document.querySelectorAll('.quizChoice').forEach(x=>x.classList.remove('good','bad')); const ok=b.dataset.correct==='true';b.classList.add(ok?'good':'bad');document.getElementById('predictionFeedback').textContent=ok?'Exactly. They swap families and lifestyles for one week.':'Not quite. Read the title and the short introduction again.';document.getElementById('predictionFeedback').className='feedback '+(ok?'good':'bad')}
+
+// Tabs
+for(const bar of document.querySelectorAll('.tabbar')){bar.addEventListener('click',e=>{const t=e.target.closest('.tab');if(!t)return;bar.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');const card=bar.parentElement;card.querySelectorAll('.tabpane').forEach(p=>p.classList.toggle('active',p.dataset.pane===t.dataset.tab));})}
+
+// Drag drop lifestyle
+let dragged=null;document.addEventListener('dragstart',e=>{if(e.target.classList.contains('chip')){dragged=e.target;e.target.classList.add('dragging')}});document.addEventListener('dragend',e=>{if(e.target.classList.contains('chip'))e.target.classList.remove('dragging')});for(const z of document.querySelectorAll('.dropzone,#lifestyleSource')){z.addEventListener('dragover',e=>e.preventDefault());z.addEventListener('drop',e=>{e.preventDefault();if(dragged)z.appendChild(dragged)})}
+
+// True / False
+for(const b of document.querySelectorAll('.tf')) b.onclick=()=>{const row=b.closest('.tfrow');const ok=b.dataset.val===row.dataset.answer;row.classList.remove('correct','wrong');row.classList.add(ok?'correct':'wrong');row.querySelectorAll('.tf').forEach(x=>x.classList.remove('selected'));b.classList.add('selected')}
+
+// Matching
+let activeWord=null;for(const b of document.querySelectorAll('#matchGame .matchbtn')) b.onclick=()=>{if(b.classList.contains('matched'))return;if(!b.classList.contains('def')){document.querySelectorAll('#matchGame .matchbtn:not(.def)').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeWord=b;return;}if(!activeWord){toast('Choose a word first.');return;}if(b.dataset.id===activeWord.dataset.id){b.classList.add('matched');activeWord.classList.add('matched');activeWord.classList.remove('active');activeWord=null;}else{b.classList.add('bad');setTimeout(()=>b.classList.remove('bad'),500);}const left=[...document.querySelectorAll('#matchGame .matchbtn:not(.def)')];if(left.every(x=>x.classList.contains('matched'))){const f=document.getElementById('matchFeedback');f.textContent='All matched. Now use any two words in your own sentences.';f.className='feedback good'}}
+
+// Click verbs
+for(const m of document.querySelectorAll('.clickverb'))m.onclick=()=>m.classList.toggle('hit');
+
+// Grammar challenge
+const norm=s=>s.toLowerCase().replace(/[’']/g,"'").replace(/\s+/g,' ').trim();
+for(const btn of document.querySelectorAll('.gcheck'))btn.onclick=()=>{
+  const row=btn.closest('.grammarrow');
+  const rawAns=row.dataset.answers.split(',');
+  const ans=rawAns.map(norm);
+  const inputs=[...row.querySelectorAll('input')];
+  let allOk=true;
+  inputs.forEach((inp,i)=>{
+    inp.classList.remove('input-ok','input-bad');
+    const oldNote=inp.parentElement.querySelector(`.answer-note[data-for="${i}"]`);
+    if(oldNote) oldNote.remove();
+    const ok=norm(inp.value)===ans[i];
+    inp.classList.add(ok?'input-ok':'input-bad');
+    if(!ok){
+      allOk=false;
+      const note=document.createElement('span');
+      note.className='answer-note';
+      note.dataset.for=i;
+      note.textContent=`→ ${rawAns[i]}`;
+      inp.insertAdjacentElement('afterend',note);
+    }
+  });
+  row.classList.remove('correct','wrong','has-errors');
+  row.classList.add(allOk?'correct':'has-errors');
+  toast(allOk?'Всё верно ✓':'Красным отмечено конкретное поле. Рядом показан правильный вариант.');
+};
+
+
+// Word formation inputs
+for(const inp of document.querySelectorAll('.wordinput'))inp.addEventListener('change',()=>{inp.style.background=norm(inp.value)===norm(inp.dataset.answer)?'#eaf7ed':'#fff1ef'});
+
+// Move sentence sorting
+for(const b of document.querySelectorAll('.moveSentence')) b.onclick=()=>{const correct=b.dataset.target;const parent=b.parentElement.id;if(parent==='sentenceSource'){(correct==='normal'?document.getElementById('normalCol'):document.getElementById('nowCol')).appendChild(b);b.classList.add('good')}else{document.getElementById('sentenceSource').appendChild(b);b.classList.remove('good')}};
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window._toast);window._toast=setTimeout(()=>t.classList.remove('show'),1500)}
+</script>
+
+<script>
+// Each platform stage opens one original slide, with its original interactions.
+(() => {
+  const value = new URLSearchParams(location.search).get('stage');
+  if (!value || !/^\d+$/.test(value)) return;
+  const index = Number(value) - 1;
+  if (index < 0 || index >= slides.length) return;
+  const originalShowSlide = showSlide;
+  showSlide = () => originalShowSlide(index);
+  document.documentElement.classList.add('platform-stage');
+  showSlide();
+})();
+</script>
+<style>
+.platform-stage .topbar,.platform-stage .footer{display:none}
+.platform-stage .slides{height:100dvh}
+</style>
+<script>
+(() => {
+  const loadVisibleImages = () => {
+    document.querySelectorAll('.slide.active img[data-cm-src]').forEach(image => {
+      image.src = image.dataset.cmSrc;
+      image.removeAttribute('data-cm-src');
+    });
+  };
+  const priorShowSlide = showSlide;
+  showSlide = (...args) => { priorShowSlide(...args); loadVisibleImages(); };
+  loadVisibleImages();
+})();
+</script>
+</body>
+</html>

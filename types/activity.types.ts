@@ -3,6 +3,7 @@ import type { SnakeWordConfig } from '../components/LessonBuilder/SnakeWordBuild
 import type { LetterTraceConfig } from '../components/LessonBuilder/LetterTraceGame';
 import type { LetterRaceConfig } from '../components/LessonBuilder/LetterRaceGame';
 import type { LetterMazeConfig } from '../components/LessonBuilder/LetterMazeGame';
+import type { FlashlightConfig } from '../components/LessonBuilder/FlashlightGame';
 
 // Common activity types and interfaces
 export type ActivityType =
@@ -22,6 +23,7 @@ export type ActivityType =
   | 'abc-quest'
   | 'letter-jump'
   | 'bubble-grammar'
+  | 'flashlight'
   // Legacy types for backward compatibility
   | 'meet-family'
   | 'speaking'
@@ -62,6 +64,7 @@ export interface BaseActivity {
   letterTraceConfig?: LetterTraceConfig;
   letterRaceConfig?: LetterRaceConfig;
   letterMazeConfig?: LetterMazeConfig;
+  flashlightConfig?: FlashlightConfig;
 }
 
 export interface ImageActivity extends BaseActivity {
@@ -142,7 +145,7 @@ export interface LetterMazeActivity extends BaseActivity {
 }
 
 export interface GameActivity extends BaseActivity {
-  type: 'secret-key-quest' | 'abc-quest' | 'letter-jump' | 'bubble-grammar';
+  type: 'secret-key-quest' | 'abc-quest' | 'letter-jump' | 'bubble-grammar' | 'flashlight';
   gameUrl?: string;
 }
 

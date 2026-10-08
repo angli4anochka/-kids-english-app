@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Working Together · Progress Check 1</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Nunito:wght@700;800;900&display=swap');
+
+    :root {
+      --ink: #17233d;
+      --muted: #61708d;
+      --blue: #356bea;
+      --blue-dark: #244eb0;
+      --yellow: #ffd862;
+      --line: #dbe6f7;
+      --paper: #f7faff;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      min-height: 100vh;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: Manrope, system-ui, sans-serif;
+      background:
+        linear-gradient(135deg, #ecf4ff 0%, #f8fbff 52%, #fff7dc 100%);
+    }
+
+    button { font: inherit; }
+
+    .page {
+      min-height: 100vh;
+      padding: 12px;
+      display: grid;
+      place-items: center;
+    }
+
+    .lesson-shell {
+      width: min(1460px, 100%);
+      height: min(716px, calc(100vh - 24px));
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
+      gap: 22px;
+      padding: 18px;
+      border: 1px solid rgba(82, 110, 160, 0.16);
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 24px 70px rgba(45, 70, 112, 0.18);
+      overflow: hidden;
+    }
+
+    .media {
+      min-width: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(53, 107, 234, 0.04), rgba(255, 216, 98, 0.1));
+    }
+
+    .media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .panel {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 6px 8px 0;
+    }
+
+    .meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .unit-badge,
+    .progress-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--line);
+      color: #254477;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .03em;
+      text-transform: uppercase;
+    }
+
+    .unit-badge span {
+      width: 24px;
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+    }
+
+    .progress-badge strong {
+      color: var(--blue);
+      font-size: 15px;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .copy {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      max-width: 520px;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: #43618e;
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Nunito, Manrope, sans-serif;
+      font-size: clamp(42px, 4.8vw, 72px);
+      line-height: .95;
+      letter-spacing: -.04em;
+      color: var(--ink);
+    }
+
+    .accent {
+      display: block;
+      color: var(--blue);
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(16px, 1.25vw, 19px);
+      line-height: 1.55;
+      font-weight: 600;
+    }
+
+    .rules {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rules li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(244, 248, 255, 0.95);
+      color: #334867;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .start-button {
+      min-height: 50px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 20px 12px 22px;
+      border: 0;
+      border-radius: 16px;
+      color: #fff;
+      background: linear-gradient(135deg, var(--blue), #5c89fb);
+      box-shadow: 0 12px 26px rgba(53, 107, 234, 0.28);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .start-button:hover { background: linear-gradient(135deg, var(--blue-dark), #4f80f7); }
+    .start-button:focus-visible { outline: 4px solid rgba(53, 107, 234, 0.22); outline-offset: 4px; }
+
+    .arrow {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 18px;
+    }
+
+    .score-note {
+      color: #6b7891;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .score-note strong {
+      display: block;
+      color: #253858;
+      font-size: 15px;
+    }
+
+    .footer-note {
+      align-self: end;
+      padding-top: 2px;
+      color: #6b7891;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 980px) {
+      .lesson-shell {
+        height: auto;
+        min-height: calc(100vh - 24px);
+        grid-template-columns: 1fr;
+      }
+
+      .media {
+        aspect-ratio: 1024 / 559;
+      }
+
+      .panel {
+        padding: 0;
+      }
+    }
+
+    @media (max-width: 540px) {
+      .page { padding: 0; }
+      .lesson-shell {
+        width: 100%;
+        min-height: 100vh;
+        border-radius: 0;
+        padding: 14px;
+        gap: 14px;
+      }
+
+      h1 { font-size: 38px; }
+      .subtitle { font-size: 15px; }
+      .start-button { width: 100%; }
+      .actions { gap: 10px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="lesson-shell" aria-labelledby="lesson-title">
+      <div class="media">
+        <img src="https://storage.yandexcloud.net/kids-app/html-assets/progress-check-1-opening/hero.jpg" alt="Four classmates working together in a classroom">
+      </div>
+
+      <div class="panel">
+        <div class="meta">
+          <div class="unit-badge"><span>1</span> Citizenship</div>
+          <div class="progress-badge"><span>Final stage</span> <strong>0 / 100</strong></div>
+        </div>
+
+        <div class="copy">
+          <p class="eyebrow">Extensive Reading</p>
+          <h1 id="lesson-title">Working <span class="accent">Together!</span></h1>
+          <p class="subtitle">First, discover the teamwork rules. Then take <strong>Progress Check 1</strong> and see what you can do in English.</p>
+
+          <ul class="rules" aria-label="Teamwork rules">
+            <li><span class="dot" style="background:#ff7a6c"></span>Listen to your partner</li>
+            <li><span class="dot" style="background:#36bfa8"></span>Share your things</li>
+            <li><span class="dot" style="background:#f1b92c"></span>Ask questions</li>
+          </ul>
+
+          <div class="actions">
+            <button class="start-button" id="startLesson" type="button">Start the lesson <span class="arrow" aria-hidden="true">→</span></button>
+            <div class="score-note"><strong>5 challenges</strong>100 points to collect</div>
+          </div>
+        </div>
+
+        <div class="footer-note">Progress Check 1 opening screen</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('startLesson').addEventListener('click', () => {
+      const detail = { action: 'next', screen: 'progress-check-1-opening' };
+      window.dispatchEvent(new CustomEvent('lesson:navigate', { detail }));
+      if (window.parent !== window) window.parent.postMessage(detail, '*');
+    });
+  </script>
+</body>
+</html>

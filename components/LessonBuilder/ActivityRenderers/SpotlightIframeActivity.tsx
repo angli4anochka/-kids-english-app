@@ -8,6 +8,9 @@ export interface SpotlightActivityProps {
   lessonId?: string;
   activityId?: string;
   sessionId?: string;
+  groupId?: number;
+  socket?: any;
+  isConnected?: boolean;
 }
 
 interface SpotlightIframeActivityProps extends SpotlightActivityProps {
@@ -17,6 +20,12 @@ interface SpotlightIframeActivityProps extends SpotlightActivityProps {
   width?: number;
   height?: number;
   sandbox?: string;
+  realtime?: {
+    outgoingType: string;
+    socketEvent: string;
+    incomingEvent: string;
+    incomingType: string;
+  };
 }
 
 export default function SpotlightIframeActivity({
@@ -30,9 +39,14 @@ export default function SpotlightIframeActivity({
   lessonId,
   activityId,
   sessionId,
+  groupId,
+  socket,
+  isConnected,
+  realtime,
 }: SpotlightIframeActivityProps) {
   const { user } = useAuth();
   const containerRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const [scale, setScale] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const messageTypes = useMemo(() => new Set(doneMessageTypes), [doneMessageTypes]);
@@ -56,34 +70,72 @@ export default function SpotlightIframeActivity({
     if (!messageTypes.has(data.type)) return;
     if (submitted || isTeacher || !lessonId) return;
 
+    const payload = {
+      lessonId,
+      activityId,
+      sessionId: sessionId || null,
+      studentId: user?.id ?? null,
+      studentName: user?.displayName || user?.username || '??????',
+      results: data.results || data.result || data.allResults || [],
+      score: Number(data.score ?? 0),
+      total: Number(data.total ?? data.totalItems ?? 0),
+      status: 'completed',
+      timeSeconds: data.timeSeconds == null ? null : Number(data.timeSeconds),
+      details: data.details || { completed: true },
+      groupId,
+    };
+
     try {
       await fetch('/kids-api/spotlight/results', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          lessonId,
-          activityId,
-          sessionId: sessionId || null,
-          studentId: user?.id,
-          studentName: user?.displayName || 'Ученик',
-          results: data.results || data.result || data.allResults || [],
-          score: Number(data.score ?? 0),
-          total: Number(data.total ?? data.totalItems ?? 0),
-        }),
+        body: JSON.stringify(payload),
       });
-      setSubmitted(true);
     } catch {
       // Keep the activity playable if result submission fails.
     }
-  }, [activityId, isTeacher, lessonId, messageTypes, sessionId, submitted, user]);
+
+    if (socket && isConnected && groupId != null) {
+      socket.emit('activity-result', payload);
+    }
+    setSubmitted(true);
+  }, [activityId, groupId, isConnected, isTeacher, lessonId, messageTypes, sessionId, socket, submitted, user]);
 
   useEffect(() => {
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, [handleMessage]);
 
+  useEffect(() => {
+    if (!realtime || !socket || !isConnected || groupId == null || !sessionId || !activityId) return;
+
+    const forwardOutgoing = (event: MessageEvent) => {
+      if (event.source !== iframeRef.current?.contentWindow) return;
+      const data = event.data;
+      if (!data || data.type !== realtime.outgoingType) return;
+      socket.emit(realtime.socketEvent, { ...data, sessionId, groupId, activityId });
+    };
+    const applyIncoming = (data: any) => {
+      if (data?.sessionId !== sessionId || data?.activityId !== activityId) return;
+      iframeRef.current?.contentWindow?.postMessage({ ...data, type: realtime.incomingType }, '*');
+    };
+    const requestState = () => socket.emit(`${realtime.socketEvent}:request`, { sessionId, groupId, activityId });
+
+    window.addEventListener('message', forwardOutgoing);
+    socket.on(realtime.incomingEvent, applyIncoming);
+    requestState();
+    const iframe = iframeRef.current;
+    iframe?.addEventListener('load', requestState);
+    return () => {
+      window.removeEventListener('message', forwardOutgoing);
+      socket.off(realtime.incomingEvent, applyIncoming);
+      iframe?.removeEventListener('load', requestState);
+    };
+  }, [activityId, groupId, isConnected, realtime, sessionId, socket]);
+
   const iframe = (
     <iframe
+      ref={iframeRef}
       src={src}
       title={title}
       width={width}

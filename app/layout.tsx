@@ -29,6 +29,10 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <link rel="dns-prefetch" href="https://storage.yandexcloud.net" />
+        <link rel="preconnect" href="https://storage.yandexcloud.net" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full flex flex-col">
         <Providers>
           {children}

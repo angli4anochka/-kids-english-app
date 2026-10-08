@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Listening Exercise 4</title>
+  <style>
+    :root{
+      --ink:#17366f;
+      --muted:#6b7da7;
+      --blue:#5f7fe8;
+      --purple:#8f7de8;
+      --line:#dce6fb;
+      --ok:#219a70;
+      --bad:#d75464;
+      --panel:rgba(255,255,255,.96);
+      --shadow:0 22px 60px rgba(37,57,110,.16);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      width:100%;
+      height:100%;
+      margin:0;
+      overflow:hidden;
+    }
+
+    body{
+      font-family:Inter,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%,rgba(108,145,238,.22),transparent 28%),
+        radial-gradient(circle at 92% 10%,rgba(154,132,236,.18),transparent 24%),
+        linear-gradient(135deg,#f8fbff 0%,#eef4ff 54%,#f8f5ff 100%);
+    }
+
+    button{font:inherit}
+
+    .app{
+      width:100%;
+      height:100%;
+      min-height:0;
+      padding:clamp(8px,1.2vw,16px);
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:6px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .title h1{
+      margin:0;
+      font-size:clamp(23px,2.3vw,36px);
+      line-height:1;
+      letter-spacing:0;
+    }
+
+    .title p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:clamp(13px,1vw,16px);
+      font-weight:750;
+    }
+
+    .progress{
+      min-width:min(310px,38vw);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .audio-button{
+      display:none;
+      align-items:center;
+      gap:8px;
+      border:0;
+      border-radius:999px;
+      padding:10px 16px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 10px 20px rgba(73,96,207,.22);
+      font-weight:950;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .teacher-mode .audio-button{
+      display:flex;
+    }
+
+    .track{
+      flex:1;
+      height:9px;
+      border-radius:999px;
+      background:#dfe8fb;
+      overflow:hidden;
+    }
+
+    .fill{
+      width:0;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--blue),var(--purple));
+      transition:width .2s ease;
+    }
+
+    .progress-text{
+      min-width:72px;
+      text-align:right;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .workspace{
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      padding:clamp(8px,1.2vw,14px);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.88);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+      scrollbar-width:thin;
+      scrollbar-color:#b9c9ec transparent;
+    }
+
+    .content{
+      width:min(1280px,100%);
+      height:100%;
+      margin:0 auto;
+      display:grid;
+      grid-template-rows:1fr auto;
+      gap:8px;
+      min-height:0;
+    }
+
+    .question-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(420px,1fr));
+      gap:8px;
+      min-height:0;
+    }
+
+    .question-card{
+      padding:10px 12px;
+      border:2px solid var(--line);
+      border-radius:17px;
+      background:#fbfdff;
+      transition:border-color .15s ease,background .15s ease;
+    }
+
+    .question-card.correct{
+      border-color:#7ed0b1;
+      background:#effaf6;
+    }
+
+    .question-card.wrong{
+      border-color:#eca0ab;
+      background:#fff3f5;
+    }
+
+    .question-title{
+      margin:0 0 7px;
+      font-size:clamp(15px,1.25vw,18px);
+      line-height:1.25;
+      font-weight:950;
+    }
+
+    .options{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:6px;
+    }
+
+    .option{
+      position:relative;
+      min-height:108px;
+      border:2px solid #dce6fb;
+      border-radius:15px;
+      padding:7px;
+      color:#28498f;
+      background:#fff;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:5px;
+      cursor:pointer;
+      transition:transform .12s ease,border-color .12s ease,background .12s ease;
+    }
+
+    .option:hover{
+      transform:translateY(-2px);
+      border-color:#9fb4ec;
+      background:#f7f9ff;
+    }
+
+    .option.selected{
+      border-color:#6f89e7;
+      background:#eaf0ff;
+      box-shadow:0 0 0 3px rgba(95,127,232,.1);
+    }
+
+    .option.correct-choice{
+      color:#15704f;
+      border-color:#6fc5a3;
+      background:#e8f8f2;
+    }
+
+    .option.wrong-choice{
+      color:#af3f50;
+      border-color:#e695a0;
+      background:#fff0f2;
+    }
+
+    .letter{
+      position:absolute;
+      top:8px;
+      left:8px;
+      width:27px;
+      height:27px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .visual{
+      width:98px;
+      height:66px;
+      display:grid;
+      place-items:center;
+    }
+
+    .visual svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .option-label{
+      font-size:15px;
+      font-weight:950;
+      text-align:center;
+    }
+
+    .bottom{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      margin-top:0;
+    }
+
+    .feedback{
+      min-height:24px;
+      font-size:15px;
+      font-weight:900;
+    }
+
+    .feedback.ok{color:var(--ok)}
+    .feedback.bad{color:var(--bad)}
+
+    .actions{
+      display:flex;
+      gap:9px;
+      flex:0 0 auto;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:10px 18px;
+      font-size:14px;
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    .btn.primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 10px 20px rgba(73,96,207,.22);
+    }
+
+    .btn.secondary{
+      color:var(--ink);
+      background:#edf3ff;
+    }
+
+    @media(max-width:940px){
+      .question-grid{grid-template-columns:1fr}
+    }
+
+    @media(max-height:720px){
+      .app{padding:7px 10px;gap:6px}
+      .workspace{padding:8px 11px}
+      .question-grid{gap:8px}
+      .question-card{padding:10px}
+      .question-title{margin-bottom:7px;font-size:17px}
+      .options{gap:6px}
+      .option{min-height:92px;padding:6px}
+      .visual{width:68px;height:52px}
+      .option-label{font-size:14px}
+      .bottom{margin-top:8px}
+      .btn{padding:8px 14px}
+      .audio-button{padding:8px 13px}
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title">
+        <h1>Listening</h1>
+        <p>Listen to your teacher’s audio and choose the correct picture.</p>
+      </div>
+
+      <div class="top-actions">
+        <button class="audio-button" id="audioButton" type="button">▶ Play</button>
+        <div class="progress">
+          <div class="track"><div class="fill" id="progressFill"></div></div>
+          <div class="progress-text" id="progressText">0 of 4</div>
+        </div>
+      </div>
+      <audio id="lessonAudio" preload="auto" src="https://storage.yandexcloud.net/kids-app/public-assets/audio/unit1c/listening_ex4_p30.mp3"></audio>
+    </header>
+
+    <section class="workspace">
+      <div class="content">
+        <div class="question-grid" id="questionGrid"></div>
+
+        <div class="bottom">
+          <div class="feedback" id="feedback" aria-live="polite"></div>
+          <div class="actions">
+            <button class="btn secondary" id="resetButton" type="button">Reset</button>
+            <button class="btn primary" id="checkButton" type="button">Check</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        question:"1. What’s the boy’s name?",
+        answer:1,
+        options:[
+          {label:"John", visual:"name"},
+          {label:"Jeff", visual:"name"},
+          {label:"George", visual:"name"}
+        ]
+      },
+      {
+        question:"2. Where is the maths lesson?",
+        answer:2,
+        options:[
+          {label:"Room A", visual:"room"},
+          {label:"Room D", visual:"room"},
+          {label:"Room E", visual:"room"}
+        ]
+      },
+      {
+        question:"3. What is on the desk?",
+        answer:2,
+        options:[
+          {label:"Ruler", visual:"ruler"},
+          {label:"Pencil", visual:"pencil"},
+          {label:"Pen", visual:"pen"}
+        ]
+      },
+      {
+        question:"4. What is Mary’s favourite subject?",
+        answer:0,
+        options:[
+          {label:"Maths", visual:"maths"},
+          {label:"Geography", visual:"geography"},
+          {label:"Science", visual:"science"}
+        ]
+      }
+    ];
+
+    const letters = ["A","B","C"];
+    const questionGrid = document.getElementById("questionGrid");
+    const feedback = document.getElementById("feedback");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const audio = document.getElementById("lessonAudio");
+    const audioButton = document.getElementById("audioButton");
+
+    function post(type, detail = {}) {
+      const message = {
+        type,
+        lessonId:"listening-exercise-4-all-on-one-page",
+        ...detail
+      };
+      window.parent.postMessage(message, "*");
+      window.dispatchEvent(new CustomEvent(type, {detail:message}));
+    }
+
+    function playAudio(broadcast = true){
+      audio.currentTime = 0;
+      audio.play().catch(()=>{});
+      audioButton.textContent = "⏸ Stop";
+      if(broadcast) post("lesson:audio-play");
+    }
+
+    function stopAudio(broadcast = true){
+      audio.pause();
+      audio.currentTime = 0;
+      audioButton.textContent = "▶ Play";
+      if(broadcast) post("lesson:audio-stop");
+    }
+
+    audioButton.addEventListener("click",()=>{
+      if(audio.paused) playAudio(true);
+      else stopAudio(true);
+    });
+
+    audio.addEventListener("ended",()=>{
+      audioButton.textContent = "▶ Play";
+    });
+
+    window.addEventListener("message",event=>{
+      const data = event.data || {};
+      if(data.type === "set-role"){
+        document.body.classList.toggle("teacher-mode", data.role === "teacher");
+      }
+      if(data.type === "lesson:audio-play") playAudio(false);
+      if(data.type === "lesson:audio-stop") stopAudio(false);
+    });
+
+    function svgFor(type,label){
+      if(type==="name"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <defs><linearGradient id="g${label}" x1="0" x2="1"><stop stop-color="#70d6d3"/><stop offset="1" stop-color="#9a7bea"/></linearGradient></defs>
+          <path d="M25 84c12-38 42-52 68-34 12-17 38-15 48 3 19 0 30 14 26 31-3 16-18 24-37 24H47c-20 0-31-10-27-24z" fill="url(#g${label})" opacity=".35"/>
+          <text x="90" y="93" text-anchor="middle" font-size="48" font-weight="900" fill="#3158c7">${label}</text>
+        </svg>`;
+      }
+
+      if(type==="room"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <rect x="22" y="38" width="136" height="74" rx="22" fill="#dce9ef" stroke="#7992a7" stroke-width="5"/>
+          <circle cx="44" cy="58" r="5" fill="#9fb2c0"/>
+          <circle cx="137" cy="92" r="5" fill="#9fb2c0"/>
+          <text x="90" y="87" text-anchor="middle" font-size="34" font-weight="900" fill="#4d6071">${label}</text>
+        </svg>`;
+      }
+
+      if(type==="ruler"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <g transform="rotate(-28 90 75)">
+            <rect x="35" y="58" width="110" height="28" rx="5" fill="#f7df67" stroke="#4b8d9c" stroke-width="4"/>
+            ${Array.from({length:10},(_,i)=>`<line x1="${45+i*10}" y1="58" x2="${45+i*10}" y2="${i%2?70:75}" stroke="#4b8d9c" stroke-width="2"/>`).join("")}
+          </g>
+        </svg>`;
+      }
+
+      if(type==="pencil"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <g transform="rotate(-28 90 75)">
+            <rect x="45" y="62" width="88" height="24" rx="8" fill="#b9473b"/>
+            <polygon points="133,62 160,74 133,86" fill="#e7c08b"/>
+            <polygon points="154,71 165,74 154,77" fill="#333"/>
+            <rect x="35" y="62" width="18" height="24" rx="6" fill="#d8c5a9"/>
+          </g>
+        </svg>`;
+      }
+
+      if(type==="pen"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <g transform="rotate(-25 90 75)">
+            <rect x="48" y="55" width="82" height="30" rx="12" fill="#496aa8"/>
+            <rect x="115" y="48" width="22" height="44" rx="9" fill="#2f4f84"/>
+            <polygon points="48,64 28,70 48,78" fill="#d8dce5"/>
+            <line x1="65" y1="56" x2="65" y2="84" stroke="#91a5d5" stroke-width="4"/>
+          </g>
+        </svg>`;
+      }
+
+      if(type==="maths"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <rect x="28" y="28" width="124" height="88" rx="8" fill="#355c38" stroke="#8b5b31" stroke-width="8"/>
+          <text x="90" y="65" text-anchor="middle" font-size="24" fill="#fff">7 + 5 = 12</text>
+          <text x="90" y="94" text-anchor="middle" font-size="22" fill="#fff">9 × 3 = 27</text>
+        </svg>`;
+      }
+
+      if(type==="geography"){
+        return `<svg viewBox="0 0 180 150" aria-hidden="true">
+          <circle cx="90" cy="68" r="44" fill="#64a6e8" stroke="#3158c7" stroke-width="5"/>
+          <path d="M63 38c13-9 27-10 39-4 2 10-2 17-9 22-12-6-22-4-30 5-6-7-5-16 0-23zm42 31c10-7 20-5 27 2-2 13-9 22-20 28-8-8-10-18-7-30z" fill="#6fc46f"/>
+          <path d="M90 113v17M55 132h70" stroke="#4d5b76" stroke-width="6" stroke-linecap="round"/>
+        </svg>`;
+      }
+
+      return `<svg viewBox="0 0 180 150" aria-hidden="true">
+        <path d="M76 22h28M82 22v40L48 116h84L98 62V22" fill="none" stroke="#5f7fe8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M61 92h58l13 24H48z" fill="#67d1c1"/>
+        <circle cx="78" cy="100" r="5" fill="#fff"/>
+        <circle cx="101" cy="106" r="4" fill="#fff"/>
+      </svg>`;
+    }
+
+    function render(){
+      questionGrid.innerHTML = "";
+
+      questions.forEach((question,questionIndex)=>{
+        const card = document.createElement("article");
+        card.className = "question-card";
+        card.dataset.index = questionIndex;
+
+        card.innerHTML = `
+          <h2 class="question-title">${question.question}</h2>
+          <div class="options">
+            ${question.options.map((option,optionIndex)=>`
+              <button class="option" type="button" data-option="${optionIndex}">
+                <span class="letter">${letters[optionIndex]}</span>
+                <span class="visual">${svgFor(option.visual,option.label)}</span>
+                <span class="option-label">${option.label}</span>
+              </button>
+            `).join("")}
+          </div>
+        `;
+
+        card.querySelectorAll(".option").forEach(button=>{
+          button.addEventListener("click",()=>{
+            card.querySelectorAll(".option").forEach(option=>{
+              option.classList.remove("selected","correct-choice","wrong-choice");
+            });
+
+            button.classList.add("selected");
+            card.classList.remove("correct","wrong");
+            feedback.textContent = "";
+            updateProgress();
+          });
+        });
+
+        questionGrid.appendChild(card);
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const answered = [...document.querySelectorAll(".question-card")]
+        .filter(card=>card.querySelector(".option.selected")).length;
+
+      progressText.textContent = `${answered} of 4`;
+      progressFill.style.width = `${(answered / 4) * 100}%`;
+    }
+
+    document.getElementById("checkButton").addEventListener("click",()=>{
+      let correct = 0;
+      let unanswered = 0;
+
+      [...document.querySelectorAll(".question-card")].forEach(card=>{
+        const questionIndex = Number(card.dataset.index);
+        const selected = card.querySelector(".option.selected");
+        const answer = questions[questionIndex].answer;
+
+        card.classList.remove("correct","wrong");
+        card.querySelectorAll(".option").forEach(option=>{
+          option.classList.remove("correct-choice","wrong-choice");
+        });
+
+        if(!selected){
+          unanswered += 1;
+          card.classList.add("wrong");
+          return;
+        }
+
+        const selectedIndex = Number(selected.dataset.option);
+
+        if(selectedIndex === answer){
+          correct += 1;
+          card.classList.add("correct");
+          selected.classList.add("correct-choice");
+        }else{
+          card.classList.add("wrong");
+          selected.classList.add("wrong-choice");
+
+          card.querySelectorAll(".option").forEach(option=>{
+            if(Number(option.dataset.option) === answer){
+              option.classList.add("correct-choice");
+            }
+          });
+        }
+      });
+
+      if(correct === 4){
+        feedback.textContent = "Excellent! All four answers are correct.";
+        feedback.className = "feedback ok";
+        post("lesson:listening-complete",{score:4,total:4});
+      }else if(unanswered > 0){
+        feedback.textContent = `${correct} correct. Answer all four questions.`;
+        feedback.className = "feedback bad";
+      }else{
+        feedback.textContent = `${correct} of 4 correct. Check the red cards.`;
+        feedback.className = "feedback bad";
+      }
+    });
+
+    document.getElementById("resetButton").addEventListener("click",()=>{
+      document.querySelectorAll(".option").forEach(option=>{
+        option.classList.remove("selected","correct-choice","wrong-choice");
+      });
+
+      document.querySelectorAll(".question-card").forEach(card=>{
+        card.classList.remove("correct","wrong");
+      });
+
+      feedback.textContent = "";
+      updateProgress();
+      post("lesson:listening-reset");
+    });
+
+    render();
+  </script>
+</body>
+</html>

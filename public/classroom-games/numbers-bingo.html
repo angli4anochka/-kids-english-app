@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numbers Bingo 1–10</title>
+<style>
+:root{
+  --bg:#f7f4ff;
+  --panel:#fff;
+  --ink:#2f3152;
+  --muted:#747894;
+  --line:#e5ddf3;
+  --accent:#7768e8;
+  --accent2:#eeeaff;
+  --pink:#ff8fbc;
+  --blue:#62b8ff;
+  --green:#72d39a;
+  --yellow:#f3d85f;
+  --shadow:0 14px 34px rgba(73,55,115,.12);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--ink);
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 8% 8%,rgba(255,143,188,.18),transparent 22%),
+    radial-gradient(circle at 92% 5%,rgba(119,104,232,.16),transparent 24%),
+    radial-gradient(circle at 88% 88%,rgba(114,211,154,.13),transparent 24%),
+    var(--bg);
+}
+button{font:inherit}
+.app{
+  height:100vh;
+  padding:8px 10px;
+  display:grid;
+  grid-template-rows:48px minmax(0,1fr);
+  gap:7px;
+}
+.topbar{
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:6px 10px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  box-shadow:0 5px 16px rgba(65,50,95,.05);
+}
+.brand{display:flex;align-items:center;gap:9px}
+.logo{
+  width:34px;height:34px;border-radius:11px;background:var(--accent2);
+  display:grid;place-items:center;font-size:18px;
+}
+.brand strong{display:block;font-size:16px;line-height:1.05}
+.brand span{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+.mode-switch{display:flex;gap:6px}
+.mode-btn{
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink);
+  border-radius:10px;
+  padding:7px 10px;
+  font-size:11px;
+  font-weight:900;
+  cursor:pointer;
+}
+.mode-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.screen{
+  min-height:0;
+  background:rgba(255,255,255,.94);
+  border:1px solid var(--line);
+  border-radius:24px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  padding:14px;
+}
+.view{display:none;height:100%;min-height:0}
+.view.active{display:block}
+
+/* teacher */
+.teacher-layout{
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(280px,.8fr);
+  gap:12px;
+}
+.number-stage{
+  min-height:0;
+  border:1px solid var(--line);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 50% 45%,rgba(119,104,232,.09),transparent 48%),
+    #fcfbff;
+  display:grid;
+  place-items:center;
+  position:relative;
+}
+.number-wrap{text-align:center}
+.kicker{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.13em;
+  color:var(--accent);
+  font-weight:950;
+}
+.big-number{
+  font-size:min(34vw,320px);
+  line-height:.88;
+  font-weight:1000;
+  letter-spacing:-.08em;
+  margin-top:10px;
+  color:var(--ink);
+}
+.number-word{
+  font-size:32px;
+  font-weight:950;
+  color:var(--accent);
+  margin-top:8px;
+}
+.teacher-side{
+  min-height:0;
+  display:grid;
+  grid-template-rows:auto auto minmax(0,1fr);
+  gap:9px;
+}
+.controls{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:10px;
+  background:#fff;
+}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.btn{
+  border:0;
+  border-radius:11px;
+  padding:10px 12px;
+  font-size:12px;
+  font-weight:950;
+  cursor:pointer;
+}
+.btn.primary{background:var(--accent);color:#fff}
+.btn.secondary{background:#fff;border:1px solid var(--line);color:var(--ink)}
+.btn.big{grid-column:1/-1;font-size:15px;padding:12px}
+.called-title{
+  font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);font-weight:950;margin-bottom:7px
+}
+.called-grid{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
+}
+.called{
+  aspect-ratio:1;
+  border-radius:12px;
+  border:1px solid var(--line);
+  background:#faf9fd;
+  display:grid;
+  place-items:center;
+  font-weight:950;
+  font-size:16px;
+  color:#9b9db0;
+}
+.called.on{
+  background:var(--accent2);
+  color:var(--accent);
+  border-color:#cfc7fa;
+}
+.teacher-tip{
+  border:1px dashed var(--line);
+  border-radius:16px;
+  padding:10px;
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.4;
+  align-self:end;
+}
+
+/* student */
+.student-layout{
+  height:100%;
+  min-height:0;
+  display:grid;
+  grid-template-columns:220px minmax(0,1fr);
+  gap:12px;
+}
+.student-side{
+  border:1px solid var(--line);
+  border-radius:20px;
+  background:#fcfbff;
+  padding:12px;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:9px;
+}
+.student-side h2{margin:2px 0 0;font-size:22px}
+.student-side p{margin:0;color:var(--muted);font-size:11px;line-height:1.4}
+.student-board-wrap{
+  min-height:0;
+  display:grid;
+  place-items:center;
+}
+.bingo-board{
+  width:min(72vh,620px);
+  max-width:100%;
+  aspect-ratio:1;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:9px;
+}
+.cell{
+  border:2px solid #ddd6f0;
+  background:#fff;
+  border-radius:20px;
+  font-size:clamp(44px,8vw,88px);
+  font-weight:1000;
+  color:var(--ink);
+  cursor:pointer;
+  display:grid;
+  place-items:center;
+  box-shadow:0 8px 20px rgba(67,52,104,.06);
+  transition:.15s ease;
+}
+.cell:hover{transform:translateY(-2px)}
+.cell.marked{
+  background:linear-gradient(145deg,#eeeaff,#ffe8f2);
+  border-color:#a99df1;
+  color:var(--accent);
+  box-shadow:inset 0 0 0 4px rgba(255,255,255,.65);
+}
+.student-status{
+  font-size:12px;
+  font-weight:900;
+  color:var(--accent);
+  min-height:18px;
+}
+.mini-list{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:5px;
+}
+.mini{
+  aspect-ratio:1;
+  border:1px solid var(--line);
+  border-radius:9px;
+  display:grid;
+  place-items:center;
+  font-size:11px;
+  font-weight:900;
+  color:var(--muted);
+}
+.mini.hit{background:#edf9f2;color:#2d8d5f;border-color:#b9e6ca}
+
+.win-overlay{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  background:rgba(48,39,77,.30);
+  backdrop-filter:blur(5px);
+  display:none;
+  place-items:center;
+  padding:18px;
+}
+.win-overlay.show{display:grid}
+.win-card{
+  width:min(420px,100%);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:25px;
+  padding:24px;
+  text-align:center;
+  box-shadow:0 24px 60px rgba(56,40,91,.22);
+}
+.win-card .emoji{font-size:54px}
+.win-card h2{font-size:38px;margin:5px 0}
+.win-card p{color:var(--muted);margin:0 0 14px;font-size:13px}
+
+@media(max-height:720px){
+  .app{grid-template-rows:42px minmax(0,1fr);padding:5px 7px;gap:5px}
+  .screen{padding:9px;border-radius:18px}
+  .teacher-layout,.student-layout{gap:7px}
+  .teacher-side{gap:6px}
+  .controls{padding:7px}
+  .btn{padding:7px 9px}
+  .called-grid{gap:4px}
+  .called{border-radius:9px;font-size:13px}
+  .number-word{font-size:24px}
+  .student-layout{grid-template-columns:185px minmax(0,1fr)}
+  .student-side{padding:9px}
+  .student-side h2{font-size:18px}
+  .bingo-board{width:min(68vh,540px);gap:6px}
+  .cell{border-radius:15px}
+}
+@media(max-width:820px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100vh}
+  .teacher-layout,.student-layout{grid-template-columns:1fr}
+  .student-side{order:2}
+  .bingo-board{width:min(92vw,620px)}
+}
+</style>
+<style>.number-wrong{outline:3px solid #ef6981}#studentCall{font-weight:800;color:#7768e8;margin-bottom:8px}.mode-switch{font-size:12px;font-weight:700}.bingo-board{max-height:100%;height:min(68vh,540px);width:auto;aspect-ratio:1}@media(max-width:820px){.brand span{display:none}.topbar{flex-wrap:wrap}.screen{overflow:visible}.bingo-board{width:min(86vw,540px);height:auto}.student-side{order:0}.big-number{font-size:150px}.number-stage{min-height:210px}}</style><style>@media(min-width:641px){.app{height:100dvh;min-height:0}.teacher-layout{grid-template-columns:minmax(0,1fr) minmax(180px,.6fr)}.student-layout{grid-template-columns:170px minmax(0,1fr)}.number-stage{min-height:0}.big-number{font-size:clamp(100px,20vw,260px)}.screen{overflow:hidden}.student-side{order:0}.bingo-board{width:auto;height:min(62vh,500px)}}.cell{min-width:0;min-height:0}</style></head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">🔢</div>
+      <div>
+        <strong>Numbers Bingo 1–10</strong>
+        <span>Teacher shows a number. Students click it on their own cards.</span>
+      </div>
+    </div>
+    <div class="mode-switch">
+      <button class="mode-btn active" id="teacherMode" type="button">Teacher</button>
+      <button class="mode-btn" id="studentMode" type="button">Student</button>
+    </div>
+  </header>
+
+  <main class="screen">
+    <section class="view active" id="teacherView">
+      <div class="teacher-layout">
+        <div class="number-stage">
+          <div class="number-wrap">
+            <div class="kicker">The number is...</div>
+            <div class="big-number" id="bigNumber">?</div>
+            <div class="number-word" id="numberWord">Press NEXT</div>
+          </div>
+        </div>
+
+        <aside class="teacher-side">
+          <div class="controls">
+            <div class="btn-row">
+              <button class="btn primary big" id="nextNumber" type="button">NEXT NUMBER</button>
+              <button class="btn secondary" id="repeatNumber" type="button">🔊 Repeat</button>
+              <button class="btn secondary" id="resetTeacher" type="button">↺ Reset</button>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="called-title">Numbers already called</div>
+            <div class="called-grid" id="calledGrid"></div>
+          </div>
+
+          <div class="teacher-tip">
+            Учитель показывает экран. Нажимает <b>NEXT NUMBER</b>, цифра появляется крупно и произносится по-английски. Ученики у себя на карточках нажимают эту цифру.
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="studentView">
+      <div class="student-layout">
+        <aside class="student-side">
+          <div>
+            <div class="kicker">Your card</div>
+            <h2>BINGO!</h2>
+          </div>
+          <p>Когда учитель показывает цифру, найди её у себя и нажми. Собери линию из трёх клеток.</p>
+          <div>
+            <div class="called-title">Numbers on this card</div>
+            <div class="mini-list" id="miniList"></div>
+          </div>
+          <div>
+            <div id="studentCall">Wait for your teacher</div><button id="studentListen" class="btn secondary">Listen</button><div class="student-status" id="studentStatus">Tap a number when you hear it.</div>
+            <div class="btn-row">
+              <button class="btn primary" id="newCard" type="button">New card</button>
+              <button class="btn secondary" id="clearMarks" type="button">Clear</button>
+            </div>
+          </div>
+        </aside>
+
+        <div class="student-board-wrap">
+          <div class="bingo-board" id="bingoBoard"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="win-overlay" id="winOverlay">
+  <div class="win-card">
+    <div class="emoji">🎉</div>
+    <h2>BINGO!</h2>
+    <p>You made a line of three numbers.</p>
+    <button class="btn primary" id="closeWin" type="button">Continue</button>
+  </div>
+</div>
+
+<script src="/classroom-games/bridge.js"></script><script src="/classroom-games/natural-audio.js?v=us-jenny-1"></script><script src="/classroom-games/numbers-bingo.js?v=us-jenny-1"></script>
+<span id="saveStatus" style="position:fixed;bottom:3px;right:8px;font-size:10px;color:#737895">Answers save automatically</span></body>
+</html>

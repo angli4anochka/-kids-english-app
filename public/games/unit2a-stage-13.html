@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Have you got...?</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --ink:#263247;
+      --muted:#6d7685;
+      --line:#e4e8ed;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --blue-bg:#eef5ff;
+      --shadow:0 20px 55px rgba(43,34,29,.13);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%,rgba(255,185,133,.22),transparent 26%),
+        radial-gradient(circle at 90% 12%,rgba(93,155,225,.16),transparent 26%),
+        #f4f1ee;
+      overflow:hidden;
+    }
+
+    button{font:inherit}
+
+    .app{
+      width:min(1220px,calc(100vw - 24px));
+      height:min(90vh,840px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.98);
+      border:1px solid rgba(214,205,198,.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:17px 22px 14px;
+      border-bottom:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:21px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.24);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .progress{
+      margin-left:auto;
+      min-width:124px;
+      padding:10px 13px;
+      border-radius:16px;
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      color:var(--orange-dark);
+      font-weight:900;
+      text-align:center;
+    }
+
+    .rule{
+      margin:14px 20px 0;
+      padding:11px 14px;
+      border-radius:17px;
+      background:#fffaf5;
+      border:1px solid #ffe0ca;
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+      align-items:center;
+      color:#7a4c2b;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .rule strong{color:var(--orange-dark)}
+
+    main{
+      min-height:0;
+      padding:18px 20px;
+    }
+
+    .screen{
+      display:none;
+      height:100%;
+    }
+
+    .screen.active{
+      display:grid;
+      place-items:center;
+    }
+
+    .panel{
+      width:min(900px,100%);
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:24px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      padding:22px;
+    }
+
+    .panel h2{
+      margin:0 0 6px;
+      font-size:30px;
+      letter-spacing:-.03em;
+    }
+
+    .panel-intro{
+      margin:0 0 18px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .question-list{
+      display:grid;
+      gap:10px;
+    }
+
+    .question-row{
+      display:grid;
+      grid-template-columns:38px 1fr auto 1fr;
+      gap:9px;
+      align-items:center;
+      padding:11px 12px;
+      border:1px solid #e3e7ed;
+      border-radius:16px;
+      background:#fafbfc;
+    }
+
+    .number{
+      width:30px;
+      height:30px;
+      border-radius:10px;
+      display:grid;
+      place-items:center;
+      background:#fff0e7;
+      color:var(--orange-dark);
+      font-weight:950;
+    }
+
+    .subject,.rest{
+      font-weight:850;
+      line-height:1.4;
+    }
+
+    .blank{
+      min-width:90px;
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:center;
+    }
+
+    .option{
+      border:1px solid #d6dce5;
+      border-radius:11px;
+      background:#fff;
+      padding:8px 10px;
+      color:#3a465c;
+      font-weight:900;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .option:hover{border-color:#ffad76}
+
+    .option.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .option.correct{
+      background:var(--green-bg);
+      border-color:#70c895;
+      color:#246a47;
+    }
+
+    .option.wrong{
+      background:var(--red-bg);
+      border-color:#e58e89;
+      color:#98362f;
+    }
+
+    .chat{
+      display:grid;
+      gap:12px;
+    }
+
+    .chat-row{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:12px;
+      align-items:center;
+      padding:13px 14px;
+      border:1px solid #e3e7ed;
+      border-radius:17px;
+      background:#fafbfc;
+    }
+
+    .bubble{
+      padding:11px 14px;
+      border-radius:16px 16px 16px 5px;
+      background:var(--blue-bg);
+      border:1px solid #c5d9f1;
+      color:#31577f;
+      font-weight:850;
+      line-height:1.45;
+    }
+
+    .answers{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .answer-btn{
+      border:1px solid #d6dce5;
+      border-radius:12px;
+      background:#fff;
+      padding:9px 11px;
+      color:#3a465c;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .answer-btn.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+    }
+
+    .answer-btn.correct{
+      background:var(--green-bg);
+      border-color:#70c895;
+      color:#246a47;
+    }
+
+    .answer-btn.wrong{
+      background:var(--red-bg);
+      border-color:#e58e89;
+      color:#98362f;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:14px;
+      padding:12px 14px;
+      border-radius:15px;
+      font-weight:850;
+      text-align:center;
+    }
+
+    .feedback.show{display:block}
+
+    .feedback.correct{
+      background:var(--green-bg);
+      border:1px solid #a8ddbf;
+      color:#256b48;
+    }
+
+    .feedback.incorrect{
+      background:var(--red-bg);
+      border:1px solid #efb0ac;
+      color:#98362f;
+    }
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:17px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){transform:translateY(-2px)}
+
+    .check{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .next{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .footer-note{
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .continue{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    @media(max-width:760px){
+      html,body{overflow:auto}
+
+      .app{
+        height:auto;
+        min-height:calc(100vh - 20px);
+        margin:10px auto;
+      }
+
+      .question-row{
+        grid-template-columns:36px 1fr;
+      }
+
+      .blank{
+        justify-content:flex-start;
+      }
+
+      .chat-row{
+        grid-template-columns:1fr;
+      }
+
+      .answers{
+        justify-content:flex-start;
+      }
+    }
+
+    @media(max-width:560px){
+      header{padding:14px}
+      .progress{display:none}
+      .rule{margin:12px 14px 0}
+      main{padding:14px}
+      .panel{padding:17px}
+    }
+    /* Lesson iframe: use the complete embedded viewport without scrolling. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);margin:12px auto}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Have you got...?</h1>
+        <p class="subtitle">Make questions and choose the correct short answers.</p>
+      </div>
+      <div id="progress" class="progress">Step 1 of 2</div>
+    </header>
+
+    <section class="rule">
+      <span><strong>Questions:</strong> Have I/you/we/they got...?</span>
+      <span><strong>Questions:</strong> Has he/she/it got...?</span>
+    </section>
+
+    <main>
+      <section id="questionScreen" class="screen active">
+        <article class="panel">
+          <h2>Choose Have or Has</h2>
+          <p class="panel-intro">Complete all six questions.</p>
+
+          <div id="questionList" class="question-list"></div>
+          <div id="questionFeedback" class="feedback"></div>
+
+          <div class="actions">
+            <button id="checkQuestionsBtn" class="btn check">Check</button>
+            <button id="answersBtn" class="btn next">Short answers</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="answerScreen" class="screen">
+        <article class="panel">
+          <h2>Choose the short answer</h2>
+          <p class="panel-intro">Look at the information and answer each question.</p>
+
+          <div id="chat" class="chat"></div>
+          <div id="answerFeedback" class="feedback"></div>
+
+          <div class="actions">
+            <button id="checkAnswersBtn" class="btn check">Check</button>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Choose Have or Has in every question.</div>
+      <button id="continueBtn" class="btn continue">Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const questions = [
+      {subject:'you', rest:'got an eraser?', answer:'Have'},
+      {subject:'Mia', rest:'got an atlas?', answer:'Has'},
+      {subject:'Ben and Leo', rest:'got a ruler?', answer:'Have'},
+      {subject:'Tom', rest:'got a pencil case?', answer:'Has'},
+      {subject:'your friends', rest:'got notepads?', answer:'Have'},
+      {subject:'the teacher', rest:'got a map?', answer:'Has'}
+    ];
+
+    const shortAnswers = [
+      {
+        question:'Have you got an eraser?',
+        fact:'yes',
+        options:['Yes, I have.','No, I haven’t.'],
+        answer:'Yes, I have.'
+      },
+      {
+        question:'Has Mia got an atlas?',
+        fact:'no',
+        options:['Yes, she has.','No, she hasn’t.'],
+        answer:'No, she hasn’t.'
+      },
+      {
+        question:'Have Ben and Leo got a ruler?',
+        fact:'yes',
+        options:['Yes, they have.','No, they haven’t.'],
+        answer:'Yes, they have.'
+      },
+      {
+        question:'Has Tom got a pencil case?',
+        fact:'yes',
+        options:['Yes, he has.','No, he hasn’t.'],
+        answer:'Yes, he has.'
+      },
+      {
+        question:'Have your friends got notepads?',
+        fact:'no',
+        options:['Yes, they have.','No, they haven’t.'],
+        answer:'No, they haven’t.'
+      }
+    ];
+
+    const questionList = document.getElementById('questionList');
+    const questionFeedback = document.getElementById('questionFeedback');
+    const checkQuestionsBtn = document.getElementById('checkQuestionsBtn');
+    const answersBtn = document.getElementById('answersBtn');
+    const questionScreen = document.getElementById('questionScreen');
+    const answerScreen = document.getElementById('answerScreen');
+    const progress = document.getElementById('progress');
+    const footerNote = document.getElementById('footerNote');
+    const continueBtn = document.getElementById('continueBtn');
+
+    function renderQuestions(){
+      questionList.innerHTML = '';
+
+      questions.forEach((item,index) => {
+        const row = document.createElement('div');
+        row.className = 'question-row';
+        row.dataset.answer = item.answer;
+
+        const number = document.createElement('div');
+        number.className = 'number';
+        number.textContent = index + 1;
+
+        const subject = document.createElement('div');
+        subject.className = 'subject';
+        subject.textContent = item.subject;
+
+        const blank = document.createElement('div');
+        blank.className = 'blank';
+
+        ['Have','Has'].forEach(value => {
+          const button = document.createElement('button');
+          button.className = 'option';
+          button.textContent = value;
+          button.dataset.value = value;
+
+          button.addEventListener('click', () => {
+            blank.querySelectorAll('.option')
+              .forEach(option => option.classList.toggle('selected', option === button));
+          });
+
+          blank.appendChild(button);
+        });
+
+        const rest = document.createElement('div');
+        rest.className = 'rest';
+        rest.textContent = item.rest;
+
+        row.append(number,blank,subject,rest);
+        questionList.appendChild(row);
+      });
+    }
+
+    checkQuestionsBtn.addEventListener('click', () => {
+      const rows = [...document.querySelectorAll('.question-row')];
+      const incomplete = rows.some(row => !row.querySelector('.option.selected'));
+
+      if(incomplete){
+        questionFeedback.className = 'feedback show incorrect';
+        questionFeedback.textContent = 'Choose Have or Has in all six questions first.';
+        return;
+      }
+
+      let score = 0;
+
+      rows.forEach(row => {
+        const answer = row.dataset.answer;
+        const selected = row.querySelector('.option.selected');
+
+        row.querySelectorAll('.option').forEach(option => {
+          option.disabled = true;
+          if(option.dataset.value === answer) option.classList.add('correct');
+          if(option === selected && option.dataset.value !== answer) option.classList.add('wrong');
+        });
+
+        if(selected.dataset.value === answer) score++;
+      });
+
+      questionFeedback.className =
+        `feedback show ${score === questions.length ? 'correct' : 'incorrect'}`;
+
+      questionFeedback.textContent =
+        score === questions.length
+          ? 'Perfect. All six question forms are correct.'
+          : `${score} of ${questions.length} are correct. The correct forms are green.`;
+
+      checkQuestionsBtn.style.display = 'none';
+      answersBtn.style.display = 'inline-block';
+      footerNote.textContent = 'Now practise short answers.';
+    });
+
+    answersBtn.addEventListener('click', () => {
+      questionScreen.classList.remove('active');
+      answerScreen.classList.add('active');
+      progress.textContent = 'Step 2 of 2';
+      footerNote.textContent = 'Choose one short answer in every dialogue.';
+      renderShortAnswers();
+    });
+
+    const chat = document.getElementById('chat');
+    const answerFeedback = document.getElementById('answerFeedback');
+    const checkAnswersBtn = document.getElementById('checkAnswersBtn');
+
+    function renderShortAnswers(){
+      chat.innerHTML = '';
+
+      shortAnswers.forEach((item,index) => {
+        const row = document.createElement('div');
+        row.className = 'chat-row';
+        row.dataset.answer = item.answer;
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.innerHTML = `<strong>${index + 1}.</strong> ${item.question}`;
+
+        const answers = document.createElement('div');
+        answers.className = 'answers';
+
+        item.options.forEach(value => {
+          const button = document.createElement('button');
+          button.className = 'answer-btn';
+          button.textContent = value;
+          button.dataset.value = value;
+
+          button.addEventListener('click', () => {
+            answers.querySelectorAll('.answer-btn')
+              .forEach(answer => answer.classList.toggle('selected', answer === button));
+          });
+
+          answers.appendChild(button);
+        });
+
+        row.append(bubble,answers);
+        chat.appendChild(row);
+      });
+    }
+
+    checkAnswersBtn.addEventListener('click', () => {
+      const rows = [...document.querySelectorAll('.chat-row')];
+      const incomplete = rows.some(row => !row.querySelector('.answer-btn.selected'));
+
+      if(incomplete){
+        answerFeedback.className = 'feedback show incorrect';
+        answerFeedback.textContent = 'Choose one answer in every dialogue first.';
+        return;
+      }
+
+      let score = 0;
+
+      rows.forEach(row => {
+        const answer = row.dataset.answer;
+        const selected = row.querySelector('.answer-btn.selected');
+
+        row.querySelectorAll('.answer-btn').forEach(option => {
+          option.disabled = true;
+          if(option.dataset.value === answer) option.classList.add('correct');
+          if(option === selected && option.dataset.value !== answer) option.classList.add('wrong');
+        });
+
+        if(selected.dataset.value === answer) score++;
+      });
+
+      answerFeedback.className =
+        `feedback show ${score === shortAnswers.length ? 'correct' : 'incorrect'}`;
+
+      answerFeedback.textContent =
+        score === shortAnswers.length
+          ? 'Perfect. All five short answers are correct.'
+          : `${score} of ${shortAnswers.length} are correct. Review the green answers.`;
+
+      checkAnswersBtn.style.display = 'none';
+      continueBtn.style.display = 'inline-block';
+      footerNote.textContent = 'The question and answer task is complete.';
+
+      localStorage.setItem('haveGotQuestionsResult',JSON.stringify({
+        score,
+        total:shortAnswers.length
+      }));
+    });
+
+    continueBtn.addEventListener('click', () => {
+      const result = JSON.parse(localStorage.getItem('haveGotQuestionsResult') || '{}');
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'have-got-questions',
+        result
+      },'*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    renderQuestions();
+  </script>
+</body>
+</html>

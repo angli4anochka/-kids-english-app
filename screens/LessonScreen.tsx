@@ -149,18 +149,18 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
         setIsCheckingLesson(true);
 
         // Если есть lessonId в URL - используем его напрямую
-        if (lessonIdFromUrl && user?.role === 'teacher') {
+        if (lessonIdFromUrl) {
           console.log('Loading lesson by ID:', lessonIdFromUrl);
           const lesson = await lessonService.getLesson(lessonIdFromUrl);
           setLessonExists(true);
           setSelectedGroupId(lesson.groupId || null);
-          setShowCreateLesson(true);
+          setShowCreateLesson(user?.role === 'teacher');
           setIsCheckingLesson(false);
 
           // Send navigate-to-lesson event to students
           console.log('[LessonScreen] Checking navigate conditions - socket:', !!socket, 'isConnected:', isConnected, 'lesson.groupId:', lesson.groupId, 'hasNavigatedStudents:', hasNavigatedStudents);
 
-          if (socket && isConnected && lesson.groupId && !hasNavigatedStudents) {
+          if (user?.role === 'teacher' && socket && isConnected && lesson.groupId && !hasNavigatedStudents) {
             const currentPath = window.location.pathname + window.location.search;
             console.log('[LessonScreen] ✅ Sending navigate-to-lesson to students:', currentPath, 'groupId:', lesson.groupId);
 
@@ -326,7 +326,7 @@ const LessonScreen = ({ islandId, lessonNumber }: LessonScreenProps) => {
 
   // Экран с RulesMaps и кликабельным лисенком (только для студентов или новых уроков)
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(/img/RulesMaps.jpg)` }}>
+    <div className="min-h-screen w-full relative overflow-hidden bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(https://storage.yandexcloud.net/kids-app/public-assets/img/RulesMaps.jpg)` }}>
 
       {/* Navigation buttons */}
       <div className="absolute top-8 left-8 z-20 flex gap-3">

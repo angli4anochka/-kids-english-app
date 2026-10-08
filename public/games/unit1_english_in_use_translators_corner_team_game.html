@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Translator's Corner · Team Game</title>
+  <style>
+    :root{--navy:#092b60;--blue:#3576dc;--purple:#7846ea;--gold:#ffca52;--green:#138a68;--red:#d05262;--ink:#142d50;--muted:#667a97;--line:#c9d9ee;--white:#fff}
+    *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden}body{color:var(--ink);background:radial-gradient(circle at 4% 5%,#d9ebff 0,transparent 26%),radial-gradient(circle at 94% 94%,#eadfff 0,transparent 28%),#f5f8fd;font-family:Inter,ui-rounded,"Trebuchet MS",Arial,sans-serif}
+    .app{width:min(1240px,100%);height:100dvh;margin:auto;padding:10px 12px 12px;overflow:hidden}
+    .hero{display:flex;align-items:center;gap:12px;margin-bottom:10px;padding:12px 14px;border:3px solid #fff;border-radius:20px;background:#ffffffdf;box-shadow:0 14px 38px #24497818}.number{display:grid;place-items:center;flex:0 0 50px;height:50px;border-radius:16px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple));font-size:1.2rem;font-weight:950;box-shadow:0 8px 18px #5368d622}.eyebrow{margin:0 0 2px;color:var(--blue);font-size:.68rem;font-weight:950;letter-spacing:.14em;text-transform:uppercase}.hero h1{margin:0;color:var(--navy);font-size:1.65rem;line-height:1.05;letter-spacing:0}.hero p:last-child{margin:3px 0 0;color:var(--muted);font-size:.92rem;font-weight:750}
+    .board-shell{padding:12px 12px 10px;border:4px solid #fff;border-radius:22px;background:#ffffffd9;box-shadow:0 18px 50px #284e8b18}.category+.category{margin-top:12px}.category-head{display:flex;align-items:center;gap:9px;margin-bottom:8px}.category-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:10px;background:#e8f1ff;font-size:1rem}.category h2{margin:0;color:var(--navy);font-size:1.08rem;line-height:1.1}.category small{color:var(--muted);font-size:.72rem;font-weight:800}.grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.grid.sentences{grid-template-columns:repeat(6,minmax(0,1fr))}.card{position:relative;min-height:72px;padding:8px;border:2px solid #c4d7ef;border-radius:14px;color:var(--navy);background:linear-gradient(145deg,#fff,#edf5ff);font:inherit;cursor:pointer;box-shadow:0 6px 12px #1e477410;transition:.15s}.card:hover{border-color:var(--blue);transform:translateY(-2px);box-shadow:0 9px 16px #1e477420}.card .qnum{display:block;font-size:1.12rem;font-weight:950;line-height:1}.card .points{display:inline-block;margin-top:4px;padding:2px 7px;border-radius:99px;color:#fff;background:var(--blue);font-size:.68rem;font-weight:950}.card.used{border-color:#bdd5cb;color:#718a82;background:#edf5f2;box-shadow:none;transform:none}.card.used .qnum{font-size:0}.card.used .qnum::after{content:'✓';font-size:1.3rem;color:var(--green)}.card.used .points{background:#8ba69d}
+    .score-title{margin:14px 0 8px;color:var(--navy);text-align:center;font-size:1.12rem;line-height:1}.scoreboard{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:10px}.team{padding:12px 12px 13px;border:3px solid #fff;border-radius:18px;background:#fff;box-shadow:0 12px 28px #284e8b16;text-align:center}.team.one{background:linear-gradient(145deg,#eaf4ff,#fff)}.team.two{background:linear-gradient(145deg,#f2eaff,#fff)}.team-name{width:min(220px,100%);padding:4px 8px;border:0;border-bottom:2px dashed #abc2e2;color:var(--navy);background:transparent;font:inherit;font-size:.98rem;font-weight:950;text-align:center}.score{display:block;margin:6px 0 7px;color:var(--navy);font-size:clamp(2rem,6vw,3rem);font-weight:950;line-height:1}.score-actions{display:flex;justify-content:center;gap:7px}.score-button{min-width:44px;min-height:36px;border:0;border-radius:10px;color:var(--navy);background:#e4eefb;font:inherit;font-weight:950;cursor:pointer}.score-button.plus{color:#fff;background:var(--blue)}.versus{align-self:center;color:#9aabc1;font-weight:950}.footer-actions{display:flex;justify-content:center;margin-top:10px}.reset{min-height:40px;padding:0 14px;border:0;border-radius:12px;color:#8b4550;background:#ffecef;font:inherit;font-size:.92rem;font-weight:900;cursor:pointer}
+    .modal{position:fixed;inset:0;z-index:10;display:none;place-items:center;padding:14px;background:#071c3db8;backdrop-filter:blur(5px)}.modal.open{display:grid}.dialog{width:min(640px,100%);max-height:90dvh;overflow:auto;padding:18px 18px 20px;border:4px solid #fff;border-radius:22px;background:#fff;box-shadow:0 28px 80px #0006}.dialog-top{display:flex;justify-content:space-between;gap:10px}.tag{display:inline-flex;align-items:center;gap:6px;margin-bottom:10px;padding:5px 10px;border-radius:99px;color:#fff;background:var(--purple);font-size:.74rem;font-weight:950}.close{width:38px;height:38px;border:0;border-radius:12px;color:var(--navy);background:#edf3fb;font-size:1.2rem;font-weight:900;cursor:pointer}.prompt-label{margin:0 0 6px;color:var(--muted);font-size:.68rem;font-weight:950;letter-spacing:.12em;text-transform:uppercase}.question{margin:0;color:var(--navy);font-size:1.6rem;line-height:1.2}.answer-area{margin-top:16px}.reveal{min-height:42px;padding:0 15px;border:0;border-radius:12px;color:#fff;background:linear-gradient(135deg,var(--blue),var(--purple));font:inherit;font-weight:950;cursor:pointer}.answer{display:none;margin:10px 0 0;padding:12px;border:2px solid #bcd8cc;border-radius:13px;color:#126f56;background:#effaf6;font-size:.98rem;font-weight:850;line-height:1.45}.answer.visible{display:block}.award-label{margin:16px 0 8px;color:var(--muted);font-size:.72rem;font-weight:950;text-transform:uppercase}.award-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.award{min-height:44px;border:0;border-radius:12px;color:#fff;background:var(--blue);font:inherit;font-weight:950;cursor:pointer}.award.team-two{background:var(--purple)}.no-point{display:block;width:100%;min-height:40px;margin-top:8px;border:0;border-radius:11px;color:var(--muted);background:#edf2f8;font:inherit;font-weight:900;cursor:pointer}
+    @media(max-width:900px){.grid,.grid.sentences{grid-template-columns:repeat(4,minmax(0,1fr))}.app{height:auto;min-height:100dvh;overflow:visible}.board-shell{overflow:visible}}@media(max-width:600px){.app{padding:8px}.hero{padding:11px}.number{flex-basis:46px;height:46px}.hero p:last-child{display:none}.board-shell{padding:11px 9px;border-width:3px}.grid,.grid.sentences{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.card{min-height:70px;padding:7px}.scoreboard{grid-template-columns:1fr 1fr}.versus{display:none}.team{padding:11px 8px}.award-row{grid-template-columns:1fr}.dialog{padding:16px 14px}}
+
+  </style>
+</head>
+<body>
+<main class="app">
+  <header class="hero"><div><p class="eyebrow">Team challenge</p><h1>Translator’s Corner</h1><p>Choose a card, translate the text and score points for your team.</p></div></header>
+  <section class="board-shell">
+    <div class="category"><div class="category-head"><span class="category-icon">📚</span><div><h2>What’s the English for…?</h2><small>10 points for each answer</small></div></div><div class="grid vocabulary"></div></div>
+    <div class="category"><div class="category-head"><span class="category-icon">✍️</span><div><h2>Translate into English</h2><small>20 or 30 points</small></div></div><div class="grid sentences"></div></div>
+  </section>
+  <h2 class="score-title">Team score</h2>
+  <section class="scoreboard">
+    <article class="team one"><input class="team-name name-one" value="Team 1" aria-label="First team name"><strong class="score score-one">0</strong><div class="score-actions"><button class="score-button" data-team="one" data-change="-10">−10</button><button class="score-button plus" data-team="one" data-change="10">+10</button></div></article>
+    <div class="versus">VS</div>
+    <article class="team two"><input class="team-name name-two" value="Team 2" aria-label="Second team name"><strong class="score score-two">0</strong><div class="score-actions"><button class="score-button" data-team="two" data-change="-10">−10</button><button class="score-button plus" data-team="two" data-change="10">+10</button></div></article>
+  </section>
+  <div class="footer-actions"><button class="reset" type="button">Reset game</button></div>
+</main>
+
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-question">
+  <div class="dialog">
+    <div class="dialog-top"><div><span class="tag"></span><p class="prompt-label">Translate into English</p></div><button class="close" type="button" aria-label="Close">×</button></div>
+    <h2 class="question" id="modal-question"></h2>
+    <div class="answer-area"><button class="reveal" type="button">Show answer</button><p class="answer"></p></div>
+    <p class="award-label">Give the points to:</p>
+    <div class="award-row"><button class="award team-one" type="button"></button><button class="award team-two" type="button"></button></div>
+    <button class="no-point" type="button">No points</button>
+  </div>
+</div>
+
+<script>
+  const vocabulary=[
+    ['расписание уроков','school timetable'],
+    ['английский язык и история','English and History'],
+    ['физкультура и естествознание','PE and Science'],
+    ['урок математики','Maths lesson'],
+    ['книга и тетрадь','book and notebook'],
+    ['линейка и карандаш','ruler and pencil'],
+    ['любимый предмет','favourite subject'],
+    ['дни недели','days of the week'],
+    ['учитель музыки','Music teacher'],
+    ['перерыв на обед','lunch break']
+  ].map((item,index)=>({id:`v${index+1}`,number:index+1,question:item[0],answer:item[1],points:10,group:'Vocabulary'}));
+  const sentenceData=[
+    ['Урок математики в кабинете № 16.','The Maths lesson is in Room 16.'],
+    ['Мой любимый день недели — суббота.','My favourite day of the week is Saturday.'],
+    ['Сколько лет Тому? — 10.','How old is Tom? He is ten.'],
+    ['Мне 12 лет. А тебе?','I am twelve. And you?'],
+    ['Его зовут Саша. Он учится в 5 классе.','His name is Sasha. He is in Class 5.'],
+    ['Джон и Билл — друзья. Они новенькие в 4 «А» классе.','John and Bill are friends. They are new in Class 4A.'],
+    ['Это карандаш? — Нет, это ручка.','Is it a pencil? No, it isn’t. It’s a pen.'],
+    ['Моя любимая учительница — Анна Ивановна. Она преподаёт русский язык.','My favourite teacher is Anna Ivanovna. She teaches Russian.'],
+    ['Как его зовут? В каком он классе? Сколько ему лет?','What’s his name? What class is he in? How old is he?'],
+    ['Какие предметы он изучает? Какой его любимый предмет? Кто его любимый учитель?','What subjects does he study? What’s his favourite subject? Who’s his favourite teacher?'],
+    ['Где проводится урок английского языка?','Where is the English lesson?']
+  ];
+  const sentences=sentenceData.map((item,index)=>({id:`s${index+1}`,number:index+1,question:item[0],answer:item[1],points:index<5?20:30,group:'Sentence'}));
+  const questions=[...vocabulary,...sentences],used=new Set();let active=null;const scores={one:0,two:0};
+  const vocabularyGrid=document.querySelector('.vocabulary'),sentenceGrid=document.querySelector('.sentences'),modal=document.querySelector('.modal');
+  function makeCard(item){const button=document.createElement('button');button.type='button';button.className='card';button.dataset.id=item.id;button.innerHTML=`<span class="qnum">${item.number}</span><span class="points">${item.points} points</span>`;button.addEventListener('click',()=>openQuestion(item));return button}
+  vocabulary.forEach(item=>vocabularyGrid.append(makeCard(item)));sentences.forEach(item=>sentenceGrid.append(makeCard(item)));
+  function openQuestion(item){active=item;document.querySelector('.tag').textContent=`${item.group} · ${item.points} points`;document.querySelector('.question').textContent=item.question;document.querySelector('.answer').textContent=item.answer;document.querySelector('.answer').classList.remove('visible');document.querySelector('.reveal').hidden=false;syncTeamNames();modal.classList.add('open')}
+  function closeModal(){modal.classList.remove('open');active=null}
+  document.querySelector('.reveal').addEventListener('click',e=>{document.querySelector('.answer').classList.add('visible');e.currentTarget.hidden=true});document.querySelector('.close').addEventListener('click',closeModal);modal.addEventListener('click',e=>{if(e.target===modal)closeModal()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+  function syncTeamNames(){document.querySelector('.award.team-one').textContent=document.querySelector('.name-one').value||'Team 1';document.querySelector('.award.team-two').textContent=document.querySelector('.name-two').value||'Team 2'}
+  document.querySelectorAll('.team-name').forEach(input=>input.addEventListener('input',syncTeamNames));
+  function updateScores(){document.querySelector('.score-one').textContent=scores.one;document.querySelector('.score-two').textContent=scores.two;saveGame()}
+  function finishQuestion(team){if(!active)return;if(team)scores[team]+=active.points;used.add(active.id);document.querySelector(`.card[data-id="${active.id}"]`).classList.add('used');updateScores();closeModal()}
+  document.querySelector('.award.team-one').addEventListener('click',()=>finishQuestion('one'));document.querySelector('.award.team-two').addEventListener('click',()=>finishQuestion('two'));document.querySelector('.no-point').addEventListener('click',()=>finishQuestion(null));
+  document.querySelectorAll('.score-button').forEach(button=>button.addEventListener('click',()=>{const team=button.dataset.team;scores[team]=Math.max(0,scores[team]+Number(button.dataset.change));updateScores()}));
+  function saveGame(){const data={scores,used:[...used],names:{one:document.querySelector('.name-one').value,two:document.querySelector('.name-two').value}};try{localStorage.setItem('translators-corner-team-game',JSON.stringify(data))}catch{}}
+  function restoreGame(){try{const data=JSON.parse(localStorage.getItem('translators-corner-team-game'));if(!data)return;scores.one=Number(data.scores?.one)||0;scores.two=Number(data.scores?.two)||0;(data.used||[]).forEach(id=>{used.add(id);document.querySelector(`.card[data-id="${id}"]`)?.classList.add('used')});document.querySelector('.name-one').value=data.names?.one||'Team 1';document.querySelector('.name-two').value=data.names?.two||'Team 2';updateScores();syncTeamNames()}catch{}}
+  document.querySelector('.reset').addEventListener('click',()=>{if(!confirm('Reset the score and all question cards?'))return;scores.one=0;scores.two=0;used.clear();document.querySelectorAll('.card').forEach(card=>card.classList.remove('used'));document.querySelector('.name-one').value='Team 1';document.querySelector('.name-two').value='Team 2';updateScores();syncTeamNames()});
+  restoreGame();syncTeamNames();
+</script>
+</body>
+</html>

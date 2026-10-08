@@ -1,0 +1,73 @@
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Stage 7 — Pronoun Security Check</title><style>
+:root{--g:#48ff98;--c:#23dcff;--bg:#020806;--panel:#07130f;--line:#20513b;--text:#e1ffed;--muted:#76a68a;--red:#ff746e}*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:"Courier New",monospace}body:after{content:"";position:fixed;z-index:30;pointer-events:none;inset:0;background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,#48ff9809 4px)}.page{position:relative;min-height:480px;padding:11px 4vw 16px;overflow:hidden;background:radial-gradient(circle at 50% 38%,#0d3023,#05120e 36%,#020706 75%)}.page:before{content:"";position:absolute;inset:0;opacity:.22;background-image:linear-gradient(#48ff9814 1px,transparent 1px),linear-gradient(90deg,#48ff9814 1px,transparent 1px);background-size:34px 34px}.top{position:relative;z-index:2;max-width:1260px;margin:auto;display:grid;grid-template-columns:1fr auto 1fr;align-items:center}.brand{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:900;letter-spacing:.08em}.logo{display:grid;place-items:center;width:28px;height:28px;border:1px solid var(--g);color:var(--g);box-shadow:0 0 15px #48ff9845}.file{padding:6px 12px;border:1px solid #26714d;color:var(--g);background:#071b14;font-size:9px;letter-spacing:.14em}.status{justify-self:end;color:var(--g);font-size:9px}.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 9px var(--g);animation:blink 1.3s infinite}.intro{position:relative;z-index:2;max-width:1260px;margin:12px auto 9px;display:flex;justify-content:space-between;align-items:end;gap:18px}.tag{color:var(--g);font-size:8px;font-weight:900;letter-spacing:.17em}.intro h1{font:800 clamp(25px,3.1vw,42px)/1 Arial,sans-serif;letter-spacing:-.045em;margin:5px 0 0}.intro h1 span{color:var(--g);text-shadow:0 0 22px #48ff9850}.intro p{max-width:390px;margin:0;color:var(--muted);font-size:9px;line-height:1.4;text-align:right}.terminal{position:relative;z-index:2;max-width:1260px;margin:auto;border:1px solid var(--line);background:#06110eeb;box-shadow:0 18px 55px #000a}.terminal-top{height:31px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);color:#63bd86;font-size:8px;letter-spacing:.12em}.meter{display:flex;align-items:center;gap:9px}.bar{width:100px;height:6px;border:1px solid #285c43;background:#0d2319}.bar span{display:block;width:0;height:100%;background:var(--g);box-shadow:0 0 8px var(--g);transition:.3s}.screen{padding:13px}.hidden{display:none!important}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.screen[data-screen="2"] .cards{grid-template-columns:repeat(2,minmax(240px,380px));justify-content:center}.card{min-width:0;padding:13px;border:1px solid #1d4936;background:#071610}.card.correct{border-color:var(--g);background:#082016}.card.wrong{border-color:var(--red);background:#1d0d0c}.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.num{color:var(--g);font-size:8px;font-weight:900;letter-spacing:.13em}.result{font-size:15px}.sentence{min-height:58px;margin:0 0 12px;color:#ccebd8;font:16px/1.5 Arial,sans-serif}.blank{display:inline-block;min-width:46px;padding:1px 5px;border-bottom:2px solid var(--g);color:var(--g);text-align:center;font-family:"Courier New",monospace;font-weight:900}.options{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.option{min-height:35px;padding:6px;border:1px solid #255b42;background:#0a1d15;color:#afd4bc;cursor:pointer;font:900 10px "Courier New",monospace}.option:hover,.option.selected{border-color:var(--g);color:var(--g);background:#0e2a1d}.card.correct .option.selected{background:#0c3924}.card.wrong .option.selected{border-color:var(--red);color:#ff8b86;background:#311211}.card.wrong .option[data-correct="true"]{border-color:var(--g);color:var(--g)}.controls{display:flex;align-items:center;justify-content:center;gap:9px;padding:0 13px 12px}.btn{height:36px;padding:0 17px;border:1px solid var(--g);background:var(--g);color:#021009;cursor:pointer;font:900 9px "Courier New",monospace;letter-spacing:.08em}.btn:hover{box-shadow:0 0 23px #48ff9850}.btn.secondary{background:#071711;color:#71c895;border-color:#286444}.message{min-width:275px;color:#79a68b;font-size:8px}.success{display:none;position:fixed;z-index:40;inset:0;background:#020806ec;place-items:center;padding:20px}.success.show{display:grid}.success-box{width:min(510px,100%);padding:37px 20px;text-align:center;background:#06140f;border:1px solid var(--g);box-shadow:0 0 55px #48ff9838}.success-icon{width:63px;height:63px;margin:auto;display:grid;place-items:center;border:2px solid var(--g);color:var(--g);font-size:28px;box-shadow:0 0 30px #48ff9844}.success h2{font:800 32px Arial,sans-serif;margin:16px 0 7px}.success p{color:#81af92;font-size:10px;line-height:1.6}.success .btn{margin-top:12px}@keyframes blink{50%{opacity:.25}}@media(max-width:720px){.status{display:none}.top{grid-template-columns:1fr auto}.intro p{display:none}.cards,.screen[data-screen="2"] .cards{grid-template-columns:1fr}.sentence{min-height:0}.options{grid-template-columns:repeat(3,1fr)}.message{display:none}}@media(max-width:430px){.page{padding-inline:8px}.brand{font-size:0}.screen{padding:8px}.card{padding:9px}.sentence{font-size:13px}.btn{padding:0 11px}}
+</style><style id="platform-fit">
+html,body{height:100%;min-height:0;overflow:hidden}
+body:after{position:absolute}
+.page{height:100%;min-height:0;padding:6px 28px 8px;overflow:hidden;display:grid;grid-template-rows:28px 50px minmax(0,1fr);gap:6px}
+.page:before{background-size:28px 28px}
+.top{max-width:none;width:100%;height:28px}
+.brand{gap:8px;font-size:10px;letter-spacing:.06em}
+.logo{width:24px;height:24px}
+.file{padding:5px 10px;font-size:9px;letter-spacing:.1em}
+.status{font-size:9px}
+.status i{width:6px;height:6px}
+.intro{max-width:none;width:100%;height:50px;margin:0;align-items:center;gap:16px}
+.tag{font-size:8px;letter-spacing:.12em}
+.intro h1{font-size:28px;line-height:.95;letter-spacing:0;margin:3px 0 0}
+.intro p{max-width:380px;font-size:10px;line-height:1.25}
+.terminal{max-width:none;width:100%;height:100%;min-height:0;overflow:hidden;display:grid;grid-template-rows:30px minmax(0,1fr) 40px;box-shadow:0 8px 22px #0009}
+.terminal-top{height:30px;padding:0 10px;font-size:8px;letter-spacing:.08em}
+.meter{gap:7px}
+.bar{width:92px;height:6px}
+.screen{height:100%;min-height:0;padding:8px;overflow:hidden}
+.cards{height:100%;min-height:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.screen[data-screen="2"] .cards{grid-template-columns:repeat(2,minmax(0,360px));align-content:stretch}
+.card{min-height:0;padding:10px;display:grid;grid-template-rows:18px minmax(64px,1fr) 36px;overflow:hidden}
+.card-top{margin-bottom:0}
+.num{font-size:8px;letter-spacing:.09em}
+.result{font-size:13px}
+.sentence{min-height:0;margin:5px 0 8px;font-size:15px;line-height:1.35}
+.blank{min-width:42px}
+.options{gap:5px}
+.option{min-height:32px;padding:5px;font-size:9px}
+.controls{height:40px;padding:5px 8px 0;justify-content:flex-end;gap:8px}
+.btn{height:34px;padding:0 13px;font-size:9px}
+.message{min-width:250px;font-size:8px;text-align:right}
+.success{position:absolute;padding:12px}
+.success-box{width:min(500px,100%);padding:26px 18px}
+.success-icon{width:56px;height:56px;font-size:26px}
+.success h2{font-size:28px;margin:14px 0 6px}
+.success p{font-size:12px;line-height:1.35}
+@media(max-width:760px){
+  html,body{overflow:auto}
+  .page{height:auto;overflow:visible;display:block;padding:10px 12px}
+  .intro{height:auto;margin:10px 0}
+  .intro p{display:none}
+  .terminal{height:auto;display:block;overflow:visible}
+  .screen{height:auto;overflow:visible}
+  .cards,.screen[data-screen="2"] .cards{height:auto;grid-template-columns:1fr}
+  .card{display:block}
+  .message{display:none}
+}
+</style></head><body><main class="page"><header class="top"><div class="brand"><span class="logo">⌁</span>SCHOOL INTEL SYSTEM</div><div class="file">FILE 07 // PRONOUN_REPAIR</div><div class="status"><i></i> MESSAGE SCANNER ONLINE</div></header>
+<section class="intro"><div><div class="tag">● DAMAGED LANGUAGE FILES</div><h1>Restore the <span>missing pronouns</span></h1></div><p>Five messages have lost important words. Select the correct personal pronoun for each gap.</p></section>
+<section class="terminal"><div class="terminal-top"><span>SECURE_MESSAGES.LOG</span><div class="meter"><span id="screen-label">SCREEN 1/2</span><div class="bar"><span id="bar"></span></div></div></div>
+<div class="screen" data-screen="1" id="screen1"><div class="cards">
+<article class="card"><div class="card-top"><span class="num">MESSAGE_01</span><span class="result"></span></div><p class="sentence">Jane is twelve. <span class="blank">___</span> is in Class 1A.</p><div class="options"><button class="option">He</button><button class="option" data-correct="true">She</button><button class="option">It</button></div></article>
+<article class="card"><div class="card-top"><span class="num">MESSAGE_02</span><span class="result"></span></div><p class="sentence">Mr Green is a teacher. <span class="blank">___</span> teaches History.</p><div class="options"><button class="option">It</button><button class="option">She</button><button class="option" data-correct="true">He</button></div></article>
+<article class="card"><div class="card-top"><span class="num">MESSAGE_03</span><span class="result"></span></div><p class="sentence">History is interesting. <span class="blank">___</span> is Jane’s favourite subject.</p><div class="options"><button class="option" data-correct="true">It</button><button class="option">He</button><button class="option">She</button></div></article>
+</div></div>
+<div class="screen hidden" data-screen="2" id="screen2"><div class="cards">
+<article class="card"><div class="card-top"><span class="num">MESSAGE_04</span><span class="result"></span></div><p class="sentence">Jane and Rachel are friends. <span class="blank">___</span> are in the same class.</p><div class="options"><button class="option">We</button><button class="option" data-correct="true">They</button><button class="option">It</button></div></article>
+<article class="card"><div class="card-top"><span class="num">MESSAGE_05</span><span class="result"></span></div><p class="sentence">“<span class="blank">___</span> like Art,” says Jane.</p><div class="options"><button class="option">She</button><button class="option">They</button><button class="option" data-correct="true">I</button></div></article>
+</div></div>
+<div class="controls"><button class="btn secondary hidden" id="back">← BACK</button><button class="btn" id="next">NEXT SCREEN →</button><button class="btn hidden" id="verify">VERIFY MESSAGES ↵</button><button class="btn secondary" id="reset">RESET</button><div class="message" id="message">SCREEN 1 OF 2 • RESTORE THREE MESSAGES</div></div></section></main>
+<div class="success" id="success"><div class="success-box"><div class="success-icon">✓</div><h2>MESSAGES RESTORED</h2><p>All missing pronouns have been recovered.<br>Language protocol is complete.</p><button class="btn" onclick="document.getElementById('success').classList.remove('show')">VIEW MESSAGES</button></div></div>
+<script>
+const screens=[document.getElementById('screen1'),document.getElementById('screen2')],cards=[...document.querySelectorAll('.card')],next=document.getElementById('next'),back=document.getElementById('back'),verify=document.getElementById('verify'),message=document.getElementById('message');let page=1;
+document.querySelectorAll('.option').forEach(o=>o.onclick=()=>{const card=o.closest('.card');card.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));o.classList.add('selected');card.classList.remove('correct','wrong');card.querySelector('.result').textContent='';card.querySelector('.blank').textContent=o.textContent});
+function show(n){page=n;screens[0].classList.toggle('hidden',n!==1);screens[1].classList.toggle('hidden',n!==2);back.classList.toggle('hidden',n===1);next.classList.toggle('hidden',n===2);verify.classList.toggle('hidden',n===1);document.getElementById('screen-label').textContent='SCREEN '+n+'/2';document.getElementById('bar').style.width=(n===1?'50':'100')+'%';message.textContent=n===1?'SCREEN 1 OF 2 • RESTORE THREE MESSAGES':'SCREEN 2 OF 2 • RESTORE TWO MESSAGES'}
+next.onclick=()=>{const first=[...screens[0].querySelectorAll('.card')];if(first.some(c=>!c.querySelector('.selected'))){message.textContent='ERROR: RESTORE ALL THREE MESSAGES FIRST.';return}show(2)};back.onclick=()=>show(1);
+verify.onclick=()=>{if(cards.some(c=>!c.querySelector('.selected'))){message.textContent='ERROR: RESTORE ALL FIVE MESSAGES.';return}let n=0;cards.forEach(c=>{const ok=c.querySelector('.selected').dataset.correct==='true';c.classList.toggle('correct',ok);c.classList.toggle('wrong',!ok);c.querySelector('.result').textContent=ok?'✓':'×';if(ok)n++});message.textContent=n===5?'ALL MESSAGES VERIFIED. PROTOCOL COMPLETE.':n+'/5 CORRECT. USE BACK TO CHECK RED MESSAGES.';if(n===5){window.parent.postMessage({type:'spotlight-result',lesson:'unit1d-pronoun-security-check',score:100,total:5,correct:5,answers:cards.map((c,i)=>({message:i+1,answer:c.querySelector('.selected')?.textContent||'',correct:c.querySelector('.selected')?.dataset.correct==='true'}))},'*');setTimeout(()=>document.getElementById('success').classList.add('show'),450)}};
+document.getElementById('reset').onclick=()=>{cards.forEach(c=>{c.classList.remove('correct','wrong');c.querySelectorAll('.option').forEach(x=>x.classList.remove('selected'));c.querySelector('.result').textContent='';c.querySelector('.blank').textContent='___'});show(1)};show(1);
+</script></body></html>

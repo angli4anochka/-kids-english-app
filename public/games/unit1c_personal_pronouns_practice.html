@@ -1,0 +1,844 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Personal Pronouns Practice</title>
+  <style>
+    :root {
+      --ink:#17366f;
+      --muted:#6b7da7;
+      --blue:#5f7fe8;
+      --purple:#8f7de8;
+      --line:#dce6fb;
+      --panel:rgba(255,255,255,.96);
+      --ok:#219a70;
+      --bad:#d75464;
+      --shadow:0 22px 60px rgba(37,57,110,.16);
+    }
+
+    * { box-sizing:border-box; }
+
+    html, body {
+      width:100%;
+      height:100%;
+      margin:0;
+      overflow:hidden;
+    }
+
+    body {
+      font-family:Inter, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 8%, rgba(108,145,238,.22), transparent 28%),
+        radial-gradient(circle at 92% 10%, rgba(154,132,236,.18), transparent 24%),
+        linear-gradient(135deg,#f8fbff 0%,#eef4ff 54%,#f8f5ff 100%);
+    }
+
+    button { font:inherit; }
+
+    .app {
+      width:100%;
+      height:100%;
+      min-height:0;
+      padding:clamp(8px,1.2vw,16px);
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:6px;
+    }
+
+    .topbar {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+
+    .title h1 {
+      margin:0;
+      font-size:clamp(23px,2.3vw,36px);
+      line-height:1;
+      letter-spacing:0;
+    }
+
+    .title p {
+      margin:3px 0 0;
+      color:var(--muted);
+      font-size:clamp(13px,1vw,15px);
+      font-weight:750;
+    }
+
+    .progress {
+      min-width:min(340px,40vw);
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .track {
+      flex:1;
+      height:10px;
+      border-radius:999px;
+      background:#dfe8fb;
+      overflow:hidden;
+    }
+
+    .fill {
+      width:50%;
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--blue),var(--purple));
+      transition:width .25s ease;
+    }
+
+    .progress-text {
+      min-width:94px;
+      text-align:right;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .workspace {
+      min-height:0;
+      height:100%;
+      overflow:hidden;
+      padding:clamp(10px,1.3vw,16px);
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.88);
+      background:var(--panel);
+      box-shadow:var(--shadow);
+    }
+
+    .stage {
+      display:none;
+      width:min(1180px,100%);
+      height:100%;
+      margin:0 auto;
+      min-height:0;
+    }
+
+    .stage.active {
+      display:flex;
+      flex-direction:column;
+      animation:fade .22s ease;
+    }
+
+    @keyframes fade {
+      from { opacity:0; transform:translateY(8px); }
+    }
+
+    .stage-head {
+      margin-bottom:10px;
+      flex:0 0 auto;
+    }
+
+    .stage-head h2 {
+      margin:0;
+      font-size:clamp(21px,2vw,30px);
+      letter-spacing:0;
+    }
+
+    .stage-head p {
+      margin:4px 0 0;
+      color:var(--muted);
+      font-weight:700;
+    }
+
+    .question-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(340px,1fr));
+      gap:9px;
+      min-height:0;
+    }
+
+    .question-card {
+      padding:11px 13px;
+      border:2px solid var(--line);
+      border-radius:17px;
+      background:#fbfdff;
+      transition:border-color .15s ease, background .15s ease;
+    }
+
+    .question-card:last-child {
+      grid-column:1 / -1;
+    }
+
+    .question-card.correct {
+      border-color:#7ed0b1;
+      background:#effaf6;
+    }
+
+    .question-card.wrong {
+      border-color:#eca0ab;
+      background:#fff3f5;
+    }
+
+    .sentence {
+      margin:0 0 8px;
+      font-size:clamp(15px,1.2vw,18px);
+      line-height:1.35;
+      font-weight:900;
+    }
+
+    .choice-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+    }
+
+    .choice {
+      min-width:72px;
+      border:2px solid #dce6fb;
+      border-radius:13px;
+      padding:7px 12px;
+      color:#28498f;
+      background:#fff;
+      font-weight:950;
+      cursor:pointer;
+      transition:transform .12s ease,border-color .12s ease,background .12s ease;
+    }
+
+    .choice:hover {
+      transform:translateY(-1px);
+      border-color:#9fb4ec;
+      background:#f5f8ff;
+    }
+
+    .choice.selected {
+      color:#fff;
+      border-color:transparent;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+    }
+
+    .choice.correct-choice {
+      color:#15704f;
+      border-color:#6fc5a3;
+      background:#e8f8f2;
+    }
+
+    .choice.wrong-choice {
+      color:#af3f50;
+      border-color:#e695a0;
+      background:#fff0f2;
+    }
+
+    .feedback {
+      min-height:24px;
+      margin-top:8px;
+      font-size:14px;
+      font-weight:900;
+    }
+
+    .feedback.ok { color:var(--ok); }
+    .feedback.bad { color:var(--bad); }
+
+    .actions {
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:10px;
+      flex:0 0 auto;
+    }
+
+    .btn {
+      border:0;
+      border-radius:15px;
+      padding:9px 17px;
+      font-size:15px;
+      font-weight:950;
+      cursor:pointer;
+    }
+
+    .btn.primary {
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      box-shadow:0 11px 23px rgba(73,96,207,.24);
+    }
+
+    .btn.secondary {
+      color:var(--ink);
+      background:#edf3ff;
+    }
+
+    .sort-layout {
+      display:grid;
+      grid-template-rows:auto 1fr;
+      gap:9px;
+      min-height:0;
+      flex:1 1 auto;
+    }
+
+    .bank {
+      min-height:62px;
+      padding:9px;
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+      border:2px dashed #b9c9ed;
+      border-radius:16px;
+      background:#f8fbff;
+    }
+
+    .person-card {
+      border:0;
+      border-radius:15px;
+      padding:7px 11px;
+      color:#28498f;
+      background:#fff;
+      box-shadow:0 8px 18px rgba(44,66,126,.11);
+      font-size:14px;
+      font-weight:950;
+      cursor:grab;
+      user-select:none;
+      transition:transform .12s ease, opacity .12s ease;
+    }
+
+    .person-card:hover {
+      transform:translateY(-2px);
+    }
+
+    .person-card.dragging {
+      opacity:.4;
+    }
+
+    .columns {
+      display:grid;
+      grid-template-columns:repeat(5,minmax(140px,1fr));
+      gap:7px;
+      min-height:0;
+    }
+
+    .drop-column {
+      min-height:0;
+      padding:7px;
+      border:2px solid var(--line);
+      border-radius:16px;
+      background:linear-gradient(145deg,#fbfdff,#f6f2ff);
+      transition:border-color .15s ease, background .15s ease;
+    }
+
+    .drop-column.drag-over {
+      border-color:#8fa7ec;
+      background:#eef4ff;
+    }
+
+    .drop-column.correct {
+      border-color:#7ed0b1;
+      background:#effaf6;
+    }
+
+    .drop-column.wrong {
+      border-color:#eca0ab;
+      background:#fff3f5;
+    }
+
+    .column-title {
+      margin:0 0 9px;
+      padding:6px 8px;
+      border-radius:12px;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      text-align:center;
+      font-size:clamp(17px,1.8vw,22px);
+      font-weight:950;
+    }
+
+    .drop-zone {
+      min-height:96px;
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+    }
+
+    .drop-zone:empty::after {
+      content:"Drop here";
+      margin:auto;
+      color:#98a8c7;
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .drop-zone .person-card {
+      cursor:pointer;
+      box-shadow:none;
+      background:#eef3ff;
+    }
+
+    .result-card {
+      padding:28px;
+      border-radius:22px;
+      background:linear-gradient(145deg,#eef4ff,#f7f3ff);
+      text-align:center;
+    }
+
+    .result-icon {
+      width:86px;
+      height:86px;
+      margin:0 auto 15px;
+      display:grid;
+      place-items:center;
+      border-radius:50%;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--purple));
+      font-size:42px;
+      box-shadow:0 16px 30px rgba(73,96,207,.26);
+    }
+
+    .result-card h2 {
+      margin:0 0 8px;
+      font-size:clamp(30px,3vw,44px);
+    }
+
+    .result-card p {
+      margin:0 0 18px;
+      color:var(--muted);
+      font-size:18px;
+      font-weight:750;
+    }
+
+    @media (max-width:950px) {
+      .question-grid { grid-template-columns:1fr; }
+      .question-card:last-child { grid-column:auto; }
+      .columns { grid-template-columns:repeat(2,minmax(150px,1fr)); }
+    }
+
+    @media (max-height:720px) {
+      .app { padding:9px 12px; gap:7px; }
+      .workspace { padding:8px 12px; }
+      .stage-head { margin-bottom:7px; }
+      .stage-head h2 { font-size:22px; }
+      .stage-head p { font-size:13px; }
+      .question-grid { gap:7px; }
+      .question-card { padding:9px 11px; }
+      .sentence { margin-bottom:6px; font-size:15px; }
+      .choice { padding:6px 10px; }
+      .feedback { min-height:18px; margin-top:6px; font-size:13px; }
+      .actions { margin-top:7px; }
+      .bank { min-height:54px; padding:7px; }
+      .person-card { padding:6px 9px; font-size:13px; }
+      .drop-column { padding:6px; }
+      .drop-zone { min-height:82px; gap:5px; }
+      .column-title { font-size:18px; margin-bottom:6px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="title">
+        <h1>Personal Pronouns</h1>
+        <p>Choose the pronoun, then sort the cards.</p>
+      </div>
+
+      <div class="progress">
+        <div class="track"><div class="fill" id="progressFill"></div></div>
+        <div class="progress-text" id="progressText">Stage 1 of 2</div>
+      </div>
+    </header>
+
+    <section class="workspace">
+      <section class="stage active" id="stageOne">
+        <div class="stage-head">
+          <h2>Choose the correct pronoun</h2>
+          <p>Click one answer for each sentence.</p>
+        </div>
+
+        <div class="question-grid" id="questionGrid"></div>
+
+        <div class="feedback" id="stageOneFeedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="resetStageOne" type="button">Reset</button>
+          <button class="btn primary" id="checkStageOne" type="button">Check</button>
+          <button class="btn primary" id="nextStageButton" type="button" hidden>Next activity</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stageTwo">
+        <div class="stage-head">
+          <h2>Sort the cards</h2>
+          <p>Drag each card to the correct pronoun. You can also click a card and then click a column.</p>
+        </div>
+
+        <div class="sort-layout">
+          <div class="bank" id="cardBank"></div>
+
+          <div class="columns">
+            <div class="drop-column" data-pronoun="he">
+              <h3 class="column-title">he</h3>
+              <div class="drop-zone"></div>
+            </div>
+
+            <div class="drop-column" data-pronoun="she">
+              <h3 class="column-title">she</h3>
+              <div class="drop-zone"></div>
+            </div>
+
+            <div class="drop-column" data-pronoun="it">
+              <h3 class="column-title">it</h3>
+              <div class="drop-zone"></div>
+            </div>
+
+            <div class="drop-column" data-pronoun="they">
+              <h3 class="column-title">they</h3>
+              <div class="drop-zone"></div>
+            </div>
+
+            <div class="drop-column" data-pronoun="we">
+              <h3 class="column-title">we</h3>
+              <div class="drop-zone"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="feedback" id="stageTwoFeedback" aria-live="polite"></div>
+
+        <div class="actions">
+          <button class="btn secondary" id="resetStageTwo" type="button">Reset</button>
+          <button class="btn primary" id="checkStageTwo" type="button">Check</button>
+        </div>
+      </section>
+
+      <section class="stage" id="resultStage">
+        <div class="result-card">
+          <div class="result-icon">✓</div>
+          <h2>Excellent work!</h2>
+          <p>You completed both personal pronoun activities.</p>
+          <button class="btn primary" id="restartAll" type="button">Play again</button>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script>
+    const questions = [
+      {
+        sentence:"This is Emma. ___ is in my class.",
+        answer:"she",
+        choices:["he","she","it"]
+      },
+      {
+        sentence:"This is my school. ___ is very big.",
+        answer:"it",
+        choices:["he","it","they"]
+      },
+      {
+        sentence:"Tom and Alex are friends. ___ are 12.",
+        answer:"they",
+        choices:["we","he","they"]
+      },
+      {
+        sentence:"This is my teacher. ___ is very nice.",
+        answer:"he",
+        choices:["he","it","they"]
+      },
+      {
+        sentence:"Anna and I like Music. ___ have Music on Friday.",
+        answer:"we",
+        choices:["they","we","she"]
+      }
+    ];
+
+    const sortCards = [
+      { label:"Mr Brown", answer:"he" },
+      { label:"my school", answer:"it" },
+      { label:"Kate and Mia", answer:"they" },
+      { label:"Tom", answer:"he" },
+      { label:"Anna and I", answer:"we" },
+      { label:"Emma", answer:"she" },
+      { label:"Ben and Tom", answer:"they" },
+      { label:"my classroom", answer:"it" },
+      { label:"Sara", answer:"she" },
+      { label:"my friends and I", answer:"we" }
+    ];
+
+    const questionGrid = document.getElementById("questionGrid");
+    const stageOne = document.getElementById("stageOne");
+    const stageTwo = document.getElementById("stageTwo");
+    const resultStage = document.getElementById("resultStage");
+    const progressFill = document.getElementById("progressFill");
+    const progressText = document.getElementById("progressText");
+    const stageOneFeedback = document.getElementById("stageOneFeedback");
+    const stageTwoFeedback = document.getElementById("stageTwoFeedback");
+    const cardBank = document.getElementById("cardBank");
+    const columns = [...document.querySelectorAll(".drop-column")];
+
+    let selectedCardId = null;
+
+    function post(type, detail = {}) {
+      const message = {
+        type,
+        lessonId:"personal-pronouns-practice",
+        ...detail
+      };
+
+      window.parent.postMessage(message, "*");
+      window.dispatchEvent(new CustomEvent(type, { detail:message }));
+    }
+
+    function renderQuestions() {
+      questionGrid.innerHTML = "";
+
+      questions.forEach((item, index) => {
+        const card = document.createElement("article");
+        card.className = "question-card";
+        card.dataset.index = index;
+        card.innerHTML = `
+          <p class="sentence">${index + 1}. ${item.sentence}</p>
+          <div class="choice-row">
+            ${item.choices.map(choice => `
+              <button class="choice" type="button" data-value="${choice}">${choice}</button>
+            `).join("")}
+          </div>
+        `;
+
+        card.querySelectorAll(".choice").forEach(button => {
+          button.addEventListener("click", () => {
+            card.querySelectorAll(".choice").forEach(choice => {
+              choice.classList.remove("selected","correct-choice","wrong-choice");
+            });
+
+            button.classList.add("selected");
+            card.classList.remove("correct","wrong");
+            stageOneFeedback.textContent = "";
+          });
+        });
+
+        questionGrid.appendChild(card);
+      });
+    }
+
+    function checkStageOne() {
+      let correct = 0;
+
+      [...document.querySelectorAll(".question-card")].forEach(card => {
+        const index = Number(card.dataset.index);
+        const selected = card.querySelector(".choice.selected");
+        const answer = questions[index].answer;
+
+        card.classList.remove("correct","wrong");
+        card.querySelectorAll(".choice").forEach(choice => {
+          choice.classList.remove("correct-choice","wrong-choice");
+        });
+
+        if (!selected) {
+          card.classList.add("wrong");
+          return;
+        }
+
+        if (selected.dataset.value === answer) {
+          correct += 1;
+          card.classList.add("correct");
+          selected.classList.add("correct-choice");
+        } else {
+          card.classList.add("wrong");
+          selected.classList.add("wrong-choice");
+
+          card.querySelectorAll(".choice").forEach(choice => {
+            if (choice.dataset.value === answer) {
+              choice.classList.add("correct-choice");
+            }
+          });
+        }
+      });
+
+      if (correct === questions.length) {
+        stageOneFeedback.textContent = "Excellent! All five answers are correct.";
+        stageOneFeedback.className = "feedback ok";
+        document.getElementById("nextStageButton").hidden = false;
+
+        post("lesson:pronoun-choice-complete", {
+          score:correct,
+          total:questions.length
+        });
+      } else {
+        stageOneFeedback.textContent = `${correct} of ${questions.length} correct. Check the red cards.`;
+        stageOneFeedback.className = "feedback bad";
+        document.getElementById("nextStageButton").hidden = true;
+      }
+    }
+
+    function createSortCard(item, index) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "person-card";
+      card.draggable = true;
+      card.dataset.id = index;
+      card.dataset.answer = item.answer;
+      card.textContent = item.label;
+
+      card.addEventListener("dragstart", event => {
+        selectedCardId = String(index);
+        card.classList.add("dragging");
+        event.dataTransfer.setData("text/plain", String(index));
+      });
+
+      card.addEventListener("dragend", () => {
+        card.classList.remove("dragging");
+      });
+
+      card.addEventListener("click", () => {
+        document.querySelectorAll(".person-card").forEach(itemCard => {
+          itemCard.style.outline = "";
+        });
+
+        selectedCardId = String(index);
+        card.style.outline = "3px solid #8fa7ec";
+      });
+
+      return card;
+    }
+
+    function renderSortCards() {
+      cardBank.innerHTML = "";
+      columns.forEach(column => {
+        column.classList.remove("correct","wrong","drag-over");
+        column.querySelector(".drop-zone").innerHTML = "";
+      });
+
+      sortCards.forEach((item, index) => {
+        cardBank.appendChild(createSortCard(item, index));
+      });
+
+      selectedCardId = null;
+      stageTwoFeedback.textContent = "";
+    }
+
+    function moveCardToColumn(cardId, column) {
+      const card = document.querySelector(`.person-card[data-id="${cardId}"]`);
+      if (!card) return;
+
+      card.style.outline = "";
+      column.querySelector(".drop-zone").appendChild(card);
+      selectedCardId = null;
+      stageTwoFeedback.textContent = "";
+    }
+
+    columns.forEach(column => {
+      column.addEventListener("dragover", event => {
+        event.preventDefault();
+        column.classList.add("drag-over");
+      });
+
+      column.addEventListener("dragleave", () => {
+        column.classList.remove("drag-over");
+      });
+
+      column.addEventListener("drop", event => {
+        event.preventDefault();
+        column.classList.remove("drag-over");
+        const cardId = event.dataTransfer.getData("text/plain");
+        moveCardToColumn(cardId, column);
+      });
+
+      column.addEventListener("click", event => {
+        if (event.target.closest(".person-card")) return;
+        if (selectedCardId !== null) {
+          moveCardToColumn(selectedCardId, column);
+        }
+      });
+    });
+
+    cardBank.addEventListener("dragover", event => {
+      event.preventDefault();
+    });
+
+    cardBank.addEventListener("drop", event => {
+      event.preventDefault();
+      const cardId = event.dataTransfer.getData("text/plain");
+      const card = document.querySelector(`.person-card[data-id="${cardId}"]`);
+      if (card) cardBank.appendChild(card);
+    });
+
+    function checkStageTwo() {
+      let correct = 0;
+      let placed = 0;
+
+      columns.forEach(column => {
+        column.classList.remove("correct","wrong");
+        const pronoun = column.dataset.pronoun;
+        const cards = [...column.querySelectorAll(".person-card")];
+
+        placed += cards.length;
+        const allCorrect = cards.every(card => card.dataset.answer === pronoun);
+
+        cards.forEach(card => {
+          card.style.outline = card.dataset.answer === pronoun
+            ? "2px solid #6fc5a3"
+            : "2px solid #e695a0";
+        });
+
+        if (cards.length > 0 && allCorrect) {
+          column.classList.add("correct");
+        } else if (cards.some(card => card.dataset.answer !== pronoun)) {
+          column.classList.add("wrong");
+        }
+
+        correct += cards.filter(card => card.dataset.answer === pronoun).length;
+      });
+
+      if (placed < sortCards.length) {
+        stageTwoFeedback.textContent = "Move all the cards into the columns first.";
+        stageTwoFeedback.className = "feedback bad";
+        return;
+      }
+
+      if (correct === sortCards.length) {
+        stageTwoFeedback.textContent = "Excellent! Every card is in the correct column.";
+        stageTwoFeedback.className = "feedback ok";
+
+        post("lesson:pronoun-sorting-complete", {
+          score:correct,
+          total:sortCards.length
+        });
+
+        setTimeout(() => {
+          stageTwo.classList.remove("active");
+          resultStage.classList.add("active");
+          progressFill.style.width = "100%";
+          progressText.textContent = "Complete";
+        }, 650);
+      } else {
+        stageTwoFeedback.textContent = `${correct} of ${sortCards.length} cards are correct. Check the red cards.`;
+        stageTwoFeedback.className = "feedback bad";
+      }
+    }
+
+    document.getElementById("checkStageOne").addEventListener("click", checkStageOne);
+    document.getElementById("resetStageOne").addEventListener("click", () => {
+      renderQuestions();
+      stageOneFeedback.textContent = "";
+      document.getElementById("nextStageButton").hidden = true;
+    });
+
+    document.getElementById("nextStageButton").addEventListener("click", () => {
+      stageOne.classList.remove("active");
+      stageTwo.classList.add("active");
+      progressFill.style.width = "100%";
+      progressText.textContent = "Stage 2 of 2";
+      renderSortCards();
+      post("lesson:pronoun-sorting-start");
+    });
+
+    document.getElementById("checkStageTwo").addEventListener("click", checkStageTwo);
+    document.getElementById("resetStageTwo").addEventListener("click", renderSortCards);
+
+    document.getElementById("restartAll").addEventListener("click", () => {
+      resultStage.classList.remove("active");
+      stageOne.classList.add("active");
+      progressFill.style.width = "50%";
+      progressText.textContent = "Stage 1 of 2";
+      renderQuestions();
+      renderSortCards();
+      document.getElementById("nextStageButton").hidden = true;
+      stageOneFeedback.textContent = "";
+    });
+
+    renderQuestions();
+    renderSortCards();
+  </script>
+</body>
+</html>

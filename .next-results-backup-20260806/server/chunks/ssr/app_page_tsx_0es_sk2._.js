@@ -1,0 +1,3 @@
+module.exports=[60350,a=>{"use strict";var b=a.i(87924),c=a.i(72131),d=a.i(50944),e=a.i(36545);a.s(["default",0,function(){let a=(0,d.useRouter)(),{user:f,isLoading:g}=(0,e.useAuth)();return(0,c.useEffect)(()=>{g||(f?a.push("/map"):a.push("/login"))},[f,g,a]),(0,b.jsx)("div",{className:"min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-purple-50",children:(0,b.jsxs)("div",{className:"text-center",children:[(0,b.jsx)("div",{className:"text-6xl mb-4 animate-bounce",children:"🚀"}),(0,b.jsx)("p",{className:"text-xl font-semibold text-gray-600 animate-pulse",children:"Загрузка..."})]})})}])}];
+
+//# sourceMappingURL=app_page_tsx_0es_sk2._.js.map

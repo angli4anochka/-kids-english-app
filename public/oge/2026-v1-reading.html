@@ -1,0 +1,236 @@
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>1 вариант ОГЭ 2026 — Чтение · 12–19</title><style>
+:root {
+  --bg:#f5f6fa; --paper:#fff; --ink:#172033; --muted:#667085; --line:#d9dee8;
+  --accent:#5b5bd6; --accent-soft:#eeeeff; --success:#138a57; --warn:#b66a00;
+  --shadow:0 12px 35px rgba(30,42,65,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Segoe UI,Arial,sans-serif}
+button,input,textarea,select{font:inherit}
+body{min-height:100vh}
+header.top {
+  position:sticky;top:0;z-index:20;background:rgba(255,255,255,.97);
+  border-bottom:1px solid var(--line);backdrop-filter:blur(10px)
+}
+.top-inner{max-width:1220px;margin:auto;padding:10px 18px;display:flex;align-items:center;gap:16px}
+.brand{min-width:215px}
+.brand b{display:block;font-size:18px}
+.brand span{font-size:12px;color:var(--muted)}
+.tabs{display:flex;gap:7px;overflow-x:auto;flex:1;padding:2px}
+.tab{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;cursor:pointer;white-space:nowrap}
+.tab.active{background:var(--accent-soft);border-color:#bfc2f5;color:#34349f;font-weight:700}
+.status{min-width:145px;text-align:right;font-size:12px;color:var(--muted)}
+.status strong{display:block;color:var(--ink);font-size:14px}
+main{max-width:1220px;margin:0 auto;padding:18px}
+.screen{display:none}
+.screen.active{display:block}
+.paper{background:var(--paper);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:18px}
+.exam-head{display:flex;justify-content:space-between;gap:12px;align-items:center;border-bottom:1px solid #222;padding-bottom:7px;margin-bottom:14px;font-family:Georgia,'Times New Roman',serif}
+.exam-head b{font-size:14px}
+.center-title{text-align:center;font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:21px;margin:8px 0 16px}
+.instruction{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:16px;line-height:1.42;border:1.5px solid #777;padding:10px 12px;margin:12px 0 20px;background:#fff}
+.audio-box{background:#f8f8ff;border:1px solid #d6d8fb;border-radius:14px;padding:12px 14px;margin:0 0 18px}
+.audio-box b{display:block;margin-bottom:7px}
+.audio-box audio{width:100%}
+.q{border-top:1px solid #edf0f4;padding:18px 0}
+.q:first-of-type{border-top:0}
+.q-row{display:grid;grid-template-columns:52px minmax(0,1fr);gap:12px;align-items:start}
+.q-num{width:42px;height:34px;border:1.5px solid #333;display:flex;align-items:center;justify-content:center;font-weight:700;font-family:Georgia,'Times New Roman',serif;background:#fff}
+.q-body{min-width:0}
+.q-text,.source-text,.reading,.email-box{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5}
+.q-text{font-weight:600}
+.options{display:grid;gap:5px;margin:8px 0 0 0;font-family:Georgia,'Times New Roman',serif;font-size:16px}
+.radio-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.radio-choice input{position:absolute;opacity:0}
+.radio-choice label{border:1px solid var(--line);border-radius:10px;min-width:62px;height:42px;padding:0 13px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:#fff;font-weight:700}
+.radio-choice input:checked+label{background:var(--accent-soft);border-color:var(--accent);color:#34349f}
+.answer-line{display:flex;align-items:center;gap:9px;margin-top:11px;flex-wrap:wrap}
+.answer-line label{font-weight:700;font-size:14px}
+.answer-input{border:1px solid #bac2d0;border-radius:9px;padding:10px 11px;min-width:220px;background:#fff}
+.answer-input:focus,textarea:focus,select:focus{outline:3px solid rgba(91,91,214,.15);border-color:var(--accent)}
+.grid-table{width:100%;border-collapse:collapse;margin:12px 0;font-family:Georgia,'Times New Roman',serif}
+.grid-table th,.grid-table td{border:1px solid #555;padding:8px;text-align:center}
+.grid-table th:first-child,.grid-table td:first-child{text-align:left;font-weight:700}
+.grid-table select{width:76px;border:1px solid #adb6c5;border-radius:8px;padding:7px;background:white}
+.rubrics{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.65;margin:6px 0 14px}
+.rubrics div{margin:3px 0}
+.info-table{width:100%;border-collapse:collapse;font-family:Georgia,'Times New Roman',serif;font-size:16px}
+.info-table td{border:1px solid #555;padding:8px}
+.info-table td:first-child{width:48px;text-align:center;font-weight:700}
+.info-table td:nth-child(2){width:45%}
+.info-table input{width:100%;border:0;border-bottom:1px solid #999;padding:6px;background:transparent;outline:0}
+.questions{font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.55}
+.questions div{margin:5px 0;font-weight:600}
+.text-block{display:grid;grid-template-columns:38px 1fr;gap:12px;margin:18px 0}
+.text-letter{font-family:Georgia,'Times New Roman',serif;font-weight:700;font-size:18px;text-align:right}
+.reading p{margin:0 0 11px;text-align:justify}
+.footnote{font-family:Georgia,'Times New Roman',serif;font-size:13px;margin-top:18px;border-top:1px solid #333;padding-top:8px}
+.tf-legend{display:flex;gap:12px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-top:7px}
+.grammar-row{display:grid;grid-template-columns:52px minmax(0,1fr) 110px;gap:12px;align-items:start;border-top:1px solid #edf0f4;padding:17px 0}
+.grammar-row:first-of-type{border-top:0}
+.base-word{font-family:Georgia,'Times New Roman',serif;font-weight:700;text-align:right;padding-top:8px}
+.inline-input{display:inline-block;vertical-align:baseline;min-width:190px;border:0;border-bottom:2px solid #6d7480;border-radius:0;padding:3px 5px;background:#fbfbfd}
+.inline-input:focus{outline:0;border-bottom-color:var(--accent);background:#f6f6ff}
+.email-box{border:1px solid #666}
+.email-row{display:grid;grid-template-columns:95px 1fr;border-bottom:1px solid #aaa}
+.email-row:last-child{border-bottom:0}
+.email-row b,.email-row span{padding:7px 9px}
+.email-row b{border-right:1px solid #aaa}
+.email-body{padding:10px 12px;font-style:italic;line-height:1.45}
+.write-area{width:100%;min-height:300px;border:1px solid #adb6c5;border-radius:12px;padding:14px;font-size:16px;line-height:1.55;resize:vertical;margin-top:12px}
+.word-count{margin-top:7px;font-size:13px;color:var(--muted)}
+.word-count.good{color:var(--success);font-weight:700}
+.bottom-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:10px 0 24px}
+.nav-btn,.secondary{border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 14px;cursor:pointer}
+.nav-btn.primary{background:var(--accent);color:white;border-color:var(--accent)}
+.warning{color:var(--warn);font-size:13px;margin-top:7px;display:none}
+.warning.show{display:block}
+.smallprint{font-family:Georgia,'Times New Roman',serif;font-size:12px;color:#3f4652;line-height:1.4}
+.result-box{background:#f8fafc;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--muted)}
+@media(max-width:760px){
+  .top-inner{flex-wrap:wrap}
+  .brand,.status{min-width:0}
+  .status{text-align:left}
+  main{padding:10px}
+  .paper{padding:18px 16px}
+  .q-row,.grammar-row{grid-template-columns:42px 1fr}
+  .base-word{grid-column:2;text-align:left}
+  .q-text,.source-text,.reading,.email-box{font-size:16px}
+  .grid-table{font-size:14px}
+}
+
+    .save-line{max-width:1220px;margin:auto;padding:8px 18px;display:flex;flex-wrap:wrap;gap:12px;font-size:13px}.save-line button{padding:8px 12px}.review-note{font-size:12px;color:#667085}.status{min-width:110px}@media(max-width:650px){.top-inner{flex-wrap:wrap}.brand{min-width:0}.paper{padding:16px 12px}.bottom-bar{position:static}.answer-input{min-width:0;max-width:100%}.q-row,.grammar-row{grid-template-columns:42px minmax(0,1fr)}.grid-table,.info-table{display:block;max-width:100%;overflow-x:auto}.tabs{min-width:0}.email-row{grid-template-columns:70px minmax(0,1fr)}.email-row span{overflow-wrap:anywhere}}
+    </style></head><body>
+    <header class="top"><div class="top-inner"><div class="brand"><b>1 вариант ОГЭ 2026</b><span>Чтение · 12–19</span></div><div class="tabs" id="tabs"></div><div class="status"><strong id="progress"></strong>ответов заполнено</div></div><div class="save-line"><span id="saveStatus" role="status">Подключение к уроку…</span><span id="mode" hidden>Предпросмотр учителя</span></div></header>
+    <main id="exam"><section class="screen" data-screen="2">
+  <div class="paper">
+    <div class="exam-head"><b>ВАРИАНТ 1</b><span>13</span></div>
+    <div class="center-title">Раздел 2 (задания по чтению)</div>
+    <div class="q-row"><div class="q-num">12</div><div class="q-body">
+      <div class="instruction" style="margin-top:0">Вы проводите информационный поиск в ходе выполнения проектной работы. Определите, в каком из текстов A–F содержатся ответы на интересующие Вас вопросы 1–7. Один из вопросов останется без ответа. Занесите Ваши ответы в таблицу.</div>
+      <div class="questions">
+        <div>1. What are the requirements for the Kremlin New Year tree?</div>
+        <div>2. How is the New Year tree delivered to the Kremlin?</div>
+        <div>3. Who is responsible for the New Year Tree decoration?</div>
+        <div>4. What is the New Year Tree decorated with?</div>
+        <div>5. What public events are organized in the Kremlin during New Year holidays?</div>
+        <div>6. Where can one buy a ticket for the New Year performance in the Kremlin?</div>
+        <div>7. What happens to the New Year tree after the holiday season?</div>
+      </div>
+    </div></div>
+
+    <div class="text-block"><div class="text-letter">A.</div><div class="reading">After the New Year tree is safely assembled in <i>Sobornaya Square</i>, it is dressed in lights and about three thousand colourful ornaments. Most of the ornaments are hand-made, and the craftsmen create them according to a special order. Most items are used for more than one season. The New Year baubles can be in the colours of the state flag or they can display the scenes from Russian folk tales.</div></div>
+
+    <div class="text-block"><div class="text-letter">B.</div><div class="reading">Each December, the decorated New Year tree is placed in <i>Sobornaya Square</i>. Transporting such a big tree to the Kremlin is challenging, and the safety measures are always observed. The tree is carried on a long vehicle, which is escorted by Father Frost’s festive carriage. Father Frost carries a special allowance scroll<sup>1</sup>. When the procession arrives at the Kremlin wall, he passes the scroll to the guard to let the tree in.</div></div>
+
+    <div class="text-block"><div class="text-letter">C.</div><div class="reading">It has become a tradition to install the New Year tree in <i>Sobornaya Square</i> in the Kremlin. The tree should be perfect, and the people who organise the event choose it very carefully. They start looking for it in the summer! Indeed, to look impressive, the fir tree should be huge. The foresters of the Moscow region usually look for the one about 30 metres high, with a perimeter of about 10 metres. To grow that large, the tree has to be rather old.</div></div>
+
+    <div class="text-block"><div class="text-letter">D.</div><div class="reading">Another well-known Kremlin tradition is a special New Year Event for children. The kids of all ages enjoy wonderful performances staged by famous producers, musicians and dancers. The kids’ joy and laughter add to the fabulous atmosphere of the Great Kremlin Palace. The little guests are delighted to get the presents — colourful tins with sweets and chocolates.</div></div>
+
+    <div class="text-block"><div class="text-letter">E.</div><div class="reading">When the celebrations are over, thousands of baubles and a kilometre of garlands go from the Kremlin New Year Tree straight into the storage boxes. The tree itself is not thrown away either. The valuable wood is used to make hockey clubs and photo frames. The fir needles are good as an alternative bedding for animals on the farm. Even the seeds from the cones are used to plant new trees. They may grow and come to the Kremlin again, 100 years later!</div></div>
+
+    <div class="text-block"><div class="text-letter">F.</div><div class="reading">It’s common knowledge that the tradition of decorating the New Year tree in Russia comes from Peter the Great. It was disrupted for a few decades, but fortunately was restored in the middle of the 20<sup>th</sup> century. Nowadays, the New Year celebration in the Kremlin is taken very seriously and the Administration of the President is in charge of it. In fact, they supervise the whole event, including transportation, decoration and utilisation of the tree.</div></div>
+
+    <div class="source-text" style="font-weight:600;margin-top:20px">Запишите в таблицу выбранные цифры под соответствующими буквами.</div>
+    <table class="grid-table">
+      <tr><th>Текст</th><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th></tr>
+      <tr><td>Вопрос</td>
+        <td><select data-key="q12_A"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+        <td><select data-key="q12_B"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+        <td><select data-key="q12_C"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+        <td><select data-key="q12_D"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+        <td><select data-key="q12_E"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+        <td><select data-key="q12_F"><option value=""></option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td>
+      </tr>
+    </table>
+    <div class="warning" id="warn12">Один и тот же номер вопроса нельзя использовать для двух текстов.</div>
+    <div class="footnote"><sup>1</sup> Allowance scroll — подорожная грамота.</div>
+  </div>
+</section>
+<section class="screen" data-screen="3">
+  <div class="paper">
+    <div class="exam-head"><b>14</b><span>ОГЭ. ТИПОВЫЕ ЭКЗАМЕНАЦИОННЫЕ ВАРИАНТЫ. ПИСЬМЕННАЯ ЧАСТЬ</span></div>
+    <div class="instruction">Прочитайте текст. Определите, какие из приведённых утверждений 13–19 соответствуют содержанию текста (1 — True), какие не соответствуют (2 — False) и о чём в тексте не сказано, то есть на основании текста нельзя дать ни положительного, ни отрицательного ответа (3 — Not stated). Запишите в поле ответа цифру 1, 2 или 3, соответствующую номеру выбранного Вами ответа.</div>
+
+    <div class="center-title" style="font-size:19px;margin-bottom:10px">Leo Tolstoy's comedy</div>
+    <div class="reading">
+      <p>Leo Tolstoy, a famous Russian writer of the 19<sup>th</sup> century, is known for his psychological novels. The writer had a special talent for observing people's habits and behaviour. He had a habit of taking notes about his observations and used them in his books. That is why his characters are presented with all their strengths and weaknesses, and look very true to life.</p>
+      <p>Besides being a good psychologist, Leo Tolstoy could boast a good sense of humour. He often told jokes to his family, and once started to write a comedy. It looked like he didn’t take it seriously: the first draft was left unfinished and forgotten for three years. The family did not know about it until Tolstoy’s daughter Maria found that piece of writing.</p>
+      <p>After reading the draft aloud, the family insisted on finishing the play. The writer agreed on the condition that it would be only for family use. This is how his first comedy appeared. It was named <i>The Fruits of Enlightenment</i><sup>1</sup>, and it was performed in the home theatre.</p>
+      <p>At first, Tolstoy felt pessimistic about staging the comedy for the public. However, he could not ignore his children's enthusiasm about the play. After he watched them acting, he started feeling interested. With every next rehearsal, he edited the lines. A lot was changed, and the text became more natural and impressive. The last edition of the comedy was staged in 1890. The actors were family members and close friends.</p>
+      <p>The first official performance of the comedy attracted a lot of spectators. They were Tolstoy's relatives, neighbours and servants. The audience gave the play a very warm welcome. They enjoyed the comedy and laughed a lot. The comedy was about the relations between the peasants and the landowners, a topic familiar to everyone. Some spectators even recognised themselves in the characters.</p>
+      <p>The second performance was arranged in Tula. Naturally, the author, Leo Tolstoy, was invited to watch it. When he arrived at the theatre, he went straight to the entrance. As the writer looked quite ordinary in his plain clothes, the guard did not let him in. Soon, a local official arrived and saw Tolstoy sitting on a bench outside. He recognised the writer at once and asked what he was doing there. “They didn’t let me in”, Leo Tolstoy smiled.</p>
+      <p>The theatre officials were confused. They apologised and offered Leo Tolstoy the best seat. Fortunately, on that day, a legendary Moscow director V. Nemirovich-Danchenko was among the spectators. He was deeply impressed by the performance and soon brought the comedy to the big stage of Maly Theatre. <i>The Fruits of Enlightenment</i> went successfully. It was highly praised in the press and was published later on. It should be mentioned, however, that Leo Tolstoy did not like the way the actors of Maly Theatre played the peasants.</p>
+    </div>
+    <div class="footnote"><sup>1</sup> <i>The Fruits of Enlightenment</i> — «Плоды просвещения».</div>
+
+    
+    <div class="q"><div class="q-row"><div class="q-num">13</div><div class="q-body">
+      <div class="q-text">In his novels, Leo Tolstoy wanted to make life more exciting than it really was.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q13" id="q13_1" value="1"><label for="q13_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q13" id="q13_2" value="2"><label for="q13_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q13" id="q13_3" value="3"><label for="q13_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">14</div><div class="q-body">
+      <div class="q-text">Leo Tolstoy wrote his comedy <i>The Fruits of Enlightenment</i> in one year.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q14" id="q14_1" value="1"><label for="q14_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q14" id="q14_2" value="2"><label for="q14_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q14" id="q14_3" value="3"><label for="q14_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">15</div><div class="q-body">
+      <div class="q-text">The name of the comedy was suggested by a member of Tolstoy’s family.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q15" id="q15_1" value="1"><label for="q15_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q15" id="q15_2" value="2"><label for="q15_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q15" id="q15_3" value="3"><label for="q15_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">16</div><div class="q-body">
+      <div class="q-text">Leo Tolstoy improved the text of the comedy during the rehearsals.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q16" id="q16_1" value="1"><label for="q16_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q16" id="q16_2" value="2"><label for="q16_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q16" id="q16_3" value="3"><label for="q16_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">17</div><div class="q-body">
+      <div class="q-text">The first performance of the comedy was successful.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q17" id="q17_1" value="1"><label for="q17_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q17" id="q17_2" value="2"><label for="q17_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q17" id="q17_3" value="3"><label for="q17_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">18</div><div class="q-body">
+      <div class="q-text">Leo Tolstoy did not manage to watch his play in Tula.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q18" id="q18_1" value="1"><label for="q18_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q18" id="q18_2" value="2"><label for="q18_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q18" id="q18_3" value="3"><label for="q18_3">3</label></div>
+      </div>
+    </div></div></div>
+    <div class="q"><div class="q-row"><div class="q-num">19</div><div class="q-body">
+      <div class="q-text">V. Nemirovich-Danchenko discussed the stage costumes and decorations for <i>The Fruits of Enlightenment</i> with Leo Tolstoy.</div>
+      <div class="options"><div>1) True</div><div>2) False</div><div>3) Not stated</div></div>
+      <div class="radio-grid">
+        <div class="radio-choice"><input type="radio" name="q19" id="q19_1" value="1"><label for="q19_1">1</label></div>
+        <div class="radio-choice"><input type="radio" name="q19" id="q19_2" value="2"><label for="q19_2">2</label></div>
+        <div class="radio-choice"><input type="radio" name="q19" id="q19_3" value="3"><label for="q19_3">3</label></div>
+      </div>
+    </div></div></div>
+
+    <div class="instruction">По окончании выполнения заданий 12–19 не забудьте перенести свои ответы в БЛАНК ОТВЕТОВ № 1! Запишите ответ справа от номера соответствующего задания, начиная с первой клеточки. При переносе ответов на задание 12 цифры записываются без пробелов, запятых и других дополнительных символов. Каждую цифру пишите в отдельной клеточке в соответствии с приведёнными в бланке образцами.</div>
+  </div>
+</section>
+    <div class="bottom-bar"><button class="nav-btn" id="prevBtn" type="button">← Назад</button><div class="result-box"><span id="reviewNote">Ответы отправляются учителю для проверки.</span></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="secondary" id="clearBtn" type="button">Очистить ответы</button><button class="secondary" id="downloadBtn" type="button">Скачать ответы</button><button class="nav-btn primary" id="nextBtn" type="button">Дальше →</button><button class="nav-btn primary" id="finishBtn" type="button">Завершить часть</button></div></div></main>
+    <script>window.OGE_reading="reading";</script><script src="/oge/2026-v1-bridge.js?v=1"></script></body></html>

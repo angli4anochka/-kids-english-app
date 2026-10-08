@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fish Twins Phonics Race: M–R</title>
+<style>
+  :root {
+    --ink:#143b55;
+    --cream:#fff8de;
+    --panel:rgba(255,255,255,.88);
+    --shadow:0 14px 35px rgba(13,66,90,.22);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;overflow:hidden;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+  body{
+    background:
+      radial-gradient(circle at 10% 18%,rgba(255,255,255,.8) 0 8px,transparent 9px),
+      radial-gradient(circle at 82% 28%,rgba(255,255,255,.7) 0 10px,transparent 11px),
+      radial-gradient(circle at 70% 78%,rgba(255,255,255,.55) 0 6px,transparent 7px),
+      linear-gradient(#73d8df 0%,#42b7cf 56%,#21a0ba 100%);
+  }
+  body:before{
+    content:"";position:absolute;inset:0;pointer-events:none;opacity:.28;
+    background-image:radial-gradient(circle,white 0 2px,transparent 3px);
+    background-size:86px 86px;
+  }
+  .game{
+    position:relative;width:100vw;height:100vh;min-width:0;min-height:0;overflow:hidden;
+  }
+  .sand{position:absolute;left:0;right:0;bottom:0;height:12%;background:linear-gradient(#f7df90,#eec86c);border-radius:45% 45% 0 0/24px 24px 0 0}
+  .sand:before{content:"";position:absolute;inset:10px 0 0;background-image:radial-gradient(circle,#dba853 0 2px,transparent 2.5px);background-size:42px 30px;opacity:.35}
+  .coral{position:absolute;bottom:8%;font-size:clamp(30px,4vw,64px);filter:drop-shadow(0 5px 3px rgba(0,0,0,.12));user-select:none}
+  .c1{left:1.5%}.c2{right:1.5%;transform:scaleX(-1)}
+  .title{position:absolute;top:2.2%;left:50%;transform:translateX(-50%);font-size:clamp(18px,2.2vw,34px);font-weight:900;letter-spacing:.5px;background:var(--panel);padding:.28em .8em;border-radius:999px;box-shadow:var(--shadow);z-index:20;white-space:nowrap}
+  .subtitle{font-size:.46em;font-weight:700;opacity:.75;margin-left:.5em}
+
+  .path{position:absolute;inset:0;z-index:5;transition:filter .2s,opacity .2s;pointer-events:none}
+  .path.inactive{opacity:1;filter:none}
+  .path.active .step{box-shadow:0 7px 0 #31835a,0 12px 18px rgba(12,63,69,.2),0 0 0 4px rgba(255,255,255,.42)}
+  .step{
+    position:absolute;width:clamp(72px,6.5vw,110px);aspect-ratio:1;border-radius:52% 48% 50% 46%;
+    display:grid;place-items:center;background:linear-gradient(145deg,#efffbd,#70c76f 72%);
+    border:4px solid rgba(32,118,79,.72);box-shadow:0 7px 0 #31835a,0 12px 18px rgba(12,63,69,.2);
+    font-size:clamp(38px,4.2vw,70px);cursor:pointer;transition:.18s transform,.18s filter,.18s opacity;
+    user-select:none;pointer-events:auto;
+  }
+  .step:before{content:"";position:absolute;width:58%;height:9%;background:rgba(255,255,255,.34);top:10%;left:18%;border-radius:50%;transform:rotate(-18deg)}
+  .step > .picture{position:relative;z-index:2;display:grid;place-items:center;width:82%;height:82%;line-height:1;filter:drop-shadow(0 3px 2px rgba(0,0,0,.16))}
+  .quilt-icon{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:72%;height:72%;border:4px solid #6a3d86;border-radius:9px;overflow:hidden;background:#fff;transform:rotate(-3deg);box-shadow:0 3px 0 rgba(76,40,98,.25)}
+  .quilt-icon i:nth-child(1),.quilt-icon i:nth-child(5),.quilt-icon i:nth-child(9){background:#8b5bc2}
+  .quilt-icon i:nth-child(2),.quilt-icon i:nth-child(6),.quilt-icon i:nth-child(7){background:#f0a04b}
+  .quilt-icon i:nth-child(3),.quilt-icon i:nth-child(4),.quilt-icon i:nth-child(8){background:#f5d56b}
+  .quilt-icon i{border:1px solid rgba(255,255,255,.65)}
+  .step:hover{transform:translateY(-4px) scale(1.04)}
+  .step.done{filter:saturate(.45);opacity:.48}
+  .step.correct{animation:pop .55s ease}
+  .step.wrong{animation:shake .42s ease;background:linear-gradient(145deg,#ffd7d1,#ef7f77)}
+  .word{position:absolute;left:50%;bottom:-22%;transform:translateX(-50%);background:#fff;border:2px solid #2a8266;padding:1px 7px;border-radius:999px;font-size:clamp(11px,1.05vw,17px);font-weight:900;white-space:nowrap;opacity:0;pointer-events:none;transition:.15s}
+  body.show-words .word{opacity:1}
+  @keyframes pop{50%{transform:scale(1.25) rotate(5deg)}}
+  @keyframes shake{20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+
+  .center{
+    position:absolute;left:50%;top:51%;transform:translate(-50%,-50%);z-index:18;width:clamp(185px,20vw,310px);text-align:center;
+  }
+  .wheel-wrap{position:relative;width:100%;aspect-ratio:1;margin:auto;filter:drop-shadow(0 12px 16px rgba(15,73,92,.28))}
+  .pointer{position:absolute;z-index:4;left:50%;top:-3%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:34px solid #ff6f61;filter:drop-shadow(0 3px 1px rgba(0,0,0,.22))}
+  .wheel{
+    position:absolute;inset:0;border-radius:50%;border:8px solid white;
+    background:conic-gradient(from -30deg,#f56d5e 0 60deg,#ffbf3f 60deg 120deg,#f88a3c 120deg 180deg,#9c6cd8 180deg 240deg,#54b85c 240deg 300deg,#55c8c6 300deg 360deg);
+    transition:transform 1.55s cubic-bezier(.17,.89,.24,1.08);
+    box-shadow:inset 0 0 0 3px rgba(35,76,96,.42);
+  }
+  .wheel:after{content:"";position:absolute;inset:37%;border-radius:50%;background:#ff86b4;border:6px solid white;box-shadow:0 4px 8px rgba(0,0,0,.2)}
+  .letter{position:absolute;z-index:2;left:50%;top:50%;font-size:clamp(18px,2.2vw,33px);font-weight:900;color:#173c55;text-shadow:0 2px 0 rgba(255,255,255,.6)}
+  .l0{transform:translate(-50%,-50%) rotate(0deg) translateY(-38%) translateY(-70px)}
+  .l1{transform:translate(-50%,-50%) rotate(60deg) translateY(-70px) rotate(-60deg)}
+  .l2{transform:translate(-50%,-50%) rotate(120deg) translateY(-70px) rotate(-120deg)}
+  .l3{transform:translate(-50%,-50%) rotate(180deg) translateY(-70px) rotate(-180deg)}
+  .l4{transform:translate(-50%,-50%) rotate(240deg) translateY(-70px) rotate(-240deg)}
+  .l5{transform:translate(-50%,-50%) rotate(300deg) translateY(-70px) rotate(-300deg)}
+  @media (min-width:1300px){.letter{--r:105px}.l0{transform:translate(-50%,-50%) rotate(0deg) translateY(calc(-1*var(--r))) rotate(0deg)}.l1{transform:translate(-50%,-50%) rotate(60deg) translateY(calc(-1*var(--r))) rotate(-60deg)}.l2{transform:translate(-50%,-50%) rotate(120deg) translateY(calc(-1*var(--r))) rotate(-120deg)}.l3{transform:translate(-50%,-50%) rotate(180deg) translateY(calc(-1*var(--r))) rotate(-180deg)}.l4{transform:translate(-50%,-50%) rotate(240deg) translateY(calc(-1*var(--r))) rotate(-240deg)}.l5{transform:translate(-50%,-50%) rotate(300deg) translateY(calc(-1*var(--r))) rotate(-300deg)}}
+  .spin{margin-top:10px;border:0;border-radius:999px;background:#fff;color:#14516e;font-size:clamp(15px,1.5vw,23px);font-weight:900;padding:.55em 1.45em;box-shadow:0 7px 0 #31835a,0 11px 18px rgba(0,0,0,.18);cursor:pointer}
+  .spin:active{transform:translateY(4px);box-shadow:0 3px 0 #31835a}
+  .spin:disabled{opacity:.55;cursor:not-allowed}
+  .status{margin:.75em auto 0;background:rgba(255,255,255,.92);border-radius:18px;padding:.55em .8em;font-weight:900;font-size:clamp(12px,1.2vw,18px);min-height:2.6em;display:grid;place-items:center;box-shadow:var(--shadow)}
+  .target{display:inline-grid;place-items:center;min-width:1.75em;height:1.75em;border-radius:50%;background:#ffe06f;margin-left:.35em;font-size:1.2em}
+
+  .start,.finish{position:absolute;z-index:12;border:4px solid white;color:white;font-weight:900;border-radius:999px;padding:.35em .7em;box-shadow:0 7px 0 rgba(31,103,75,.7),0 11px 15px rgba(0,0,0,.18);font-size:clamp(14px,1.5vw,23px)}
+  .start{background:#55ad57;bottom:3.2%}.finish{background:#f64e63;bottom:3.2%}
+  .start.left{left:28%}.finish.left{left:4%}.start.right{right:28%}.finish.right{right:4%}
+
+  .fish{position:absolute;z-index:17;width:clamp(54px,6vw,94px);height:clamp(38px,4.3vw,68px);transition:left .65s cubic-bezier(.2,.9,.2,1),top .65s cubic-bezier(.2,.9,.2,1),transform .65s;filter:drop-shadow(0 8px 7px rgba(0,0,0,.22));pointer-events:none}
+  .fish .body{position:absolute;inset:0 17% 0 0;border-radius:58% 48% 52% 54%;background:linear-gradient(145deg,#55d2ff,#177dc8);border:3px solid #0b5b9d}
+  .fish .tail{position:absolute;right:0;top:17%;width:32%;height:66%;background:#ff9f2f;clip-path:polygon(100% 0,20% 50%,100% 100%);filter:drop-shadow(0 2px 0 #9d4e10)}
+  .fish .fin{position:absolute;left:48%;bottom:-14%;width:25%;height:30%;background:#ff9f2f;border-radius:70% 20% 70% 20%;transform:rotate(24deg)}
+  .fish .eye{position:absolute;left:18%;top:17%;width:24%;aspect-ratio:1;background:#fff;border-radius:50%;border:2px solid #145075}
+  .fish .eye:after{content:"";position:absolute;width:42%;aspect-ratio:1;background:#2c2530;border-radius:50%;left:42%;top:33%}
+  .fish .smile{position:absolute;left:25%;top:60%;width:27%;height:13%;border-bottom:4px solid #fff;border-radius:50%}
+  .fish.teamB .body{background:linear-gradient(145deg,#86e7ff,#3865cf)}
+
+  .toolbar{position:absolute;z-index:25;right:1.5%;top:2%;display:flex;gap:8px}
+  .tool{border:0;background:rgba(255,255,255,.88);color:#164d68;font-weight:900;border-radius:999px;padding:.55em .8em;cursor:pointer;box-shadow:0 5px 12px rgba(0,0,0,.14)}
+  .turn-badge{position:absolute;z-index:24;left:1.5%;top:2%;background:rgba(255,255,255,.92);padding:.55em .8em;border-radius:999px;font-weight:900;box-shadow:var(--shadow)}
+  .turn-dot{display:inline-block;width:.85em;aspect-ratio:1;border-radius:50%;background:#1b8bcc;margin-right:.35em;vertical-align:-.08em}
+
+  /* left path */
+  #A0{left:25%;top:78%} #A1{left:18%;top:68%} #A2{left:9%;top:67%} #A3{left:5%;top:53%}
+  #A4{left:11%;top:43%} #A5{left:5%;top:31%} #A6{left:12%;top:20%} #A7{left:22%;top:17%}
+  #A8{left:29%;top:28%} #A9{left:24%;top:42%} #A10{left:30%;top:55%} #A11{left:19%;top:55%}
+  /* right path */
+  #B0{right:25%;top:78%} #B1{right:18%;top:68%} #B2{right:9%;top:67%} #B3{right:5%;top:53%}
+  #B4{right:11%;top:43%} #B5{right:5%;top:31%} #B6{right:12%;top:20%} #B7{right:22%;top:17%}
+  #B8{right:29%;top:28%} #B9{right:24%;top:42%} #B10{right:30%;top:55%} #B11{right:19%;top:55%}
+
+  @media (max-aspect-ratio: 1.45/1), (max-height: 519px){
+    .game{transform:scale(.86);transform-origin:top left;width:116vw;height:116vh}
+  }
+</style>
+</head>
+<body>
+<div class="game" id="game">
+  <div class="title">Fish Twins Phonics Race <span class="subtitle">M–R</span></div>
+  <div class="turn-badge"><span class="turn-dot"></span><span id="turnText">Blue Fish's turn</span></div>
+  <div class="toolbar">
+    <button class="tool" id="wordsBtn">Show words</button>
+    <button class="tool" id="resetBtn">New game</button>
+  </div>
+  <div class="coral c1">🪸🐚</div><div class="coral c2">🪸🐚</div><div class="sand"></div>
+
+  <div class="start left">START</div><div class="finish left">FINISH</div>
+  <div class="start right">START</div><div class="finish right">FINISH</div>
+
+  <div id="pathA" class="path"></div>
+  <div id="pathB" class="path"></div>
+
+  <div class="fish teamA" id="fishA"><div class="tail"></div><div class="body"><div class="eye"></div><div class="smile"></div><div class="fin"></div></div></div>
+  <div class="fish teamB" id="fishB"><div class="tail"></div><div class="body"><div class="eye"></div><div class="smile"></div><div class="fin"></div></div></div>
+
+  <div class="center">
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <div class="wheel" id="wheel">
+        <span class="letter l0">Mm</span><span class="letter l1">Nn</span><span class="letter l2">Oo</span>
+        <span class="letter l3">Pp</span><span class="letter l4">Qq</span><span class="letter l5">Rr</span>
+      </div>
+    </div>
+    <button class="spin" id="spinBtn">SPIN</button>
+    <div class="status" id="status">Each fish must practise all 12 words: two words for every letter M–R.</div>
+  </div>
+</div>
+<script>
+const items = [
+  {l:'M',word:'monkey',icon:'🐒'}, {l:'N',word:'nest',icon:'🪺'},
+  {l:'O',word:'octopus',icon:'🐙'}, {l:'P',word:'panda',icon:'🐼'},
+  {l:'Q',word:'queen',icon:'👸'}, {l:'R',word:'rabbit',icon:'🐇'},
+  {l:'M',word:'moon',icon:'🌙'}, {l:'N',word:'nose',icon:'👃'},
+  {l:'O',word:'orange',icon:'🍊'}, {l:'P',word:'pineapple',icon:'🍍'},
+  {l:'Q',word:'quilt',icon:'<span class="quilt-icon" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span>'},
+  {l:'R',word:'robot',icon:'🤖'}
+];
+const orderA=[0,8,5,1,9,11,4,6,2,10,7,3];
+const orderB=[4,2,6,11,1,9,5,7,3,0,10,8];
+const letters=['M','N','O','P','Q','R'];
+const WORDS_PER_FISH=items.length;
+
+const state={
+  A:-1,
+  B:-1,
+  turn:'A',
+  target:null,
+  spinning:false,
+  rotation:0,
+  finished:false,
+  used:{A:new Set(),B:new Set()}
+};
+const el=id=>document.getElementById(id);
+
+function makePath(team, order){
+  const root=el('path'+team);
+  root.innerHTML='';
+  order.forEach((idx,pos)=>{
+    const it=items[idx];
+    const d=document.createElement('button');
+    d.className='step';
+    d.id=team+pos;
+    d.dataset.team=team;
+    d.dataset.pos=pos;
+    d.dataset.letter=it.l;
+    d.dataset.word=it.word;
+    d.setAttribute('aria-label',it.word);
+    d.innerHTML=`<span class="picture">${it.icon}</span><span class="word">${it.word}</span>`;
+    d.addEventListener('click',()=>chooseStep(d));
+    root.appendChild(d);
+  });
+}
+makePath('A',orderA);
+makePath('B',orderB);
+
+function getCenter(node){
+  const g=el('game').getBoundingClientRect();
+  const r=node.getBoundingClientRect();
+  return {x:r.left-g.left+r.width/2,y:r.top-g.top+r.height/2};
+}
+
+function overlapArea(a,b){
+  const w=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
+  const h=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+  return w*h;
+}
+
+function localRect(node,pad=0){
+  const gameRect=el('game').getBoundingClientRect();
+  const r=node.getBoundingClientRect();
+  return {
+    left:r.left-gameRect.left-pad,
+    top:r.top-gameRect.top-pad,
+    right:r.right-gameRect.left+pad,
+    bottom:r.bottom-gameRect.top+pad
+  };
+}
+
+function placeFish(team){
+  const fish=el('fish'+team);
+  const pos=state[team];
+  let p;
+
+  if(pos<0){
+    p=getCenter(document.querySelector('.start.'+(team==='A'?'left':'right')));
+  }else if(pos>=WORDS_PER_FISH){
+    p=getCenter(document.querySelector('.finish.'+(team==='A'?'left':'right')));
+  }else{
+    const current=el(team+pos);
+    const currentRect=localRect(current);
+    const c=getCenter(current);
+    const fw=fish.offsetWidth||80;
+    const fh=fish.offsetHeight||56;
+    const gap=14;
+    const dx=(currentRect.right-currentRect.left)/2+fw/2+gap;
+    const dy=(currentRect.bottom-currentRect.top)/2+fh/2+gap;
+
+    // Prefer the outside of each path, then try every other side.
+    // The score below rejects positions that cover any picture, including
+    // the one the child may need to click next.
+    const directions=team==='A'
+      ? [[-dx,0],[-dx*.82,-dy*.72],[-dx*.82,dy*.72],[0,-dy],[0,dy],[dx,0],[dx*.82,-dy*.72],[dx*.82,dy*.72]]
+      : [[dx,0],[dx*.82,-dy*.72],[dx*.82,dy*.72],[0,-dy],[0,dy],[-dx,0],[-dx*.82,-dy*.72],[-dx*.82,dy*.72]];
+
+    const obstacles=[
+      ...document.querySelectorAll('.step'),
+      document.querySelector('.center'),
+      document.querySelector('.title'),
+      document.querySelector('.toolbar'),
+      document.querySelector('.turn-badge')
+    ].filter(Boolean).map(node=>localRect(node,6));
+
+    const game=el('game');
+    const margin=8;
+    let best=null;
+    directions.forEach(([ox,oy],index)=>{
+      const cx=c.x+ox;
+      const cy=c.y+oy;
+      const rect={left:cx-fw/2,top:cy-fh/2,right:cx+fw/2,bottom:cy+fh/2};
+      let score=index; // stable preference order when several positions are clear
+      obstacles.forEach(o=>{ score+=overlapArea(rect,o)*100; });
+      if(rect.left<margin) score+=(margin-rect.left)*10000;
+      if(rect.top<margin) score+=(margin-rect.top)*10000;
+      if(rect.right>game.clientWidth-margin) score+=(rect.right-(game.clientWidth-margin))*10000;
+      if(rect.bottom>game.clientHeight-margin) score+=(rect.bottom-(game.clientHeight-margin))*10000;
+      if(!best||score<best.score) best={score,cx,cy};
+    });
+    p={x:best.cx,y:best.cy};
+  }
+
+  fish.style.left=(p.x-fish.offsetWidth/2)+'px';
+  fish.style.top=(p.y-fish.offsetHeight/2)+'px';
+  fish.style.transform=team==='B'?'scaleX(-1)':'none';
+}
+
+function teamName(team){
+  return team==='A'?'Blue Fish':'Twin Fish';
+}
+
+function completedCount(team){
+  return state.used[team].size;
+}
+
+function letterCount(team,letter){
+  let count=0;
+  state.used[team].forEach(word=>{
+    const item=items.find(it=>it.word===word);
+    if(item && item.l===letter) count++;
+  });
+  return count;
+}
+
+function roundNumber(team){
+  return completedCount(team)<letters.length?1:2;
+}
+
+function repaint(){
+  ['A','B'].forEach(team=>{
+    document.querySelectorAll(`[data-team="${team}"]`).forEach(step=>{
+      step.classList.toggle('done',Number(step.dataset.pos)<=state[team]);
+    });
+    el('path'+team).classList.toggle('active',team===state.turn);
+    el('path'+team).classList.toggle('inactive',team!==state.turn);
+    placeFish(team);
+  });
+  el('turnText').textContent=teamName(state.turn)+"'s turn";
+  document.querySelector('.turn-dot').style.background=state.turn==='A'?'#1b8bcc':'#4e63d7';
+}
+
+/*
+  The next spin only uses letters with the smallest completed count.
+  Result: every letter M–R must be practised once before any letter appears
+  for the second time. Humanity has finally invented fairness for cardboard fish.
+*/
+function availableTargetLetters(team){
+  const counts=letters.map(letter=>({letter,count:letterCount(team,letter)}));
+  const unfinished=counts.filter(x=>x.count<2);
+  if(!unfinished.length) return [];
+  const minimum=Math.min(...unfinished.map(x=>x.count));
+  return unfinished.filter(x=>x.count===minimum).map(x=>x.letter);
+}
+
+function spin(){
+  if(state.spinning||state.finished)return;
+  const available=availableTargetLetters(state.turn);
+  if(!available.length){
+    finishTurn();
+    return;
+  }
+
+  state.spinning=true;
+  state.target=available[Math.floor(Math.random()*available.length)];
+  const targetIndex=letters.indexOf(state.target);
+  const turns=4+Math.floor(Math.random()*3);
+  const desiredAngle=(360-targetIndex*60)%360;
+  const currentAngle=((state.rotation%360)+360)%360;
+  const correction=(desiredAngle-currentAngle+360)%360;
+  state.rotation+=turns*360+correction;
+
+  el('wheel').style.transform=`rotate(${state.rotation}deg)`;
+  el('spinBtn').disabled=true;
+  el('status').textContent='The wheel is spinning…';
+
+  setTimeout(()=>{
+    state.spinning=false;
+    const done=completedCount(state.turn);
+    el('status').innerHTML=`${teamName(state.turn)} · Round ${roundNumber(state.turn)} · ${done}/${WORDS_PER_FISH} words<br>Choose a new picture beginning with <span class="target">${state.target}</span>.`;
+  },1550);
+}
+
+function chooseStep(step){
+  if(state.spinning||state.finished||!state.target)return;
+
+  const word=step.dataset.word;
+  const letter=step.dataset.letter;
+  const active=state.turn;
+
+  if(letter!==state.target){
+    flash(step,'wrong');
+    el('status').innerHTML=`<strong>${word}</strong> begins with ${letter}, not <span class="target">${state.target}</span>.`;
+    return;
+  }
+
+  if(state.used[active].has(word)){
+    flash(step,'wrong');
+    el('status').innerHTML=`<strong>${word}</strong> was already used by ${teamName(active)}. Choose the other ${state.target} word.`;
+    return;
+  }
+
+  flash(step,'correct');
+  state.used[active].add(word);
+  state[active]+=1; // exactly one leaf per correct word; no more skipping half the board
+  const done=completedCount(active);
+  el('status').innerHTML=`Correct: <strong>${word}</strong> begins with <span class="target">${state.target}</span>. ${done}/${WORDS_PER_FISH} words completed.`;
+  state.target=null;
+  repaint();
+
+  if(done===WORDS_PER_FISH){
+    setTimeout(()=>finishTurn(),650);
+  }else{
+    setTimeout(()=>switchTurn(),700);
+  }
+}
+
+function flash(node,cls){
+  node.classList.remove(cls);
+  void node.offsetWidth;
+  node.classList.add(cls);
+  setTimeout(()=>node.classList.remove(cls),600);
+}
+
+function switchTurn(){
+  state.turn=state.turn==='A'?'B':'A';
+  el('spinBtn').disabled=false;
+  const done=completedCount(state.turn);
+  el('status').innerHTML=`${teamName(state.turn)} · ${done}/${WORDS_PER_FISH} words. Spin the wheel.`;
+  repaint();
+}
+
+function finishTurn(){
+  const winner=state.turn;
+  state[winner]=WORDS_PER_FISH;
+  repaint();
+  state.finished=true;
+  el('spinBtn').disabled=true;
+  el('status').innerHTML=`🏆 ${teamName(winner)} wins after practising all 12 words: two for every letter M–R!`;
+}
+
+function reset(){
+  state.A=-1;
+  state.B=-1;
+  state.turn='A';
+  state.target=null;
+  state.spinning=false;
+  state.rotation=0;
+  state.finished=false;
+  state.used={A:new Set(),B:new Set()};
+  el('wheel').style.transform='rotate(0deg)';
+  el('spinBtn').disabled=false;
+  el('status').textContent='Each fish must practise all 12 words: two words for every letter M–R.';
+  repaint();
+}
+
+el('spinBtn').addEventListener('click',spin);
+el('resetBtn').addEventListener('click',reset);
+el('wordsBtn').addEventListener('click',()=>{
+  document.body.classList.toggle('show-words');
+  el('wordsBtn').textContent=document.body.classList.contains('show-words')?'Hide words':'Show words';
+});
+window.addEventListener('resize',repaint);
+setTimeout(repaint,100);
+</script>
+</body>
+</html>

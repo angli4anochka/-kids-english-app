@@ -12,10 +12,10 @@ const STAGE_H = 1064;
 
 // Layer positions from original HTML
 const LAYERS = [
-  { src: '/spotlight/ex6-base.png',     left: 0,   top: 0,   w: 1678, h: 1064, step: 1 },
-  { src: '/spotlight/ex6-step2.png',    left: 0,   top: 0,   w: 1717, h: 1063, step: 2 },
-  { src: '/spotlight/ex6-age-box.png',  left: 672, top: 357, w: 992,  h: 134,  step: 3 },
-  { src: '/spotlight/ex6-examples.png', left: 0,   top: 500, w: 1675, h: 564,  step: 4 },
+  { src: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex6-base.png',     left: 0,   top: 0,   w: 1678, h: 1064, step: 1 },
+  { src: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex6-step2.png',    left: 0,   top: 0,   w: 1717, h: 1063, step: 2 },
+  { src: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex6-age-box.png',  left: 672, top: 357, w: 992,  h: 134,  step: 3 },
+  { src: 'https://storage.yandexcloud.net/kids-app/public-assets/spotlight/ex6-examples.png', left: 0,   top: 500, w: 1675, h: 564,  step: 4 },
 ];
 
 export default function SpotlightEx6({ isTeacher, lessonId, activityId }: Props) {

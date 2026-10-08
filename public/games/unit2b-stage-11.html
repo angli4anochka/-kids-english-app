@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>This, These, That, Those</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#6d8193;
+  --blue:#4a8fd8;
+  --blue-dark:#2f6ca4;
+  --green:#49b36d;
+  --orange:#f39a4b;
+  --red:#d96565;
+  --line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:1vh;
+  padding:1.5vh 1.6vw;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(255,208,139,.38), transparent 23%),
+    radial-gradient(circle at 92% 12%, rgba(130,198,255,.32), transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec);
+}
+
+.header,
+.rules,
+.main,
+.footer {
+  width:100%;
+  max-width:1380px;
+  margin:0 auto;
+}
+
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.65rem .95rem;
+  border-radius:20px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.8rem;
+}
+
+.badge {
+  width:48px;
+  height:48px;
+  display:grid;
+  place-items:center;
+  border-radius:15px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);
+  font-size:1.55rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.5rem,2.5vw,2.45rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.2rem;
+  color:var(--muted);
+  font-weight:700;
+  font-size:.9rem;
+}
+
+.progress {
+  padding:.5rem .85rem;
+  border-radius:999px;
+  background:#edf7ff;
+  color:#2f689c;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.rules {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.65rem;
+}
+
+.rule {
+  padding:.58rem .7rem;
+  border-radius:17px;
+  background:rgba(255,255,255,.93);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+
+.rule strong {
+  display:block;
+  color:var(--blue-dark);
+  font-size:1.08rem;
+}
+
+.rule span {
+  display:block;
+  margin-top:.18rem;
+  color:var(--muted);
+  font-size:.76rem;
+  font-weight:700;
+}
+
+.main {
+  min-height:0;
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(330px,.85fr);
+  gap:.9rem;
+}
+
+.scene,
+.practice {
+  min-height:0;
+  border-radius:22px;
+  background:rgba(255,255,255,.94);
+  box-shadow:var(--shadow);
+}
+
+.scene {
+  position:relative;
+  overflow:hidden;
+  padding:.8rem;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:.55rem;
+}
+
+.scene-title {
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  color:var(--muted);
+  font-weight:900;
+  font-size:.84rem;
+}
+
+.room {
+  position:relative;
+  min-height:0;
+  overflow:hidden;
+  border-radius:18px;
+  border:2px solid var(--line);
+  background:
+    linear-gradient(to bottom,#dff2ff 0 54%,#f7e6c5 54% 100%);
+  perspective:700px;
+}
+
+.room::before {
+  content:"";
+  position:absolute;
+  left:50%;
+  bottom:-18%;
+  width:72%;
+  height:58%;
+  transform:translateX(-50%) rotateX(62deg);
+  background:rgba(255,255,255,.28);
+  border:2px solid rgba(255,255,255,.5);
+  border-radius:50%;
+}
+
+.zone-label {
+  position:absolute;
+  z-index:2;
+  padding:.38rem .65rem;
+  border-radius:999px;
+  font-size:.78rem;
+  font-weight:900;
+}
+
+.far-label {
+  top:.7rem;
+  left:50%;
+  transform:translateX(-50%);
+  background:#e8f4ff;
+  color:#2f689c;
+}
+
+.near-label {
+  bottom:.7rem;
+  left:50%;
+  transform:translateX(-50%);
+  background:#fff0dc;
+  color:#b45a22;
+}
+
+.object {
+  position:absolute;
+  left:50%;
+  z-index:3;
+  transform:translateX(-50%);
+  text-align:center;
+  filter:drop-shadow(0 8px 6px rgba(0,0,0,.14));
+  transition:.3s ease;
+}
+
+.object.near {
+  bottom:14%;
+  font-size:clamp(5rem,10vw,9rem);
+}
+
+.object.far {
+  top:20%;
+  font-size:clamp(2.7rem,5vw,4.7rem);
+}
+
+.word-label {
+  margin-top:.3rem;
+  padding:.3rem .55rem;
+  border-radius:999px;
+  background:rgba(255,255,255,.9);
+  color:var(--ink);
+  font-size:.78rem;
+  font-weight:900;
+  filter:none;
+}
+
+.practice {
+  padding:.9rem;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto;
+  gap:.75rem;
+}
+
+.question {
+  color:var(--muted);
+  font-weight:800;
+  line-height:1.35;
+}
+
+.clues {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.55rem;
+}
+
+.clue {
+  padding:.55rem .65rem;
+  border-radius:14px;
+  background:#f7fbff;
+  border:2px solid var(--line);
+  text-align:center;
+  font-weight:900;
+}
+
+.clue span {
+  display:block;
+  margin-top:.15rem;
+  color:var(--muted);
+  font-size:.75rem;
+  font-weight:700;
+}
+
+.answers {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.65rem;
+  align-content:center;
+}
+
+.answer {
+  cursor:pointer;
+  min-height:66px;
+  border:3px solid var(--line);
+  border-radius:17px;
+  background:#fff;
+  color:var(--ink);
+  font-weight:900;
+  font-size:1.12rem;
+  box-shadow:0 5px 0 #cad7df;
+  transition:.15s ease;
+}
+
+.answer:hover {
+  transform:translateY(-2px);
+  border-color:#9ec8e5;
+}
+
+.answer.correct {
+  border-color:var(--green);
+  background:#eaf8ef;
+  color:#267544;
+  box-shadow:0 5px 0 #90d3a7;
+}
+
+.answer.wrong {
+  border-color:var(--red);
+  background:#ffecec;
+  color:#9e3434;
+  box-shadow:0 5px 0 #e1a2a2;
+}
+
+.feedback {
+  min-height:50px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.7rem;
+  padding:.62rem .7rem;
+  border-radius:15px;
+  background:#f8fcff;
+  border:2px solid var(--line);
+  font-weight:900;
+}
+
+.feedback-text {
+  color:var(--muted);
+}
+
+.next-btn {
+  display:none;
+  cursor:pointer;
+  border:0;
+  border-radius:13px;
+  padding:.62rem .9rem;
+  background:var(--blue);
+  color:#fff;
+  font-weight:900;
+  box-shadow:0 5px 0 var(--blue-dark);
+}
+
+.next-btn.show {
+  display:inline-block;
+}
+
+.footer {
+  padding:.52rem .8rem;
+  border-radius:16px;
+  background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);
+  color:var(--muted);
+  text-align:center;
+  font-size:.84rem;
+  font-weight:700;
+}
+
+@media (max-width:900px) {
+  .main {
+    grid-template-columns:1fr;
+    grid-template-rows:1fr auto;
+  }
+  .practice {
+    grid-template-columns:1fr 1fr;
+    grid-template-rows:auto auto;
+  }
+  .answers {
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">👀</div>
+      <div>
+        <h1>This, These, That, Those</h1>
+        <div class="subtitle">Near or far? One or more?</div>
+      </div>
+    </div>
+    <div id="progress" class="progress">1 / 8</div>
+  </header>
+
+  <section class="rules">
+    <div class="rule">
+      <strong>This</strong>
+      <span>one thing near me</span>
+    </div>
+    <div class="rule">
+      <strong>These</strong>
+      <span>two or more things near me</span>
+    </div>
+    <div class="rule">
+      <strong>That</strong>
+      <span>one thing far from me</span>
+    </div>
+    <div class="rule">
+      <strong>Those</strong>
+      <span>two or more things far from me</span>
+    </div>
+  </section>
+
+  <main class="main">
+    <section class="scene">
+      <div class="scene-title">
+        <span>FAR FROM ME</span>
+        <span>NEAR ME</span>
+      </div>
+      <div class="room">
+        <div class="zone-label far-label">far</div>
+        <div class="zone-label near-label">near</div>
+        <div id="object" class="object near">
+          <div id="icon">🧢</div>
+          <div id="wordLabel" class="word-label">cap</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="practice">
+      <div class="question">Choose the correct word.</div>
+
+      <div class="clues">
+        <div id="numberClue" class="clue">ONE<span>singular</span></div>
+        <div id="distanceClue" class="clue">NEAR<span>close to me</span></div>
+      </div>
+
+      <div class="answers">
+        <button class="answer">This</button>
+        <button class="answer">These</button>
+        <button class="answer">That</button>
+        <button class="answer">Those</button>
+      </div>
+
+      <div class="feedback">
+        <div id="feedbackText" class="feedback-text">Look at the two clues.</div>
+        <button id="nextBtn" class="next-btn">NEXT →</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    This / These = near. That / Those = far. This / That = one. These / Those = more than one.
+  </footer>
+</div>
+
+<script>
+const rounds = [{"icon": "🧢", "count": 1, "distance": "near", "word": "cap", "answer": "This", "sentence": "This is a cap."}, {"icon": "⚽⚽", "count": 2, "distance": "near", "word": "footballs", "answer": "These", "sentence": "These are footballs."}, {"icon": "📷", "count": 1, "distance": "far", "word": "digital camera", "answer": "That", "sentence": "That is a digital camera."}, {"icon": "🧤🧤", "count": 2, "distance": "far", "word": "gloves", "answer": "Those", "sentence": "Those are gloves."}, {"icon": "⌚", "count": 1, "distance": "near", "word": "watch", "answer": "This", "sentence": "This is a watch."}, {"icon": "👟👟", "count": 2, "distance": "far", "word": "trainers", "answer": "Those", "sentence": "Those are trainers."}, {"icon": "🚲", "count": 1, "distance": "far", "word": "bicycle", "answer": "That", "sentence": "That is a bicycle."}, {"icon": "🧸🧸", "count": 2, "distance": "near", "word": "teddy bears", "answer": "These", "sentence": "These are teddy bears."}];
+const answers = [...document.querySelectorAll(".answer")];
+const progress = document.getElementById("progress");
+const object = document.getElementById("object");
+const icon = document.getElementById("icon");
+const wordLabel = document.getElementById("wordLabel");
+const numberClue = document.getElementById("numberClue");
+const distanceClue = document.getElementById("distanceClue");
+const feedbackText = document.getElementById("feedbackText");
+const nextBtn = document.getElementById("nextBtn");
+
+let current = 0;
+let locked = false;
+const results = [];
+
+function renderRound() {
+  const round = rounds[current];
+  locked = false;
+
+  progress.textContent = `${current + 1} / ${rounds.length}`;
+  icon.textContent = round.icon;
+  wordLabel.textContent = round.word;
+
+  object.className = `object ${round.distance}`;
+
+  numberClue.innerHTML = round.count === 1
+    ? "ONE<span>singular</span>"
+    : "MORE THAN ONE<span>plural</span>";
+
+  distanceClue.innerHTML = round.distance === "near"
+    ? "NEAR<span>close to me</span>"
+    : "FAR<span>far from me</span>";
+
+  feedbackText.textContent = "Look at the two clues.";
+  feedbackText.style.color = "";
+  nextBtn.classList.remove("show");
+
+  answers.forEach(button => {
+    button.disabled = false;
+    button.classList.remove("correct","wrong");
+  });
+}
+
+answers.forEach(button => {
+  button.addEventListener("click", () => {
+    if (locked) return;
+    locked = true;
+
+    const round = rounds[current];
+    const chosen = button.textContent.trim();
+    results[current] = { word:round.word, chosen, answer:round.answer, correct:chosen === round.answer };
+
+    answers.forEach(item => {
+      item.disabled = true;
+      if (item.textContent.trim() === round.answer) {
+        item.classList.add("correct");
+      }
+    });
+
+    if (chosen === round.answer) {
+      feedbackText.textContent = round.sentence;
+      feedbackText.style.color = "#267544";
+    } else {
+      button.classList.add("wrong");
+      feedbackText.textContent = `Look again: ${round.sentence}`;
+      feedbackText.style.color = "#9e3434";
+    }
+
+    nextBtn.textContent = current === rounds.length - 1 ? "COMPLETE ✓" : "NEXT →";
+    nextBtn.classList.add("show");
+  });
+});
+
+nextBtn.addEventListener("click", () => {
+  if (current === rounds.length - 1) {
+    const result = { score:results.filter(item => item?.correct).length, total:rounds.length, answers:results };
+    localStorage.setItem("unit2bThisTheseThatThoseResult", JSON.stringify(result));
+    window.parent?.postMessage({ type:"lesson-step-complete", lesson:"2b", step:"this-these-that-those", result }, "*");
+    nextBtn.disabled = true;
+    nextBtn.textContent = "COMPLETED ✓";
+    return;
+  }
+  current += 1;
+  renderRound();
+});
+
+renderRound();
+</script>
+</body>
+</html>

@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — My profile and final challenge</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --ink:#263247;
+      --muted:#6d7685;
+      --line:#e4e8ed;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --blue-bg:#eef5ff;
+      --cream:#fff9f4;
+      --shadow:0 20px 55px rgba(43,34,29,.13);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%,rgba(255,185,133,.22),transparent 26%),
+        radial-gradient(circle at 90% 12%,rgba(93,155,225,.16),transparent 26%),
+        #f4f1ee;
+      overflow:hidden;
+    }
+
+    button,input,select,textarea{font:inherit}
+
+    .app{
+      width:min(1240px,calc(100vw - 24px));
+      height:min(90vh,840px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.98);
+      border:1px solid rgba(214,205,198,.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:17px 22px 14px;
+      border-bottom:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:21px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.24);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .progress{
+      margin-left:auto;
+      min-width:124px;
+      padding:10px 13px;
+      border-radius:16px;
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      color:var(--orange-dark);
+      font-weight:900;
+      text-align:center;
+    }
+
+    main{
+      min-height:0;
+      padding:18px 20px;
+    }
+
+    .screen{
+      display:none;
+      height:100%;
+    }
+
+    .screen.active{
+      display:grid;
+    }
+
+    .build-screen{
+      grid-template-columns:minmax(330px,.8fr) minmax(540px,1.2fr);
+      gap:18px;
+    }
+
+    .example-card,
+    .form-card,
+    .write-card{
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:24px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      min-height:0;
+    }
+
+    .example-card{
+      padding:18px;
+      display:grid;
+      grid-template-rows:auto 1fr;
+      overflow:hidden;
+    }
+
+    .profile-visual{
+      border-radius:20px;
+      background:
+        linear-gradient(145deg,rgba(77,131,211,.18),rgba(255,122,51,.14)),
+        #f8fafc;
+      border:1px solid #dde5ef;
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+
+    .avatar{
+      width:86px;
+      height:86px;
+      border-radius:28px;
+      display:grid;
+      place-items:center;
+      margin-bottom:16px;
+      color:#fff;
+      font-size:36px;
+      font-weight:950;
+      background:linear-gradient(145deg,#5d97d7,#345f9c);
+      box-shadow:0 12px 24px rgba(55,98,155,.22);
+    }
+
+    .example-card h2,
+    .form-card h2,
+    .write-card h2{
+      margin:0 0 6px;
+      font-size:28px;
+      letter-spacing:-.03em;
+    }
+
+    .intro{
+      margin:0 0 15px;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:14px;
+    }
+
+    .model-text{
+      font-size:17px;
+      line-height:1.7;
+      font-weight:800;
+      color:#344054;
+    }
+
+    .model-text strong{color:var(--blue-dark)}
+
+    .form-card{
+      padding:18px;
+      overflow:auto;
+    }
+
+    .form-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:11px;
+    }
+
+    .field{
+      display:grid;
+      gap:6px;
+    }
+
+    .field.full{grid-column:1/-1}
+
+    label{
+      font-size:13px;
+      font-weight:900;
+      color:#475467;
+    }
+
+    input,select,textarea{
+      width:100%;
+      border:1px solid #d7dde6;
+      border-radius:13px;
+      padding:10px 12px;
+      color:var(--ink);
+      outline:none;
+      background:#fff;
+    }
+
+    input:focus,select:focus,textarea:focus{
+      border-color:#ff9d60;
+      box-shadow:0 0 0 4px rgba(255,122,51,.13);
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .chip{
+      border:1px solid #d7dde6;
+      border-radius:999px;
+      background:#fff;
+      color:#475467;
+      padding:8px 11px;
+      font-weight:850;
+      cursor:pointer;
+    }
+
+    .chip.selected{
+      background:var(--blue-bg);
+      border-color:#8fb4df;
+      color:#31577f;
+    }
+
+    .school-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .school-item{
+      border:1px solid #e0e5eb;
+      border-radius:14px;
+      padding:9px;
+      background:#fafbfc;
+    }
+
+    .school-item strong{
+      display:block;
+      margin-bottom:7px;
+      font-size:13px;
+    }
+
+    .school-buttons{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:5px;
+    }
+
+    .school-choice{
+      border:1px solid #d6dce5;
+      border-radius:10px;
+      background:#fff;
+      padding:7px;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .school-choice.yes.selected{
+      background:var(--green-bg);
+      border-color:#70c895;
+      color:#246a47;
+    }
+
+    .school-choice.no.selected{
+      background:var(--red-bg);
+      border-color:#e58e89;
+      color:#98362f;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:13px;
+      padding:12px 14px;
+      border-radius:15px;
+      font-weight:850;
+      text-align:center;
+    }
+
+    .feedback.show{display:block}
+
+    .feedback.correct{
+      background:var(--green-bg);
+      border:1px solid #a8ddbf;
+      color:#256b48;
+    }
+
+    .feedback.incorrect{
+      background:var(--red-bg);
+      border:1px solid #efb0ac;
+      color:#98362f;
+    }
+
+    .write-screen,
+    .final-screen{
+      place-items:center;
+    }
+
+    .write-card{
+      width:min(940px,100%);
+      padding:22px;
+      display:grid;
+      grid-template-columns:1fr 1.2fr;
+      gap:18px;
+    }
+
+    .draft{
+      padding:17px;
+      border-radius:18px;
+      background:var(--blue-bg);
+      border:1px solid #bdd4ef;
+      color:#31577f;
+      font-weight:800;
+      line-height:1.65;
+    }
+
+    .draft-title{
+      margin-bottom:9px;
+      font-size:13px;
+      font-weight:950;
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+
+    .writing-area textarea{
+      min-height:230px;
+      resize:none;
+      line-height:1.6;
+    }
+
+    .checklist{
+      display:grid;
+      gap:7px;
+      margin-top:12px;
+    }
+
+    .check-item{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:var(--muted);
+      font-size:13px;
+      font-weight:800;
+    }
+
+    .check-mark{
+      width:22px;
+      height:22px;
+      border-radius:7px;
+      display:grid;
+      place-items:center;
+      background:#eef0f3;
+      color:#8a94a4;
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .check-item.done{
+      color:#256b48;
+    }
+
+    .check-item.done .check-mark{
+      background:var(--green-bg);
+      color:var(--green);
+    }
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:16px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){transform:translateY(-2px)}
+
+    .primary{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .next{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .footer-note{
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .continue{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    .final-card{
+      width:min(940px,100%);
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:24px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      padding:22px;
+    }
+
+    .final-head{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      margin-bottom:16px;
+    }
+
+    .final-icon{
+      width:58px;
+      height:58px;
+      border-radius:19px;
+      display:grid;
+      place-items:center;
+      flex:none;
+      color:#fff;
+      font-size:27px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 10px 22px rgba(255,122,51,.22);
+    }
+
+    .final-head h2{
+      margin:0 0 5px;
+      font-size:31px;
+      letter-spacing:-.03em;
+    }
+
+    .final-head p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .challenge-list{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .challenge-row{
+      padding:13px;
+      border:1px solid #e2e6eb;
+      border-radius:16px;
+      background:#fafbfc;
+      transition:.16s ease;
+    }
+
+    .challenge-row.correct{
+      background:var(--green-bg);
+      border-color:#90d2ac;
+    }
+
+    .challenge-row.incorrect{
+      background:var(--red-bg);
+      border-color:#efaaa6;
+    }
+
+    .challenge-prompt{
+      margin-bottom:10px;
+      font-weight:900;
+      line-height:1.4;
+    }
+
+    .challenge-options{
+      display:flex;
+      gap:7px;
+      flex-wrap:wrap;
+    }
+
+    .challenge-option{
+      border:1px solid #d7dde6;
+      border-radius:11px;
+      background:#fff;
+      color:#475467;
+      padding:8px 10px;
+      font-size:13px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .challenge-option.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .challenge-option.correct{
+      background:var(--green-bg);
+      border-color:#70c895;
+      color:#246a47;
+    }
+
+    .challenge-option.wrong{
+      background:var(--red-bg);
+      border-color:#e58e89;
+      color:#98362f;
+    }
+
+    .lesson-result{
+      display:none;
+      text-align:center;
+      padding:8px 2px 2px;
+    }
+
+    .lesson-result.show{
+      display:block;
+    }
+
+    .result-score{
+      font-size:56px;
+      line-height:1;
+      font-weight:950;
+      color:var(--orange-dark);
+      margin:14px 0 8px;
+    }
+
+    .result-title{
+      margin:0;
+      font-size:32px;
+      letter-spacing:-.03em;
+    }
+
+    .result-copy{
+      margin:7px auto 18px;
+      max-width:620px;
+      color:var(--muted);
+      line-height:1.5;
+    }
+
+    .skill-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      text-align:left;
+    }
+
+    .skill{
+      padding:13px 14px;
+      border-radius:16px;
+      background:var(--blue-bg);
+      border:1px solid #bdd4ef;
+      color:#31577f;
+      font-weight:900;
+    }
+
+    .skill::before{
+      content:"✓";
+      display:inline-grid;
+      place-items:center;
+      width:24px;
+      height:24px;
+      margin-right:8px;
+      border-radius:8px;
+      background:var(--green-bg);
+      color:var(--green);
+      vertical-align:middle;
+    }
+
+    @media(max-width:860px){
+      html,body{overflow:auto}
+
+      .app{
+        height:auto;
+        min-height:calc(100vh - 20px);
+        margin:10px auto;
+      }
+
+      .build-screen,
+      .write-card{
+        grid-template-columns:1fr;
+      }
+
+      .challenge-list{
+        grid-template-columns:1fr;
+      }
+    }
+
+    @media(max-width:600px){
+      header{padding:14px}
+      .progress{display:none}
+      main{padding:14px}
+      .form-grid{grid-template-columns:1fr}
+      .field.full{grid-column:auto}
+      .school-grid{grid-template-columns:1fr 1fr}
+    }
+    /* Lesson iframe: keep all three steps inside the lesson viewport. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);margin:12px auto}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>My profile</h1>
+        <p class="subtitle">Use countries, nationalities and have got in one text.</p>
+      </div>
+      <div id="progress" class="progress">Step 1 of 3</div>
+    </header>
+
+    <main>
+      <section id="buildScreen" class="screen build-screen active">
+        <article class="example-card">
+          <div>
+            <h2>Example</h2>
+            <p class="intro">Read the model before you build your own profile.</p>
+          </div>
+
+          <div class="profile-visual">
+            <div class="avatar">A</div>
+            <div class="model-text">
+              My name is <strong>Alex</strong>.<br>
+              I’m <strong>11 years old</strong>.<br>
+              I’m from <strong>Canada</strong>.<br>
+              I’m <strong>Canadian</strong>.<br>
+              I speak <strong>English and French</strong>.<br>
+              I have got <strong>a pencil case and a ruler</strong>.<br>
+              I haven’t got <strong>an atlas</strong>.
+            </div>
+          </div>
+        </article>
+
+        <article class="form-card">
+          <h2>Build your profile</h2>
+          <p class="intro">Complete the form. Your answers will become a writing plan.</p>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="nameInput">Name</label>
+              <input id="nameInput" type="text" autocomplete="off" placeholder="Alex">
+            </div>
+
+            <div class="field">
+              <label for="ageInput">Age</label>
+              <input id="ageInput" type="number" min="7" max="18" placeholder="11">
+            </div>
+
+            <div class="field">
+              <label for="countrySelect">Country</label>
+              <select id="countrySelect">
+                <option value="">Choose a country</option>
+                <option value="the USA">the USA</option>
+                <option value="France">France</option>
+                <option value="Japan">Japan</option>
+                <option value="Portugal">Portugal</option>
+                <option value="Thailand">Thailand</option>
+                <option value="Canada">Canada</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="nationalityInput">Nationality</label>
+              <input id="nationalityInput" type="text" readonly placeholder="Choose a country first">
+            </div>
+
+            <div class="field full">
+              <label>Languages</label>
+              <div id="languageChips" class="chips">
+                <button class="chip" data-value="English">English</button>
+                <button class="chip" data-value="French">French</button>
+                <button class="chip" data-value="Spanish">Spanish</button>
+                <button class="chip" data-value="Japanese">Japanese</button>
+                <button class="chip" data-value="Thai">Thai</button>
+                <button class="chip" data-value="Portuguese">Portuguese</button>
+              </div>
+            </div>
+
+            <div class="field full">
+              <label>School things</label>
+              <div id="schoolGrid" class="school-grid"></div>
+            </div>
+          </div>
+
+          <div id="buildFeedback" class="feedback"></div>
+
+          <div class="actions">
+            <button id="makeDraftBtn" class="btn primary">Make my writing plan</button>
+          </div>
+        </article>
+      </section>
+
+      <section id="writeScreen" class="screen write-screen">
+        <article class="write-card">
+          <section>
+            <h2>Your writing plan</h2>
+            <p class="intro">Use this information, but write the paragraph yourself.</p>
+            <div id="draft" class="draft"></div>
+          </section>
+
+          <section class="writing-area">
+            <h2>Write your profile</h2>
+            <p class="intro">Write at least six complete sentences.</p>
+
+            <textarea id="profileText" placeholder="My name is..."></textarea>
+
+            <div class="checklist">
+              <div class="check-item" data-check="name"><span class="check-mark">✓</span>Name</div>
+              <div class="check-item" data-check="age"><span class="check-mark">✓</span>Age</div>
+              <div class="check-item" data-check="country"><span class="check-mark">✓</span>Country</div>
+              <div class="check-item" data-check="nationality"><span class="check-mark">✓</span>Nationality</div>
+              <div class="check-item" data-check="language"><span class="check-mark">✓</span>Language</div>
+              <div class="check-item" data-check="school"><span class="check-mark">✓</span>Have got / haven’t got</div>
+            </div>
+
+            <div id="writeFeedback" class="feedback"></div>
+
+            <div class="actions">
+              <button id="checkWritingBtn" class="btn primary">Check my profile</button>
+              <button id="startFinalBtn" class="btn next">Final challenge</button>
+            </div>
+          </section>
+        </article>
+      </section>
+
+      <section id="finalScreen" class="screen final-screen">
+        <article class="final-card">
+          <div id="challengeContent">
+            <div class="final-head">
+              <div class="final-icon">✓</div>
+              <div>
+                <h2>Final challenge</h2>
+                <p>Complete six mixed tasks from the whole lesson.</p>
+              </div>
+            </div>
+
+            <div id="challengeList" class="challenge-list"></div>
+            <div id="finalFeedback" class="feedback"></div>
+
+            <div class="actions">
+              <button id="checkFinalBtn" class="btn primary">Check</button>
+            </div>
+          </div>
+
+          <div id="lessonResult" class="lesson-result">
+            <div class="final-icon" style="margin:0 auto;">★</div>
+            <div class="result-score">6 / 6</div>
+            <h2 class="result-title">Lesson complete</h2>
+            <p class="result-copy">
+              You can talk about countries, nationalities, school things and what people have got.
+            </p>
+
+            <div class="skill-grid">
+              <div class="skill">Countries and nationalities</div>
+              <div class="skill">Have got</div>
+              <div class="skill">Questions and short answers</div>
+              <div class="skill">My profile</div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Complete the form and choose at least one language.</div>
+      <button id="continueBtn" class="btn continue">Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const nationalities = {
+      'the USA':'American',
+      'France':'French',
+      'Japan':'Japanese',
+      'Portugal':'Portuguese',
+      'Thailand':'Thai',
+      'Canada':'Canadian'
+    };
+
+    const schoolItems = [
+      {id:'eraser', label:'an eraser'},
+      {id:'atlas', label:'an atlas'},
+      {id:'ruler', label:'a ruler'},
+      {id:'notepad', label:'a notepad'},
+      {id:'pencil-case', label:'a pencil case'},
+      {id:'dictionary', label:'a dictionary'}
+    ];
+
+    const profile = {
+      languages:[],
+      school:{}
+    };
+
+    const countrySelect = document.getElementById('countrySelect');
+    const nationalityInput = document.getElementById('nationalityInput');
+    const schoolGrid = document.getElementById('schoolGrid');
+    const buildFeedback = document.getElementById('buildFeedback');
+    const makeDraftBtn = document.getElementById('makeDraftBtn');
+    const buildScreen = document.getElementById('buildScreen');
+    const writeScreen = document.getElementById('writeScreen');
+    const finalScreen = document.getElementById('finalScreen');
+    const progress = document.getElementById('progress');
+    const footerNote = document.getElementById('footerNote');
+    const continueBtn = document.getElementById('continueBtn');
+
+    countrySelect.addEventListener('change', () => {
+      nationalityInput.value = nationalities[countrySelect.value] || '';
+    });
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('selected');
+        const value = chip.dataset.value;
+
+        if(chip.classList.contains('selected')){
+          if(!profile.languages.includes(value)) profile.languages.push(value);
+        }else{
+          profile.languages = profile.languages.filter(language => language !== value);
+        }
+      });
+    });
+
+    function renderSchoolItems(){
+      schoolGrid.innerHTML = '';
+
+      schoolItems.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'school-item';
+
+        card.innerHTML = `
+          <strong>${item.label}</strong>
+          <div class="school-buttons">
+            <button class="school-choice yes" data-value="yes">Yes</button>
+            <button class="school-choice no" data-value="no">No</button>
+          </div>
+        `;
+
+        card.querySelectorAll('.school-choice').forEach(button => {
+          button.addEventListener('click', () => {
+            card.querySelectorAll('.school-choice')
+              .forEach(choice => choice.classList.remove('selected'));
+
+            button.classList.add('selected');
+            profile.school[item.id] = button.dataset.value;
+          });
+        });
+
+        schoolGrid.appendChild(card);
+      });
+    }
+
+    function joinList(values){
+      if(values.length === 0) return '';
+      if(values.length === 1) return values[0];
+      return `${values.slice(0,-1).join(', ')} and ${values[values.length - 1]}`;
+    }
+
+    function collectProfile(){
+      profile.name = document.getElementById('nameInput').value.trim();
+      profile.age = document.getElementById('ageInput').value.trim();
+      profile.country = countrySelect.value;
+      profile.nationality = nationalityInput.value;
+
+      return profile;
+    }
+
+    makeDraftBtn.addEventListener('click', () => {
+      collectProfile();
+
+      const missing = [];
+
+      if(!profile.name) missing.push('name');
+      if(!profile.age) missing.push('age');
+      if(!profile.country) missing.push('country');
+      if(profile.languages.length === 0) missing.push('language');
+      if(Object.keys(profile.school).length !== schoolItems.length) missing.push('all school things');
+
+      if(missing.length){
+        buildFeedback.className = 'feedback show incorrect';
+        buildFeedback.textContent = `Complete: ${missing.join(', ')}.`;
+        return;
+      }
+
+      const have = schoolItems
+        .filter(item => profile.school[item.id] === 'yes')
+        .map(item => item.label);
+
+      const notHave = schoolItems
+        .filter(item => profile.school[item.id] === 'no')
+        .map(item => item.label);
+
+      const lines = [
+        `My name is ${profile.name}.`,
+        `I’m ${profile.age} years old.`,
+        `I’m from ${profile.country}.`,
+        `I’m ${profile.nationality}.`,
+        `I speak ${joinList(profile.languages)}.`
+      ];
+
+      if(have.length){
+        lines.push(`I have got ${joinList(have)}.`);
+      }
+
+      if(notHave.length){
+        lines.push(`I haven’t got ${joinList(notHave)}.`);
+      }
+
+      profile.draft = lines.join(' ');
+
+      document.getElementById('draft').textContent = profile.draft;
+      buildScreen.classList.remove('active');
+      writeScreen.classList.add('active');
+      progress.textContent = 'Step 2 of 3';
+      footerNote.textContent = 'Write the profile in your own paragraph.';
+    });
+
+    const profileText = document.getElementById('profileText');
+    const writeFeedback = document.getElementById('writeFeedback');
+
+    function normalise(value){
+      return value
+        .trim()
+        .toLowerCase()
+        .replace(/[’‘]/g,"'")
+        .replace(/\s+/g,' ');
+    }
+
+    function updateChecklist(){
+      const text = normalise(profileText.value);
+
+      const checks = {
+        name:text.includes(profile.name.toLowerCase()),
+        age:text.includes(profile.age),
+        country:text.includes(profile.country.toLowerCase()),
+        nationality:text.includes(profile.nationality.toLowerCase()),
+        language:profile.languages.some(language => text.includes(language.toLowerCase())),
+        school:text.includes('have got') || text.includes("haven't got")
+      };
+
+      Object.entries(checks).forEach(([key,done]) => {
+        const item = document.querySelector(`[data-check="${key}"]`);
+        item.classList.toggle('done',done);
+      });
+
+      return checks;
+    }
+
+    profileText.addEventListener('input', updateChecklist);
+
+    document.getElementById('checkWritingBtn').addEventListener('click', () => {
+      const text = profileText.value.trim();
+      const checks = updateChecklist();
+      const sentenceCount = (text.match(/[.!?]+/g) || []).length;
+      const allChecks = Object.values(checks).every(Boolean);
+
+      if(!text){
+        writeFeedback.className = 'feedback show incorrect';
+        writeFeedback.textContent = 'Write your profile first.';
+        return;
+      }
+
+      if(!allChecks || sentenceCount < 6){
+        writeFeedback.className = 'feedback show incorrect';
+
+        const problems = [];
+        if(!allChecks) problems.push('complete every item in the checklist');
+        if(sentenceCount < 6) problems.push('write at least six complete sentences');
+
+        writeFeedback.textContent = `Please ${problems.join(' and ')}.`;
+        return;
+      }
+
+      writeFeedback.className = 'feedback show correct';
+      writeFeedback.textContent = 'Excellent. Your profile includes all the key information.';
+      profileText.disabled = true;
+      document.getElementById('checkWritingBtn').disabled = true;
+      document.getElementById('startFinalBtn').style.display = 'inline-block';
+      footerNote.textContent = 'Your profile is complete. Continue to the final challenge.';
+
+      localStorage.setItem('myProfileResult',JSON.stringify({
+        profile,
+        writing:text,
+        sentenceCount
+      }));
+    });
+
+    const finalTasks = [
+      {
+        prompt:'1. A person from France is ...',
+        options:['France','French','Japanese'],
+        answer:'French'
+      },
+      {
+        prompt:'2. Japan is a ...',
+        options:['country','nationality'],
+        answer:'country'
+      },
+      {
+        prompt:'3. Peter ________ special powers.',
+        options:['has got','have got','hasn’t got'],
+        answer:'has got'
+      },
+      {
+        prompt:'4. ________ Mia got an atlas?',
+        options:['Have','Has'],
+        answer:'Has'
+      },
+      {
+        prompt:'5. Has Leo got a ruler?',
+        options:['Yes, he has.','No, he hasn’t.'],
+        answer:'No, he hasn’t.'
+      },
+      {
+        prompt:'6. Have Mia and Ben got pencil cases?',
+        options:['Yes, they have.','No, they haven’t.'],
+        answer:'Yes, they have.'
+      }
+    ];
+
+    const challengeList = document.getElementById('challengeList');
+    const finalFeedback = document.getElementById('finalFeedback');
+    const checkFinalBtn = document.getElementById('checkFinalBtn');
+    const lessonResult = document.getElementById('lessonResult');
+    const challengeContent = document.getElementById('challengeContent');
+
+    function renderFinalChallenge(){
+      challengeList.innerHTML = '';
+
+      finalTasks.forEach((task,index) => {
+        const row = document.createElement('div');
+        row.className = 'challenge-row';
+        row.dataset.answer = task.answer;
+        row.dataset.index = index;
+
+        const prompt = document.createElement('div');
+        prompt.className = 'challenge-prompt';
+        prompt.textContent = task.prompt;
+
+        const options = document.createElement('div');
+        options.className = 'challenge-options';
+
+        task.options.forEach(value => {
+          const button = document.createElement('button');
+          button.className = 'challenge-option';
+          button.textContent = value;
+          button.dataset.value = value;
+
+          button.addEventListener('click', () => {
+            if(row.dataset.locked === 'true') return;
+
+            options.querySelectorAll('.challenge-option').forEach(option => {
+              option.classList.toggle('selected',option === button);
+              option.classList.remove('wrong');
+            });
+
+            row.classList.remove('incorrect');
+          });
+
+          options.appendChild(button);
+        });
+
+        row.append(prompt,options);
+        challengeList.appendChild(row);
+      });
+    }
+
+    document.getElementById('startFinalBtn').addEventListener('click', () => {
+      writeScreen.classList.remove('active');
+      finalScreen.classList.add('active');
+      progress.textContent = 'Step 3 of 3';
+      footerNote.textContent = 'Complete all six final tasks.';
+      renderFinalChallenge();
+    });
+
+    checkFinalBtn.addEventListener('click', () => {
+      const rows = [...document.querySelectorAll('.challenge-row')];
+      const incomplete = rows.some(row => !row.querySelector('.challenge-option.selected'));
+
+      if(incomplete){
+        finalFeedback.className = 'feedback show incorrect';
+        finalFeedback.textContent = 'Choose one answer in all six tasks first.';
+        return;
+      }
+
+      let score = 0;
+
+      rows.forEach(row => {
+        const answer = row.dataset.answer;
+        const selected = row.querySelector('.challenge-option.selected');
+        const correct = selected.dataset.value === answer;
+
+        row.classList.toggle('correct',correct);
+        row.classList.toggle('incorrect',!correct);
+
+        if(correct){
+          score++;
+          row.dataset.locked = 'true';
+
+          row.querySelectorAll('.challenge-option').forEach(option => {
+            option.disabled = true;
+            if(option.dataset.value === answer) option.classList.add('correct');
+          });
+        }else{
+          selected.classList.add('wrong');
+        }
+      });
+
+      if(score < finalTasks.length){
+        finalFeedback.className = 'feedback show incorrect';
+        finalFeedback.textContent = `${score} of ${finalTasks.length} are correct. Fix the red tasks and check again.`;
+        return;
+      }
+
+      finalFeedback.className = 'feedback';
+      challengeContent.style.display = 'none';
+      lessonResult.classList.add('show');
+      continueBtn.style.display = 'inline-block';
+      footerNote.textContent = 'Lesson 2a is complete.';
+
+      const profileResult = JSON.parse(localStorage.getItem('myProfileResult') || '{}');
+      const result = {
+        profile:profileResult,
+        finalChallenge:{
+          score,
+          total:finalTasks.length
+        }
+      };
+
+      localStorage.setItem('lesson2aFinalResult',JSON.stringify(result));
+    });
+
+    continueBtn.addEventListener('click', () => {
+      const result = JSON.parse(localStorage.getItem('lesson2aFinalResult') || '{}');
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'my-profile-and-final-challenge',
+        result
+      },'*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    renderSchoolItems();
+  </script>
+</body>
+</html>

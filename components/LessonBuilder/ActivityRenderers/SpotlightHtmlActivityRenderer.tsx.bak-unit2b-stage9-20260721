@@ -1,0 +1,318 @@
+import type { Activity } from '../../../types';
+import SpotlightVerbBeSlides from './SpotlightVerbBeSlides';
+import SpotlightS5Alphabet from './SpotlightS5Alphabet';
+import SpotlightS5WeLearnEnglish from './SpotlightS5WeLearnEnglish';
+import SpotlightS5UkUsa from './SpotlightS5UkUsa';
+import SpotlightS5AustraliaNz from './SpotlightS5AustraliaNz';
+import SpotlightS5InternationalWords from './SpotlightS5InternationalWords';
+import SpotlightS5Alphabet1 from './SpotlightS5Alphabet1';
+import SpotlightS5SongReadingRules from './SpotlightS5SongReadingRules';
+import SpotlightS5FindWordsRightWrong from './SpotlightS5FindWordsRightWrong';
+import SpotlightS5DialogueName from './SpotlightS5DialogueName';
+import SpotlightS5AlphabetIR from './SpotlightS5AlphabetIR';
+import SpotlightS5ReadingRuleI from './SpotlightS5ReadingRuleI';
+import SpotlightS5ReadingRulesJR from './SpotlightS5ReadingRulesJR';
+import SpotlightEx1 from './SpotlightEx1';
+import SpotlightEx2 from './SpotlightEx2';
+import SpotlightEx3 from './SpotlightEx3';
+import SpotlightEx4 from './SpotlightEx4';
+import SpotlightEx5 from './SpotlightEx5';
+import SpotlightEx6 from './SpotlightEx6';
+import SpotlightEx7 from './SpotlightEx7';
+import SpotlightEx8 from './SpotlightEx8';
+import SpotlightEx9 from './SpotlightEx9';
+import SpotlightEx10 from './SpotlightEx10';
+import SpotlightEx11 from './SpotlightEx11';
+import SpotlightEx12 from './SpotlightEx12';
+import SpotlightEx13 from './SpotlightEx13';
+import SpotlightEx14 from './SpotlightEx14';
+import SpotlightEx15 from './SpotlightEx15';
+import SpotlightEx16 from './SpotlightEx16';
+import SpotlightEx17 from './SpotlightEx17';
+import SpotlightEx18 from './SpotlightEx18';
+import SpotlightEx19 from './SpotlightEx19';
+import SpotlightEx20 from './SpotlightEx20';
+import SpotlightEx21 from './SpotlightEx21';
+import SpotlightEx22 from './SpotlightEx22';
+import SpotlightEx23 from './SpotlightEx23';
+import SpotlightEx24 from './SpotlightEx24';
+import SpotlightEx25 from './SpotlightEx25';
+import SpotlightEx26 from './SpotlightEx26';
+import SpotlightEx27 from './SpotlightEx27';
+import SpotlightEx28 from './SpotlightEx28';
+import SpotlightEx29 from './SpotlightEx29';
+import SpotlightEx30 from './SpotlightEx30';
+import SpotlightEx31 from './SpotlightEx31';
+import SpotlightEx32 from './SpotlightEx32';
+import SpotlightEx33 from './SpotlightEx33';
+import SpotlightEx34 from './SpotlightEx34';
+import SpotlightEx35 from './SpotlightEx35';
+import SpotlightEx36 from './SpotlightEx36';
+import SpotlightEx37 from './SpotlightEx37';
+import SpotlightEx38 from './SpotlightEx38';
+import SpotlightEx39 from './SpotlightEx39';
+import SpotlightEx40 from './SpotlightEx40';
+import SpotlightEx41 from './SpotlightEx41';
+import SpotlightEx42 from './SpotlightEx42';
+import SpotlightEx43 from './SpotlightEx43';
+import SpotlightEx44 from './SpotlightEx44';
+import SpotlightEx45 from './SpotlightEx45';
+import SpotlightUnit1SchoolIntro from './SpotlightUnit1SchoolIntro';
+import SpotlightUnit1SchoolMap from './SpotlightUnit1SchoolMap';
+import SpotlightUnit1SchoolSubjectsAnagram from './SpotlightUnit1SchoolSubjectsAnagram';
+import SpotlightUnit1SchoolSubjectsFlashlight from './SpotlightUnit1SchoolSubjectsFlashlight';
+import SpotlightUnit1WheresLesson from './SpotlightUnit1WheresLesson';
+import SpotlightUnit1MondayTimetableDays from './SpotlightUnit1MondayTimetableDays';
+import SpotlightUnit1AAnSchoolObjects from './SpotlightUnit1AAnSchoolObjects';
+import SpotlightUnit1bADogQuiz from './SpotlightUnit1bADogQuiz';
+import SpotlightUnit1bPopTheNumber from './SpotlightUnit1bPopTheNumber';
+import SpotlightUnit1bHowOldAreThey from './SpotlightUnit1bHowOldAreThey';
+import SpotlightUnit1bDialogueAutoTwoCharactersLike from './SpotlightUnit1bDialogueAutoTwoCharactersLike';
+import SpotlightUnit1bBuildTheDialogue from './SpotlightUnit1bBuildTheDialogue';
+import SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs from './SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs';
+import SpotlightUnit1bPronounMachine from './SpotlightUnit1bPronounMachine';
+import SpotlightUnit1bAmIsAreRulesPracticeNoMonster from './SpotlightUnit1bAmIsAreRulesPracticeNoMonster';
+import SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos from './SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos';
+import SpotlightUnit1bToBeSixForms10SentencesRandom from './SpotlightUnit1bToBeSixForms10SentencesRandom';
+import SpotlightUnit1bQuestionBuilder from './SpotlightUnit1bQuestionBuilder';
+import SpotlightUnit1bFinalOpenProfile from './SpotlightUnit1bFinalOpenProfile';
+import SpotlightUnit1EnglishInUseGreetings from './SpotlightUnit1EnglishInUseGreetings';
+import SpotlightUnit1EnglishInUseListeningMatchAbc from './SpotlightUnit1EnglishInUseListeningMatchAbc';
+import SpotlightUnit1EnglishInUseSpeakingSituationCards from './SpotlightUnit1EnglishInUseSpeakingSituationCards';
+import SpotlightUnit1EnglishInUseSchoolObjects from './SpotlightUnit1EnglishInUseSchoolObjects';
+import SpotlightUnit1EnglishInUseArticlesAAn from './SpotlightUnit1EnglishInUseArticlesAAn';
+import SpotlightUnit1EnglishInUsePersonalPronouns from './SpotlightUnit1EnglishInUsePersonalPronouns';
+import SpotlightUnit1EnglishInUseToBeForms from './SpotlightUnit1EnglishInUseToBeForms';
+import SpotlightUnit1EnglishInUseProfileReadingSally from './SpotlightUnit1EnglishInUseProfileReadingSally';
+import SpotlightUnit1EnglishInUseQuestionWordsAboutMe from './SpotlightUnit1EnglishInUseQuestionWordsAboutMe';
+import SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame from './SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame';
+import SpotlightUnit1EnglishInUseProgressCheck1Opening from './SpotlightUnit1EnglishInUseProgressCheck1Opening';
+import SpotlightUnit1cCapitalLettersFromBook from './SpotlightUnit1cCapitalLettersFromBook';
+import SpotlightUnit1cTonyStudentProfileReading from './SpotlightUnit1cTonyStudentProfileReading';
+import SpotlightUnit1cHillsideListeningInterview from './SpotlightUnit1cHillsideListeningInterview';
+import SpotlightUnit1cFindTheLessonQuestionCards from './SpotlightUnit1cFindTheLessonQuestionCards';
+import SpotlightUnit1cFinalChallenge from './SpotlightUnit1cFinalChallenge';
+import SpotlightUnit1cSchoolSubjectRiddles from './SpotlightUnit1cSchoolSubjectRiddles';
+import SpotlightUnit1cPersonalPronounsPractice from './SpotlightUnit1cPersonalPronounsPractice';
+import SpotlightUnit1cWriteAboutClassmate from './SpotlightUnit1cWriteAboutClassmate';
+import SpotlightUnit1cListeningExercise4 from './SpotlightUnit1cListeningExercise4';
+import SpotlightUnit1cTimetablePresentationScoreboard from './SpotlightUnit1cTimetablePresentationScoreboard';
+import SpotlightUnit1cFavouriteSubjectsReview from './SpotlightUnit1cFavouriteSubjectsReview';
+import SpotlightUnit1dWelcome from './SpotlightUnit1dWelcome';
+import SpotlightUnit1dJaneProfile from './SpotlightUnit1dJaneProfile';
+import SpotlightUnit1dMatchHeadings from './SpotlightUnit1dMatchHeadings';
+import SpotlightUnit1dReadingChallenge from './SpotlightUnit1dReadingChallenge';
+import SpotlightUnit1dPersonalPronouns from './SpotlightUnit1dPersonalPronouns';
+import SpotlightUnit1dPronounSecurityCheck from './SpotlightUnit1dPronounSecurityCheck';
+import SpotlightUnit1dSchoolsInEngland from './SpotlightUnit1dSchoolsInEngland';
+import SpotlightUnit1dWrittenIdentityCheck from './SpotlightUnit1dWrittenIdentityCheck';
+import SpotlightUnit1dHomepageBuilder from './SpotlightUnit1dHomepageBuilder';
+import SpotlightAlphabetRiverGL from './SpotlightAlphabetRiverGL';
+import SpotlightUnit2aStage2 from './SpotlightUnit2aStage2';
+import SpotlightUnit2aStage3 from './SpotlightUnit2aStage3';
+import SpotlightUnit2aStage4 from './SpotlightUnit2aStage4';
+import SpotlightUnit2aStage5 from './SpotlightUnit2aStage5';
+import SpotlightUnit2aStage6 from './SpotlightUnit2aStage6';
+import SpotlightUnit2aStage7 from './SpotlightUnit2aStage7';
+import SpotlightUnit2aStage8 from './SpotlightUnit2aStage8';
+import SpotlightUnit2aStage9 from './SpotlightUnit2aStage9';
+import SpotlightUnit2aStage10 from './SpotlightUnit2aStage10';
+import SpotlightUnit2aStage11 from './SpotlightUnit2aStage11';
+import SpotlightUnit2aStage12 from './SpotlightUnit2aStage12';
+import SpotlightUnit2aStage13 from './SpotlightUnit2aStage13';
+import SpotlightUnit2aStage14 from './SpotlightUnit2aStage14';
+import SpotlightUnit2aStage15 from './SpotlightUnit2aStage15';
+import SpotlightUnit2aStage16 from './SpotlightUnit2aStage16';
+import SpotlightUnit2bStage2 from './SpotlightUnit2bStage2';
+import SpotlightUnit2bStage3 from './SpotlightUnit2bStage3';
+import SpotlightUnit2bStage4 from './SpotlightUnit2bStage4';
+import SpotlightUnit2bStage5 from './SpotlightUnit2bStage5';
+import SpotlightUnit2bStage6 from './SpotlightUnit2bStage6';
+import SpotlightUnit2bStage7 from './SpotlightUnit2bStage7';
+import SpotlightUnit2bStage8 from './SpotlightUnit2bStage8';
+
+interface Props {
+  activity: Activity;
+  isViewMode: boolean;
+  isTeacher: boolean;
+  lessonId?: string;
+  groupId?: number;
+  sessionId?: string;
+  socket?: any;
+  isConnected?: boolean;
+  onEdit: (activity: Activity) => void;
+}
+
+interface SlideProps {
+  isTeacher?: boolean;
+  lessonId?: string;
+  groupId?: number;
+  activityId?: string;
+  sessionId?: string;
+  socket?: any;
+  isConnected?: boolean;
+}
+
+const SPOTLIGHT_COMPONENTS: Record<string, React.ComponentType<SlideProps>> = {
+  'verb-be': SpotlightVerbBeSlides,
+  'spotlight5-alphabet': SpotlightS5Alphabet,
+  'spotlight5-we-learn-english': SpotlightS5WeLearnEnglish,
+  'spotlight5-uk-usa': SpotlightS5UkUsa,
+  'spotlight5-australia-nz': SpotlightS5AustraliaNz,
+  'spotlight5-international-words': SpotlightS5InternationalWords,
+  'spotlight5-alphabet-1': SpotlightS5Alphabet1,
+  'spotlight5-song-reading-rules': SpotlightS5SongReadingRules,
+  'spotlight5-find-words-right-wrong': SpotlightS5FindWordsRightWrong,
+  'spotlight5-dialogue-name': SpotlightS5DialogueName,
+  'spotlight5-alphabet-ir': SpotlightS5AlphabetIR,
+  'spotlight5-reading-rule-i': SpotlightS5ReadingRuleI,
+  'spotlight5-reading-rules-jr': SpotlightS5ReadingRulesJR,
+  'verb-be-ex1': SpotlightEx1,
+  'verb-be-ex2': SpotlightEx2,
+  'verb-be-ex3': SpotlightEx3,
+  'verb-be-ex4': SpotlightEx4,
+  'verb-be-ex5': SpotlightEx5,
+  'verb-be-ex6': SpotlightEx6,
+  'verb-be-ex7': SpotlightEx7,
+  'verb-be-ex8': SpotlightEx8,
+  'verb-be-ex9': SpotlightEx9,
+  'verb-be-ex10': SpotlightEx10,
+  'verb-be-ex11': SpotlightEx11,
+  'verb-be-ex12': SpotlightEx12,
+  'verb-be-ex13': SpotlightEx13,
+  'verb-be-ex14': SpotlightEx14,
+  'verb-be-ex15': SpotlightEx15,
+  'verb-be-ex16': SpotlightEx16,
+  'verb-be-ex17': SpotlightEx17,
+  'verb-be-ex18': SpotlightEx18,
+  'verb-be-ex19': SpotlightEx19,
+  'verb-be-ex20': SpotlightEx20,
+  'mod1b-ex1': SpotlightEx21,
+  'mod1b-ex2': SpotlightEx22,
+  'mod1b-ex3': SpotlightEx23,
+  'mod1b-ex4': SpotlightEx24,
+  'mod1b-ex5': SpotlightEx25,
+  'mod1b-ex6': SpotlightEx26,
+  'mod1b-ex7': SpotlightEx27,
+  'mod1b-ex8': SpotlightEx28,
+  'mod1b-ex9': SpotlightEx29,
+  'mod1b-ex10': SpotlightEx30,
+  'mod1b-ex11': SpotlightEx31,
+  'mod1b-ex12': SpotlightEx32,
+  'mod1b-ex13': SpotlightEx33,
+  'mod1b-ex14': SpotlightEx34,
+  'mod1b-ex15': SpotlightEx35,
+  'mod1b-ex16': SpotlightEx36,
+  'mod1b-ex17': SpotlightEx37,
+  'mod1b-ex18': SpotlightEx38,
+  'have-ex1': SpotlightEx39,
+  'have-ex2': SpotlightEx40,
+  'have-ex3': SpotlightEx42,
+  'have-ex4': SpotlightEx41,
+  'have-ex5': SpotlightEx43,
+  'have-ex6': SpotlightEx44,
+  'have-ex7': SpotlightEx45,
+  'unit1-school-intro': SpotlightUnit1SchoolIntro,
+  'unit1-school-map': SpotlightUnit1SchoolMap,
+  'unit1-school-subjects-anagram': SpotlightUnit1SchoolSubjectsAnagram,
+  'unit1-school-subjects-flashlight': SpotlightUnit1SchoolSubjectsFlashlight,
+  'unit1-wheres-lesson': SpotlightUnit1WheresLesson,
+  'unit1-monday-timetable-days': SpotlightUnit1MondayTimetableDays,
+  'unit1-a-an-school-objects': SpotlightUnit1AAnSchoolObjects,
+  'unit1b-a-an-dog-quiz': SpotlightUnit1bADogQuiz,
+  'unit1b-pop-the-number': SpotlightUnit1bPopTheNumber,
+  'unit1b-how-old-are-they': SpotlightUnit1bHowOldAreThey,
+  'unit1b-dialogue-auto-two-characters-like': SpotlightUnit1bDialogueAutoTwoCharactersLike,
+  'unit1b-build-the-dialogue': SpotlightUnit1bBuildTheDialogue,
+  'unit1b-reading-original-listening-build-dialogue-inputs': SpotlightUnit1bReadingOriginalListeningBuildDialogueInputs,
+  'unit1b-pronoun-machine': SpotlightUnit1bPronounMachine,
+  'unit1b-am-is-are-rules-practice-no-monster': SpotlightUnit1bAmIsAreRulesPracticeNoMonster,
+  'unit1b-affirmative-negative-html-worksheet-dynamic-photos': SpotlightUnit1bAffirmativeNegativeHtmlWorksheetDynamicPhotos,
+  'unit1b-to-be-six-forms-10-sentences-random': SpotlightUnit1bToBeSixForms10SentencesRandom,
+  'unit1b-question-builder': SpotlightUnit1bQuestionBuilder,
+  'unit1b-final-open-profile': SpotlightUnit1bFinalOpenProfile,
+  'unit1-english-in-use-greetings': SpotlightUnit1EnglishInUseGreetings,
+  'unit1-english-in-use-listening-match-abc': SpotlightUnit1EnglishInUseListeningMatchAbc,
+  'unit1-english-in-use-speaking-situation-cards': SpotlightUnit1EnglishInUseSpeakingSituationCards,
+  'unit1-english-in-use-school-objects': SpotlightUnit1EnglishInUseSchoolObjects,
+  'unit1-english-in-use-articles-a-an': SpotlightUnit1EnglishInUseArticlesAAn,
+  'unit1-english-in-use-personal-pronouns': SpotlightUnit1EnglishInUsePersonalPronouns,
+  'unit1-english-in-use-to-be-forms': SpotlightUnit1EnglishInUseToBeForms,
+  'unit1-english-in-use-profile-reading-sally': SpotlightUnit1EnglishInUseProfileReadingSally,
+  'unit1-english-in-use-question-words-about-me': SpotlightUnit1EnglishInUseQuestionWordsAboutMe,
+  'unit1-english-in-use-translators-corner-team-game': SpotlightUnit1EnglishInUseTranslatorsCornerTeamGame,
+  'progress-check-1-opening': SpotlightUnit1EnglishInUseProgressCheck1Opening,
+  'unit1c-capital-letters-from-book': SpotlightUnit1cCapitalLettersFromBook,
+  'unit1c-tony-student-profile-reading': SpotlightUnit1cTonyStudentProfileReading,
+  'unit1c-hillside-listening-interview': SpotlightUnit1cHillsideListeningInterview,
+  'unit1c-find-the-lesson-question-cards': SpotlightUnit1cFindTheLessonQuestionCards,
+  'unit1c-final-challenge': SpotlightUnit1cFinalChallenge,
+  'unit1c-school-subject-riddles': SpotlightUnit1cSchoolSubjectRiddles,
+  'unit1c-personal-pronouns-practice': SpotlightUnit1cPersonalPronounsPractice,
+  'unit1c-write-about-classmate': SpotlightUnit1cWriteAboutClassmate,
+  'unit1c-listening-exercise-4': SpotlightUnit1cListeningExercise4,
+  'unit1c-timetable-presentation-scoreboard': SpotlightUnit1cTimetablePresentationScoreboard,
+  'unit1c-favourite-subjects-review': SpotlightUnit1cFavouriteSubjectsReview,
+  'unit1d-welcome': SpotlightUnit1dWelcome,
+  'unit1d-jane-profile': SpotlightUnit1dJaneProfile,
+  'unit1d-match-headings': SpotlightUnit1dMatchHeadings,
+  'unit1d-reading-challenge': SpotlightUnit1dReadingChallenge,
+  'unit1d-personal-pronouns': SpotlightUnit1dPersonalPronouns,
+  'unit1d-pronoun-security-check': SpotlightUnit1dPronounSecurityCheck,
+  'unit1d-schools-in-england': SpotlightUnit1dSchoolsInEngland,
+  'unit1d-written-identity-check': SpotlightUnit1dWrittenIdentityCheck,
+  'unit1d-homepage-builder': SpotlightUnit1dHomepageBuilder,
+  'alphabet-river-g-l': SpotlightAlphabetRiverGL,
+  'unit2a-stage-2': SpotlightUnit2aStage2,
+  'unit2a-stage-3': SpotlightUnit2aStage3,
+  'unit2a-stage-4': SpotlightUnit2aStage4,
+  'unit2a-stage-5': SpotlightUnit2aStage5,
+  'unit2a-stage-6': SpotlightUnit2aStage6,
+  'unit2a-stage-7': SpotlightUnit2aStage7,
+  'unit2a-stage-8': SpotlightUnit2aStage8,
+  'unit2a-stage-9': SpotlightUnit2aStage9,
+  'unit2a-stage-10': SpotlightUnit2aStage10,
+  'unit2a-stage-11': SpotlightUnit2aStage11,
+  'unit2a-stage-12': SpotlightUnit2aStage12,
+  'unit2a-stage-13': SpotlightUnit2aStage13,
+  'unit2a-stage-14': SpotlightUnit2aStage14,
+  'unit2a-stage-15': SpotlightUnit2aStage15,
+  'unit2a-stage-16': SpotlightUnit2aStage16,
+  'unit2b-stage-2': SpotlightUnit2bStage2,
+  'unit2b-stage-3': SpotlightUnit2bStage3,
+  'unit2b-stage-4': SpotlightUnit2bStage4,
+  'unit2b-stage-5': SpotlightUnit2bStage5,
+  'unit2b-stage-6': SpotlightUnit2bStage6,
+  'unit2b-stage-7': SpotlightUnit2bStage7,
+  'unit2b-stage-8': SpotlightUnit2bStage8,
+};
+
+const SpotlightHtmlActivityRenderer = ({ activity, isViewMode, isTeacher, lessonId, groupId, sessionId, socket, isConnected, onEdit }: Props) => {
+  const activityData = (activity as any).content_data || (activity as any).contentData || {};
+  const lessonKey = activityData.lessonKey || (activity as any).lessonKey || 'verb-be';
+  const Component = SPOTLIGHT_COMPONENTS[lessonKey];
+
+  if (!Component) {
+    return (
+      <div className="flex items-center justify-center h-full p-8 text-gray-500">
+        Unknown spotlight lesson: {lessonKey}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full">
+      <Component
+        isTeacher={isTeacher}
+        lessonId={lessonId}
+        groupId={groupId}
+        activityId={activity.id}
+        sessionId={sessionId}
+        socket={socket}
+        isConnected={isConnected}
+      />
+    </div>
+  );
+};
+
+export default SpotlightHtmlActivityRenderer;

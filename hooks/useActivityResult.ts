@@ -35,16 +35,17 @@ export function useActivityResult({ activityId, lessonId, groupId, sessionId, is
       groupId,
     };
 
-    if (sessionId) {
-      try {
-        await fetch(`/kids-api/live-sessions/${sessionId}/results`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-      } catch (err) {
-        console.error('[ActivityResult] POST failed:', err);
-      }
+    // Persist every result. `none` is the backend's explicit self-study
+    // session, so independent work is stored in PostgreSQL as well.
+    try {
+      const response = await fetch(`/kids-api/live-sessions/${sessionId || 'none'}/results`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    } catch (err) {
+      console.error('[ActivityResult] POST failed:', err);
     }
 
     if (socket && isConnected && groupId != null) {

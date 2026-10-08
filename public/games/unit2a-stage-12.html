@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Who has got what?</title>
+  <style>
+    :root{
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --ink:#263247;
+      --muted:#6d7685;
+      --line:#e4e8ed;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --cream:#fff9f4;
+      --shadow:0 20px 55px rgba(43,34,29,.13);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%,rgba(255,185,133,.22),transparent 26%),
+        radial-gradient(circle at 90% 12%,rgba(93,155,225,.16),transparent 26%),
+        #f4f1ee;
+      overflow:hidden;
+    }
+
+    button{font:inherit}
+
+    .app{
+      width:min(1320px,calc(100vw - 24px));
+      height:min(90vh,840px);
+      margin:5vh auto;
+      background:rgba(255,255,255,.98);
+      border:1px solid rgba(214,205,198,.8);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:17px 22px 14px;
+      border-bottom:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .badge{
+      width:56px;
+      height:56px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:21px;
+      font-weight:950;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.24);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.04em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .score{
+      margin-left:auto;
+      min-width:122px;
+      padding:10px 13px;
+      border-radius:16px;
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      color:var(--orange-dark);
+      font-weight:900;
+      text-align:center;
+    }
+
+    .rule{
+      margin:14px 20px 0;
+      padding:11px 14px;
+      border-radius:17px;
+      background:#fffaf5;
+      border:1px solid #ffe0ca;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      align-items:center;
+      color:#7a4c2b;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .rule strong{color:var(--orange-dark)}
+
+    main{
+      min-height:0;
+      padding:16px 20px 18px;
+      display:grid;
+      grid-template-columns:minmax(470px,.95fr) minmax(530px,1.05fr);
+      gap:18px;
+    }
+
+    .panel{
+      background:#fff;
+      border:1px solid #e5e1dd;
+      border-radius:23px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+      padding:17px;
+      min-height:0;
+      overflow:hidden;
+    }
+
+    .panel-title{
+      margin:0 0 11px;
+      font-size:24px;
+      letter-spacing:-.03em;
+    }
+
+    .inventory{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid #e2e6eb;
+      border-radius:17px;
+      table-layout:fixed;
+    }
+
+    .inventory th,
+    .inventory td{
+      padding:10px 8px;
+      text-align:center;
+      border-right:1px solid #e6e9ed;
+      border-bottom:1px solid #e6e9ed;
+      font-size:14px;
+    }
+
+    .inventory th:last-child,
+    .inventory td:last-child{border-right:0}
+
+    .inventory tr:last-child td{border-bottom:0}
+
+    .inventory thead th{
+      background:#f5f7fa;
+      font-weight:900;
+      color:#41506a;
+    }
+
+    .inventory thead th:first-child{
+      text-align:left;
+      width:34%;
+    }
+
+    .object-cell{
+      text-align:left !important;
+      font-weight:850;
+      background:#fbfcfd;
+    }
+
+    .object-dot{
+      display:inline-grid;
+      place-items:center;
+      width:25px;
+      height:25px;
+      border-radius:8px;
+      margin-right:7px;
+      color:#fff;
+      font-size:12px;
+      font-weight:950;
+      vertical-align:middle;
+    }
+
+    .eraser{background:#f08a72}
+    .atlas{background:#4c87d8}
+    .ruler{background:#f2b84a}
+    .notepad{background:#6fb985}
+    .pencilcase{background:#9c6bd3}
+
+    .mark{
+      width:28px;
+      height:28px;
+      margin:auto;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      font-weight:950;
+      color:#fff;
+    }
+
+    .yes{background:var(--green)}
+    .no{background:#c8ced7;color:#667085}
+
+    .legend{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.4;
+    }
+
+    .sentences{
+      display:grid;
+      gap:8px;
+    }
+
+    .sentence{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:10px;
+      align-items:center;
+      padding:10px 11px;
+      border:1px solid #e3e7ed;
+      border-radius:15px;
+      background:#fafbfc;
+      min-height:55px;
+    }
+
+    .sentence-text{
+      font-size:14px;
+      line-height:1.45;
+      font-weight:800;
+    }
+
+    .choice-group{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .choice{
+      border:1px solid #d6dce5;
+      border-radius:11px;
+      background:#fff;
+      padding:7px 9px;
+      color:#3a465c;
+      font-size:12px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .choice:hover{border-color:#ffad76}
+
+    .choice.selected{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .choice.correct{
+      background:var(--green-bg);
+      border-color:#70c895;
+      color:#246a47;
+    }
+
+    .choice.wrong{
+      background:var(--red-bg);
+      border-color:#e58e89;
+      color:#98362f;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:10px;
+      padding:11px 13px;
+      border-radius:14px;
+      font-weight:850;
+      text-align:center;
+      font-size:14px;
+    }
+
+    .feedback.show{display:block}
+    .feedback.correct{
+      background:var(--green-bg);
+      border:1px solid #a8ddbf;
+      color:#256b48;
+    }
+
+    .feedback.incorrect{
+      background:var(--red-bg);
+      border:1px solid #efb0ac;
+      color:#98362f;
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #ece8e3;
+      background:#fff;
+    }
+
+    .footer-note{
+      margin-right:auto;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:950;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){transform:translateY(-2px)}
+
+    .check{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .retry{
+      display:none;
+      color:#475467;
+      background:#f1f3f6;
+    }
+
+    .continue{
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(39,79,125,.22);
+    }
+
+    .continue:disabled{
+      background:#d5d8de;
+      color:#8a909b;
+      box-shadow:none;
+      cursor:not-allowed;
+    }
+
+    @media(max-width:980px){
+      html,body{overflow:auto}
+      .app{
+        height:auto;
+        min-height:calc(100vh - 20px);
+        margin:10px auto;
+      }
+      main{grid-template-columns:1fr}
+    }
+
+    @media(max-width:620px){
+      header{padding:14px}
+      .score{display:none}
+      .rule{margin:12px 14px 0}
+      main{padding:14px}
+      .sentence{grid-template-columns:1fr}
+      .choice-group{justify-content:flex-start}
+      .inventory th,.inventory td{padding:8px 5px;font-size:12px}
+    }
+    /* Lesson iframe: use the complete embedded viewport without scrolling. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);margin:12px auto}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Who has got what?</h1>
+        <p class="subtitle">Use the table to complete six sentences.</p>
+      </div>
+      <div class="score"><span id="score">0</span> / 6</div>
+    </header>
+
+    <section class="rule">
+      <span><strong>One person:</strong> has got / hasn’t got</span>
+      <span><strong>Two or more people:</strong> have got / haven’t got</span>
+    </section>
+
+    <main>
+      <section class="panel">
+        <h2 class="panel-title">Look at the table</h2>
+
+        <table class="inventory">
+          <thead>
+            <tr>
+              <th>School object</th>
+              <th>Ann</th>
+              <th>Tom</th>
+              <th>Bill & Mary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="object-cell"><span class="object-dot eraser">E</span>eraser</td>
+              <td><span class="mark no">×</span></td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark yes">✓</span></td>
+            </tr>
+            <tr>
+              <td class="object-cell"><span class="object-dot atlas">A</span>atlas</td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark no">×</span></td>
+            </tr>
+            <tr>
+              <td class="object-cell"><span class="object-dot ruler">R</span>ruler</td>
+              <td><span class="mark no">×</span></td>
+              <td><span class="mark no">×</span></td>
+              <td><span class="mark no">×</span></td>
+            </tr>
+            <tr>
+              <td class="object-cell"><span class="object-dot notepad">N</span>notepad</td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark no">×</span></td>
+              <td><span class="mark no">×</span></td>
+            </tr>
+            <tr>
+              <td class="object-cell"><span class="object-dot pencilcase">P</span>pencil case</td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark yes">✓</span></td>
+              <td><span class="mark yes">✓</span></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="legend">
+          ✓ means the person has the object. × means the person has not got it. Revolutionary symbols, apparently.
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Complete the sentences</h2>
+        <div id="sentences" class="sentences"></div>
+        <div id="feedback" class="feedback"></div>
+      </section>
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Choose one form in every sentence.</div>
+      <button id="retryBtn" class="btn retry">Try again</button>
+      <button id="checkBtn" class="btn check">Check</button>
+      <button id="continueBtn" class="btn continue" disabled>Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const tasks = [
+      {
+        text:'1. Ann ________ an atlas. She ________ an eraser.',
+        answers:['has got','hasn’t got']
+      },
+      {
+        text:'2. Tom ________ a pencil case. He ________ a ruler.',
+        answers:['has got','hasn’t got']
+      },
+      {
+        text:'3. Bill and Mary ________ an eraser. They ________ an atlas.',
+        answers:['have got','haven’t got']
+      },
+      {
+        text:'4. Ann and Tom ________ an atlas. They ________ a ruler.',
+        answers:['have got','haven’t got']
+      },
+      {
+        text:'5. Tom, Bill and Mary ________ an eraser. They ________ a notepad.',
+        answers:['have got','haven’t got']
+      },
+      {
+        text:'6. Ann, Bill and Mary ________ a pencil case. They ________ a ruler.',
+        answers:['have got','haven’t got']
+      }
+    ];
+
+    const optionSets = [
+      ['has got','hasn’t got'],
+      ['have got','haven’t got']
+    ];
+
+    const sentencesEl = document.getElementById('sentences');
+    const feedback = document.getElementById('feedback');
+    const scoreEl = document.getElementById('score');
+    const retryBtn = document.getElementById('retryBtn');
+    const checkBtn = document.getElementById('checkBtn');
+    const continueBtn = document.getElementById('continueBtn');
+    const footerNote = document.getElementById('footerNote');
+
+    function createChoiceGroup(taskIndex, blankIndex, options){
+      const group = document.createElement('div');
+      group.className = 'choice-group';
+      group.dataset.blank = blankIndex;
+
+      options.forEach(value => {
+        const button = document.createElement('button');
+        button.className = 'choice';
+        button.textContent = value;
+        button.dataset.value = value;
+
+        button.addEventListener('click', () => {
+          group.querySelectorAll('.choice')
+            .forEach(choice => choice.classList.toggle('selected', choice === button));
+        });
+
+        group.appendChild(button);
+      });
+
+      return group;
+    }
+
+    function render(){
+      sentencesEl.innerHTML = '';
+
+      tasks.forEach((task,index) => {
+        const row = document.createElement('div');
+        row.className = 'sentence';
+        row.dataset.index = index;
+
+        const text = document.createElement('div');
+        text.className = 'sentence-text';
+        text.textContent = task.text;
+
+        const controls = document.createElement('div');
+        controls.style.display = 'grid';
+        controls.style.gap = '5px';
+
+        const firstOptions = task.answers[0].includes('has')
+          ? optionSets[0]
+          : optionSets[1];
+
+        controls.appendChild(createChoiceGroup(index,0,firstOptions));
+        controls.appendChild(createChoiceGroup(index,1,firstOptions));
+
+        row.appendChild(text);
+        row.appendChild(controls);
+        sentencesEl.appendChild(row);
+      });
+
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+      scoreEl.textContent = '0';
+      retryBtn.style.display = 'none';
+      checkBtn.style.display = 'inline-block';
+      continueBtn.disabled = true;
+      footerNote.textContent = 'Choose one form in every sentence.';
+    }
+
+    checkBtn.addEventListener('click', () => {
+      const rows = [...document.querySelectorAll('.sentence')];
+      const incomplete = rows.some(row =>
+        [...row.querySelectorAll('.choice-group')]
+          .some(group => !group.querySelector('.choice.selected'))
+      );
+
+      if(incomplete){
+        feedback.className = 'feedback show incorrect';
+        feedback.textContent = 'Choose both forms in all six sentences first.';
+        return;
+      }
+
+      let score = 0;
+
+      rows.forEach(row => {
+        const task = tasks[Number(row.dataset.index)];
+        const groups = [...row.querySelectorAll('.choice-group')];
+        let sentenceCorrect = true;
+
+        groups.forEach((group,blankIndex) => {
+          const selected = group.querySelector('.choice.selected');
+          const correctAnswer = task.answers[blankIndex];
+
+          group.querySelectorAll('.choice').forEach(choice => {
+            choice.disabled = true;
+            if(choice.dataset.value === correctAnswer){
+              choice.classList.add('correct');
+            }
+            if(choice === selected && choice.dataset.value !== correctAnswer){
+              choice.classList.add('wrong');
+            }
+          });
+
+          if(selected.dataset.value !== correctAnswer){
+            sentenceCorrect = false;
+          }
+        });
+
+        if(sentenceCorrect) score++;
+      });
+
+      scoreEl.textContent = score;
+      checkBtn.style.display = 'none';
+      retryBtn.style.display = score === tasks.length ? 'none' : 'inline-block';
+      continueBtn.disabled = false;
+
+      if(score === tasks.length){
+        feedback.className = 'feedback show correct';
+        feedback.textContent = 'Perfect. All six sentences are correct.';
+        footerNote.textContent = 'The grammar task is complete.';
+      }else{
+        feedback.className = 'feedback show incorrect';
+        feedback.textContent = `${score} of ${tasks.length} sentences are correct. The correct forms are green.`;
+        footerNote.textContent = 'Review the green answers or try again.';
+      }
+
+      localStorage.setItem('whoHasGotWhatResult',JSON.stringify({
+        score,
+        total:tasks.length
+      }));
+    });
+
+    retryBtn.addEventListener('click', render);
+
+    continueBtn.addEventListener('click', () => {
+      const result = JSON.parse(localStorage.getItem('whoHasGotWhatResult') || '{}');
+
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'who-has-got-what',
+        result
+      },'*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    render();
+  </script>
+</body>
+</html>

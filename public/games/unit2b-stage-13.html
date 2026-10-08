@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Birthday Wishlist</title>
+<style>
+:root{
+  --ink:#18324b;--muted:#6d8092;--blue:#4a8fd8;--blue-dark:#2f6ca4;
+  --green:#49b36d;--orange:#f39a4b;--line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#edf6f8
+}
+button,input{font:inherit}
+.app{
+  width:100vw;height:100vh;display:grid;grid-template-rows:auto 1fr auto;
+  gap:1.2vh;padding:1.7vh 1.8vw;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,208,139,.4),transparent 23%),
+    radial-gradient(circle at 92% 12%,rgba(130,198,255,.32),transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec)
+}
+.header,.main,.footer{width:100%;max-width:1360px;margin:0 auto}
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.7rem .95rem;border-radius:21px;background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow)
+}
+.title-wrap{display:flex;align-items:center;gap:.8rem}
+.badge{
+  width:50px;height:50px;display:grid;place-items:center;border-radius:16px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);font-size:1.65rem
+}
+h1{margin:0;font-size:clamp(1.6rem,2.7vw,2.6rem);line-height:1}
+.subtitle{margin-top:.22rem;color:var(--muted);font-weight:700;font-size:.92rem}
+.counter{
+  padding:.52rem .86rem;border-radius:999px;background:#edf7ff;
+  color:#2f689c;font-weight:900;white-space:nowrap
+}
+.main{min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:1rem}
+.items-panel,.writing-panel{
+  min-height:0;border-radius:24px;background:rgba(255,255,255,.94);
+  box-shadow:var(--shadow)
+}
+.items-panel{
+  padding:.85rem;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.68rem;align-content:center
+}
+.item{
+  position:relative;min-height:118px;cursor:pointer;border:2px solid var(--line);
+  border-radius:18px;background:#fffdf9;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:.38rem;padding:.55rem;
+  text-align:center;transition:.15s ease
+}
+.item:hover{transform:translateY(-3px);border-color:#9ec8e5}
+.item.selected{border-color:var(--green);background:#eaf8ef;box-shadow:0 8px 18px rgba(49,139,80,.14)}
+.item.selected::after{
+  content:"✓";position:absolute;top:.42rem;right:.45rem;width:25px;height:25px;
+  display:grid;place-items:center;border-radius:50%;background:var(--green);
+  color:#fff;font-weight:900
+}
+.icon{font-size:2.7rem;line-height:1}
+.word{font-size:.92rem;font-weight:900}
+.writing-panel{
+  padding:1rem;display:grid;grid-template-rows:auto auto 1fr auto;gap:.8rem
+}
+.panel-title{font-size:1.2rem;font-weight:900}
+.panel-tip{color:var(--muted);font-size:.88rem;font-weight:700}
+.custom-row{display:grid;grid-template-columns:1fr auto;gap:.55rem}
+.custom-input{
+  width:100%;border:2px solid #bfd4e2;border-radius:13px;
+  padding:.66rem .75rem;outline:none;font-weight:800
+}
+.custom-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,143,216,.12)}
+.add-btn{
+  cursor:pointer;border:0;border-radius:13px;padding:.66rem .9rem;
+  background:var(--orange);color:#fff;font-weight:900;box-shadow:0 5px 0 #b66d2c
+}
+.output{
+  min-height:0;display:flex;align-items:center;justify-content:center;padding:1rem;
+  border:3px dashed #bdd3e1;border-radius:20px;background:#f8fcff;text-align:center
+}
+.sentence{
+  color:var(--blue-dark);font-size:clamp(1.25rem,2.1vw,1.8rem);
+  line-height:1.4;font-weight:900
+}
+.empty{color:#98a8b5;font-size:1rem;font-weight:800}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+.clear-btn,.send-btn{
+  cursor:pointer;border:0;border-radius:14px;padding:.72rem .85rem;font-weight:900
+}
+.clear-btn{background:#edf1f4;color:#5e7284}
+.send-btn{background:var(--green);color:#fff;box-shadow:0 5px 0 #2f8050}
+.send-btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+.send-btn.sent{background:var(--blue);box-shadow:0 5px 0 var(--blue-dark)}
+.status{
+  grid-column:1/-1;min-height:1.1em;text-align:center;color:var(--muted);
+  font-size:.82rem;font-weight:800
+}
+.footer{
+  padding:.56rem .85rem;border-radius:17px;background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);color:var(--muted);text-align:center;
+  font-size:.88rem;font-weight:700
+}
+@media(max-width:1000px){
+  .main{grid-template-columns:1fr 330px}
+  .items-panel{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .item{min-height:104px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">🎁</div>
+      <div>
+        <h1>My Birthday Wishlist</h1>
+        <div class="subtitle">Choose the presents you would like.</div>
+      </div>
+    </div>
+    <div id="counter" class="counter">0 selected</div>
+  </header>
+
+  <main class="main">
+    <section id="itemsPanel" class="items-panel"></section>
+
+    <aside class="writing-panel">
+      <div>
+        <div class="panel-title">Write your wishlist</div>
+        <div class="panel-tip">Choose the cards or add your own present.</div>
+      </div>
+
+      <div class="custom-row">
+        <input id="customInput" class="custom-input" type="text" placeholder="another present">
+        <button id="addBtn" class="add-btn" type="button">ADD</button>
+      </div>
+
+      <div class="output">
+        <div id="sentence" class="sentence">
+          <span class="empty">Choose at least one present.</span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="clearBtn" class="clear-btn" type="button">CLEAR</button>
+        <button id="sendBtn" class="send-btn" type="button" disabled>SEND TO TEACHER</button>
+        <div id="status" class="status"></div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="footer">For my birthday, I’d like...</footer>
+</div>
+
+<script>
+const items = [{"word": "skateboard", "label": "a skateboard", "icon": "🛹"}, {"word": "helmet", "label": "a helmet", "icon": "⛑️"}, {"word": "basketball", "label": "a basketball", "icon": "🏀"}, {"word": "gloves", "label": "gloves", "icon": "🧤"}, {"word": "bicycle", "label": "a bicycle", "icon": "🚲"}, {"word": "trainers", "label": "trainers", "icon": "👟"}, {"word": "cap", "label": "a cap", "icon": "🧢"}, {"word": "guitar", "label": "a guitar", "icon": "🎸"}, {"word": "digital camera", "label": "a digital camera", "icon": "📷"}, {"word": "scarf", "label": "a scarf", "icon": "🧣"}, {"word": "watch", "label": "a watch", "icon": "⌚"}, {"word": "handbag", "label": "a handbag", "icon": "👜"}, {"word": "teddy bear", "label": "a teddy bear", "icon": "🧸"}];
+const selected = new Map();
+
+const itemsPanel = document.getElementById("itemsPanel");
+const counter = document.getElementById("counter");
+const sentenceEl = document.getElementById("sentence");
+const customInput = document.getElementById("customInput");
+const addBtn = document.getElementById("addBtn");
+const clearBtn = document.getElementById("clearBtn");
+const sendBtn = document.getElementById("sendBtn");
+const status = document.getElementById("status");
+
+function cleanCustom(value){
+  return value.trim().replace(/^(a|an)\s+/i,"").replace(/\s+/g," ");
+}
+function labelFor(word){
+  const clean=cleanCustom(word);
+  if(!clean)return "";
+  if(clean.endsWith("s"))return clean;
+  return /^[aeiou]/i.test(clean)?`an ${clean}`:`a ${clean}`;
+}
+function makeList(labels){
+  if(labels.length===1)return labels[0];
+  if(labels.length===2)return `${labels[0]} and ${labels[1]}`;
+  return `${labels.slice(0,-1).join(", ")} and ${labels.at(-1)}`;
+}
+function buildSentence(){
+  const labels=[...selected.values()];
+  counter.textContent=`${labels.length} selected`;
+  if(labels.length===0){
+    sentenceEl.innerHTML='<span class="empty">Choose at least one present.</span>';
+    sendBtn.disabled=true;
+    sendBtn.classList.remove("sent");
+    sendBtn.textContent="SEND TO TEACHER";
+    status.textContent="";
+    return "";
+  }
+  const sentence=`For my birthday, I’d like ${makeList(labels)}.`;
+  sentenceEl.textContent=sentence;
+  sendBtn.disabled=false;
+  sendBtn.classList.remove("sent");
+  sendBtn.textContent="SEND TO TEACHER";
+  status.textContent="Ready to send.";
+  return sentence;
+}
+
+items.forEach(item=>{
+  const card=document.createElement("button");
+  card.type="button";
+  card.className="item";
+  card.innerHTML=`<div class="icon">${item.icon}</div><div class="word">${item.word}</div>`;
+  card.addEventListener("click",()=>{
+    if(selected.has(item.word)){
+      selected.delete(item.word);
+      card.classList.remove("selected");
+    }else{
+      selected.set(item.word,item.label);
+      card.classList.add("selected");
+    }
+    buildSentence();
+  });
+  itemsPanel.appendChild(card);
+});
+
+function addCustomPresent(){
+  const value=cleanCustom(customInput.value);
+  if(!value)return;
+  const key=`custom:${value.toLowerCase()}`;
+  selected.set(key,labelFor(value));
+  customInput.value="";
+  buildSentence();
+}
+
+addBtn.addEventListener("click",addCustomPresent);
+customInput.addEventListener("keydown",event=>{
+  if(event.key==="Enter")addCustomPresent();
+});
+clearBtn.addEventListener("click",()=>{
+  selected.clear();
+  document.querySelectorAll(".item").forEach(card=>card.classList.remove("selected"));
+  buildSentence();
+});
+sendBtn.addEventListener("click",()=>{
+  const sentence=buildSentence();
+  if(!sentence)return;
+
+  const submission={
+    type:"student-answer",
+    action:"send-to-teacher",
+    activityId:"birthday-wishlist-writing",
+    activityTitle:"My Birthday Wishlist",
+    answerText:sentence,
+    selectedItems:[...selected.values()],
+    submittedAt:new Date().toISOString()
+  };
+
+  window.parent.postMessage(submission,"*");
+  window.dispatchEvent(new CustomEvent("student-answer",{detail:submission}));
+  const result={sentence,selectedItems:[...selected.values()]};
+  localStorage.setItem("unit2bBirthdayWishlistResult",JSON.stringify(result));
+  window.parent.postMessage({type:"lesson-step-complete",lesson:"2b",step:"birthday-wishlist-writing",result},"*");
+
+  sendBtn.classList.add("sent");
+  sendBtn.textContent="SENT ✓";
+  status.textContent="Sent to teacher.";
+});
+
+buildSentence();
+</script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import type { Activity } from '../types';
 
 interface UseLessonActionsParams {
@@ -42,13 +42,15 @@ export const useLessonActions = ({
   setSelectedActivity,
 }: UseLessonActionsParams): UseLessonActionsReturn => {
   const [isSaving, setIsSaving] = useState(false);
+  const explicitlyDeletedIds = useRef(new Set<string>());
+  useEffect(() => { explicitlyDeletedIds.current.clear(); }, [currentLessonId]);
 
   const getTemplateName = (templateId: string): string => {
     const names: Record<string, string> = {
       'insert-image': 'Картинка',
       'youtube-video': 'Видео YouTube',
       'internal-video': 'Внутреннее видео',
-      'wordwall-game': 'Игра Wordwall',
+      'wordwall-game': 'РРіСЂР° Wordwall',
       'genially': 'Genially',
       'presentation': 'Презентация',
       'drag-text': 'Перетаскивание слов',
@@ -59,7 +61,9 @@ export const useLessonActions = ({
       'select-image': 'Выбор слова к картинке',
       'test-no-timer': 'Тест без таймера',
       'test-timer': 'Тест с таймером',
-      'interactive-iframe': 'Интерактивное упражнение',
+      'interactive-iframe': 'РРЅС‚РµСЂР°РєС‚РёРІРЅРѕРµ СѓРїСЂР°Р¶РЅРµРЅРёРµ',
+      'build-phrase': 'Build the phrase',
+      'flashlight': 'Фонарик',
       'snake-word': 'Snake Word Builder',
       'letter-trace': 'Электронные прописи',
       'letter-race': 'Гонки букв',
@@ -90,6 +94,8 @@ export const useLessonActions = ({
       'test-no-timer': 'quiz',
       'test-timer': 'quiz',
       'interactive-iframe': 'game',
+      'build-phrase': 'interactive',
+      'flashlight': 'flashlight',
       'snake-word': 'snake-word',
       'letter-trace': 'letter-trace',
       'letter-race': 'letter-race',
@@ -138,13 +144,29 @@ export const useLessonActions = ({
         targetLetters: ['A', 'B', 'C', 'D'],
         lives: 3,
       } : undefined,
+      flashlightConfig: templateId === 'flashlight' ? {
+        title: 'School Subjects',
+        instruction: 'Посвети фонариком и найди все школьные предметы',
+        targets: ['English', 'Maths', 'Science', 'History', 'Art', 'Geography', 'Music', 'IT', 'PE'].map(word => ({ word })),
+        decoys: ['cat', 'train', 'sun', 'car', 'pizza', 'apple'].map(word => ({ word })),
+      } : undefined,
     };
 
+    if (templateId === 'build-phrase') {
+      const gameUrl = 'https://storage.yandexcloud.net/kids-app/public-assets/games/island-build-my-name-game.html';
+      Object.assign(newActivity, {
+        embedUrl: gameUrl,
+        externalUrl: gameUrl,
+        contentData: { buildPhrase: '' },
+        tags: ['Build phrase', 'Letters'],
+      });
+    }
     setActivities([...activities, newActivity]);
     setSelectedActivity(newActivity);
   };
 
   const handleDeleteActivity = (id: string) => {
+    explicitlyDeletedIds.current.add(id);
     const newActivities = activities.filter(a => a.id !== id);
     setActivities(newActivities);
     setSelectedActivity(newActivities[0] || null);
@@ -184,6 +206,7 @@ export const useLessonActions = ({
             letterRaceConfig: activity.letterRaceConfig,
             letterMazeConfig: activity.letterMazeConfig,
             snakeWordConfig: activity.snakeWordConfig,
+            flashlightConfig: (activity as any).flashlightConfig,
           },
         };
 
@@ -286,22 +309,26 @@ export const useLessonActions = ({
       console.log('Fetching existing activities for lesson:', savedLesson.id);
       const existingActivitiesResponse = await fetch(`/kids-api/lessons/${savedLesson.id}/activities`);
       const existingActivitiesData = await existingActivitiesResponse.json();
-      const existingActivities = existingActivitiesData.success ? existingActivitiesData.data : [];
+      if (!existingActivitiesResponse.ok || !existingActivitiesData.success || !Array.isArray(existingActivitiesData.data)) {
+        throw new Error('Не удалось загрузить задания перед сохранением. Повторите попытку.');
+      }
+      const existingActivities = existingActivitiesData.data;
 
       console.log('Existing activities:', existingActivities.length);
       console.log('New activities:', activities.length);
 
-      // Используем Set для отслеживания ID активностей, которые нужно сохранить
+      // РСЃРїРѕР»СЊР·СѓРµРј Set РґР»СЏ РѕС‚СЃР»РµР¶РёРІР°РЅРёСЏ ID Р°РєС‚РёРІРЅРѕСЃС‚РµР№, РєРѕС‚РѕСЂС‹Рµ РЅСѓР¶РЅРѕ СЃРѕС…СЂР°РЅРёС‚СЊ
       const activitiesToKeep = new Set(activities.map(a => a.id));
 
       // Удаляем активности, которых больше нет в списке
       for (const existingActivity of existingActivities) {
-        if (!activitiesToKeep.has(existingActivity.id)) {
+        if (explicitlyDeletedIds.current.has(existingActivity.id) && !activitiesToKeep.has(existingActivity.id)) {
           console.log('Deleting activity:', existingActivity.id);
-          await fetch(`/kids-api/lessons/${savedLesson.id}/activities/${existingActivity.id}`, {
+          const deletion = await fetch(`/kids-api/lessons/${savedLesson.id}/activities/${existingActivity.id}`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
           });
+          if (!deletion.ok) throw new Error('Не удалось удалить выбранное задание. Повторите попытку.');
         }
       }
 
@@ -319,6 +346,7 @@ export const useLessonActions = ({
           audioUrl: activity.audioUrl || null,
           contentData: {
             // All possible activity data fields
+            ...activity.contentData,
             imageUrl: activity.imageUrl,
             videoUrl: activity.videoUrl,
             wordwallUrl: activity.wordwallUrl,
@@ -333,6 +361,7 @@ export const useLessonActions = ({
             tags: activity.tags,
             content: activity.content,
             snakeWordConfig: activity.snakeWordConfig,
+            flashlightConfig: (activity as any).flashlightConfig,
             letterTraceConfig: activity.letterTraceConfig,
             letterRaceConfig: activity.letterRaceConfig,
             letterMazeConfig: activity.letterMazeConfig,
@@ -383,11 +412,25 @@ export const useLessonActions = ({
         // ВАЖНО: Обновляем ID активности на тот, что вернул сервер
         updatedActivities.push({
           ...activity,
-          id: savedActivity.id  // Используем ID из базы данных
+          id: savedActivity.id  // РСЃРїРѕР»СЊР·СѓРµРј ID РёР· Р±Р°Р·С‹ РґР°РЅРЅС‹С…
         });
       }
 
       // Обновляем локальный state с новыми ID
+      // A stale editor must retain activities added elsewhere after it loaded.
+      const addedElsewhere = existingActivities.filter((a: any) => !activitiesToKeep.has(a.id) && !explicitlyDeletedIds.current.has(a.id));
+      for (const raw of addedElsewhere) {
+        const contentData = raw.content_data || {};
+        updatedActivities.push({ ...raw, ...contentData, contentData, isCompleted: contentData.isCompleted || false });
+      }
+      if (addedElsewhere.length) {
+        const reorder = await fetch(`/kids-api/lessons/${savedLesson.id}/activities/reorder`, {
+          method: 'PUT', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ activityIds: updatedActivities.map(a => a.id) }),
+        });
+        if (!reorder.ok) throw new Error('Не удалось сохранить порядок заданий. Повторите попытку.');
+      }
+      explicitlyDeletedIds.current.clear();
       setActivities(updatedActivities);
 
       console.log('Successfully saved all activities to database');

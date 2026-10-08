@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My Family — Spell the Word</title>
+<style>
+:root{
+  --bg:#fff7e8;
+  --paper:#ffffff;
+  --ink:#2d3442;
+  --muted:#758093;
+  --orange:#f6a548;
+  --purple:#8a68ca;
+  --green:#65b96f;
+  --line:#e3e7ee;
+  --shadow:0 18px 48px rgba(68,78,100,.12);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;height:100%;overflow:hidden;
+  font-family:Inter,Segoe UI,Arial,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%,#ffe9b6 0 8%,transparent 9%),
+    radial-gradient(circle at 90% 15%,#eee2ff 0 10%,transparent 11%),
+    linear-gradient(135deg,#fffaf0,#f3f8ff);
+}
+button{font:inherit}
+.app{height:100vh;display:grid;grid-template-rows:64px 1fr 42px}
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 18px;background:rgba(255,255,255,.94);
+  border-bottom:1px solid var(--line)
+}
+.brand{display:flex;align-items:center;gap:10px}
+.badge{
+  width:42px;height:42px;border-radius:13px;display:grid;place-items:center;
+  background:#fff0cd;font-size:25px;border:1px solid #f3d895
+}
+.brand h1{font-size:20px;margin:0}
+.brand p{font-size:11px;color:var(--muted);margin:2px 0 0}
+.progressText{
+  font-size:13px;font-weight:900;color:#7656b9;background:#f2ecff;
+  border:1px solid #dcd0fb;border-radius:999px;padding:8px 12px
+}
+main{position:relative;padding:12px 16px;min-height:0}
+.card{
+  height:100%;background:var(--paper);border:1px solid var(--line);
+  border-radius:22px;box-shadow:var(--shadow);padding:16px 20px;
+  display:grid;grid-template-rows:auto 1fr auto;gap:10px;overflow:hidden
+}
+.top{text-align:center}
+.eyebrow{
+  text-transform:uppercase;letter-spacing:.09em;font-size:11px;
+  color:var(--purple);font-weight:900;margin-bottom:4px
+}
+h2{font-size:27px;margin:0}
+.help{font-size:12px;color:var(--muted);margin-top:4px}
+.stage{
+  min-height:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px
+}
+.person{
+  width:155px;height:155px;border-radius:50%;
+  display:grid;place-items:center;font-size:92px;
+  background:linear-gradient(135deg,#fff1ce,#f2e8ff);
+  border:2px solid #eadfca;
+  box-shadow:0 12px 26px rgba(52,62,82,.10)
+}
+.sentence{
+  font-size:31px;font-weight:900;line-height:1.15;
+  display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap
+}
+.slots{display:flex;gap:5px;align-items:flex-end;justify-content:center;flex-wrap:wrap}
+.slot{
+  width:31px;height:38px;border-bottom:3px solid #a9b3c0;
+  display:grid;place-items:center;font-size:23px;font-weight:1000;
+  text-transform:lowercase;color:#5a438f
+}
+.slot.filled{border-color:var(--purple)}
+.slot.good{color:var(--green);border-color:var(--green)}
+.letters{
+  display:flex;gap:9px;justify-content:center;align-items:center;
+  flex-wrap:wrap;min-height:80px;padding:11px;
+  background:#f8fafc;border:1px solid var(--line);border-radius:16px
+}
+.letter{
+  width:52px;height:52px;border-radius:14px;border:1px solid #cfd7e1;
+  background:#fff;font-size:24px;font-weight:1000;color:#394558;
+  cursor:pointer;box-shadow:0 5px 10px rgba(35,45,65,.06);
+  transition:.13s
+}
+.letter:hover{transform:translateY(-2px)}
+.letter.used{opacity:.18;pointer-events:none;transform:scale(.9)}
+.letter.wrong{animation:shake .28s;background:#fff0f0;border-color:#e99999;color:#bd4444}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}
+}
+.correctMsg{
+  min-height:28px;text-align:center;font-size:20px;font-weight:1000;
+  color:var(--green)
+}
+.finish{
+  position:absolute;inset:12px 16px;background:#fff;border:1px solid var(--line);
+  border-radius:22px;box-shadow:var(--shadow);display:none;
+  align-items:center;justify-content:center;text-align:center;padding:30px
+}
+.finish.show{display:flex}
+.finish .big{font-size:94px;line-height:1}
+.finish h2{font-size:38px;margin:12px 0 5px}
+.finish p{font-size:20px;font-weight:800;color:#666f7e;margin:0}
+footer{
+  display:flex;justify-content:center;align-items:center;
+  font-size:11px;color:var(--muted);background:rgba(255,255,255,.92);
+  border-top:1px solid var(--line)
+}
+@media(max-width:800px){
+  .sentence{font-size:25px}
+  .person{width:135px;height:135px;font-size:80px}
+  .letter{width:46px;height:46px;font-size:21px}
+  .slot{width:27px;height:34px;font-size:20px}
+}
+
+.header-actions{display:flex;gap:8px;align-items:center}.restart{border:1px solid #dcd0fb;background:#f2ecff;color:#7656b9;border-radius:12px;padding:8px 12px;font-weight:800;cursor:pointer}#playAgain{margin-top:20px}footer{gap:10px;flex-wrap:wrap;padding:4px 8px}#saveStatus{font-size:10px}.letter:focus-visible,.restart:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+@media(max-width:500px){header{padding:8px;gap:6px}.badge{display:none}.brand h1{font-size:17px}.brand p{font-size:9px}.progressText{padding:7px;font-size:11px}.restart{font-size:11px;padding:7px}.header-actions{gap:4px}main{padding:8px}.card{padding:12px 8px}.sentence{gap:4px;font-size:23px}.slots{gap:3px;flex-wrap:nowrap}.slot{width:23px;height:31px;font-size:20px}.letters{gap:6px;padding:8px}.letter{width:41px;height:41px;font-size:21px}.person{width:115px;height:115px;font-size:70px}.finish{inset:8px;padding:15px}.finish h2{font-size:27px}.correctMsg{font-size:16px}footer{font-size:9px}}
+@media(max-height:600px){.app{grid-template-rows:52px 1fr 32px}.stage{gap:5px}.person{width:70px;height:70px;font-size:46px}h2{font-size:20px}.card{padding:8px;gap:4px}.letters{min-height:54px;padding:5px}.letter{width:35px;height:35px}.correctMsg{min-height:20px;font-size:15px}.sentence{font-size:22px}.slot{height:28px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">
+    <div class="badge">👨‍👩‍👧</div>
+    <div><h1>My Family</h1><p>Build the word letter by letter</p></div>
+  </div>
+  <div class="header-actions"><button id="restartBtn" class="restart" type="button">Restart</button><div class="progressText" id="progressText">1 / 5</div></div>
+</header>
+
+<main>
+  <section class="card" id="game">
+    <div class="top">
+      <div class="eyebrow">Spell the word</div>
+      <h2>Who is it?</h2>
+      <div class="help">Click the letters in the correct order.</div>
+    </div>
+
+    <div class="stage">
+      <div class="person" id="person">👩</div>
+
+      <div class="sentence">
+        <span>This is my</span>
+        <div class="slots" id="slots"></div>
+        <span>.</span>
+      </div>
+
+      <div class="correctMsg" id="correctMsg"></div>
+    </div>
+
+    <div class="letters" id="letters"></div>
+  </section>
+
+  <section class="finish" id="finish">
+    <div>
+      <div class="big">👨‍👩‍👧‍👦</div>
+      <h2>This is my family! ❤️</h2>
+      <p>Great job!</p><button id="playAgain" class="restart" type="button">Play again</button>
+    </div>
+  </section>
+</main>
+
+<footer>mother · father · sister · grandmother · grandfather<span id="saveStatus" aria-live="polite"></span></footer>
+</div>
+
+<script src="/classroom-games/bridge.js"></script>
+<script src="/classroom-games/family-spell.js"></script>
+</body></html>

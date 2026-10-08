@@ -29,16 +29,23 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { socket, isConnected } = useSocket();
+  const isHskCourse = courseId === 'c0d6ff9f-5e50-44f3-b33f-991dd8f57901';
+  const isStarlightCourse = courseId === '9dbfb70d-8650-4cf0-8edd-f67d79d90ea9';
 
   const [book, setBook] = useState<CourseBook | null>(null);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedGroupId, setSelectedGroupId] = useState<number | null>(null);
-  const [lessonProgress, setLessonProgress] = useState<Record<string, { is_completed: boolean; progress_percent: number }>>({});
+  const [lessonProgress, setLessonProgress] = useState<Record<string, {
+    is_completed: boolean;
+    progress_percent: number;
+    last_session_id?: string | null;
+  }>>({});
   const [startingLessonId, setStartingLessonId] = useState<string | null>(null);
   const [draggedId, setDraggedId] = useState<string | null>(null);
   const [dragOverId, setDragOverId] = useState<string | null>(null);
+  const [expandedUnits, setExpandedUnits] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const load = async () => {
@@ -61,7 +68,6 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
           const groupsData = await groupsRes.json();
           if (groupsData.success && groupsData.data.length > 0) {
             setGroups(groupsData.data);
-            setSelectedGroupId(groupsData.data[0].id);
           }
         }
       } catch {
@@ -74,16 +80,24 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
   }, [bookId, user?.id]);
 
   useEffect(() => {
-    if (!selectedGroupId) return;
+    if (!selectedGroupId) {
+      setLessonProgress({});
+      return;
+    }
     fetch(`/kids-api/groups/${selectedGroupId}/progress`)
       .then(r => r.json())
       .then(d => {
         if (d.success) {
-          const map: Record<string, { is_completed: boolean; progress_percent: number }> = {};
+          const map: Record<string, {
+            is_completed: boolean;
+            progress_percent: number;
+            last_session_id?: string | null;
+          }> = {};
           d.data.forEach((item: any) => {
             map[item.lesson_id] = {
               is_completed: item.is_completed,
               progress_percent: item.progress_percent || 0,
+              last_session_id: item.last_session_id || null,
             };
           });
           setLessonProgress(map);
@@ -171,17 +185,21 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
     );
   }
 
-  const completedCount = lessons.filter(l => lessonProgress[l.id]?.is_completed).length;
-  const progress = lessons.length > 0 ? Math.round((completedCount / lessons.length) * 100) : 0;
+  const isKidsBoxOne = book?.title.trim().toLowerCase() === 'kids box 1';
+  const visibleLessons = isKidsBoxOne ? lessons.filter(lesson => [1, 3, 4].includes(lesson.unit_number ?? -1)) : lessons;
+  const completedCount = visibleLessons.filter(l => lessonProgress[l.id]?.is_completed).length;
+  const progress = visibleLessons.length > 0 ? Math.round((completedCount / visibleLessons.length) * 100) : 0;
   const currentGroup = groups.find(g => g.id === selectedGroupId);
 
-  // Group consecutive lessons with the same unit_number into blocks (preserves order)
-  const grouped: { unitNumber: number | null; lessons: Lesson[] }[] = [];
-  for (const lesson of lessons) {
-    const u = lesson.unit_number ?? null;
+  // Kids Box sections are defined by unit_number: 0 Trial, 1 Phonics, 2 Kids Box 1.
+  const grouped: { unitName: string | null; lessons: Lesson[] }[] = [];
+  for (const lesson of visibleLessons) {
+    const unitName = isKidsBoxOne && lesson.unit_number != null
+      ? `unit-${lesson.unit_number}`
+      : (lesson.unit_name ? lesson.unit_name.trim().toLowerCase() : null);
     const last = grouped[grouped.length - 1];
-    if (last && last.unitNumber === u) last.lessons.push(lesson);
-    else grouped.push({ unitNumber: u, lessons: [lesson] });
+    if (last && last.unitName === unitName) last.lessons.push(lesson);
+    else grouped.push({ unitName, lessons: [lesson] });
   }
 
   return (
@@ -222,7 +240,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 )}
               </div>
 
-              {lessons.length === 0 ? (
+              {visibleLessons.length === 0 ? (
                 <div className="text-center py-12 text-gray-400">
                   <div className="text-5xl mb-3">📖</div>
                   <p className="text-lg">Уроков пока нет</p>
@@ -235,26 +253,32 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {grouped.map(({ unitNumber, lessons: unitLessons }) => {
-                    const unitLabel = unitNumber !== null
-                      ? (unitLessons[0]?.unit_name || `Unit ${unitNumber}`)
+                  {grouped.map(({ unitName, lessons: unitLessons }) => {
+                    const unitLabel = unitName !== null
+                      ? (unitLessons[0]?.unit_name || unitName.charAt(0).toUpperCase() + unitName.slice(1))
                       : null;
+                    const isExpanded = unitName === null || expandedUnits.has(unitName);
                     return (
-                    <div key={unitNumber ?? 'ungrouped'}>
-                      {unitNumber !== null && (
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 px-3 py-1 rounded-full">
-                            {unitLabel}
-                          </span>
-                          <div className="flex-1 h-px bg-purple-100" />
-                        </div>
+                    <div key={unitName ?? 'ungrouped'}>
+                      {unitName !== null && (
+                          <button type="button" onClick={() => setExpandedUnits(previous => {
+                            const next = new Set(previous);
+                            if (next.has(unitName)) next.delete(unitName); else next.add(unitName);
+                            return next;
+                          })} aria-expanded={isExpanded} className="flex flex-1 items-center gap-[5px] min-h-0 text-left">
+                            <span className="text-purple-500 text-xs">{isExpanded ? '▼' : '▶'}</span>
+                            <span className="text-xs font-bold text-purple-700 uppercase tracking-wider bg-purple-100 p-[5px] rounded-full">{unitLabel}</span>
+                            <div className="flex-1 h-px bg-purple-100" />
+                            <span className="text-xs text-gray-400">{unitLessons.length}</span>
+                          </button>
                       )}
-                      <div className={`space-y-2 ${unitNumber !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
+                      {isExpanded && (
+                      <div className={`space-y-2 ${unitName !== null ? 'pl-3 border-l-2 border-purple-200' : ''}`}>
                         {unitLessons.map((lesson, _idx) => {
                           const prog = lessonProgress[lesson.id];
                           const done = prog?.is_completed ?? false;
                           const pct = prog?.progress_percent ?? 0;
-                          const globalIdx = lessons.indexOf(lesson);
+                          const globalIdx = visibleLessons.indexOf(lesson);
                           const isDragging = draggedId === lesson.id;
                           const isOver = dragOverId === lesson.id;
                           return (
@@ -288,17 +312,34 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                                     : null
                                 }
                                 <button
+                                  onClick={() => navigate('/teacher/lesson-results?lessonId=' + encodeURIComponent(lesson.id) + (selectedGroupId ? '&groupId=' + selectedGroupId : '&mode=self-study'))}
+                                  className={'shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-indigo-100 hover:bg-indigo-200 text-indigo-700 rounded-lg transition text-xs font-bold'}
+                                  title={'Посмотреть результаты урока'}
+                                >
+                                  📊
+                                </button>
+                                <button
                                   onClick={() => navigate(`/teacher/lessons/edit/${lesson.id}?lessonId=${lesson.id}&bookId=${bookId}&courseId=${courseId}`)}
-                                  className="shrink-0 px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
+                                  className="shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-lg transition text-xs font-bold"
                                 >
                                   ✏️
                                 </button>
+                                {(isHskCourse || isStarlightCourse) && (
+                                  <button
+                                    onClick={() => navigate(`/teacher/self-study/${lesson.id}`)}
+                                    title={'Самообучение'}
+                                    aria-label={'Самообучение'}
+                                    className={'shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition text-xs font-bold'}
+                                  >
+                                    ◉
+                                  </button>
+                                )}
                                 <button
                                   onClick={() => handleStartLesson(lesson)}
                                   disabled={startingLessonId === lesson.id}
-                                  className="shrink-0 px-3 py-1.5 bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
+                                  className="shrink-0 !min-w-0 !min-h-0 !w-[22px] !h-[22px] p-0 inline-flex items-center justify-center bg-green-500 hover:bg-green-600 disabled:bg-green-300 text-white rounded-lg transition text-xs font-bold flex items-center gap-1"
                                 >
-                                  {startingLessonId === lesson.id ? '⏳' : '▶ Начать'}
+                                  {startingLessonId === lesson.id ? '⏳' : '▶'}
                                 </button>
                               </div>
                               {pct > 0 && (
@@ -312,15 +353,18 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                             </div>
                           );
                         })}
-                        {unitNumber !== null && (
+                        {unitName === 'unit-1' && (
                           <button
-                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=${unitNumber}`)}
-                            className="w-full mt-1 px-3 py-2 border-2 border-dashed border-purple-300 hover:border-purple-500 text-purple-500 hover:text-purple-700 rounded-xl transition text-xs font-semibold"
+                            type="button"
+                            onClick={() => navigate(`/teacher/lessons/create?bookId=${bookId}&courseId=${courseId}&unitNumber=1`)}
+                            className="mt-2 w-full rounded-xl border-2 border-dashed border-purple-300 bg-purple-50 px-4 py-3 text-sm font-bold text-purple-700 hover:border-purple-500 hover:bg-purple-100"
+                            title="Добавить урок в Phonics"
                           >
-                            + Добавить урок в {unitLabel}
+                            + Добавить урок в Phonics
                           </button>
                         )}
                       </div>
+                      )}
                     </div>
                     );
                   })}
@@ -337,7 +381,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
               <h2 className="text-lg font-bold text-gray-800 mb-4">Статистика</h2>
               <div className="grid grid-cols-2 gap-3">
                 <div className="bg-blue-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-blue-600">{lessons.length}</div>
+                  <div className="text-3xl font-bold text-blue-600">{visibleLessons.length}</div>
                   <div className="text-xs text-gray-600 mt-1">Уроков</div>
                 </div>
                 <div className="bg-green-50 rounded-xl p-4 text-center">
@@ -346,7 +390,7 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                 </div>
               </div>
 
-              {lessons.length > 0 && (
+              {visibleLessons.length > 0 && (
                 <div className="mt-4">
                   <div className="flex justify-between text-xs text-gray-500 mb-1">
                     <span>Прогресс</span>
@@ -370,6 +414,18 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
               ) : (
                 <>
                   <div className="space-y-2">
+                    {(isHskCourse || isStarlightCourse) && (
+                      <button
+                        onClick={() => setSelectedGroupId(null)}
+                        className={`w-full text-left px-4 py-3 rounded-xl border-2 transition font-semibold text-sm ${
+                          selectedGroupId === null
+                            ? 'border-cyan-400 bg-cyan-50 text-cyan-800'
+                            : 'border-gray-200 hover:border-cyan-300 text-gray-700'
+                        }`}
+                      >
+                        ◉ Самообучение
+                      </button>
+                    )}
                     {groups.map(g => (
                       <button
                         key={g.id}
@@ -389,11 +445,11 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
                       </button>
                     ))}
                   </div>
-                  {lessons.length > 0 && (
+                  {visibleLessons.length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                       <div className="flex justify-between text-xs text-gray-500 mb-2">
                         <span>Пройдено уроков</span>
-                        <span className="font-semibold text-purple-700">{completedCount} / {lessons.length}</span>
+                        <span className="font-semibold text-purple-700">{completedCount} / {visibleLessons.length}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-3">
                         <div
@@ -415,3 +471,4 @@ export default function BookScreen({ courseId, bookId }: BookScreenProps) {
     </div>
   );
 }
+

@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Progress Check — My Things</title>
+<style>
+:root{
+  --ink:#18324b;--muted:#6d8092;--blue:#4a8fd8;--blue-dark:#2f6ca4;
+  --green:#49b36d;--orange:#f39a4b;--red:#d96565;--line:#d9e6ee;
+  --shadow:0 15px 35px rgba(37,64,89,.15);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;width:100%;height:100%;overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#edf6f8
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{
+  width:100vw;height:100vh;display:grid;grid-template-rows:auto 1fr auto;
+  gap:1.2vh;padding:1.6vh 1.7vw;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(255,208,139,.38),transparent 23%),
+    radial-gradient(circle at 92% 12%,rgba(130,198,255,.32),transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#edf7f8 60%,#fff8ec)
+}
+.header,.main,.footer{width:100%;max-width:1380px;margin:0 auto}
+.header{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;
+  padding:.68rem .95rem;border-radius:21px;background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow)
+}
+.title-wrap{display:flex;align-items:center;gap:.8rem}
+.badge{
+  width:49px;height:49px;display:grid;place-items:center;border-radius:16px;
+  background:linear-gradient(145deg,#ffd79a,#ffad5c);font-size:1.65rem
+}
+h1{margin:0;font-size:clamp(1.6rem,2.7vw,2.6rem);line-height:1}
+.subtitle{margin-top:.22rem;color:var(--muted);font-weight:700;font-size:.9rem}
+.score-pill{
+  padding:.52rem .86rem;border-radius:999px;background:#fff0b8;
+  color:#8b5a00;font-weight:900;white-space:nowrap
+}
+.main{
+  min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr);gap:1rem
+}
+.sidebar,.stage{
+  min-height:0;border-radius:24px;background:rgba(255,255,255,.94);
+  box-shadow:var(--shadow)
+}
+.sidebar{
+  padding:.8rem;display:grid;grid-template-rows:auto 1fr auto;gap:.7rem
+}
+.side-title{font-size:1rem;font-weight:900}
+.stage-list{display:grid;gap:.55rem;align-content:start}
+.stage-tab{
+  border:2px solid var(--line);border-radius:15px;background:#fff;
+  padding:.7rem;text-align:left;font-weight:900;color:var(--ink);
+  transition:.15s ease
+}
+.stage-tab.active{border-color:var(--blue);background:#eaf5ff;color:var(--blue-dark)}
+.stage-tab.done{border-color:var(--green);background:#eaf8ef;color:#267544}
+.stage-tab:disabled{cursor:default}
+.total-box{
+  padding:.72rem;border-radius:16px;background:#f8fcff;border:2px solid var(--line);
+  text-align:center;font-weight:900
+}
+.total-box span{display:block;margin-top:.15rem;color:var(--orange);font-size:1.35rem}
+.stage{
+  padding:1rem;display:grid;grid-template-rows:auto 1fr auto;gap:.85rem
+}
+.stage-head{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.stage-name{font-size:1.35rem;font-weight:900}
+.stage-progress{color:var(--muted);font-size:.86rem;font-weight:800}
+.question-area{
+  min-height:0;display:flex;align-items:center;justify-content:center
+}
+.question-card{
+  width:min(780px,100%);padding:1.1rem;border:2px solid var(--line);
+  border-radius:22px;background:#fbfdff;box-shadow:0 8px 20px rgba(37,64,89,.08)
+}
+.big-icon{text-align:center;font-size:clamp(4.5rem,9vw,7.5rem);line-height:1;margin-bottom:.8rem}
+.prompt{text-align:center;font-size:clamp(1.15rem,2vw,1.6rem);font-weight:900;margin-bottom:.8rem}
+.hint{text-align:center;color:var(--muted);font-weight:700;font-size:.9rem;margin-bottom:.7rem}
+.text-answer{
+  width:100%;max-width:460px;display:block;margin:0 auto;
+  border:3px solid #bfd4e2;border-radius:15px;padding:.75rem .9rem;
+  outline:none;font-weight:900;text-align:center
+}
+.text-answer:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,143,216,.12)}
+.options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem}
+.option{
+  min-height:64px;border:3px solid var(--line);border-radius:16px;background:#fff;
+  color:var(--ink);font-weight:900;box-shadow:0 5px 0 #cad7df
+}
+.option:hover{transform:translateY(-2px);border-color:#9ec8e5}
+.option.selected{border-color:var(--blue);background:#eaf5ff;color:var(--blue-dark)}
+.scene{
+  position:relative;height:240px;margin-bottom:.8rem;overflow:hidden;
+  border-radius:18px;border:2px solid var(--line);
+  background:linear-gradient(to bottom,#def2ff 0 55%,#f7e6c5 55% 100%)
+}
+.scene-object{position:absolute;left:50%;transform:translateX(-50%);text-align:center}
+.scene-object.near{bottom:12%;font-size:6.5rem}
+.scene-object.far{top:16%;font-size:3.6rem}
+.clue-row{display:flex;justify-content:center;gap:.6rem;margin-bottom:.7rem}
+.clue{
+  padding:.42rem .68rem;border-radius:999px;background:#eef7ff;
+  color:#2f689c;font-weight:900;font-size:.82rem
+}
+.feedback-row{
+  min-height:58px;display:flex;align-items:center;justify-content:space-between;
+  gap:.8rem;padding:.62rem .75rem;border-radius:16px;background:#f8fcff;
+  border:2px solid var(--line)
+}
+.feedback{color:var(--muted);font-weight:900}
+.next-btn,.finish-btn,.send-btn,.start-btn{
+  border:0;border-radius:13px;padding:.68rem 1rem;color:#fff;font-weight:900
+}
+.next-btn{background:var(--blue);box-shadow:0 5px 0 var(--blue-dark)}
+.next-btn:disabled{opacity:.4;cursor:default;box-shadow:none}
+.finish-btn{background:var(--green);box-shadow:0 5px 0 #2f8050}
+.send-btn{background:var(--blue);box-shadow:0 5px 0 var(--blue-dark)}
+.start-screen,.result-screen{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  padding:2rem;background:linear-gradient(rgba(26,52,78,.44),rgba(26,52,78,.44));z-index:10
+}
+.start-card,.result-card{
+  width:min(720px,92vw);text-align:center;padding:1.8rem;border-radius:28px;
+  background:#fffdf8;box-shadow:var(--shadow)
+}
+.start-card h2,.result-card h2{margin:.2rem 0;font-size:clamp(2rem,4vw,3.2rem)}
+.start-card p,.result-card p{color:var(--muted);font-weight:700;line-height:1.45}
+.start-grid{
+  margin:1rem 0;display:grid;grid-template-columns:1fr 1fr;gap:.65rem
+}
+.start-item{
+  padding:.75rem;border-radius:16px;background:#f5faff;border:2px solid var(--line);
+  font-weight:900
+}
+.start-btn{background:var(--green);box-shadow:0 6px 0 #2f8050;font-size:1.1rem}
+.result-score{font-size:3.5rem;font-weight:900;color:var(--orange);margin:.5rem 0}
+.hidden{display:none!important}
+.footer{
+  padding:.52rem .8rem;border-radius:16px;background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);color:var(--muted);text-align:center;
+  font-size:.84rem;font-weight:700
+}
+@media(max-width:900px){
+  .main{grid-template-columns:200px 1fr}
+  .scene{height:190px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">🏁</div>
+      <div>
+        <h1>Progress Check — My Things</h1>
+        <div class="subtitle">Complete four challenges. Results appear at the end.</div>
+      </div>
+    </div>
+    <div id="scorePill" class="score-pill">0 / 100</div>
+  </header>
+
+  <main class="main">
+    <aside class="sidebar">
+      <div class="side-title">Challenges</div>
+      <div id="stageList" class="stage-list"></div>
+      <div class="total-box">Total score<span id="sideScore">0 / 100</span></div>
+    </aside>
+
+    <section class="stage">
+      <div class="stage-head">
+        <div id="stageName" class="stage-name"></div>
+        <div id="stageProgress" class="stage-progress"></div>
+      </div>
+
+      <div id="questionArea" class="question-area"></div>
+
+      <div class="feedback-row">
+        <div id="feedback" class="feedback">Complete the task.</div>
+        <button id="nextBtn" class="next-btn" disabled>NEXT →</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">Each challenge is worth 25 points. Five questions, five points each.</footer>
+</div>
+
+<div id="startScreen" class="start-screen">
+  <div class="start-card">
+    <div style="font-size:4.5rem">🏁</div>
+    <h2>Progress Check</h2>
+    <p>Complete all four challenges. You can move back, but correct answers stay hidden until the end.</p>
+    <div class="start-grid">
+      <div class="start-item">Vocabulary · 25</div>
+      <div class="start-item">Plurals · 25</div>
+      <div class="start-item">This / These / That / Those · 25</div>
+      <div class="start-item">Everyday English · 25</div>
+    </div>
+    <button id="startBtn" class="start-btn">START PROGRESS CHECK</button>
+  </div>
+</div>
+
+<div id="resultScreen" class="result-screen hidden">
+  <div class="result-card">
+    <div id="resultIcon" style="font-size:4.5rem">🏆</div>
+    <h2>Progress Check complete</h2>
+    <div id="resultScore" class="result-score">0 / 100</div>
+    <p id="resultText"></p>
+    <button id="sendBtn" class="send-btn">SEND RESULT TO TEACHER</button>
+  </div>
+</div>
+
+<script>
+const data = {"vocab": [{"icon": "🛹", "answer": "skateboard", "first": "s"}, {"icon": "⛑️", "answer": "helmet", "first": "h"}, {"icon": "📷", "answer": "digital camera", "first": "d"}, {"icon": "🧣", "answer": "scarf", "first": "s"}, {"icon": "🧸", "answer": "teddy bear", "first": "t"}], "plurals": [{"word": "cap", "options": ["caps", "capes", "capies"], "answer": "caps"}, {"word": "watch", "options": ["watchs", "watches", "watchies"], "answer": "watches"}, {"word": "party", "options": ["partys", "parties", "partyes"], "answer": "parties"}, {"word": "knife", "options": ["knifes", "knives", "knifees"], "answer": "knives"}, {"word": "child", "options": ["childs", "childes", "children"], "answer": "children"}], "demonstratives": [{"icon": "⌚", "distance": "near", "count": 1, "answer": "This", "sentence": "This is a watch."}, {"icon": "🧤🧤", "distance": "near", "count": 2, "answer": "These", "sentence": "These are gloves."}, {"icon": "🚲", "distance": "far", "count": 1, "answer": "That", "sentence": "That is a bicycle."}, {"icon": "👟👟", "distance": "far", "count": 2, "answer": "Those", "sentence": "Those are trainers."}, {"icon": "🧸", "distance": "near", "count": 1, "answer": "This", "sentence": "This is a teddy bear."}], "everyday": [{"line": "Happy Birthday!", "options": ["Thank you.", "You’re welcome."], "answer": "Thank you."}, {"line": "What have you got there?", "options": ["It’s a present.", "It’s over there."], "answer": "It’s a present."}, {"line": "This is for you.", "options": ["Wow! It’s fantastic!", "It’s a blue one."], "answer": "Wow! It’s fantastic!"}, {"line": "Thanks!", "options": ["You’re welcome.", "Great!"], "answer": "You’re welcome."}, {"line": "Where is my bag?", "options": ["It’s over there.", "It’s a present."], "answer": "It’s over there."}]};
+
+const stages = [
+  {id:"vocab",title:"Vocabulary",points:25},
+  {id:"plurals",title:"Plurals",points:25},
+  {id:"demonstratives",title:"This / These / That / Those",points:25},
+  {id:"everyday",title:"Everyday English",points:25}
+];
+
+let stageIndex=0;
+let questionIndex=0;
+let answers={
+  vocab:Array(5).fill(""),
+  plurals:Array(5).fill(""),
+  demonstratives:Array(5).fill(""),
+  everyday:Array(5).fill("")
+};
+let finished=false;
+
+const stageList=document.getElementById("stageList");
+const stageName=document.getElementById("stageName");
+const stageProgress=document.getElementById("stageProgress");
+const questionArea=document.getElementById("questionArea");
+const feedback=document.getElementById("feedback");
+const nextBtn=document.getElementById("nextBtn");
+const startBtn=document.getElementById("startBtn");
+const startScreen=document.getElementById("startScreen");
+const resultScreen=document.getElementById("resultScreen");
+const scorePill=document.getElementById("scorePill");
+const sideScore=document.getElementById("sideScore");
+const sendBtn=document.getElementById("sendBtn");
+
+function esc(value){
+  return value.replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[ch]));
+}
+
+function stageDone(index){
+  const id=stages[index].id;
+  return answers[id].every(value=>value!=="");
+}
+
+function renderStageTabs(){
+  stageList.innerHTML="";
+  stages.forEach((stage,index)=>{
+    const btn=document.createElement("button");
+    btn.className="stage-tab";
+    if(index===stageIndex)btn.classList.add("active");
+    if(stageDone(index))btn.classList.add("done");
+    btn.textContent=`${index+1}. ${stage.title}`;
+    btn.addEventListener("click",()=>{
+      stageIndex=index;
+      questionIndex=0;
+      render();
+    });
+    stageList.appendChild(btn);
+  });
+}
+
+function currentItems(){
+  return data[stages[stageIndex].id];
+}
+
+function selectedValue(){
+  const id=stages[stageIndex].id;
+  return answers[id][questionIndex];
+}
+
+function saveAnswer(value){
+  const id=stages[stageIndex].id;
+  answers[id][questionIndex]=value;
+  nextBtn.disabled=false;
+  renderStageTabs();
+}
+
+function renderVocab(item){
+  questionArea.innerHTML=`
+    <div class="question-card">
+      <div class="big-icon">${item.icon}</div>
+      <div class="prompt">Write the word.</div>
+      <div class="hint">First letter: <strong>${item.first}</strong></div>
+      <input id="textAnswer" class="text-answer" type="text" autocomplete="off" spellcheck="false"
+             value="${esc(selectedValue())}" placeholder="${item.first}...">
+    </div>`;
+  const input=document.getElementById("textAnswer");
+  input.addEventListener("input",()=>{
+    saveAnswer(input.value.trim().toLowerCase());
+  });
+  setTimeout(()=>input.focus(),0);
+}
+
+function renderOptions(options){
+  return `<div class="options">${options.map(opt=>
+    `<button class="option${selectedValue()===opt?' selected':''}" data-value="${esc(opt)}">${esc(opt)}</button>`
+  ).join("")}</div>`;
+}
+
+function wireOptions(){
+  document.querySelectorAll(".option").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      saveAnswer(btn.dataset.value);
+      document.querySelectorAll(".option").forEach(b=>b.classList.remove("selected"));
+      btn.classList.add("selected");
+    });
+  });
+}
+
+function renderPlurals(item){
+  questionArea.innerHTML=`
+    <div class="question-card">
+      <div class="prompt">Choose the correct plural of <strong>${item.word}</strong>.</div>
+      ${renderOptions(item.options)}
+    </div>`;
+  wireOptions();
+}
+
+function renderDemonstrative(item){
+  const numberText=item.count===1?"ONE":"MORE THAN ONE";
+  questionArea.innerHTML=`
+    <div class="question-card">
+      <div class="scene">
+        <div class="scene-object ${item.distance}">
+          <div>${item.icon}</div>
+        </div>
+      </div>
+      <div class="clue-row">
+        <div class="clue">${numberText}</div>
+        <div class="clue">${item.distance.toUpperCase()}</div>
+      </div>
+      ${renderOptions(["This","These","That","Those"])}
+    </div>`;
+  wireOptions();
+}
+
+function renderEveryday(item){
+  questionArea.innerHTML=`
+    <div class="question-card">
+      <div class="big-icon" style="font-size:4.5rem">💬</div>
+      <div class="prompt">“${item.line}”</div>
+      <div class="hint">Choose the best reply.</div>
+      ${renderOptions(item.options)}
+    </div>`;
+  wireOptions();
+}
+
+function render(){
+  renderStageTabs();
+  const stage=stages[stageIndex];
+  const items=currentItems();
+  const item=items[questionIndex];
+
+  stageName.textContent=stage.title;
+  stageProgress.textContent=`Question ${questionIndex+1} of ${items.length}`;
+  feedback.textContent="Complete the task.";
+  nextBtn.disabled=selectedValue()==="";
+  nextBtn.textContent=(stageIndex===stages.length-1 && questionIndex===items.length-1)?"FINISH":"NEXT →";
+
+  if(stage.id==="vocab")renderVocab(item);
+  if(stage.id==="plurals")renderPlurals(item);
+  if(stage.id==="demonstratives")renderDemonstrative(item);
+  if(stage.id==="everyday")renderEveryday(item);
+}
+
+function allComplete(){
+  return stages.every((_,index)=>stageDone(index));
+}
+
+nextBtn.addEventListener("click",()=>{
+  const items=currentItems();
+
+  if(questionIndex<items.length-1){
+    questionIndex++;
+    render();
+    return;
+  }
+
+  if(stageIndex<stages.length-1){
+    stageIndex++;
+    questionIndex=0;
+    render();
+    return;
+  }
+
+  if(!allComplete()){
+    const firstIncomplete=stages.findIndex((_,index)=>!stageDone(index));
+    stageIndex=firstIncomplete;
+    questionIndex=answers[stages[firstIncomplete].id].findIndex(v=>v==="");
+    feedback.textContent="Complete every challenge before finishing.";
+    render();
+    return;
+  }
+
+  showResults();
+});
+
+function calculate(){
+  let score=0;
+  const details={};
+
+  details.vocab=answers.vocab.map((a,i)=>a===data.vocab[i].answer);
+  details.plurals=answers.plurals.map((a,i)=>a===data.plurals[i].answer);
+  details.demonstratives=answers.demonstratives.map((a,i)=>a===data.demonstratives[i].answer);
+  details.everyday=answers.everyday.map((a,i)=>a===data.everyday[i].answer);
+
+  Object.values(details).forEach(group=>{
+    group.forEach(ok=>{if(ok)score+=5});
+  });
+
+  return {score,details};
+}
+
+function showResults(){
+  finished=true;
+  const result=calculate();
+  scorePill.textContent=`${result.score} / 100`;
+  sideScore.textContent=`${result.score} / 100`;
+  document.getElementById("resultScore").textContent=`${result.score} / 100`;
+
+  const icon=document.getElementById("resultIcon");
+  const text=document.getElementById("resultText");
+
+  if(result.score===100){
+    icon.textContent="🏆";
+    text.textContent="Perfect result. You completed every challenge correctly.";
+  }else if(result.score>=80){
+    icon.textContent="🌟";
+    text.textContent="Strong result. Only a few answers need another look.";
+  }else if(result.score>=60){
+    icon.textContent="🧭";
+    text.textContent="Good progress. Review the red-flag topics before the next lesson.";
+  }else{
+    icon.textContent="🎒";
+    text.textContent="The basics need another round. Annoying, yes. Effective, also yes.";
+  }
+
+  resultScreen.classList.remove("hidden");
+}
+
+sendBtn.addEventListener("click",()=>{
+  const result=calculate();
+  const submission={
+    type:"student-result",
+    action:"send-to-teacher",
+    activityId:"progress-check-my-things",
+    activityTitle:"Progress Check — My Things",
+    score:result.score,
+    maxScore:100,
+    answers,
+    details:result.details,
+    submittedAt:new Date().toISOString()
+  };
+
+  window.parent.postMessage(submission,"*");
+  window.dispatchEvent(new CustomEvent("student-result",{detail:submission}));
+  const completionResult={score:result.score,total:100,answers,details:result.details};
+  localStorage.setItem("unit2bProgressCheckResult",JSON.stringify(completionResult));
+  window.parent.postMessage({type:"lesson-step-complete",lesson:"2b",step:"progress-check-my-things",result:completionResult},"*");
+
+  sendBtn.textContent="SENT ✓";
+  sendBtn.disabled=true;
+});
+
+startBtn.addEventListener("click",()=>{
+  startScreen.classList.add("hidden");
+  render();
+});
+
+render();
+</script>
+</body>
+</html>

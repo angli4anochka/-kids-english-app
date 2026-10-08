@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Island Friends — Matching Cards</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(145deg,#6fd2ef,#77d59b);color:#17333d}
+.app{height:100vh;display:flex;flex-direction:column;padding:2vh 2vw;gap:1.4vh}
+.top{height:10vh;min-height:70px;display:flex;align-items:center;justify-content:space-between;gap:1rem;background:rgba(255,255,255,.92);border-radius:22px;padding:1rem 1.4rem;box-shadow:0 12px 30px rgba(25,67,78,.14)}
+h1{margin:0;font-size:clamp(1.5rem,2.6vw,2.7rem);color:#176278}
+.top p{margin:.25rem 0 0;color:#5e7881;font-weight:650}
+.stats{display:flex;gap:.7rem;flex-wrap:wrap}
+.stat{background:#edf9fc;border:1px solid #caedf5;padding:.55rem .8rem;border-radius:14px;font-weight:800;white-space:nowrap}
+.board{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,1fr);grid-template-rows:repeat(2,1fr);gap:.8vw}
+.card{perspective:900px;cursor:pointer;min-width:0;min-height:0}
+.card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .38s ease}
+.card.open .card-inner,.card.matched .card-inner{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:18px;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;text-align:center;padding:.65rem;box-shadow:0 10px 22px rgba(24,72,84,.14);border:2px solid rgba(255,255,255,.82)}
+.front{background:linear-gradient(145deg,#fff,#eafaff);font-size:clamp(2rem,4vw,4rem)}
+.back{transform:rotateY(180deg);font-weight:900;font-size:clamp(.95rem,1.55vw,1.55rem);line-height:1.1;background:#fff;color:#173f49}
+.card[data-lang="en"] .back{background:linear-gradient(145deg,#fff7c8,#ffe984)}
+.card[data-lang="ru"] .back{background:linear-gradient(145deg,#e8f8ff,#bdeaff)}
+.card.matched .back{background:linear-gradient(145deg,#dff8df,#a9e9b2);color:#126331}
+.badge{position:absolute;top:.5rem;right:.55rem;font-size:.68rem;letter-spacing:.08em;font-weight:900;opacity:.55}
+.bottom{height:8vh;min-height:55px;display:flex;justify-content:center;align-items:center;gap:1rem}
+button{border:none;border-radius:14px;background:#176f88;color:#fff;padding:.8rem 1.2rem;font:inherit;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(23,111,136,.22)}
+button:hover{transform:translateY(-1px)}
+.message{min-width:240px;text-align:center;font-weight:900;color:#174a58;background:rgba(255,255,255,.88);border-radius:14px;padding:.75rem 1rem}
+.win{position:fixed;inset:0;display:none;place-items:center;background:rgba(18,70,81,.35);backdrop-filter:blur(6px);z-index:20}
+.win.show{display:grid}
+.winbox{width:min(520px,88vw);background:#fff;border-radius:26px;padding:2rem;text-align:center;box-shadow:0 22px 60px rgba(15,54,63,.25)}
+.winbox .emoji{font-size:4rem}.winbox h2{margin:.4rem 0 .6rem;color:#176278}.winbox p{margin:0 0 1.2rem;color:#5a7178;font-weight:650}
+@media(max-width:900px){html,body{overflow:auto}.app{height:auto;min-height:100vh}.board{grid-template-columns:repeat(4,1fr);grid-template-rows:auto}.card{min-height:130px}}
+.top{height:auto;flex-wrap:wrap}.bottom{height:auto;flex-wrap:wrap}.message{min-width:0}.card:focus-visible{outline:4px solid #176f88;border-radius:18px}@media(max-width:520px){.board{grid-template-columns:repeat(2,1fr)}.top{padding:.8rem}.top p{font-size:.85rem}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="top">
+    <div>
+      <h1>🏝️ Island Friends — Find the Pair!</h1>
+      <p>Открой английское слово и найди его русский перевод.</p>
+    </div>
+    <div class="stats">
+      <div class="stat">Пары: <span id="pairs">0</span>/7</div>
+      <div class="stat">Ходы: <span id="moves">0</span></div>
+    </div>
+  </section>
+
+  <main class="board" id="board"></main>
+
+  <section class="bottom"><span id="saveStatus" role="status">Подключение…</span>
+    <button onclick="newGame()">🔄 New game</button>
+    <div class="message" id="message">Найди первую пару 🌴</div>
+  </section>
+</div>
+
+<div class="win" id="win">
+  <div class="winbox">
+    <div class="emoji">🦊🏝️✨</div>
+    <h2>Great job!</h2>
+    <p>Все английские слова нашли свои русские пары.</p>
+    <button onclick="closeWin(); newGame()">Play again</button>
+  </div>
+</div>
+
+<script src="/classroom-games/bridge.js"></script>
+<script src="/classroom-games/island-friends.js?v=1"></script>
+</body></html>

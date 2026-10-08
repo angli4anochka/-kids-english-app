@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amy's Present</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#667c90;
+  --paper:#fffdf8;
+  --blue:#4a8fd8;
+  --blue-soft:#eaf5ff;
+  --pink:#e8789b;
+  --pink-soft:#fff0f5;
+  --orange:#f49a4c;
+  --green:#45b46d;
+  --line:#dbe8ef;
+  --shadow:0 16px 38px rgba(38,64,89,.16);
+}
+* { box-sizing:border-box; }
+html,body {
+  margin:0; width:100%; height:100%; overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+button,input { font:inherit; }
+
+.app {
+  width:100vw; height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:1.4vh;
+  padding:2vh 2vw;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(255,205,137,.45), transparent 24%),
+    radial-gradient(circle at 90% 12%, rgba(140,204,255,.38), transparent 26%),
+    linear-gradient(135deg,#f8fcfd,#edf7f9 60%,#fff8ed);
+}
+
+.header {
+  max-width:1280px; width:100%; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; padding:.8rem 1rem;
+  border-radius:22px; background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);
+}
+.title-wrap { display:flex; align-items:center; gap:.85rem; }
+.badge {
+  width:52px; height:52px; display:grid; place-items:center;
+  border-radius:17px; background:linear-gradient(145deg,#ffd9a0,#ffad61);
+  font-size:1.8rem;
+}
+h1 { margin:0; font-size:clamp(1.8rem,3vw,2.8rem); line-height:1; }
+.subtitle { margin-top:.28rem; color:var(--muted); font-weight:700; }
+.play-btn {
+  cursor:pointer; border:0; border-radius:16px;
+  padding:.72rem 1rem; background:var(--blue); color:#fff;
+  font-weight:900; box-shadow:0 5px 0 #2c679d;
+}
+
+.main {
+  min-height:0; max-width:1280px; width:100%; margin:0 auto;
+  display:grid; grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr);
+  gap:1.2rem;
+}
+
+.dialogue-card,.task-card {
+  min-height:0; border-radius:26px;
+  background:rgba(255,255,255,.92);
+  box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.75);
+}
+
+.dialogue-card {
+  padding:1rem; overflow:hidden;
+  display:grid; grid-template-columns:120px 1fr 120px;
+  gap:.8rem;
+}
+
+.character {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center;
+}
+.avatar {
+  width:92px; height:92px; border-radius:50%;
+  display:grid; place-items:center; font-size:3.1rem;
+  border:5px solid #fff; box-shadow:0 8px 20px rgba(40,67,90,.16);
+}
+.tim .avatar { background:linear-gradient(145deg,#c8e8ff,#7fc0f0); }
+.amy .avatar { background:linear-gradient(145deg,#ffd5e2,#f391b0); }
+.name { margin-top:.55rem; font-weight:900; font-size:1.05rem; }
+.prop {
+  margin-top:.7rem; padding:.45rem .7rem; border-radius:999px;
+  background:#f4f8fb; color:var(--muted); font-weight:800; font-size:.85rem;
+}
+
+.lines {
+  min-height:0; overflow:auto; padding:.2rem .25rem;
+  display:flex; flex-direction:column; gap:.55rem;
+  scrollbar-width:thin;
+}
+.line {
+  max-width:88%; padding:.68rem .85rem; border-radius:18px;
+  font-weight:750; line-height:1.28; transition:.2s ease;
+  border:2px solid transparent;
+}
+.line.tim {
+  align-self:flex-start; background:var(--blue-soft);
+  border-bottom-left-radius:6px;
+}
+.line.amy {
+  align-self:flex-end; background:var(--pink-soft);
+  border-bottom-right-radius:6px;
+}
+.line.active {
+  border-color:var(--orange);
+  transform:scale(1.015);
+  box-shadow:0 6px 14px rgba(244,154,76,.18);
+}
+.speaker {
+  display:block; margin-bottom:.18rem; font-size:.76rem;
+  letter-spacing:.04em; text-transform:uppercase;
+  color:var(--muted); font-weight:900;
+}
+
+.task-card {
+  padding:1rem;
+  display:grid; grid-template-rows:auto 1fr auto;
+  gap:.85rem;
+}
+.task-title {
+  display:flex; align-items:center; justify-content:space-between; gap:.7rem;
+}
+.task-title h2 { margin:0; font-size:clamp(1.25rem,2vw,1.7rem); }
+.task-pill {
+  padding:.4rem .65rem; border-radius:999px; background:#fff1db;
+  color:#b65b22; font-weight:900; font-size:.78rem;
+}
+.questions {
+  min-height:0; display:flex; flex-direction:column; justify-content:center;
+  gap:.9rem;
+}
+.question {
+  padding:.85rem; border:2px solid var(--line);
+  border-radius:18px; background:#fbfdff;
+}
+.q-text { font-weight:900; margin-bottom:.55rem; line-height:1.25; }
+.options { display:grid; gap:.45rem; }
+.option {
+  cursor:pointer; border:2px solid #dce8ef; border-radius:13px;
+  background:#fff; color:var(--ink); padding:.55rem .7rem;
+  text-align:left; font-weight:800; transition:.15s ease;
+}
+.option:hover { border-color:#9cc8e7; background:#f3faff; }
+.option.selected { border-color:var(--blue); background:#eaf5ff; }
+.option.correct { border-color:var(--green); background:#e8f8ee; color:#267442; }
+.option.wrong { border-color:#dc6a6a; background:#ffeaea; color:#9d3030; }
+
+.check-btn {
+  cursor:pointer; border:0; border-radius:16px; padding:.72rem 1rem;
+  background:var(--green); color:white; font-weight:900;
+  box-shadow:0 5px 0 #2f8650;
+}
+.feedback {
+  min-height:1.2em; margin-top:.35rem;
+  color:var(--muted); font-weight:800; text-align:center;
+}
+
+.footer {
+  max-width:1280px; width:100%; margin:0 auto;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:1rem; padding:.65rem .95rem;
+  border-radius:19px; background:rgba(255,255,255,.84);
+  box-shadow:var(--shadow);
+}
+.tip { color:var(--muted); font-weight:700; font-size:.92rem; }
+.next-btn {
+  cursor:pointer; border:0; border-radius:15px;
+  padding:.68rem 1.1rem; background:#72879a; color:#fff;
+  font-weight:900; opacity:.45;
+}
+.next-btn.ready { background:var(--blue); opacity:1; box-shadow:0 5px 0 #2c679d; }
+
+@media (max-width:900px) {
+  .main { grid-template-columns:1fr; grid-template-rows:1.15fr .85fr; }
+  .dialogue-card { grid-template-columns:86px 1fr 86px; }
+  .avatar { width:68px; height:68px; font-size:2.3rem; }
+  .prop { display:none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">🎁</div>
+      <div>
+        <h1>Amy’s Present</h1>
+        <div class="subtitle">Read the dialogue and find the answers</div>
+      </div>
+    </div>
+    <button id="playBtn" class="play-btn">▶ PLAY DIALOGUE</button>
+  </header>
+
+  <main class="main">
+    <section class="dialogue-card">
+      <aside class="character tim">
+        <div class="avatar">🧑🏻</div>
+        <div class="name">Tim</div>
+              </aside>
+
+      <div id="lines" class="lines"></div>
+
+      <aside class="character amy">
+        <div class="avatar">👧🏼</div>
+        <div class="name">Amy</div>
+              </aside>
+    </section>
+
+    <section class="task-card">
+      <div class="task-title">
+        <h2>Reading Check</h2>
+        <div class="task-pill">2 questions</div>
+      </div>
+
+      <div class="questions">
+        <div class="question" data-answer="Tim">
+          <div class="q-text">1. Who’s got a new bike?</div>
+          <div class="options">
+            <button class="option">Tim</button>
+            <button class="option">Amy</button>
+          </div>
+        </div>
+
+        <div class="question" data-answer="a digital camera">
+          <div class="q-text">2. What is Amy’s present?</div>
+          <div class="options">
+            <button class="option">a bicycle</button>
+            <button class="option">a digital camera</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <button id="checkBtn" class="check-btn">CHECK ANSWERS</button>
+        <div id="feedback" class="feedback">Choose one answer in each question.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="tip">Listen, follow the highlighted lines, then answer the questions.</div>
+      </footer>
+</div>
+
+<script>
+const dialogue = [{"speaker": "Tim", "text": "Hi, Amy!"}, {"speaker": "Amy", "text": "Hi, Tim! Is that your new bike?"}, {"speaker": "Tim", "text": "Yes, it is!"}, {"speaker": "Amy", "text": "Wow, it’s fantastic!"}, {"speaker": "Tim", "text": "Thanks, Amy. Is that your new camera?"}, {"speaker": "Amy", "text": "Yes. It’s a digital camera from my mum and dad. It’s my birthday today."}, {"speaker": "Tim", "text": "Oh, Happy Birthday, Amy!"}, {"speaker": "Amy", "text": "Thanks, Tim! Smile for the camera!"}];
+const linesBox = document.getElementById("lines");
+const playBtn = document.getElementById("playBtn");
+const checkBtn = document.getElementById("checkBtn");
+const feedback = document.getElementById("feedback");
+
+let playing = false;
+let currentUtterance = null;
+
+dialogue.forEach((line, index) => {
+  const el = document.createElement("div");
+  el.className = `line ${line.speaker.toLowerCase()}`;
+  el.dataset.index = index;
+  el.innerHTML = `<span class="speaker">${line.speaker}</span>${line.text}`;
+  linesBox.appendChild(el);
+});
+
+function stopSpeech() {
+  window.speechSynthesis.cancel();
+  playing = false;
+  playBtn.textContent = "▶ PLAY DIALOGUE";
+  document.querySelectorAll(".line").forEach(el => el.classList.remove("active"));
+}
+
+function speakLine(index) {
+  if (!playing || index >= dialogue.length) {
+    stopSpeech();
+    return;
+  }
+
+  document.querySelectorAll(".line").forEach(el => el.classList.remove("active"));
+  const active = document.querySelector(`.line[data-index="${index}"]`);
+  active.classList.add("active");
+  active.scrollIntoView({behavior:"smooth", block:"nearest"});
+
+  const item = dialogue[index];
+  const utterance = new SpeechSynthesisUtterance(item.text);
+  utterance.lang = "en-GB";
+  utterance.rate = 0.88;
+  utterance.pitch = item.speaker === "Amy" ? 1.12 : 0.92;
+  utterance.onend = () => speakLine(index + 1);
+  currentUtterance = utterance;
+  window.speechSynthesis.speak(utterance);
+}
+
+playBtn.addEventListener("click", () => {
+  if (playing) {
+    stopSpeech();
+  } else {
+    playing = true;
+    playBtn.textContent = "■ STOP";
+    speakLine(0);
+  }
+});
+
+document.querySelectorAll(".question").forEach(question => {
+  question.querySelectorAll(".option").forEach(option => {
+    option.addEventListener("click", () => {
+      question.querySelectorAll(".option").forEach(btn => {
+        btn.classList.remove("selected","correct","wrong");
+      });
+      option.classList.add("selected");
+    });
+  });
+});
+
+checkBtn.addEventListener("click", () => {
+  const questions = [...document.querySelectorAll(".question")];
+  let chosen = 0;
+  let correct = 0;
+
+  questions.forEach(question => {
+    const selected = question.querySelector(".option.selected");
+    if (!selected) return;
+    chosen += 1;
+
+    if (selected.textContent.trim() === question.dataset.answer) {
+      selected.classList.add("correct");
+      correct += 1;
+    } else {
+      selected.classList.add("wrong");
+      [...question.querySelectorAll(".option")].forEach(option => {
+        if (option.textContent.trim() === question.dataset.answer) {
+          option.classList.add("correct");
+        }
+      });
+    }
+  });
+
+  if (chosen < questions.length) {
+    feedback.textContent = "Answer both questions first.";
+    return;
+  }
+
+  if (correct === questions.length) {
+    feedback.textContent = "Perfect! Tim has the bike and Amy has the camera.";
+    feedback.style.color = "#267442";
+  } else {
+    feedback.textContent = "Read the dialogue once more and look at the highlighted answers.";
+    feedback.style.color = "#9d3030";
+  }
+
+  const result = { score: correct, total: questions.length };
+  localStorage.setItem("unit2bAmysPresentReadingResult", JSON.stringify(result));
+  window.parent?.postMessage({
+    type: "lesson-step-complete",
+    lesson: "2b",
+    step: "amys-present-reading",
+    result
+  }, "*");
+  checkBtn.disabled = true;
+  checkBtn.textContent = "COMPLETED ✓";
+
+});
+
+window.addEventListener("beforeunload", stopSpeech);
+</script>
+</body>
+</html>

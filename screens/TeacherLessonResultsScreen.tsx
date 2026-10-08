@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/utils/routing-adapter';
-import { normalizeAnswerDetails } from '../utils/resultDetails';
+import { normalizeAnswerDetails, type AnswerDetail } from '../utils/resultDetails';
 
 interface ActivityResult {
   id: string;
@@ -12,6 +12,8 @@ interface ActivityResult {
   activity_title: string;
   order_index: number;
   results: AnswerDetail[];
+  status?: string;
+  pendingReview?: boolean;
   score: number;
   total: number;
 }
@@ -27,27 +29,70 @@ interface StudentSummary {
 
 export default function TeacherLessonResultsScreen() {
   const router = useRouter();
+  const [onlyMistakes, setOnlyMistakes] = useState(false);
+  const [loadError, setLoadError] = useState(false);
   const [students, setStudents] = useState<StudentSummary[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [lessonId, setLessonId] = useState<string | null>(null);
+  const [groupId, setGroupId] = useState<string | null>(null);
+  const [isSelfStudy, setIsSelfStudy] = useState(false);
   const [expandedStudent, setExpandedStudent] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
       setSessionId(params.get('sessionId'));
+      setLessonId(params.get('lessonId'));
+      setGroupId(params.get('groupId'));
+      setIsSelfStudy(params.get('mode') === 'self-study');
     }
   }, []);
 
   useEffect(() => {
-    if (!sessionId) return;
+    if (!sessionId && !lessonId) return;
     const load = async () => {
       try {
-        const res = await fetch(`/kids-api/spotlight/session-all-results?sessionId=${sessionId}`);
+        const url = sessionId
+          ? `/kids-api/spotlight/session-all-results?sessionId=${encodeURIComponent(sessionId)}`
+          : `/kids-api/lessons/${encodeURIComponent(lessonId!)}/results${groupId ? `?groupId=${encodeURIComponent(groupId)}` : ''}`;
+        const res = await fetch(url);
         const data = await res.json();
+        if (!res.ok || !data.success) throw new Error('Could not load results');
+        if (sessionId) {
+          const progressRes = await fetch(`/kids-api/live-sessions/${encodeURIComponent(sessionId)}/results`);
+          const progress = await progressRes.json();
+          if (!progressRes.ok || !progress.success) throw new Error('Could not load Reading answers');
+          data.data = [...data.data, ...progress.data.filter((raw: any) => {
+            const details = typeof raw.details === 'string' ? JSON.parse(raw.details) : raw.details;
+            return ['oge-2027','oge-2026-v1','oge-reading','paint-school','numbers-bingo','island-friends'].includes(details?.source);
+          })];
+        }
         if (data.success) {
           const byStudent: Record<string, StudentSummary> = {};
-          for (const row of data.data as ActivityResult[]) {
+          const rows = isSelfStudy
+            ? (data.data as any[]).filter(raw => raw.session_id == null && raw.group_id == null)
+            : data.data as any[];
+          const latestReading = new Map<string, any>();
+          const otherRows: any[] = [];
+          for (const raw of rows) {
+            const details = typeof raw.details === 'string' ? JSON.parse(raw.details) : raw.details;
+            if (!['oge-2027','oge-2026-v1','oge-reading','paint-school','numbers-bingo','island-friends'].includes(details?.source)) { otherRows.push(raw); continue; }
+            const key = `${raw.student_id}:${raw.activity_id}:${raw.session_id || 'self-study'}`;
+            const previous = latestReading.get(key);
+            if (!previous || new Date(raw.updated_at || raw.created_at).getTime() > new Date(previous.updated_at || previous.created_at).getTime()) latestReading.set(key, raw);
+          }
+          for (const raw of [...otherRows, ...latestReading.values()]) {
+            const details = typeof raw.details === 'string' ? JSON.parse(raw.details) : raw.details;
+            const row: ActivityResult = {
+              ...raw,
+              activity_title: raw.activity_title || details?.activityTitle || raw.activity_id,
+              order_index: raw.order_index || 0,
+              results: raw.results || details?.results || details?.answers || details || [],
+              total: raw.total ?? details?.total ?? details?.maxScore ?? details?.max_score ?? 0,
+              score: raw.score ?? 0,
+              pendingReview: !!details?.pendingReview,
+            };
             const key = row.student_id || row.student_name;
             if (!byStudent[key]) {
               byStudent[key] = {
@@ -67,11 +112,11 @@ export default function TeacherLessonResultsScreen() {
           }
           setStudents(Object.values(byStudent).sort((a, b) => a.name.localeCompare(b.name)));
         }
-      } catch {}
+      } catch { setLoadError(true); }
       setIsLoading(false);
     };
     load();
-  }, [sessionId]);
+  }, [sessionId, lessonId, groupId, isSelfStudy]);
 
   if (isLoading) {
     return (
@@ -88,7 +133,7 @@ export default function TeacherLessonResultsScreen() {
         <div className="bg-white rounded-3xl shadow-xl p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Разбор ошибок</h1>
+              <h1 className="text-2xl font-bold text-gray-900">Результаты урока</h1>
               <p className="text-gray-500 text-sm mt-1">
                 {students.length === 0
                   ? 'Нет данных'
@@ -104,6 +149,10 @@ export default function TeacherLessonResultsScreen() {
           </div>
         </div>
 
+        {loadError && <p role="alert" className="mb-4 rounded-xl bg-red-50 p-4 text-red-700">Не удалось загрузить результаты. Обновите страницу.</p>}
+        <label className="mb-4 flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" checked={onlyMistakes} onChange={e => setOnlyMistakes(e.target.checked)} /> Только ошибки
+        </label>
         {students.length === 0 && (
           <div className="bg-white rounded-2xl shadow p-8 text-center text-gray-500">
             Нет результатов для этой сессии.
@@ -111,8 +160,9 @@ export default function TeacherLessonResultsScreen() {
         )}
 
         {students.map(student => {
+          const pendingReview = student.activities.some(a => a.pendingReview);
           const isExp = expandedStudent === (student.studentId || student.name);
-          const wrongActivities = student.activities.filter(a => (a.total - a.score) > 0);
+          const wrongActivities = student.activities.filter(a => !onlyMistakes || (a.total - a.score) > 0);
 
           return (
             <div key={student.studentId || student.name} className="bg-white rounded-2xl shadow-lg mb-4 overflow-hidden">
@@ -127,7 +177,7 @@ export default function TeacherLessonResultsScreen() {
                   <div className="text-left">
                     <div className="font-bold text-gray-900">{student.name}</div>
                     <div className="text-sm text-gray-500">
-                      {student.totalCorrect}/{student.totalAnswered} верно
+                      {student.totalAnswered > 0 ? `${student.totalCorrect}/${student.totalAnswered} верно` : pendingReview ? 'Ответы сохранены · ожидают проверки' : 'Нет проверенных ответов'}
                       {student.totalWrong > 0 && (
                         <span className="text-red-500 ml-2">· {student.totalWrong} ошибок</span>
                       )}
@@ -135,7 +185,7 @@ export default function TeacherLessonResultsScreen() {
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  {student.totalWrong === 0 ? (
+                  {pendingReview ? <span className="text-amber-700 font-bold">Ожидает проверки</span> : student.totalWrong === 0 ? (
                     <span className="text-green-500 font-bold">🎉 Без ошибок</span>
                   ) : (
                     <span className="text-red-500 font-bold text-lg">{student.totalWrong}</span>
@@ -151,21 +201,25 @@ export default function TeacherLessonResultsScreen() {
                   ) : (
                     wrongActivities.map(activity => {
                       const wrongCount = activity.total - activity.score;
-                      const details = normalizeAnswerDetails(activity.results).filter(a => !a.isCorrect);
+                      const details = normalizeAnswerDetails(activity.results).filter(a => !onlyMistakes || !a.isCorrect);
                       return (
                         <div key={activity.id}>
                           <h3 className="text-sm font-bold text-gray-700 mb-2">
                             {activity.activity_title || 'Упражнение'}
-                            <span className="ml-2 text-gray-400 font-normal">{activity.score}/{activity.total}</span>
+                            <span className="ml-2 text-gray-400 font-normal">{activity.pendingReview ? "Ожидает проверки" : `${activity.score}/${activity.total}`}</span>
+                            {activity.status === 'in_progress' && <span className="ml-2 text-amber-600">Не завершено</span>}
                           </h3>
                           {details.length > 0 ? (
                             <div className="space-y-1.5">
                               {details.map((answer, idx) => (
-                                <div key={idx} className="bg-red-50 border border-red-100 rounded-lg px-3 py-1.5 text-sm flex items-center gap-2 flex-wrap">
-                                  <span className="text-gray-400">#{(answer.questionIndex ?? idx) + 1}</span>
-                                  <span className="text-red-700 line-through">{answer.studentAnswer || '—'}</span>
-                                  <span className="text-gray-300">→</span>
-                                  <span className="text-green-700 font-semibold">{answer.sentence || answer.correctAnswer}</span>
+                                <div key={idx} className={`border rounded-lg px-3 py-2 text-sm ${(answer as any).pendingReview ? 'bg-slate-50 border-slate-200' : answer.isCorrect ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                                  <div className="mb-1 font-medium text-gray-700">
+                                    {(answer as any).questionLabel || `#${(answer.questionIndex ?? idx) + 1}`} · {(answer as any).prompt || answer.sentence || ''}
+                                  </div>
+                                  <div className={(answer as any).pendingReview ? 'text-slate-700 whitespace-pre-wrap' : answer.isCorrect ? 'text-green-700' : 'text-red-700'}>
+                                    {(answer as any).pendingReview ? 'Ожидает проверки ·' : answer.isCorrect ? '✓' : '✗'} Ответ ученика: {answer.studentAnswer || 'Нет ответа'}
+                                  </div>
+                                  {!answer.isCorrect && !(answer as any).pendingReview && <div className="text-green-700">Правильный ответ: {answer.correctAnswer || answer.sentence || '—'}</div>}
                                 </div>
                               ))}
                             </div>

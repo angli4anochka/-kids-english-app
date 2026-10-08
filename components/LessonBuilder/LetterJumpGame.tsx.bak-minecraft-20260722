@@ -1,0 +1,83 @@
+'use client';
+
+import { useMemo, useState } from 'react';
+
+export interface LetterJumpConfig {
+  title: string;
+  instruction: string;
+  items: string[];
+  rounds: number;
+  lives: number;
+}
+
+export interface LetterJumpResult {
+  score: number;
+  total: number;
+  mistakes: number;
+  livesLeft: number;
+  status: 'completed' | 'failed';
+}
+
+interface Props { config: LetterJumpConfig; onComplete?: (result: LetterJumpResult) => void; }
+
+const shuffle = <T,>(source: T[]) => {
+  const values = [...source];
+  for (let i = values.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [values[i], values[j]] = [values[j], values[i]];
+  }
+  return values;
+};
+
+export default function LetterJumpGame({ config, onComplete }: Props) {
+  const items = useMemo(() => [...new Set(config.items.map(v => v.trim()).filter(Boolean))], [config.items]);
+  const total = Math.max(1, Math.min(config.rounds || items.length, 50));
+  const targets = useMemo(() => { const out: string[] = []; while (out.length < total) out.push(...shuffle(items)); return out.slice(0, total); }, [items, total]);
+  const [round, setRound] = useState(0);
+  const [score, setScore] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
+  const [lives, setLives] = useState(Math.max(1, config.lives || 3));
+  const [landed, setLanded] = useState<number | null>(null);
+  const [wrong, setWrong] = useState<number[]>([]);
+  const [result, setResult] = useState<LetterJumpResult | null>(null);
+  const target = targets[round] || items[0] || '';
+  const options = useMemo(() => shuffle([target, ...shuffle(items.filter(v => v !== target)).slice(0, 5)]), [items, round, target]);
+
+  const finish = (next: LetterJumpResult) => { setResult(next); onComplete?.(next); };
+  const jump = (option: string, index: number) => {
+    if (result || wrong.includes(index)) return;
+    setLanded(index);
+    if (option !== target) {
+      const nextLives = lives - 1;
+      const nextMistakes = mistakes + 1;
+      setWrong(current => [...current, index]);
+      setMistakes(nextMistakes);
+      setLives(nextLives);
+      if (nextLives <= 0) finish({ score, total, mistakes: nextMistakes, livesLeft: 0, status: 'failed' });
+      return;
+    }
+    const nextScore = score + 1;
+    if (round + 1 >= total) finish({ score: nextScore, total, mistakes, livesLeft: lives, status: 'completed' });
+    else { setScore(nextScore); setRound(value => value + 1); setWrong([]); setLanded(null); }
+  };
+
+  if (items.length < 6) return <div className="grid h-full place-items-center bg-sky-50 p-6 text-center font-bold">Добавьте минимум 6 разных букв или слов.</div>;
+  if (result) return (
+    <div className="grid h-full place-items-center bg-gradient-to-b from-sky-300 to-indigo-700 p-6 text-white">
+      <div className="rounded-3xl bg-white/20 p-9 text-center shadow-2xl backdrop-blur"><div className="text-7xl">{result.status === 'completed' ? '🏆' : '💫'}</div><h2 className="mt-3 text-4xl font-black">{result.status === 'completed' ? 'Финиш!' : 'Попробуй ещё!'}</h2><p className="mt-3 text-2xl font-bold">{result.score} / {result.total}</p><p className="mt-1">Ошибок: {result.mistakes}</p></div>
+    </div>
+  );
+
+  return (
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden bg-gradient-to-b from-sky-200 via-cyan-400 to-blue-700 p-4 text-white">
+      <style>{`@keyframes jumpHero{0%{transform:translateY(0)}45%{transform:translateY(-32px)}100%{transform:translateY(0)}}@keyframes cloud{from{transform:translateX(-20vw)}to{transform:translateX(110vw)}}`}</style>
+      <div className="pointer-events-none absolute left-0 top-16 text-5xl opacity-50" style={{ animation: 'cloud 18s linear infinite' }}>☁️</div>
+      <header className="z-10 flex justify-between gap-3"><div><h2 className="text-2xl font-black md:text-4xl">{config.title || 'Letter Jump'}</h2><p className="font-bold text-white/85">{config.instruction || 'Прыгни на правильную платформу'}</p></div><div className="text-right font-black"><div>{round + 1} / {total}</div><div>{'❤️'.repeat(Math.max(0, lives))}</div></div></header>
+      <div className="z-10 mx-auto mt-2 rounded-3xl bg-white/25 px-8 py-3 text-center shadow-xl backdrop-blur"><div className="text-xs font-black uppercase tracking-widest">Найди</div><div className="break-words text-3xl font-black md:text-5xl">{target}</div></div>
+      <div className="z-10 grid min-h-0 flex-1 grid-cols-2 content-center gap-x-4 gap-y-7 py-5 md:grid-cols-3">
+        {options.map((option, index) => <button key={`${round}-${option}`} onClick={() => jump(option, index)} disabled={wrong.includes(index)} className={`relative mx-auto h-16 w-[min(28vw,230px)] rounded-[50%] border-4 font-black shadow-[0_12px_0_rgba(30,64,175,.55)] transition hover:-translate-y-2 active:translate-y-1 ${wrong.includes(index) ? 'border-red-200 bg-red-400/40 opacity-30' : 'border-white/80 bg-gradient-to-b from-emerald-300 to-emerald-600'}`}><span className="break-words text-lg md:text-2xl">{option}</span>{landed === index && !wrong.includes(index) && <span className="absolute -top-12 left-1/2 -translate-x-1/2 text-4xl" style={{ animation: 'jumpHero .45s ease' }}>🏃</span>}</button>)}
+      </div>
+      <footer className="z-10 flex justify-between font-bold"><span>Очки: {score}</span><span>Ошибки: {mistakes}</span></footer>
+    </div>
+  );
+}

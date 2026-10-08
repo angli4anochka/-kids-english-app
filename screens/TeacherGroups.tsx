@@ -122,6 +122,7 @@ export default function TeacherGroups() {
       }
 
       // Create students (they're automatically added to the group by the backend)
+      const createdCredentials: string[] = [];
       for (const student of students) {
         try {
           const createResponse = await fetch('/kids-api/students', {
@@ -142,6 +143,10 @@ export default function TeacherGroups() {
           if (!createData.success) {
             throw new Error(createData.error || 'Failed to create student');
           }
+
+          if (createData.generatedPin) {
+            createdCredentials.push(`${student.name}: логин ${student.login}, PIN ${createData.generatedPin}`);
+          }
         } catch (err) {
           console.error('Error creating student:', err);
           alert(`Ошибка при создании ученика "${student.name}": ${err instanceof Error ? err.message : 'Unknown error'}`);
@@ -149,7 +154,7 @@ export default function TeacherGroups() {
         }
       }
 
-      alert('Ученики успешно созданы и добавлены в группу!');
+      alert(`Ученики успешно созданы и добавлены в группу!${createdCredentials.length ? `\n\nДанные для входа:\n${createdCredentials.join('\n')}` : ''}`);
       setShowAddStudentModal(false);
       setStudents([{ name: '', login: '', password: '' }]);
       fetchGroups(); // Refresh groups list
@@ -311,6 +316,24 @@ export default function TeacherGroups() {
     }
   };
 
+  const handleRenameGroup = async (group: Group) => {
+    const nextName = prompt('Новое название группы:', group.name)?.trim();
+    if (!nextName || nextName === group.name) return;
+
+    try {
+      const response = await fetch(`/kids-api/groups/${group.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: nextName }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.error || 'Не удалось переименовать группу');
+      await fetchGroups();
+    } catch (error) {
+      console.error('Error renaming group:', error);
+      alert(error instanceof Error ? error.message : 'Не удалось переименовать группу');
+    }
+  };
   const handleDeleteGroup = async (groupId: number, groupName: string) => {
     if (!confirm(`Вы уверены, что хотите удалить группу "${groupName}"?`)) {
       return;
@@ -471,6 +494,12 @@ export default function TeacherGroups() {
                       📋
                     </button>
                     <button
+                      onClick={() => handleRenameGroup(group)}
+                      className="px-2 py-1 text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition"
+                      title="Переименовать группу"
+                    >
+                      Переименовать
+                    </button>                    <button
                       onClick={() => handleEditGroup(group)}
                       className="text-blue-500 hover:text-blue-700 transition p-2"
                       title="Редактировать группу"

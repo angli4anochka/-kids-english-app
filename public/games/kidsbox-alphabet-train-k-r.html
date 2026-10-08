@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Alphabet Train — K to R</title>
+<style>
+:root{
+  --bg1:#dfe9df;
+  --bg2:#f7efe0;
+  --paper:#fffdf7;
+  --ink:#26352c;
+  --muted:#6f7b73;
+  --line:#d8cdbd;
+  --wood:#7f5d3f;
+  --wood2:#9a7653;
+  --green:#6f946a;
+  --green-soft:#e9f4e6;
+  --red:#b95e58;
+  --gold:#dfb95f;
+  --rail:#5c5146;
+  --shadow:0 12px 30px rgba(49,39,27,.14);
+}
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  color:var(--ink);
+}
+body{
+  background:
+    radial-gradient(circle at 14% 8%, rgba(255,255,255,.75), transparent 24%),
+    linear-gradient(180deg,var(--bg1) 0 47%,var(--bg2) 47% 100%);
+}
+button{font:inherit}
+.app{
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto auto minmax(0,1fr) auto;
+  min-height:0;
+}
+
+/* header */
+header{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 16px;
+  background:rgba(255,253,247,.94);
+  border-bottom:1px solid var(--line);
+}
+.head-left{min-width:0}
+.eyebrow{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+h1{
+  margin:2px 0 0;
+  font-size:clamp(20px,2vw,28px);
+  line-height:1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.head-actions{display:flex;gap:8px}
+.btn{
+  border:none;
+  border-radius:12px;
+  padding:9px 13px;
+  cursor:pointer;
+  font-weight:900;
+}
+.btn-soft{background:#efe5d7;color:var(--ink)}
+.btn-main{background:var(--ink);color:white}
+
+/* mission bar */
+.missionbar{
+  padding:7px 14px;
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:12px;
+  align-items:center;
+}
+.story{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:rgba(255,253,247,.84);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:7px 11px;
+  font-size:12px;
+  font-weight:800;
+  white-space:nowrap;
+}
+.story .fox{font-size:20px}
+.progress-wrap{
+  height:10px;
+  background:#ded5c7;
+  border-radius:999px;
+  overflow:hidden;
+  min-width:0;
+}
+.progress{
+  height:100%;
+  width:0%;
+  background:var(--green);
+  transition:width .25s ease;
+}
+.counter{
+  font-size:13px;
+  font-weight:950;
+  white-space:nowrap;
+}
+
+/* stage */
+.stage{
+  min-height:0;
+  padding:6px 14px 8px;
+  display:grid;
+  grid-template-rows:minmax(150px,34%) minmax(0,1fr);
+  gap:10px;
+  overflow:hidden;
+}
+
+/* train area */
+.train-zone{
+  min-height:0;
+  position:relative;
+  background:
+    linear-gradient(rgba(255,255,255,.10),rgba(255,255,255,.10)),
+    linear-gradient(180deg,#bdd6b8 0 66%,#d7c5a5 66% 100%);
+  border:1px solid rgba(86,75,55,.16);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  padding:12px 14px 24px;
+}
+.cloud{
+  position:absolute;
+  width:80px;height:30px;
+  border-radius:40px;
+  background:rgba(255,255,255,.55);
+  top:14px;left:8%;
+}
+.cloud::before,.cloud::after{
+  content:"";
+  position:absolute;
+  background:inherit;
+  border-radius:50%;
+}
+.cloud::before{width:34px;height:34px;left:12px;top:-12px}
+.cloud::after{width:42px;height:42px;right:9px;top:-18px}
+.hill{
+  position:absolute;
+  width:260px;height:130px;
+  background:#89aa7c;
+  border-radius:50% 50% 0 0;
+  bottom:20px;
+  opacity:.55;
+}
+.hill.one{left:-70px}
+.hill.two{right:-70px;width:310px;height:150px;background:#9caf80}
+.track{
+  position:absolute;
+  left:0;right:0;bottom:12px;
+  height:8px;
+  background:var(--rail);
+}
+.track::after{
+  content:"";
+  position:absolute;
+  left:0;right:0;top:8px;
+  height:10px;
+  background:repeating-linear-gradient(90deg,#6d5a47 0 24px,transparent 24px 38px);
+}
+.train{
+  position:relative;
+  z-index:2;
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:1.3fr repeat(8,minmax(0,1fr));
+  gap:6px;
+  align-items:end;
+  will-change:transform;
+}
+.train.looping{
+  /*
+    One full lap = 68 seconds.
+    The train enters from the left, stops at the station for loading,
+    continues to the right, disappears, then immediately begins the next lap.
+  */
+  animation:trainLoop 68s linear infinite;
+}
+.train.looping.speed-up{
+  animation-duration:68s;
+}
+.train.looping.depart{
+  animation:none;
+  transition:transform 3s linear;
+  transform:translateX(125vw) !important;
+}
+@keyframes trainLoop{
+  0%   {transform:translateX(-112%)}
+  28%  {transform:translateX(-24%)}
+  40%  {transform:translateX(0%)}
+  49%  {transform:translateX(0%)}   /* stop to collect cargo */
+  72%  {transform:translateX(72%)}
+  100% {transform:translateX(112%)}
+}
+
+/* locomotive */
+.engine{
+  min-width:0;
+  height:74%;
+  min-height:92px;
+  align-self:end;
+  position:relative;
+  background:#425d4a;
+  border:3px solid #314438;
+  border-radius:18px 20px 10px 10px;
+  box-shadow:0 7px 0 rgba(0,0,0,.09);
+}
+.engine .cab{
+  position:absolute;
+  right:8px;top:12px;
+  width:42%;height:42%;
+  background:#cbe0df;
+  border:3px solid #314438;
+  border-radius:7px;
+}
+.engine .chimney{
+  position:absolute;
+  left:18%;top:-24px;
+  width:22%;height:33px;
+  background:#314438;
+  border-radius:5px 5px 2px 2px;
+}
+.engine .nose{
+  position:absolute;
+  left:-14px;bottom:12px;
+  width:24px;height:31px;
+  background:#425d4a;
+  border:3px solid #314438;
+  border-radius:10px 0 0 10px;
+}
+.engine .wheel,
+.wagon .wheel{
+  position:absolute;
+  bottom:-14px;
+  width:25px;height:25px;
+  border-radius:50%;
+  background:#403a34;
+  border:5px solid #71675e;
+  z-index:5;
+}
+.engine .wheel.w1{left:18%}
+.engine .wheel.w2{right:16%}
+.smoke{
+  position:absolute;
+  left:9%;top:-52px;
+  width:24px;height:24px;
+  border-radius:50%;
+  background:rgba(245,245,240,.72);
+  box-shadow:18px -12px 0 rgba(245,245,240,.58),36px -22px 0 rgba(245,245,240,.42);
+  animation:puff 2s ease-in-out infinite;
+}
+@keyframes puff{
+  0%,100%{transform:translateY(4px);opacity:.55}
+  50%{transform:translateY(-4px);opacity:.9}
+}
+.train.looping .wheel{
+  animation:wheelLoop 68s linear infinite;
+}
+.train.looping.speed-up .wheel{
+  animation-duration:68s;
+}
+@keyframes wheelLoop{
+  0%   {transform:rotate(0deg)}
+  28%  {transform:rotate(1440deg)}
+  40%  {transform:rotate(2160deg)}
+  49%  {transform:rotate(2160deg)} /* wheels stop while loading */
+  72%  {transform:rotate(3600deg)}
+  100% {transform:rotate(5040deg)}
+}
+
+/* wagons */
+.wagon{
+  min-width:0;
+  height:67%;
+  min-height:84px;
+  align-self:end;
+  position:relative;
+  background:linear-gradient(180deg,#b88656,#8e633f);
+  border:3px solid #6f4c32;
+  border-radius:12px 12px 8px 8px;
+  padding:6px 5px 10px;
+  box-shadow:0 7px 0 rgba(0,0,0,.08);
+  transition:.18s ease;
+}
+.wagon::before{
+  content:"";
+  position:absolute;
+  left:-9px;
+  top:55%;
+  width:9px;height:5px;
+  background:#4e453d;
+}
+.wagon.ready{
+  background:linear-gradient(180deg,#8fAD79,#6e8f63);
+  border-color:#55714f;
+}
+.wagon.dragover{
+  transform:translateY(-5px);
+  box-shadow:0 0 0 4px rgba(223,185,95,.32),0 8px 0 rgba(0,0,0,.08);
+}
+.wagon.wrong{animation:shake .3s linear 1;border-color:var(--red)}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-5px)}
+  75%{transform:translateX(5px)}
+}
+.letter{
+  position:absolute;
+  top:-27px;
+  left:50%;
+  transform:translateX(-50%);
+  width:38px;height:38px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:#fff7df;
+  border:3px solid #6f4c32;
+  font-family:Georgia,serif;
+  font-size:24px;
+  font-weight:950;
+  color:#65472f;
+  box-shadow:0 4px 10px rgba(0,0,0,.10);
+}
+.cargo{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:4px;
+  align-items:center;
+  justify-items:center;
+}
+.cargo-slot{
+  width:100%;
+  min-width:0;
+  min-height:0;
+  border-radius:7px;
+  border:1px dashed rgba(255,255,255,.45);
+  background:rgba(255,255,255,.15);
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+}
+.cargo-slot img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+  animation:pop .25s ease;
+}
+@keyframes pop{from{transform:scale(.4);opacity:.2}to{transform:scale(1);opacity:1}}
+.wagon .wheel.w1{left:12%}
+.wagon .wheel.w2{right:12%}
+
+/* station */
+.station{
+  min-height:0;
+  background:rgba(255,253,247,.94);
+  border:1px solid var(--line);
+  border-radius:22px;
+  box-shadow:var(--shadow);
+  padding:10px 12px 12px;
+  display:grid;
+  grid-template-rows:auto minmax(0,1fr);
+  gap:8px;
+  overflow:hidden;
+}
+.station-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.station-head strong{font-size:16px}
+.station-head span{font-size:12px;color:var(--muted);font-weight:800}
+.cards{
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(8,minmax(0,1fr));
+  gap:9px;
+  align-items:stretch;
+}
+.pic-card{
+  min-width:0;
+  min-height:0;
+  border:2px solid #d9cab7;
+  border-radius:16px;
+  background:#fbf6ed;
+  padding:7px;
+  cursor:grab;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition:.15s ease;
+  touch-action:none;
+  user-select:none;
+}
+.pic-card:hover{transform:translateY(-2px);box-shadow:0 7px 16px rgba(0,0,0,.08)}
+.pic-card:active{cursor:grabbing}
+.pic-card.selected{
+  border-color:var(--gold);
+  box-shadow:0 0 0 4px rgba(223,185,95,.24);
+}
+.pic-card.solved{
+  opacity:0;
+  transform:scale(.65);
+  pointer-events:none;
+}
+.pic-card img{
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  display:block;
+}
+.tap-hint{
+  position:absolute;
+  right:6px;bottom:5px;
+  width:18px;height:18px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  background:rgba(38,53,44,.82);
+  color:white;
+  font-size:10px;
+  font-weight:950;
+}
+
+/* feedback/footer */
+footer{
+  min-height:44px;
+  padding:6px 14px 9px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.feedback{
+  min-width:0;
+  font-size:13px;
+  font-weight:850;
+  color:#526158;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.word-flash{
+  padding:7px 12px;
+  border-radius:999px;
+  background:var(--green-soft);
+  color:#355d39;
+  font-size:13px;
+  font-weight:950;
+  opacity:0;
+  transform:translateY(4px);
+  transition:.2s ease;
+}
+.word-flash.show{opacity:1;transform:translateY(0)}
+
+/* overlay */
+.overlay{
+  position:fixed;
+  inset:0;
+  z-index:50;
+  background:rgba(35,47,40,.78);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.overlay.show{display:flex}
+.finish{
+  width:min(470px,92vw);
+  background:white;
+  border-radius:26px;
+  padding:28px;
+  text-align:center;
+  box-shadow:0 25px 70px rgba(0,0,0,.30);
+}
+.finish .icons{font-size:48px;margin-bottom:6px}
+.finish h2{margin:0 0 8px;font-size:28px}
+.finish p{margin:0 0 18px;color:var(--muted);line-height:1.45}
+.finish-actions{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+
+/* drag ghost */
+.drag-ghost{
+  position:fixed;
+  pointer-events:none;
+  z-index:999;
+  width:90px;height:90px;
+  border:2px solid var(--gold);
+  border-radius:16px;
+  background:#fffaf2;
+  padding:7px;
+  box-shadow:0 12px 28px rgba(0,0,0,.20);
+  transform:translate(-50%,-50%);
+}
+.drag-ghost img{width:100%;height:100%;object-fit:contain}
+
+/* low screens */
+@media(max-height:740px){
+  header{min-height:48px;padding:6px 12px}
+  .missionbar{padding:5px 12px}
+  .stage{padding:4px 12px 6px;grid-template-rows:minmax(128px,33%) minmax(0,1fr);gap:7px}
+  .train-zone{padding:8px 10px 20px}
+  .engine{min-height:78px}
+  .wagon{min-height:70px;padding:4px 4px 7px}
+  .letter{top:-22px;width:32px;height:32px;font-size:20px}
+  .engine .wheel,.wagon .wheel{width:20px;height:20px;bottom:-11px;border-width:4px}
+  .station{padding:7px 9px 9px;gap:5px}
+  .station-head strong{font-size:14px}
+  .cards{gap:6px}
+  .pic-card{padding:5px;border-radius:12px}
+  footer{min-height:36px;padding:4px 12px 6px}
+}
+@media(max-width:900px){
+  .story{display:none}
+  .missionbar{grid-template-columns:1fr auto}
+  .progress-wrap{grid-column:1/2}
+  .train{grid-template-columns:1.15fr repeat(8,minmax(0,1fr));gap:3px}
+  .wagon{padding-left:3px;padding-right:3px}
+  .cards{gap:5px}
+}
+@media(max-width:680px){
+  .head-actions .btn-soft{display:none}
+  .stage{padding-left:7px;padding-right:7px}
+  .train-zone{padding-left:6px;padding-right:6px}
+  .train{gap:2px}
+  .engine{min-height:70px}
+  .wagon{min-height:62px;border-width:2px}
+  .letter{width:27px;height:27px;top:-18px;font-size:17px;border-width:2px}
+  .cargo{gap:2px}
+  .cards{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    grid-template-rows:repeat(2,minmax(0,1fr));
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="head-left">
+      <div class="eyebrow">Alphabet mission · K–R</div>
+      <h1>Load the Alphabet Train</h1>
+    </div>
+    <div class="head-actions">
+      <button class="btn btn-soft" id="shuffleBtn" type="button">Shuffle load</button>
+    </div>
+  </header>
+
+  <section class="missionbar">
+    <div class="story"><span class="fox">🦊</span><span>“Quick! Load the pictures before the train comes around again!”</span></div>
+    <div class="progress-wrap"><div class="progress" id="progress"></div></div>
+    <div class="counter"><span id="loadedCount">0</span> / 32 loaded</div>
+  </section>
+
+  <main class="stage">
+    <section class="train-zone">
+      <div class="cloud"></div>
+      <div class="hill one"></div>
+      <div class="hill two"></div>
+      <div class="track"></div>
+
+      <div class="train" id="train">
+        <div class="engine">
+          <div class="smoke"></div>
+          <div class="chimney"></div>
+          <div class="cab"></div>
+          <div class="nose"></div>
+          <div class="wheel w1"></div>
+          <div class="wheel w2"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="station">
+      <div class="station-head">
+        <strong id="loadTitle">Load 1 of 4 · 🚂 moving</strong>
+        <span>The train goes around in a loop and stops at the station to collect cargo. Load the picture into the correct wagon.</span>
+      </div>
+      <div class="cards" id="cards"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="feedback" id="feedback">Choose a picture, find its first letter, and load the correct wagon when the train stops.</div>
+    <div class="word-flash" id="wordFlash">kite</div>
+  </footer>
+</div>
+
+<div class="overlay" id="loadOverlay">
+  <div class="finish">
+    <div class="icons">🦊 🚂 👹</div>
+    <h2 id="overlayTitle">Load complete!</h2>
+    <p id="overlayText">Eight pictures are in the correct wagons.</p>
+    <div class="finish-actions">
+      <button class="btn btn-main" id="nextLoadBtn" type="button">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const letters = ["K","L","M","N","O","P","Q","R"];
+
+  const items = {
+    K: [
+      ["kangaroo","🦘","#e9eadb"],
+      ["key","🔑","#f1e7c9"],
+      ["king","🤴","#eee3d6"],
+      ["kite","🪁","#e2edf4"]
+    ],
+    L: [
+      ["lion","🦁","#f1e5cf"],
+      ["lamp","💡","#f3e9c8"],
+      ["leaf","🍃","#e3efdf"],
+      ["lemon","🍋","#f6efc9"]
+    ],
+    M: [
+      ["monkey","🐒","#eee3d6"],
+      ["milk","🥛","#e8eff1"],
+      ["money","💵","#e1eee0"],
+      ["mouse","🐭","#e8e4ea"]
+    ],
+    N: [
+      ["nut","🥜","#efe5d5"],
+      ["net","🥅","#e5edf1"],
+      ["nest","🪺","#eee3d3"],
+      ["nose","👃","#f1dfd8"]
+    ],
+    O: [
+      ["octopus","🐙","#ecdfe9"],
+      ["ox","🐂","#ece5da"],
+      ["olive","🫒","#e7eddc"],
+      ["ostrich","🐦","#e7edf0"]
+    ],
+    P: [
+      ["peach","🍑","#f6ddd6"],
+      ["pen","🖊️","#e1e8f1"],
+      ["panda","🐼","#e8e8e8"],
+      ["pineapple","🍍","#f3e8c8"]
+    ],
+    Q: [
+      ["queen","👸","#eee0e7"],
+      ["quiz","❓","#e7e5f1"],
+      ["quilt","🧵","#efe1dd"],
+      ["question","💭","#e2ebf1"]
+    ],
+    R: [
+      ["rabbit","🐰","#eee8e3"],
+      ["rose","🌹","#f4dfe1"],
+      ["rice","🍚","#efeee8"],
+      ["robot","🤖","#e1e8ea"]
+    ]
+  };
+
+  function makePicture(emoji,bg){
+    const svg = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 500 500">
+        <rect width="500" height="500" rx="56" fill="${bg}"/>
+        <circle cx="78" cy="82" r="34" fill="rgba(255,255,255,.38)"/>
+        <circle cx="418" cy="402" r="50" fill="rgba(255,255,255,.24)"/>
+        <text x="250" y="308" text-anchor="middle" font-size="245"
+          font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji">${emoji}</text>
+      </svg>`;
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  const loads = [0,1,2,3].map(index =>
+    letters.map(letter => {
+      const [word,emoji,bg] = items[letter][index];
+      return {
+        id:`${letter}-${index}-${word}`,
+        letter, word, image:makePicture(emoji,bg)
+      };
+    })
+  );
+
+  const train = document.getElementById("train");
+  const cardsEl = document.getElementById("cards");
+  const loadedCountEl = document.getElementById("loadedCount");
+  const progress = document.getElementById("progress");
+  const loadTitle = document.getElementById("loadTitle");
+  const feedback = document.getElementById("feedback");
+  const wordFlash = document.getElementById("wordFlash");
+  const loadOverlay = document.getElementById("loadOverlay");
+  const overlayTitle = document.getElementById("overlayTitle");
+  const overlayText = document.getElementById("overlayText");
+  const nextLoadBtn = document.getElementById("nextLoadBtn");
+
+  let currentLoad = 0;
+  let totalLoaded = 0;
+  let wrongAttempts = 0;
+  let resultSubmitted = false;
+  let solvedIds = new Set();
+  let selectedCard = null;
+  let ghost = null;
+  let pointerDragging = false;
+  let sourceCard = null;
+
+  const cargoByLetter = {};
+  const wagonByLetter = {};
+
+  function shuffle(arr){
+    const a=[...arr];
+    for(let i=a.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildTrain(){
+    letters.forEach(letter=>{
+      const wagon=document.createElement("div");
+      wagon.className="wagon";
+      wagon.dataset.letter=letter;
+
+      const letterBadge=document.createElement("div");
+      letterBadge.className="letter";
+      letterBadge.textContent=letter;
+
+      const cargo=document.createElement("div");
+      cargo.className="cargo";
+      cargoByLetter[letter]=cargo;
+
+      for(let i=0;i<4;i++){
+        const slot=document.createElement("div");
+        slot.className="cargo-slot";
+        slot.dataset.slot=i;
+        cargo.appendChild(slot);
+      }
+
+      wagon.append(letterBadge,cargo);
+
+      const w1=document.createElement("div");
+      w1.className="wheel w1";
+      const w2=document.createElement("div");
+      w2.className="wheel w2";
+      wagon.append(w1,w2);
+
+      wagon.addEventListener("dragover",e=>{
+        e.preventDefault();
+        wagon.classList.add("dragover");
+      });
+      wagon.addEventListener("dragleave",()=>wagon.classList.remove("dragover"));
+      wagon.addEventListener("drop",e=>{
+        e.preventDefault();
+        wagon.classList.remove("dragover");
+        if(sourceCard) attemptDrop(sourceCard,wagon);
+      });
+      wagon.addEventListener("click",()=>{
+        if(selectedCard) attemptDrop(selectedCard,wagon);
+      });
+
+      wagonByLetter[letter]=wagon;
+      train.appendChild(wagon);
+    });
+  }
+
+  function renderLoad(){
+    selectedCard=null;
+    sourceCard=null;
+    cardsEl.innerHTML="";
+    loadTitle.textContent=`Load ${currentLoad+1} of 4 · 🚂 looping`;
+    feedback.textContent="Choose a picture, find its first letter, and load the correct wagon when the train stops.";
+
+    const visible=shuffle(loads[currentLoad]);
+    visible.forEach(item=>{
+      const card=document.createElement("button");
+      card.type="button";
+      card.className="pic-card";
+      card.dataset.id=item.id;
+      card.dataset.letter=item.letter;
+      card.dataset.word=item.word;
+      card.draggable=true;
+      card.setAttribute("aria-label","Picture card");
+
+      const img=document.createElement("img");
+      img.src=item.image;
+      img.alt="";
+      const hint=document.createElement("span");
+      hint.className="tap-hint";
+      hint.textContent="↗";
+
+      card.append(img,hint);
+
+      card.addEventListener("click",()=>{
+        if(card.classList.contains("solved")) return;
+        if(selectedCard===card){
+          card.classList.remove("selected");
+          selectedCard=null;
+          feedback.textContent="Choose a picture, find its first letter, and load the correct wagon when the train stops.";
+          return;
+        }
+        document.querySelectorAll(".pic-card.selected").forEach(c=>c.classList.remove("selected"));
+        selectedCard=card;
+        card.classList.add("selected");
+        feedback.textContent="Now click the correct wagon.";
+      });
+
+      card.addEventListener("dragstart",e=>{
+        sourceCard=card;
+        e.dataTransfer.effectAllowed="move";
+        e.dataTransfer.setData("text/plain",item.id);
+      });
+      card.addEventListener("dragend",()=>{
+        sourceCard=null;
+        document.querySelectorAll(".wagon.dragover").forEach(w=>w.classList.remove("dragover"));
+      });
+
+      // pointer drag for touch
+      card.addEventListener("pointerdown",e=>{
+        if(e.pointerType==="mouse") return;
+        if(card.classList.contains("solved")) return;
+        pointerDragging=true;
+        sourceCard=card;
+        card.setPointerCapture(e.pointerId);
+        ghost=document.createElement("div");
+        ghost.className="drag-ghost";
+        const gimg=document.createElement("img");
+        gimg.src=item.image;
+        ghost.appendChild(gimg);
+        document.body.appendChild(ghost);
+        moveGhost(e.clientX,e.clientY);
+      });
+      card.addEventListener("pointermove",e=>{
+        if(!pointerDragging || !ghost) return;
+        moveGhost(e.clientX,e.clientY);
+        highlightWagonUnder(e.clientX,e.clientY);
+      });
+      card.addEventListener("pointerup",e=>{
+        if(!pointerDragging) return;
+        pointerDragging=false;
+        if(ghost){ghost.remove();ghost=null}
+        const wagon=getWagonUnder(e.clientX,e.clientY);
+        document.querySelectorAll(".wagon.dragover").forEach(w=>w.classList.remove("dragover"));
+        if(wagon && sourceCard) attemptDrop(sourceCard,wagon);
+        sourceCard=null;
+      });
+
+      cardsEl.appendChild(card);
+    });
+  }
+
+  function moveGhost(x,y){
+    if(!ghost) return;
+    ghost.style.left=x+"px";
+    ghost.style.top=y+"px";
+  }
+
+  function getWagonUnder(x,y){
+    const el=document.elementFromPoint(x,y);
+    return el ? el.closest(".wagon") : null;
+  }
+
+  function highlightWagonUnder(x,y){
+    const wagon=getWagonUnder(x,y);
+    document.querySelectorAll(".wagon.dragover").forEach(w=>w.classList.remove("dragover"));
+    if(wagon) wagon.classList.add("dragover");
+  }
+
+  function flashWord(word){
+    wordFlash.textContent=word;
+    wordFlash.classList.add("show");
+    clearTimeout(flashWord.t);
+    flashWord.t=setTimeout(()=>wordFlash.classList.remove("show"),1200);
+  }
+
+  function attemptDrop(card,wagon){
+    if(card.classList.contains("solved")) return;
+    const target=card.dataset.letter;
+    const chosen=wagon.dataset.letter;
+
+    document.querySelectorAll(".pic-card.selected").forEach(c=>c.classList.remove("selected"));
+    selectedCard=null;
+
+    if(target===chosen){
+      solveCard(card,wagon);
+    }else{
+      wrongAttempts++;
+      wagon.classList.remove("wrong");
+      void wagon.offsetWidth;
+      wagon.classList.add("wrong");
+      feedback.textContent="Not this wagon. Try again!";
+      setTimeout(()=>wagon.classList.remove("wrong"),350);
+    }
+  }
+
+  function solveCard(card,wagon){
+    const id=card.dataset.id;
+    if(solvedIds.has(id)) return;
+    solvedIds.add(id);
+    card.classList.add("solved");
+
+    const letter=card.dataset.letter;
+    const item=loads[currentLoad].find(x=>x.id===id);
+    const slotIndex=currentLoad; // each load fills one slot in every wagon
+    const slot=cargoByLetter[letter].querySelector(`[data-slot="${slotIndex}"]`);
+    slot.innerHTML="";
+    const img=document.createElement("img");
+    img.src=item.image;
+    img.alt=item.word;
+    img.title=item.word;
+    slot.appendChild(img);
+
+    totalLoaded++;
+    loadedCountEl.textContent=totalLoaded;
+    progress.style.width=`${(totalLoaded/32)*100}%`;
+    flashWord(item.word);
+    feedback.textContent=`Caught it! ${item.word} → ${letter}`;
+
+    const filled=cargoByLetter[letter].querySelectorAll(".cargo-slot img").length;
+    if(filled===4) wagon.classList.add("ready");
+
+    const solvedThisLoad=loads[currentLoad].filter(x=>solvedIds.has(x.id)).length;
+    if(solvedThisLoad===8){
+      setTimeout(showLoadComplete,500);
+    }
+  }
+
+  function showLoadComplete(){
+    if(currentLoad<3){
+      overlayTitle.textContent=`Load ${currentLoad+1} complete!`;
+      overlayText.textContent="Eight pictures are in the correct wagons. The train needs another load.";
+      nextLoadBtn.style.display="";
+      nextLoadBtn.textContent="Next";
+    }else{
+      overlayTitle.textContent="The Alphabet Train is ready!";
+      overlayText.textContent="All 32 K–R words are in the correct wagons.";
+      nextLoadBtn.style.display="";
+      nextLoadBtn.textContent="GO! 🚂";
+    }
+    loadOverlay.classList.add("show");
+  }
+
+  function next(){
+    if(currentLoad<3){
+      currentLoad++;
+      train.classList.remove("speed-up");
+      loadOverlay.classList.remove("show");
+      renderLoad();
+    }else{
+      loadOverlay.classList.remove("show");
+      feedback.textContent="The train is leaving!";
+      train.classList.remove("looping","speed-up");
+      void train.offsetWidth;
+      train.classList.add("depart");
+      setTimeout(()=>{
+        overlayTitle.textContent="Mission complete!";
+        overlayText.textContent="K–R restored. The troll finally understands this part of the alphabet.";
+        nextLoadBtn.style.display="none";
+        if(!resultSubmitted){
+          resultSubmitted=true;
+          window.parent.postMessage({
+            type:"kidsbox-alphabet-train-k-r-done",
+            score:Math.max(0,32-wrongAttempts),
+            total:32
+          },"*");
+        }
+          loadOverlay.classList.add("show");
+      },2200);
+    }
+  }
+
+  document.getElementById("shuffleBtn").addEventListener("click",renderLoad);
+  nextLoadBtn.addEventListener("click",next);
+
+  buildTrain();
+  train.classList.add("looping");
+  renderLoad();
+})();
+</script>
+</body>
+</html>

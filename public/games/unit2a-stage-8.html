@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2a — Write about them</title>
+  <style>
+    :root {
+      --orange:#ff7a33;
+      --orange-dark:#e85f18;
+      --ink:#25324a;
+      --muted:#6b7482;
+      --line:#e9dfd6;
+      --green:#35a96f;
+      --green-bg:#eaf8f1;
+      --red:#d9534f;
+      --red-bg:#fff0ef;
+      --blue:#4d83d3;
+      --blue-dark:#3568b2;
+      --blue-bg:#eef5ff;
+      --yellow-bg:#fff7e8;
+      --shadow:0 20px 55px rgba(53,39,27,.12);
+    }
+
+    *{box-sizing:border-box}
+
+    html,body{
+      margin:0;
+      min-height:100%;
+      font-family:Inter,ui-rounded,"Segoe UI",Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 8% 10%,rgba(255,185,133,.23),transparent 26%),
+        radial-gradient(circle at 90% 12%,rgba(119,190,255,.18),transparent 25%),
+        #f5f1ec;
+    }
+
+    button,input,textarea{font:inherit}
+
+    .app{
+      width:min(1180px,calc(100vw - 24px));
+      min-height:calc(100vh - 24px);
+      margin:12px auto;
+      background:rgba(255,255,255,.97);
+      border:1px solid rgba(220,205,190,.75);
+      border-radius:28px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:grid;
+      grid-template-rows:auto auto 1fr auto;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      padding:18px 22px 15px;
+      border-bottom:1px solid #efe7df;
+    }
+
+    .badge{
+      width:58px;
+      height:58px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-size:22px;
+      font-weight:900;
+      background:linear-gradient(145deg,#ff914d,#ff6825);
+      box-shadow:0 8px 18px rgba(255,122,51,.26);
+      transform:rotate(-3deg);
+      flex:none;
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(27px,3vw,42px);
+      line-height:1;
+      letter-spacing:-.03em;
+    }
+
+    .subtitle{
+      margin:7px 0 0;
+      color:var(--muted);
+      font-size:15px;
+    }
+
+    .progress{
+      margin-left:auto;
+      min-width:128px;
+      padding:10px 14px;
+      border-radius:16px;
+      color:var(--orange-dark);
+      background:#fff4ec;
+      border:1px solid #ffd6bc;
+      font-weight:900;
+      text-align:center;
+    }
+
+    .example{
+      margin:16px 20px 0;
+      padding:14px 16px;
+      border-radius:20px;
+      background:#fffaf5;
+      border:1px solid #ffe0ca;
+      line-height:1.55;
+      color:#7d4b28;
+    }
+
+    .example strong{color:var(--orange-dark)}
+
+    main{
+      padding:20px;
+      display:grid;
+      align-items:center;
+    }
+
+    .task{
+      display:grid;
+      grid-template-columns:minmax(260px,360px) 1fr;
+      gap:24px;
+      align-items:center;
+    }
+
+    .photo-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:12px;
+      box-shadow:0 12px 28px rgba(44,33,25,.08);
+    }
+
+    .photo-card img{
+      width:100%;
+      height:360px;
+      object-fit:cover;
+      display:block;
+      border-radius:18px;
+      background:#eef0f3;
+    }
+
+    .photo-name{
+      margin:12px 4px 3px;
+      font-size:23px;
+      font-weight:900;
+    }
+
+    .photo-hint{
+      margin:0 4px;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .work-card{
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:24px;
+      padding:22px;
+      box-shadow:0 12px 28px rgba(44,33,25,.07);
+    }
+
+    .eyebrow{
+      margin:0 0 6px;
+      color:var(--orange-dark);
+      font-size:12px;
+      font-weight:900;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+    }
+
+    .question{
+      margin:0 0 18px;
+      font-size:clamp(25px,3vw,36px);
+      line-height:1.15;
+      letter-spacing:-.02em;
+    }
+
+    .builder-wrap{
+      display:grid;
+      gap:14px;
+    }
+
+    .line-label{
+      margin-bottom:7px;
+      color:var(--muted);
+      font-size:12px;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:.07em;
+    }
+
+    .builder{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      align-items:center;
+      padding:10px;
+      min-height:58px;
+      border:1px dashed #ddd2c7;
+      border-radius:16px;
+      background:#faf8f6;
+    }
+
+    .token{
+      border:1px solid #d7dde6;
+      border-radius:13px;
+      background:#fff;
+      padding:10px 13px;
+      color:#35415a;
+      font-weight:900;
+      cursor:pointer;
+      transition:.15s ease;
+    }
+
+    .token:hover{
+      border-color:#ffab74;
+      transform:translateY(-1px);
+    }
+
+    .token.active{
+      background:#fff0e7;
+      border-color:#ff9b5a;
+      color:#b94508;
+      box-shadow:inset 0 0 0 1px #ff9b5a;
+    }
+
+    .punctuation{
+      font-size:25px;
+      font-weight:900;
+    }
+
+    .write-box{
+      display:grid;
+      gap:12px;
+    }
+
+    textarea{
+      width:100%;
+      min-height:132px;
+      resize:vertical;
+      border:1px solid #d7dde6;
+      border-radius:16px;
+      padding:14px 16px;
+      color:var(--ink);
+      outline:none;
+      line-height:1.55;
+    }
+
+    textarea:focus{
+      border-color:#ff9d60;
+      box-shadow:0 0 0 4px rgba(255,122,51,.13);
+    }
+
+    .support{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:4px;
+    }
+
+    .support span{
+      padding:7px 10px;
+      border-radius:999px;
+      background:#f1f4f8;
+      color:#526078;
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:16px;
+      padding:14px 16px;
+      border-radius:17px;
+      font-weight:850;
+      line-height:1.5;
+    }
+
+    .feedback.show{display:block}
+    .feedback.correct{
+      background:var(--green-bg);
+      border:1px solid #a8ddbf;
+      color:#256b48;
+    }
+    .feedback.incorrect{
+      background:var(--red-bg);
+      border:1px solid #efb0ac;
+      color:#98362f;
+    }
+    .feedback.hint{
+      background:var(--yellow-bg);
+      border:1px solid #efcf95;
+      color:#815a19;
+    }
+
+    .answer-card{
+      display:none;
+      margin-top:14px;
+      padding:15px 16px;
+      border-radius:17px;
+      background:var(--blue-bg);
+      border:1px solid #b9d4f4;
+      color:#28527d;
+      font-weight:850;
+      line-height:1.65;
+    }
+
+    .answer-card.show{display:block}
+
+    .actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:15px;
+      padding:12px 20px;
+      font-weight:900;
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .btn:hover:not(:disabled){transform:translateY(-2px)}
+
+    .check{
+      color:#fff;
+      background:linear-gradient(135deg,var(--orange),var(--orange-dark));
+      box-shadow:0 9px 20px rgba(232,95,24,.22);
+    }
+
+    .next{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(61,112,181,.20);
+    }
+
+    .final{
+      display:none;
+      width:min(820px,100%);
+      margin:0 auto;
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:26px;
+      padding:24px;
+      box-shadow:0 14px 32px rgba(44,33,25,.08);
+    }
+
+    .final.show{display:block}
+
+    .final h2{
+      margin:0 0 6px;
+      font-size:32px;
+      letter-spacing:-.02em;
+    }
+
+    .final p{
+      margin:0 0 17px;
+      color:var(--muted);
+    }
+
+    footer{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 20px 16px;
+      border-top:1px solid #efe7df;
+      background:#fff;
+    }
+
+    .footer-note{
+      color:var(--muted);
+      font-size:14px;
+      margin-right:auto;
+    }
+
+    .continue{
+      display:none;
+      color:#fff;
+      background:linear-gradient(135deg,var(--blue),var(--blue-dark));
+      box-shadow:0 9px 20px rgba(61,112,181,.20);
+    }
+
+    @media(max-width:850px){
+      .task{grid-template-columns:1fr}
+      .photo-card{max-width:430px;margin:0 auto}
+      .photo-card img{height:300px}
+    }
+
+    @media(max-width:560px){
+      header{padding:14px}
+      .progress{display:none}
+      .example{margin:12px 14px 0}
+      main{padding:14px}
+      .work-card,.final{padding:17px}
+      .photo-card img{height:260px}
+    }
+    /* Lesson iframe: keep the complete writing activity in one viewport. */
+    html,body{width:100%;height:100%;overflow:hidden}
+    .app{height:calc(100vh - 24px);min-height:0}
+    main{min-height:0;overflow:hidden}
+  </style>
+</head>
+<body>
+  <section class="app">
+    <header>
+      <div class="badge">2a</div>
+      <div>
+        <h1>Write about them</h1>
+        <p class="subtitle">Build and write sentences about people and characters.</p>
+      </div>
+      <div class="progress"><span id="current">1</span> / 5</div>
+    </header>
+
+    <section class="example">
+      <strong>Example:</strong><br>
+      Wednesday is from the USA. She is American.
+    </section>
+
+    <main>
+      <section id="task" class="task">
+        <article class="photo-card">
+          <img id="personImage" src="" alt="">
+          <div id="personName" class="photo-name"></div>
+          <p id="personHint" class="photo-hint"></p>
+        </article>
+
+        <section class="work-card">
+          <p id="modeLabel" class="eyebrow">Build the sentences</p>
+          <h2 id="question" class="question"></h2>
+
+          <div id="builderMode" class="builder-wrap">
+            <div>
+              <div class="line-label">Sentence 1</div>
+              <div id="builder1" class="builder"></div>
+            </div>
+
+            <div>
+              <div class="line-label">Sentence 2</div>
+              <div id="builder2" class="builder"></div>
+            </div>
+          </div>
+
+          <div id="writeMode" class="write-box" style="display:none">
+            <textarea id="writeInput" placeholder="Write two sentences..."></textarea>
+            <div id="support" class="support"></div>
+          </div>
+
+          <div id="feedback" class="feedback"></div>
+          <div id="answerCard" class="answer-card"></div>
+
+          <div class="actions">
+            <button id="checkBtn" class="btn check">Check</button>
+            <button id="nextBtn" class="btn next">Next</button>
+          </div>
+        </section>
+      </section>
+
+      <section id="finalTask" class="final">
+        <h2>Final challenge</h2>
+        <p>Write two sentences about Cristiano Ronaldo. No picture, no buttons, no ceremonial hand-holding.</p>
+
+        <textarea id="finalInput" placeholder="Write two sentences..."></textarea>
+
+        <div id="finalFeedback" class="feedback"></div>
+
+        <div class="actions">
+          <button id="finalCheckBtn" class="btn check">Check</button>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div id="footerNote" class="footer-note">Complete both sentences and press Check.</div>
+      <button id="continueBtn" class="btn continue">Continue</button>
+    </footer>
+  </section>
+
+  <script>
+    const items = [
+      {
+        id:'wednesday',
+        name:'Wednesday Addams',
+        image:`https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-12ea4a9aa1d9896e.png`,
+        country:'the USA',
+        nationality:'American',
+        pronoun:'She',
+        mode:'builder'
+      },
+      {
+        id:'ladybug',
+        name:'Ladybug',
+        image:`https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-10be8a0456e3a35e.png`,
+        country:'France',
+        nationality:'French',
+        pronoun:'She',
+        mode:'builder'
+      },
+      {
+        id:'tanjiro',
+        name:'Tanjiro Kamado',
+        image:`https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-6290dcd74f820412.png`,
+        country:'Japan',
+        nationality:'Japanese',
+        pronoun:'He',
+        mode:'builder'
+      },
+      {
+        id:'ronaldo',
+        name:'Cristiano Ronaldo',
+        image:`https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-762fe3485cbc5061.png`,
+        country:'Portugal',
+        nationality:'Portuguese',
+        pronoun:'He',
+        mode:'write'
+      },
+      {
+        id:'lisa',
+        name:'Lisa',
+        image:`https://storage.yandexcloud.net/kids-app/html-assets/unit2a-shared/unit2a-image-99c9e2175aaff3d6.png`,
+        country:'Thailand',
+        nationality:'Thai',
+        pronoun:'She',
+        mode:'write'
+      }
+    ];
+
+    let index = 0;
+    let solved = false;
+    let sentence1 = [];
+    let sentence2 = [];
+    const results = {};
+
+    const personImage = document.getElementById('personImage');
+    const personName = document.getElementById('personName');
+    const personHint = document.getElementById('personHint');
+    const current = document.getElementById('current');
+    const question = document.getElementById('question');
+    const modeLabel = document.getElementById('modeLabel');
+    const builderMode = document.getElementById('builderMode');
+    const writeMode = document.getElementById('writeMode');
+    const builder1 = document.getElementById('builder1');
+    const builder2 = document.getElementById('builder2');
+    const writeInput = document.getElementById('writeInput');
+    const support = document.getElementById('support');
+    const feedback = document.getElementById('feedback');
+    const answerCard = document.getElementById('answerCard');
+    const checkBtn = document.getElementById('checkBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const task = document.getElementById('task');
+    const finalTask = document.getElementById('finalTask');
+    const finalFeedback = document.getElementById('finalFeedback');
+    const continueBtn = document.getElementById('continueBtn');
+    const footerNote = document.getElementById('footerNote');
+
+    function shuffle(array){
+      return [...array].sort(() => Math.random() - 0.5);
+    }
+
+    function correctText(item){
+      return `${item.name} is from ${item.country}. ${item.pronoun} is ${item.nationality}.`;
+    }
+
+    function renderTokens(container, tokens, targetArray){
+      container.innerHTML = '';
+
+      shuffle(tokens).forEach(tokenText => {
+        const token = document.createElement('button');
+        token.className = 'token';
+        token.textContent = tokenText;
+        token.dataset.value = tokenText;
+
+        token.addEventListener('click', () => {
+          if(solved) return;
+
+          if(token.classList.contains('active')){
+            token.classList.remove('active');
+            const position = targetArray.indexOf(tokenText);
+            if(position !== -1) targetArray.splice(position,1);
+          }else{
+            token.classList.add('active');
+            targetArray.push(tokenText);
+          }
+        });
+
+        container.appendChild(token);
+      });
+    }
+
+    function renderItem(){
+      const item = items[index];
+
+      solved = false;
+      sentence1 = [];
+      sentence2 = [];
+
+      personImage.src = item.image;
+      personImage.alt = item.name;
+      personName.textContent = item.name;
+      personHint.textContent = `${item.country} · ${item.nationality}`;
+      question.textContent = `Write about ${item.name}.`;
+      current.textContent = index + 1;
+
+      feedback.className = 'feedback';
+      feedback.textContent = '';
+      answerCard.className = 'answer-card';
+      answerCard.textContent = '';
+      checkBtn.style.display = 'inline-block';
+      nextBtn.style.display = 'none';
+      footerNote.textContent = 'Complete both sentences and press Check.';
+
+      if(item.mode === 'builder'){
+        modeLabel.textContent = 'Build the sentences';
+        builderMode.style.display = 'grid';
+        writeMode.style.display = 'none';
+
+        renderTokens(
+          builder1,
+          [item.name,'is from',item.country],
+          sentence1
+        );
+
+        renderTokens(
+          builder2,
+          [item.pronoun,'is',item.nationality],
+          sentence2
+        );
+      }else{
+        modeLabel.textContent = 'Write the sentences';
+        builderMode.style.display = 'none';
+        writeMode.style.display = 'grid';
+        writeInput.value = '';
+        writeInput.disabled = false;
+        support.innerHTML = `
+          <span>${item.country}</span>
+          <span>${item.nationality}</span>
+          <span>${item.pronoun}</span>
+        `;
+      }
+    }
+
+    function normalise(text){
+      return text
+        .replace(/[’‘]/g,"'")
+        .replace(/\s+/g,' ')
+        .trim();
+    }
+
+    function lower(text){
+      return normalise(text).toLowerCase();
+    }
+
+    function checkWritten(item, value){
+      const text = normalise(value);
+      const textLower = text.toLowerCase();
+
+      const nameOk = textLower.includes(item.name.toLowerCase());
+      const countryOk = textLower.includes(item.country.toLowerCase());
+      const nationalityOk = textLower.includes(item.nationality.toLowerCase());
+      const pronounOk = new RegExp(`\\b${item.pronoun.toLowerCase()}\\b`).test(textLower);
+
+      const fromPattern = new RegExp(
+        `${item.name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\s+(is|'s)\\s+from\\s+${item.country.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}`
+      );
+
+      const nationalityPattern = new RegExp(
+        `\\b${item.pronoun.toLowerCase()}\\s+(is|'s)\\s+${item.nationality.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')}\\b`
+      );
+
+      const fromOk = fromPattern.test(textLower);
+      const nationalitySentenceOk = nationalityPattern.test(textLower);
+      const startsCapital = /^[A-Z]/.test(text);
+      const endsWithStop = /[.!?]$/.test(text);
+
+      const reasons = [];
+
+      if(!nameOk) reasons.push('Use the person’s name.');
+      if(!countryOk) reasons.push('Add the country.');
+      if(!nationalityOk) reasons.push('Add the nationality.');
+      if(!pronounOk) reasons.push(`Use ${item.pronoun}.`);
+      if(!fromOk) reasons.push('Use “is from” before the country.');
+      if(!nationalitySentenceOk) reasons.push('Use “is” before the nationality.');
+      if(!startsCapital) reasons.push('Start with a capital letter.');
+      if(!endsWithStop) reasons.push('Add a full stop.');
+
+      return {
+        correct:
+          nameOk &&
+          countryOk &&
+          nationalityOk &&
+          pronounOk &&
+          fromOk &&
+          nationalitySentenceOk &&
+          startsCapital &&
+          endsWithStop,
+        reasons
+      };
+    }
+
+    checkBtn.addEventListener('click', () => {
+      const item = items[index];
+
+      if(item.mode === 'builder'){
+        if(sentence1.length !== 3 || sentence2.length !== 3){
+          feedback.className = 'feedback show hint';
+          feedback.textContent = 'Choose all six blocks first.';
+          return;
+        }
+
+        const first = sentence1.join(' ');
+        const second = sentence2.join(' ');
+
+        const correct =
+          first === `${item.name} is from ${item.country}` &&
+          second === `${item.pronoun} is ${item.nationality}`;
+
+        if(!correct){
+          feedback.className = 'feedback show incorrect';
+
+          const hints = [];
+          if(!first.includes('is from')) hints.push('Use “is from” before the country.');
+          if(!second.includes(' is ')) hints.push('Use “is” before the nationality.');
+          if(sentence1[0] !== item.name) hints.push('Start sentence 1 with the name.');
+          if(sentence2[0] !== item.pronoun) hints.push(`Start sentence 2 with ${item.pronoun}.`);
+
+          feedback.textContent = hints.length
+            ? hints.join(' ')
+            : 'The blocks are in the wrong order. Try again.';
+          return;
+        }
+
+        solved = true;
+        document.querySelectorAll('.token').forEach(token => token.disabled = true);
+      }else{
+        const result = checkWritten(item,writeInput.value);
+
+        if(!result.correct){
+          feedback.className = 'feedback show incorrect';
+          feedback.textContent = result.reasons.join(' ');
+          return;
+        }
+
+        solved = true;
+        writeInput.disabled = true;
+      }
+
+      results[item.id] = {
+        answer:
+          item.mode === 'builder'
+            ? `${sentence1.join(' ')}. ${sentence2.join(' ')}.`
+            : writeInput.value,
+        correct:true
+      };
+
+      feedback.className = 'feedback show correct';
+      feedback.textContent = 'Correct!';
+
+      answerCard.className = 'answer-card show';
+      answerCard.innerHTML = correctText(item).replace('. ','.<br>');
+
+      checkBtn.style.display = 'none';
+      nextBtn.style.display = 'inline-block';
+      footerNote.textContent = 'Read the correct sentences aloud.';
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if(index < items.length - 1){
+        index++;
+        renderItem();
+        return;
+      }
+
+      task.style.display = 'none';
+      finalTask.classList.add('show');
+      document.querySelector('.progress').style.display = 'none';
+      footerNote.textContent = 'Write the final two sentences without support.';
+    });
+
+    document.getElementById('finalCheckBtn').addEventListener('click', () => {
+      const item = items.find(item => item.id === 'ronaldo');
+      const result = checkWritten(item,document.getElementById('finalInput').value);
+
+      if(!result.correct){
+        finalFeedback.className = 'feedback show incorrect';
+        finalFeedback.textContent = result.reasons.join(' ');
+        return;
+      }
+
+      finalFeedback.className = 'feedback show correct';
+      finalFeedback.innerHTML = 'Correct:<br>Cristiano Ronaldo is from Portugal.<br>He is Portuguese.';
+      document.getElementById('finalInput').disabled = true;
+      document.getElementById('finalCheckBtn').disabled = true;
+      continueBtn.style.display = 'inline-block';
+      footerNote.textContent = 'The writing task is complete.';
+    });
+
+    continueBtn.addEventListener('click', () => {
+      window.parent?.postMessage({
+        type:'lesson-step-complete',
+        lesson:'2a',
+        step:'write-about-them',
+        answers:results,
+        finalAnswer:document.getElementById('finalInput').value
+      }, '*');
+
+      continueBtn.textContent = 'Done ✓';
+    });
+
+    renderItem();
+  </script>
+</body>
+</html>

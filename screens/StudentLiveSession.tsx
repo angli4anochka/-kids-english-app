@@ -5,6 +5,8 @@ import { useRouter } from '@/utils/routing-adapter';
 import { useSocket } from '../hooks/useSocket';
 import { useAuth } from '../contexts/AuthContext';
 import ActivityRenderer from '../components/LessonBuilder/ActivityRenderer';
+import LiveDrawingOverlay from '../components/LessonBuilder/LiveDrawingOverlay';
+import LiveTeachingBoard from '../components/LessonBuilder/LiveTeachingBoard';
 import type { Activity } from '../types';
 
 interface StudentLiveSessionProps {
@@ -79,15 +81,14 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
     // Listen for session end — show overlay, then redirect by course
     const handleSessionEnded = (data: { sessionId: string }) => {
       console.log('[Student] Received session ended:', data);
-      const cn = (session?.course_name || '').toLowerCase();
-      const isSpotlight = cn.includes('spotlight') || cn.includes('спотлайт');
       const activeSessionId = data.sessionId || sessionId;
+      const isSpotlight = ['spotlight', 'огэ'].includes((session?.course_name || '').trim().toLowerCase());
       const url = isSpotlight
-        ? `/student/lesson-results?sessionId=${activeSessionId}`
+        ? `/student/lesson-results?sessionId=${encodeURIComponent(activeSessionId)}`
         : '/scoreboard';
       setRedirectUrl(url);
       setIsSessionEnded(true);
-      setTimeout(() => router.push(url), 3000);
+      window.location.replace(url);
     };
 
     socket.on('session:activity-changed', handleActivityChanged);
@@ -245,7 +246,7 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
                 </h2>
               </div>
 
-              <div className="p-1 sm:p-2 h-[calc(100vh-125px)] min-h-[520px]">
+              <div className="relative p-1 sm:p-2 h-[calc(100vh-125px)] min-h-[520px]">
                 <ActivityRenderer
                   key={currentActivity.id}
                   activity={currentActivity}
@@ -257,6 +258,8 @@ export default function StudentLiveSession({ sessionId }: StudentLiveSessionProp
                   socket={socket}
                   isConnected={isConnected}
                 />
+                <LiveDrawingOverlay key={"pencil-" + currentActivity.id} socket={socket} isConnected={isConnected} isTeacher={false} sessionId={sessionId} groupId={session?.group_id} />
+                <LiveTeachingBoard socket={socket} isConnected={isConnected} isTeacher={false} sessionId={sessionId} groupId={session?.group_id} />
               </div>
             </div>
           </div>

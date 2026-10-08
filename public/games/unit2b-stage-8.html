@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plural Machine</title>
+<style>
+:root {
+  --ink:#18324b;
+  --muted:#6d8193;
+  --paper:#fffdf8;
+  --blue:#4a8fd8;
+  --blue-dark:#2f6ca4;
+  --orange:#f49a4c;
+  --green:#47b06b;
+  --line:#d9e6ee;
+  --shadow:0 15px 36px rgba(37,64,89,.15);
+}
+
+* { box-sizing:border-box; }
+
+html,body {
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  font-family:Arial,Helvetica,sans-serif;
+  color:var(--ink);
+  background:#edf6f8;
+}
+
+button { font:inherit; }
+
+.app {
+  width:100vw;
+  height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  gap:1.3vh;
+  padding:2vh 2vw;
+  background:
+    radial-gradient(circle at 9% 12%, rgba(255,209,145,.42), transparent 23%),
+    radial-gradient(circle at 91% 14%, rgba(142,203,255,.34), transparent 25%),
+    linear-gradient(135deg,#f8fcfd,#eef7f9 60%,#fff8ed);
+}
+
+.header {
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.8rem 1rem;
+  border-radius:22px;
+  background:rgba(255,255,255,.9);
+  box-shadow:var(--shadow);
+}
+
+.title-wrap {
+  display:flex;
+  align-items:center;
+  gap:.85rem;
+}
+
+.badge {
+  width:52px;
+  height:52px;
+  display:grid;
+  place-items:center;
+  border-radius:17px;
+  background:linear-gradient(145deg,#ffd99f,#ffae60);
+  font-size:1.8rem;
+}
+
+h1 {
+  margin:0;
+  font-size:clamp(1.8rem,3vw,2.8rem);
+  line-height:1;
+}
+
+.subtitle {
+  margin-top:.28rem;
+  color:var(--muted);
+  font-weight:700;
+}
+
+.page-pill {
+  padding:.55rem .9rem;
+  border-radius:999px;
+  background:#edf7ff;
+  color:#2c6698;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.main {
+  min-height:0;
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:1rem;
+}
+
+.rule-strip {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:.8rem;
+}
+
+.rule {
+  padding:.62rem .7rem;
+  border-radius:18px;
+  background:rgba(255,255,255,.92);
+  box-shadow:var(--shadow);
+  text-align:center;
+}
+
+.rule strong {
+  display:block;
+  color:var(--blue-dark);
+  font-size:.95rem;
+}
+
+.rule span {
+  display:block;
+  margin-top:.22rem;
+  color:var(--muted);
+  font-size:.76rem;
+  font-weight:700;
+}
+
+.grid {
+  min-height:0;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.9rem;
+  align-content:center;
+}
+
+.card {
+  position:relative;
+  min-height:190px;
+  cursor:pointer;
+  border:2px solid var(--line);
+  border-radius:24px;
+  background:var(--paper);
+  box-shadow:0 8px 20px rgba(37,64,89,.09);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:1rem;
+  transition:.17s ease;
+  user-select:none;
+}
+
+.card:hover {
+  transform:translateY(-4px);
+  border-color:#9dc8e6;
+}
+
+.card.open {
+  background:#eff9f3;
+  border-color:#8ad0a2;
+  box-shadow:0 12px 25px rgba(52,140,84,.13);
+}
+
+.icon {
+  font-size:clamp(3rem,5vw,4.8rem);
+  line-height:1;
+  margin-bottom:.7rem;
+}
+
+.word {
+  font-size:clamp(1.15rem,1.8vw,1.55rem);
+  font-weight:900;
+}
+
+.arrow {
+  margin:.28rem 0;
+  color:var(--orange);
+  font-weight:900;
+  opacity:0;
+  transition:.16s ease;
+}
+
+.plural {
+  min-height:1.3em;
+  font-size:clamp(1.1rem,1.7vw,1.45rem);
+  color:var(--green);
+  font-weight:900;
+  opacity:0;
+  transform:translateY(6px);
+  transition:.16s ease;
+}
+
+.rule-label {
+  position:absolute;
+  top:.65rem;
+  right:.7rem;
+  padding:.32rem .55rem;
+  border-radius:999px;
+  background:#edf7ff;
+  color:#2c6698;
+  font-size:.72rem;
+  font-weight:900;
+  opacity:0;
+  transition:.16s ease;
+}
+
+.card.open .arrow,
+.card.open .plural,
+.card.open .rule-label {
+  opacity:1;
+  transform:translateY(0);
+}
+
+.tap {
+  position:absolute;
+  left:.8rem;
+  bottom:.65rem;
+  color:#9cadba;
+  font-size:.7rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+
+.footer {
+  max-width:1280px;
+  width:100%;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.65rem .95rem;
+  border-radius:19px;
+  background:rgba(255,255,255,.86);
+  box-shadow:var(--shadow);
+}
+
+.tip {
+  color:var(--muted);
+  font-weight:700;
+  font-size:.92rem;
+}
+
+.nav {
+  display:flex;
+  gap:.7rem;
+}
+
+.nav-btn {
+  cursor:pointer;
+  border:0;
+  border-radius:14px;
+  padding:.68rem 1rem;
+  color:#fff;
+  font-weight:900;
+}
+
+.prev {
+  background:#76899a;
+}
+
+.next {
+  background:var(--blue);
+  box-shadow:0 5px 0 var(--blue-dark);
+}
+
+.nav-btn:disabled {
+  opacity:.4;
+  cursor:default;
+  box-shadow:none;
+}
+
+@media (max-width:900px) {
+  .grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .card {
+    min-height:155px;
+  }
+  .rule-strip {
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="header">
+    <div class="title-wrap">
+      <div class="badge">✨</div>
+      <div>
+        <h1 id="pageTitle">Regular plurals</h1>
+        <div id="pageSubtitle" class="subtitle">Click a word to make it plural.</div>
+      </div>
+    </div>
+    <div id="pagePill" class="page-pill">1 / 2</div>
+  </header>
+
+  <main class="main">
+    <section id="ruleStrip" class="rule-strip"></section>
+    <section id="grid" class="grid"></section>
+  </main>
+
+  <footer class="footer">
+    <div class="tip">Click each card and watch the word change.</div>
+    <div class="nav">
+      <button id="prevBtn" class="nav-btn prev">← BACK</button>
+      <button id="nextBtn" class="nav-btn next">NEXT →</button>
+    </div>
+  </footer>
+</div>
+
+<script>
+const pages = [{"title": "Regular plurals", "subtitle": "Click a word to make it plural.", "items": [{"singular": "doll", "plural": "dolls", "rule": "+ s", "icon": "🪆"}, {"singular": "ball", "plural": "balls", "rule": "+ s", "icon": "⚽"}, {"singular": "boy", "plural": "boys", "rule": "+ s", "icon": "👦"}, {"singular": "watch", "plural": "watches", "rule": "+ es", "icon": "⌚"}, {"singular": "box", "plural": "boxes", "rule": "+ es", "icon": "📦"}, {"singular": "party", "plural": "parties", "rule": "y → ies", "icon": "🎉"}, {"singular": "knife", "plural": "knives", "rule": "f/fe → ves", "icon": "🔪"}, {"singular": "leaf", "plural": "leaves", "rule": "f/fe → ves", "icon": "🍃"}]}, {"title": "Irregular plurals", "subtitle": "These words change completely. English apparently enjoys drama.", "items": [{"singular": "child", "plural": "children", "rule": "irregular", "icon": "🧒"}, {"singular": "man", "plural": "men", "rule": "irregular", "icon": "👨"}, {"singular": "woman", "plural": "women", "rule": "irregular", "icon": "👩"}, {"singular": "foot", "plural": "feet", "rule": "irregular", "icon": "🦶"}, {"singular": "tooth", "plural": "teeth", "rule": "irregular", "icon": "🦷"}, {"singular": "mouse", "plural": "mice", "rule": "irregular", "icon": "🐭"}]}];
+const regularRules = [
+  ["+ s", "Most words: doll → dolls, ball → balls"],
+  ["+ es after s, ss, sh, ch, x", "bus → buses, class → classes, dish → dishes, watch → watches, box → boxes"],
+  ["+ es after consonant + o", "tomato → tomatoes, potato → potatoes"],
+  ["consonant + y → ies", "party → parties, baby → babies"],
+  ["vowel + y → + s", "boy → boys, toy → toys, key → keys"],
+  ["f / fe → ves", "knife → knives, leaf → leaves"]
+];
+
+let page = 0;
+
+const pageTitle = document.getElementById("pageTitle");
+const pageSubtitle = document.getElementById("pageSubtitle");
+const pagePill = document.getElementById("pagePill");
+const ruleStrip = document.getElementById("ruleStrip");
+const grid = document.getElementById("grid");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+
+function renderRules() {
+  ruleStrip.innerHTML = "";
+
+  if (page === 0) {
+    regularRules.forEach(([rule, example]) => {
+      const box = document.createElement("div");
+      box.className = "rule";
+      box.innerHTML = `<strong>${rule}</strong><span>${example}</span>`;
+      ruleStrip.appendChild(box);
+    });
+
+    const exceptions = document.createElement("div");
+    exceptions.className = "rule";
+    exceptions.style.gridColumn = "1 / -1";
+    exceptions.innerHTML =
+      "<strong>Watch the exceptions</strong><span>photo → photos, piano → pianos; roof → roofs, chef → chefs</span>";
+    ruleStrip.appendChild(exceptions);
+  } else {
+    const box = document.createElement("div");
+    box.className = "rule";
+    box.style.gridColumn = "1 / -1";
+    box.innerHTML = "<strong>Irregular words</strong><span>There is no ending rule. Learn the whole new form.</span>";
+    ruleStrip.appendChild(box);
+  }
+}
+
+function renderCards() {
+  grid.innerHTML = "";
+
+  pages[page].items.forEach(item => {
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="rule-label">${item.rule}</div>
+      <div class="icon">${item.icon}</div>
+      <div class="word">${item.singular}</div>
+      <div class="arrow">↓</div>
+      <div class="plural">${item.plural}</div>
+      <div class="tap">tap</div>
+    `;
+
+    card.addEventListener("click", () => {
+      card.classList.toggle("open");
+    });
+
+    grid.appendChild(card);
+  });
+}
+
+function render() {
+  pageTitle.textContent = pages[page].title;
+  pageSubtitle.textContent = pages[page].subtitle;
+  pagePill.textContent = `${page + 1} / ${pages.length}`;
+
+  prevBtn.disabled = page === 0;
+  nextBtn.disabled = false;
+  nextBtn.textContent = page === pages.length - 1 ? "COMPLETE ✓" : "NEXT →";
+
+  renderRules();
+  renderCards();
+}
+
+prevBtn.addEventListener("click", () => {
+  if (page > 0) {
+    page -= 1;
+    render();
+  }
+});
+
+nextBtn.addEventListener("click", () => {
+  if (page < pages.length - 1) {
+    page += 1;
+    render();
+    return;
+  }
+  const result = { formsIntroduced: pages.reduce((sum,item) => sum + item.items.length, 0), pagesViewed: pages.length };
+  localStorage.setItem("unit2bPluralsIntroResult", JSON.stringify(result));
+  window.parent?.postMessage({ type:"lesson-step-complete", lesson:"2b", step:"plurals-intro", result }, "*");
+  nextBtn.disabled = true;
+  nextBtn.textContent = "COMPLETED ✓";
+});
+
+render();
+</script>
+</body>
+</html>
